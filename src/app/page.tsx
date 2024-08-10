@@ -34,7 +34,7 @@ export default function Home() {
 
         {/* caregory list */}
         {categories.map((category) => (
-          <div className="flex flex-col gap-4 w-full rounded p-2 bg-snow">
+          <div key={category.name} className="flex flex-col gap-4 w-full rounded p-2 bg-snow">
             <div className="flex items-center gap-4 text-subtitle">
               <category.icon />
               <span className="text-lg">
