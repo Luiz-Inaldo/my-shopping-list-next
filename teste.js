@@ -1,5 +1,6 @@
 const items = {
     "maçã": {
+        name: "maçã",
         category: "hortifruti",
         price: "",
         quantity: 0,

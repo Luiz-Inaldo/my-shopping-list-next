@@ -12,7 +12,7 @@ import {
   SprayCan,
 } from "lucide-react";
 
-export const CATEGORIES = [
+export const CATEGORIES_LIST = [
   {
     name: "Mercearia",
     icon: UtensilsCrossed,

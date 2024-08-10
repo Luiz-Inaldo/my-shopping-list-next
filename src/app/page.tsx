@@ -1,12 +1,27 @@
 'use client';
 import React from "react";
 import { Plus, Search } from "lucide-react";
-import { CATEGORIES } from "@/data/categories";
+import { CATEGORIES_LIST } from "@/data/categories";
+import { kv } from "@vercel/kv";
 
 export default function Home() {
 
-  const categories = Object.values(CATEGORIES);
-  console.log(categories);
+  const categories = Object.values(CATEGORIES_LIST);
+
+  const addItem = async () => {
+    try {
+      await kv.hset('products', {
+        name: "maçã",
+        category: "hortifruti",
+        price: "",
+        quantity: 0,
+        checked: false
+    });
+    console.log('item adicionado')
+    } catch (error) {
+      console.log(error)
+    }
+  }
 
   return (
     <div className="flex flex-col gap-10 w-[430px] mx-auto bg-gray-background">
@@ -54,7 +69,9 @@ export default function Home() {
       <footer className="relative w-full h-32 bg-primary-green flex flex-col px-10 py-8 gap-3">
 
         {/* add item button */}
-        <div className="absolute w-[60px] h-[60px] top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-secondary-green rounded-full flex items-center justify-center cursor-pointer shadow-md">
+        <div 
+          onClick={addItem}
+          className="absolute w-[60px] h-[60px] top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-secondary-green rounded-full flex items-center justify-center cursor-pointer shadow-md">
           <Plus className="text-snow" size={32} />
         </div>
         {/* end add item button */}
