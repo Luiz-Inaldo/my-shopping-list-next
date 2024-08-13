@@ -14,6 +14,7 @@ const items = {
     },
 }
 
-const name = "maçã"
+const nome = "12.99"
+const number = parseFloat(nome);
 
-console.log(items[name])
+console.log(typeof number);

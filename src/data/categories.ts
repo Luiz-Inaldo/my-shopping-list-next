@@ -6,7 +6,7 @@ import {
   Sparkles,
   Wine,
   ThermometerSnowflake,
-  Dog,
+  ShoppingBasket,
   Apple,
   Pill,
   SprayCan,
@@ -46,15 +46,11 @@ export const CATEGORIES_LIST = [
     icon: ThermometerSnowflake,
   },
   {
-    name: "Pet Shop",
-    icon: Dog,
-  },
-  {
     name: "Hortifruti",
     icon: Apple,
   },
   {
-    name: "Farmácia",
-    icon: Pill,
-  },
+    name: "Outros",
+    icon: ShoppingBasket,
+  }
 ];

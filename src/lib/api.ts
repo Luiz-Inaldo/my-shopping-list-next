@@ -1,7 +1,6 @@
-import { kv } from '@vercel/kv';
-import { NextResponse } from 'next/server';
- 
-export async function GET() {
-  const user = await kv.hgetall('products');
-  return NextResponse.json(user);
-}
+import { createClient } from '@supabase/supabase-js';
+
+const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL as string;
+const SUPABASE_ANON_KEY = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY as string;
+
+export const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);

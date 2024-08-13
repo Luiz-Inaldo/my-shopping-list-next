@@ -1,27 +1,31 @@
-'use client';
-import React from "react";
-import { Plus, Search } from "lucide-react";
-import { CATEGORIES_LIST } from "@/data/categories";
-import { kv } from "@vercel/kv";
+"use client";
+import React, { useEffect, useState } from "react";
+import { EllipsisVertical, Plus, Search } from "lucide-react";
+import { supabase } from "@/lib/api";
+import { IProductProps } from "@/types/product";
+import { AddProductForm } from "@/components/Forms/AddProductForm";
+import { CATEGORIES } from "@/constants/constants";
 
 export default function Home() {
 
-  const categories = Object.values(CATEGORIES_LIST);
+  const [data, setData] = useState<IProductProps[]>([]);
+  console.log(data)
 
-  const addItem = async () => {
-    try {
-      await kv.hset('products', {
-        name: "maçã",
-        category: "hortifruti",
-        price: "",
-        quantity: 0,
-        checked: false
-    });
-    console.log('item adicionado')
-    } catch (error) {
-      console.log(error)
+  // funções
+
+
+  // effects
+  useEffect(() => {
+    async function fetchData() {
+      const { data, error } = await supabase.from('products').select('*');
+      if (error) {
+        console.error(error);
+      } else {
+        setData(data);
+      }
     }
-  }
+    fetchData();
+  }, [])
 
   return (
     <div className="flex flex-col gap-10 w-[430px] mx-auto bg-gray-background">
@@ -48,32 +52,66 @@ export default function Home() {
         </h2>
 
         {/* caregory list */}
-        {categories.map((category) => (
-          <div key={category.name} className="flex flex-col gap-4 w-full rounded p-2 bg-snow">
-            <div className="flex items-center gap-4 text-subtitle">
-              <category.icon />
-              <span className="text-lg">
-                {category.name}
-              </span>
+        {CATEGORIES.map((category) => {
+
+          const products = data.filter((product) => product.category === category.name);
+
+          return (
+            <div key={category.name} className="flex flex-col gap-4 w-full rounded p-2 bg-snow">
+              <div className="flex items-center gap-4 text-subtitle">
+                <category.icon />
+                <span className="text-lg">
+                  {category.name}
+                </span>
+              </div>
+              {products.length > 0 ? (
+                <React.Fragment>
+                  {products.map(item => (
+                    <div key={item.name} className="flex flex-col gap-4 ml-5">
+                      <div className="relative flex flex-col gap-2 text-paragraph">
+                        <div className="flex items-center">
+                          <label htmlFor={item.name} className="flex-1 flex items-center gap-2">
+                            <input
+                              type="checkbox"
+                              checked={item.checked}
+                              id={item.name}
+                              className="w-4 h-4 accent-primary-green border-2 border-paragraph rounded"
+                            />
+                            <span className="max-w-60">{item.name}</span>
+                          </label>
+                          <div className="relative w-6 h-6 rounded-full hover:bg-slate-300 flex items-center justify-center cursor-pointer">
+                            <EllipsisVertical
+                              size={16}
+                              onClick={() => console.log('a')}
+                            />
+                          </div>
+                        </div>
+                        <div className="flex gap-4">
+                          <span>qntd: {item.quantity}</span>
+                          <span>valor: R$ {item.value.replace('.', ',') || '0,00'}</span>
+                          <span>total: R$ {(parseFloat(item.value.replace(',', '.')) * item.quantity).toString().replace('.', ',')}</span>
+                        </div>
+
+                      </div>
+                    </div>
+                  ))}
+                </React.Fragment>
+              ) : (
+                <span className="text-paragraph text-center">
+                  Essa categoria não possui itens
+                </span>
+              )}
             </div>
-            {/* <div className="flex flex-col gap-4 ml-20">
-            </div> */}
-            <span className="text-paragraph text-center">
-              Essa categoria não possui itens
-            </span>
-          </div>
-        ))}
+          )
+
+        })}
         {/* end category list */}
 
-      </main>
+      </main >
       <footer className="relative w-full h-32 bg-primary-green flex flex-col px-10 py-8 gap-3">
 
         {/* add item button */}
-        <div 
-          onClick={addItem}
-          className="absolute w-[60px] h-[60px] top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-secondary-green rounded-full flex items-center justify-center cursor-pointer shadow-md">
-          <Plus className="text-snow" size={32} />
-        </div>
+            <AddProductForm />
         {/* end add item button */}
 
         <div className="flex gap-2 items-center text-title">
@@ -87,6 +125,6 @@ export default function Home() {
         </div>
 
       </footer>
-    </div>
+    </div >
   );
 }
