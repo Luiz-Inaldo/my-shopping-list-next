@@ -1,40 +1,18 @@
 "use client";
-import React, { useEffect, useState } from "react";
-import { EllipsisVertical, Plus, Search } from "lucide-react";
-import { supabase } from "@/lib/api";
-import { IProductProps } from "@/types/product";
+import React, { useContext } from "react";
+import { EllipsisVertical, Search } from "lucide-react";
 import { AddProductForm } from "@/components/Forms/AddProductForm";
 import { CATEGORIES } from "@/constants/constants";
 import { Skeleton } from "@/components/ui/skeleton"
 import { Toaster } from "@/components/ui/toaster"
+import { ProductsContext } from "@/context/ProductsContext";
 
 export default function Home() {
 
-  const [data, setData] = useState<IProductProps[]>([]);
-  const [loading, setLoading] = useState<boolean>(true);
-
-  // funções
-  function formatNumber(value: string, quantity: number) {
-    return (parseFloat(value.replace(',', '.')) * quantity).toString().replace('.', ',')
-  }
-
-  // effects
-  useEffect(() => {
-    async function fetchData() {
-      const { data, error } = await supabase.from('products').select('*');
-      if (error) {
-        console.error(error);
-      } else {
-        setData(data);
-        setLoading(false);
-      }
-    }
-    fetchData();
-  }, [])
+  const { data, loading, formatNumber } = useContext(ProductsContext);
 
   return (
     <React.Fragment>
-
       <div className="flex flex-col gap-10 w-[430px] mx-auto bg-gray-background">
         <header className="w-full h-[120px] bg-primary-green flex items-center justify-center shadow-md">
           <h1 className="text-3xl uppercase font-bold text-title">
