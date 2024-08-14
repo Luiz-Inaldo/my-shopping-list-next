@@ -1,7 +1,7 @@
-import React from 'react'
+"use client";
+import React, { useEffect, useState} from 'react'
 import {
     Drawer,
-    DrawerClose,
     DrawerContent,
     DrawerDescription,
     DrawerFooter,
@@ -10,15 +10,19 @@ import {
     DrawerTrigger,
 } from "@/components/ui/drawer"
 import { Plus } from 'lucide-react'
-import { Controller, useForm } from 'react-hook-form'
+import { useForm } from 'react-hook-form'
 import { IFormItem } from '@/types/formItem'
 import { ShadSelect } from '../Select'
 import { SelectItem } from '../ui/select'
 import { CATEGORIES } from '@/constants/constants'
 import { supabase } from '@/lib/api'
+import { useToast } from "@/components/ui/use-toast"
+import { ToastAction } from '../ui/toast'
 
 export const AddProductForm = () => {
-
+    
+    const { toast } = useToast();
+    const [bottomLimit, setBottomLimit] = useState<boolean>(false);
     const {
         register,
         watch,
@@ -28,31 +32,60 @@ export const AddProductForm = () => {
         handleSubmit
     } = useForm<IFormItem>();
 
+    // funções
     async function onSubmit(data: IFormItem) {
         const item = {
             ...data,
             value: '0,00',
             checked: false
         }
-        
+
         try {
-            
-            await supabase.from('products').insert([item]).select()
-            
-            reset()
+
+            const response = await supabase.from('products').insert([item]).select();
+
+            if (response.status === 201) {
+
+                toast({
+                    description: "Produto adicionado com sucesso.",
+                    action: <ToastAction altText="Ok">Ok</ToastAction>
+                })
+
+            } else {
+
+            }
+
+            reset();
 
         } catch (error) {
             console.log(error)
         }
-        
+
     }
+
+    function watchScroll(value: number) {
+        if (value > 900 ) {
+            setBottomLimit(true);
+        } else if (value > 0 && value <= 900) {
+            setBottomLimit(false);
+        }
+    }
+
+    useEffect(() => {
+        window.addEventListener('scroll', () => {
+            watchScroll(window.scrollY)
+        })
+        return () => window.removeEventListener('scroll', () => {
+            watchScroll(window.scrollY)
+        });
+    },[])
 
     return (
         <Drawer>
             <DrawerTrigger>
                 <div
-                    onClick={() => console.log('a')}
-                    className="absolute w-[60px] h-[60px] top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-secondary-green rounded-full flex items-center justify-center cursor-pointer shadow-md">
+                    onClick={() => console.log('abriu')}
+                    className={`${bottomLimit ? '' : 'fixed bottom-8 left-1/2 -translate-x-1/2'} w-[60px] h-[60px]  bg-secondary-green rounded-full flex items-center justify-center cursor-pointer shadow-md`}>
                     <Plus className="text-snow" size={32} />
                 </div>
             </DrawerTrigger>
