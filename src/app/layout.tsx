@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Itim } from "next/font/google";
 import "../styles/globals.css";
+import { ProductsProvider } from "@/context/ProductsContext";
 
 const itim = Itim({ weight: '400', subsets: ["latin"] });
 
@@ -15,7 +16,11 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={itim.className}>{children}</body>
+      <body className={itim.className}>
+        <ProductsProvider>
+          {children}
+        </ProductsProvider>
+      </body>
     </html>
   );
 }

@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useState} from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import {
     Drawer,
     DrawerContent,
@@ -18,11 +18,13 @@ import { CATEGORIES } from '@/constants/constants'
 import { supabase } from '@/lib/api'
 import { useToast } from "@/components/ui/use-toast"
 import { ToastAction } from '../ui/toast'
+import { ProductsContext } from '@/context/ProductsContext';
 
 export const AddProductForm = () => {
-    
+
     const { toast } = useToast();
     const [bottomLimit, setBottomLimit] = useState<boolean>(false);
+    const { fetchData } = useContext(ProductsContext);
     const {
         register,
         watch,
@@ -49,7 +51,9 @@ export const AddProductForm = () => {
                 toast({
                     description: "Produto adicionado com sucesso.",
                     action: <ToastAction altText="Ok">Ok</ToastAction>
-                })
+                });
+
+                fetchData();
 
             } else {
 
@@ -64,7 +68,7 @@ export const AddProductForm = () => {
     }
 
     function watchScroll(value: number) {
-        if (value > 900 ) {
+        if (value > 900) {
             setBottomLimit(true);
         } else if (value > 0 && value <= 900) {
             setBottomLimit(false);
@@ -78,14 +82,14 @@ export const AddProductForm = () => {
         return () => window.removeEventListener('scroll', () => {
             watchScroll(window.scrollY)
         });
-    },[])
+    }, [])
 
     return (
         <Drawer>
             <DrawerTrigger>
                 <div
                     onClick={() => console.log('abriu')}
-                    className={`${bottomLimit ? '' : 'fixed bottom-8 left-1/2 -translate-x-1/2'} w-[60px] h-[60px]  bg-secondary-green rounded-full flex items-center justify-center cursor-pointer shadow-md`}>
+                    className={`${bottomLimit ? '' : 'fixed bottom-8 left-1/2 -translate-x-1/2'} w-[60px] h-[60px]  bg-secondary-green rounded-full flex items-center justify-center cursor-pointer shadow-md transition-all duration-300 ease-in-out`}>
                     <Plus className="text-snow" size={32} />
                 </div>
             </DrawerTrigger>
