@@ -1,15 +1,19 @@
 "use client";
-import React, { useContext } from "react";
+import React, { useContext, useState } from "react";
 import { EllipsisVertical, Search } from "lucide-react";
 import { AddProductForm } from "@/components/Forms/AddProductForm";
 import { CATEGORIES } from "@/constants/constants";
 import { Skeleton } from "@/components/ui/skeleton"
 import { Toaster } from "@/components/ui/toaster"
 import { ProductsContext } from "@/context/ProductsContext";
+import { EditProductForm } from "@/components/Forms/EditProductForm";
 
 export default function Home() {
 
-  const { data, loading, formatNumber } = useContext(ProductsContext);
+  const { data, loading, optionMenu,
+    editFormOpen, setEditFormOpen,
+    setOptionMenu, formatNumber, handleDeleteItem
+  } = useContext(ProductsContext);
 
   return (
     <React.Fragment>
@@ -71,11 +75,33 @@ export default function Home() {
                                   />
                                   <span className="max-w-60">{item.name}</span>
                                 </label>
-                                <div className="relative w-6 h-6 rounded-full hover:bg-slate-300 flex items-center justify-center cursor-pointer">
+                                <div
+                                  className="relative w-6 h-6 rounded-full flex items-center justify-center cursor-pointer">
                                   <EllipsisVertical
                                     size={16}
-                                    onClick={() => console.log('a')}
+                                    onClick={() => setOptionMenu(item.id)}
                                   />
+                                  {optionMenu === item.id && (
+                                    <>
+                                      <div className='absolute z-10 py-1 right-7 rounded shadow border border-gray-200 bg-snow grid gap-1'>
+                                        <span
+                                          className='px-3 text-paragraph'
+                                          onClick={() => {
+                                            setOptionMenu(null);
+                                            setEditFormOpen(true);
+                                          }}>
+                                          Editar
+                                        </span>
+                                        <hr />
+                                        <span 
+                                        className='px-3 text-paragraph'
+                                        onClick={() => handleDeleteItem(item.id)}>
+                                          Excluir
+                                        </span>
+                                      </div>
+                                    </>
+                                  )}
+                                  <EditProductForm item={item} editFormOpen={editFormOpen} setEditFormOpen={setEditFormOpen} />
                                 </div>
                               </div>
                               <div className="flex gap-4">
