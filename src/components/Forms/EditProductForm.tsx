@@ -1,5 +1,4 @@
 import { ProductsContext } from '@/context/ProductsContext';
-import { supabase } from '@/lib/api';
 import { IEditItemProps } from '@/types/editItem';
 import { IProductProps } from '@/types/product';
 import React, { useContext } from 'react'
@@ -8,11 +7,8 @@ import { Controller, useForm } from 'react-hook-form';
 export const EditProductForm = ({ item, editFormOpen, setEditFormOpen }: { item: IProductProps, editFormOpen: boolean, setEditFormOpen: React.Dispatch<React.SetStateAction<boolean>> }) => {
 
     const {
-        register,
-        watch,
         control,
         formState: { errors },
-        reset,
         handleSubmit
     } = useForm<IEditItemProps>();
 
@@ -23,7 +19,7 @@ export const EditProductForm = ({ item, editFormOpen, setEditFormOpen }: { item:
     }
 
     return (
-        <div className={`${editFormOpen ? 'flex opacity-100 visible' : 'hidden opacity-0 invisible'} fixed z-[999] items-center justify-center bg-black/30 w-full h-full top-0 left-0 transition-all duration-300`}>
+        <div className={`${editFormOpen ? 'flex opacity-100 visible' : 'hidden opacity-0 invisible'} fixed z-[5] items-center justify-center bg-black/30 w-full h-full top-0 left-0 transition-all duration-300`}>
             <div className='relative w-[350px] rounded bg-snow'>
                 <form onSubmit={handleSubmit(onSubmit)} className='flex flex-col gap-3 p-5'>
                     <h1 className='text-subtitle text-xl text-center'>O que deseja editar no produto?</h1>
@@ -75,9 +71,19 @@ export const EditProductForm = ({ item, editFormOpen, setEditFormOpen }: { item:
                             />
                         </label>
                     </div>
-                    <button type='submit' className='flex items-center justify-center w-full bg-primary-green py-2 px-3 rounded text-title mt-5'>
-                        Finalizar Edição
-                    </button>
+                    <div className='grid grid-cols-2 gap-2 mt-5'>
+                        <button
+                            type='submit'
+                            className='col-span-1 flex items-center justify-center w-full bg-primary-green py-2 px-3 rounded text-title'>
+                            Finalizar Edição
+                        </button>
+                        <button
+                            type='button'
+                            onClick={() => setEditFormOpen(false)}
+                            className='col-span-1 flex items-center justify-center w-full border border-title py-2 px-3 rounded text-title'>
+                            Cancelar
+                        </button>
+                    </div>
                 </form>
             </div>
         </div>

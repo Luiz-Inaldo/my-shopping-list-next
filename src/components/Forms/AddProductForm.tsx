@@ -23,7 +23,6 @@ import { ProductsContext } from '@/context/ProductsContext';
 export const AddProductForm = () => {
 
     const { toast } = useToast();
-    const [bottomLimit, setBottomLimit] = useState<boolean>(false);
     const { fetchData } = useContext(ProductsContext);
     const {
         register,
@@ -67,30 +66,14 @@ export const AddProductForm = () => {
 
     }
 
-    function watchScroll(value: number) {
-        if (value > 900) {
-            setBottomLimit(true);
-        } else if (value > 0 && value <= 900) {
-            setBottomLimit(false);
-        }
-    }
-
-    useEffect(() => {
-        window.addEventListener('scroll', () => {
-            watchScroll(window.scrollY)
-        })
-        return () => window.removeEventListener('scroll', () => {
-            watchScroll(window.scrollY)
-        });
-    }, [])
-
     return (
         <Drawer>
-            <DrawerTrigger>
+            <DrawerTrigger className='flex items-center justify-center'>
                 <div
                     onClick={() => console.log('abriu')}
-                    className={`${bottomLimit ? '' : 'fixed bottom-8 left-1/2 -translate-x-1/2'} w-[60px] h-[60px]  bg-secondary-green rounded-full flex items-center justify-center cursor-pointer shadow-md transition-all duration-300 ease-in-out`}>
-                    <Plus className="text-snow" size={32} />
+                    className='mb-5 bg-secondary-green rounded-full px-3 py-2 flex gap-2 items-center justify-center cursor-pointer shadow-md transition-all duration-300 ease-in-out text-snow'>
+                    <Plus size={32} />
+                    <span>Novo Produto</span>
                 </div>
             </DrawerTrigger>
             <DrawerContent>
