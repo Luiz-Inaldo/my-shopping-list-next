@@ -5,5 +5,4 @@ export interface IProductProps {
     quantity: number;
     value: string;
     checked: boolean;
-
 }

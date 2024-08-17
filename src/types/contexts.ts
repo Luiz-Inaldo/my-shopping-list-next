@@ -10,8 +10,15 @@ export interface IProductsContextProps {
     setOptionMenu: React.Dispatch<React.SetStateAction<number | null>>;
     editFormOpen: boolean;
     setEditFormOpen: React.Dispatch<React.SetStateAction<boolean>>;
+    checkFormOpen: boolean;
+    setCheckFormOpen: React.Dispatch<React.SetStateAction<boolean>>;
+    totalValue: string;
+    setTotalValue: React.Dispatch<React.SetStateAction<string>>;
+
     fetchData: () => Promise<void>;
     formatNumber: (value: string, quantity: number) => string;
     handleUpdateItem: (object: IEditItemProps, itemID: number) => Promise<void>;
     handleDeleteItem: (itemID: number) => Promise<void>;
+    handleCheckItem:(item: IProductProps, object?: IEditItemProps) => Promise<void>;
+    handleDismarkItem: (item: IProductProps) => Promise<void>;
 }

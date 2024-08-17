@@ -16,10 +16,17 @@ export const ProductsContext = createContext<IProductsContextProps>({
     setOptionMenu: () => { },
     editFormOpen: false,
     setEditFormOpen: () => { },
+    checkFormOpen: false,
+    setCheckFormOpen: () => { },
+    totalValue: '0',
+    setTotalValue: () => { },
+
     fetchData: async () => { },
     formatNumber: () => '',
     handleUpdateItem: async () => { },
-    handleDeleteItem: async () => { }
+    handleDeleteItem: async () => { },
+    handleCheckItem: async () => { },
+    handleDismarkItem: async () => { }
 });
 
 export const ProductsProvider = ({ children }: { children: React.ReactNode }) => {
@@ -29,6 +36,8 @@ export const ProductsProvider = ({ children }: { children: React.ReactNode }) =>
     const [loading, setLoading] = useState<boolean>(true);
     const [optionMenu, setOptionMenu] = useState<number | null>(null);
     const [editFormOpen, setEditFormOpen] = useState<boolean>(false);
+    const [checkFormOpen, setCheckFormOpen] = useState<boolean>(false);
+    const [totalValue, setTotalValue] = useState<string>('0');
 
     /* ====> hooks <==== */
     const { toast } = useToast();
@@ -45,11 +54,23 @@ export const ProductsProvider = ({ children }: { children: React.ReactNode }) =>
     }
 
     function formatNumber(value: string, quantity: number) {
-        return (parseFloat(value.replace(',', '.')) * quantity).toString().replace('.', ',')
+        return (parseFloat(value.replace(',', '.')) * quantity).toFixed(2).replace('.', ',')
+    }
+
+    function caculateTotalValue() {
+
+        let total: number = 0;
+        // const values = data.map(product => product.value);
+        data.forEach(item => {
+            const parsedTotal = (parseFloat(item.value.replace(',', '.')) * item.quantity);
+            total += parsedTotal;
+        })
+        setTotalValue(total.toFixed(2).replace('.', ','))
+
     }
 
     async function handleUpdateItem(object: IEditItemProps, itemID: number) {
-        const {data, error} = await supabase.from('products').update(object).eq('id', itemID);
+        const { data, error } = await supabase.from('products').update(object).eq('id', itemID);
 
         if (error) {
             console.log(error);
@@ -79,10 +100,52 @@ export const ProductsProvider = ({ children }: { children: React.ReactNode }) =>
         }
     }
 
+    async function handleCheckItem(item: IProductProps, object?: IEditItemProps) {
+
+        const editedItem = {
+            ...item,
+            value: object?.value ? object.value : item.value,
+            checked: !item.checked
+        }
+
+        const { data, error } = await supabase.from('products').update(editedItem).eq('id', item.id);
+        if (error) {
+            console.log(error);
+        } else {
+            toast({
+                description: "Produto marcado como adiquirido.",
+                action: <ToastAction altText="Ok">Ok</ToastAction>
+            });
+            fetchData();
+            setCheckFormOpen(false);
+        }
+    }
+
+    async function handleDismarkItem(item: IProductProps) {
+
+        const editedItem = {
+            ...item,
+            checked: !item.checked
+        }
+
+        const { data, error } = await supabase.from('products').update(editedItem).eq('id', item.id);
+
+        if (error) {
+            console.log(error);
+        } else {
+            fetchData();
+        }
+
+    }
+
     /* ====> effects <==== */
     useEffect(() => {
         fetchData();
-    }, [])
+    }, []);
+
+    useEffect(() => {
+        caculateTotalValue();
+    }, [data]);
 
     return (
         <ProductsContext.Provider value={{
@@ -94,10 +157,17 @@ export const ProductsProvider = ({ children }: { children: React.ReactNode }) =>
             setOptionMenu,
             editFormOpen,
             setEditFormOpen,
+            checkFormOpen,
+            setCheckFormOpen,
+            totalValue,
+            setTotalValue,
+
             fetchData,
             formatNumber,
             handleUpdateItem,
-            handleDeleteItem
+            handleDeleteItem,
+            handleCheckItem,
+            handleDismarkItem
         }}>
             {children}
         </ProductsContext.Provider>
