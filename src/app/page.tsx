@@ -1,20 +1,19 @@
 "use client";
 import React, { Suspense, useContext, useEffect, useRef, useState } from "react";
-import { ChevronUp, EllipsisVertical, Search } from "lucide-react";
+import { ChevronUp, EllipsisVertical, RotateCcw, Search } from "lucide-react";
 import { AddProductForm } from "@/components/Forms/AddProductForm";
 import { CATEGORIES } from "@/constants/constants";
 import { Skeleton } from "@/components/ui/skeleton"
 import { Toaster } from "@/components/ui/toaster"
 import { ProductsContext } from "@/context/ProductsContext";
-import { EditProductForm } from "@/components/Forms/EditProductForm";
-import { CheckItemForm } from "@/components/Forms/CheckItemForm";
 import { IProductProps } from "@/types/product";
+import { Modal } from "@/components/Modal";
 
 export default function Home() {
 
   const { data, loading, optionMenu,
-    editFormOpen, setEditFormOpen,
-    checkFormOpen, setCheckFormOpen,
+    stipulatedValue, setModal,
+    situation, deleteAllItems,
     totalValue, handleDismarkItem, handleCheckItem,
     setOptionMenu, formatNumber, handleDeleteItem
   } = useContext(ProductsContext);
@@ -35,7 +34,10 @@ export default function Home() {
   const handleItemCheckbox = (item: IProductProps) => {
 
     if (!item.checked && item.value === '0,00') {
-      setCheckFormOpen(true);
+      setModal({
+        state: "OPEN",
+        type: "CHECK_PRODUCT"
+      });
       setItem(item);
     } else if (!item.checked && item.value !== '0,00') {
       handleCheckItem(item);
@@ -59,13 +61,14 @@ export default function Home() {
   return (
     <React.Fragment>
       <div className="flex flex-col gap-10 w-[430px] mx-auto bg-gray-background">
-        <header className="w-full h-[120px] bg-primary-green flex items-center justify-center shadow-md">
+        <header className="relative w-full h-[120px] bg-primary-green flex flex-col items-center justify-center shadow-md">
           <h1 className="text-3xl uppercase font-bold text-title">
             Minha lista de compras
           </h1>
+          <p className="text-xs text-title self-end mr-10">(v1)</p>
         </header>
-        <main className={`flex flex-col items-center gap-5 px-5 py-3 ${showFooter ? 'mb-96': 'mb-10'}`}>
-          <div className="w-full flex gap-3 items-center mb-5">
+        <main className={`flex flex-col items-center gap-5 px-5 py-3 ${showFooter ? 'mb-96' : 'mb-10'}`}>
+          {/* <div className="w-full flex gap-3 items-center mb-5">
             <Search
               className="text-subtitle"
               size={24}
@@ -75,6 +78,13 @@ export default function Home() {
               placeholder="Buscar produto..."
               className="w-full text-paragraph rounded border border-gray-400 px-3 py-2 h-8"
             />
+          </div> */}
+
+          <div 
+            onClick={() => deleteAllItems()}
+            className="flex items-center justify-center gap-2 self-start">
+            <RotateCcw size={16} />
+            <span>Resetar lista</span>
           </div>
 
           <h2 className="text-2xl text-subtitle font-bold">
@@ -130,7 +140,10 @@ export default function Home() {
                                           className='px-3 text-paragraph'
                                           onClick={() => {
                                             setOptionMenu(null);
-                                            setEditFormOpen(true);
+                                            setModal({
+                                              state: 'OPEN',
+                                              type: 'EDIT_PRODUCT'
+                                            });
                                             setItem(item);
                                           }}>
                                           Editar
@@ -186,12 +199,16 @@ export default function Home() {
 
             <div className="col-span-2 flex gap-2 p-2 items-center text-title border-b border-title">
               <h3 className="flex-1">Gasto Estipulado: </h3>
-              <span className="p-1">R$ {totalValue}</span>
+              <span className="p-1">{`${stipulatedValue !== 'não definido' ? `R$ ${stipulatedValue}` : 'não definido'}`}</span>
             </div>
 
             <div className="col-span-2 flex gap-2 p-2 items-center text-title border-b border-title">
               <h3 className="flex-1">Situação: </h3>
-              <span className="py-1 px-3 rounded bg-red-400">Não velho. Que ódio!</span>
+              <span className={`py-1 px-3 rounded ${situation === 'good' && 'bg-green-100'} ${situation === 'normal' && 'bg-yellow-400'} ${situation === 'bad' && 'bg-red-400'}`}>
+                {situation === 'good' && 'Boa'}
+                {situation === 'normal' && 'Atenção ao valor total'}
+                {situation === 'bad' && 'Valor atingido'}
+              </span>
             </div>
           </div>
 
@@ -200,17 +217,16 @@ export default function Home() {
           {/* end add item button */}
 
           {/* toggleButton */}
-          <div 
-          onClick={() => setShowFooter(!showFooter)}
-          className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 w-10 h-10 bg-primary-green rounded-lg flex items-start justify-center cursor-pointer">
+          <div
+            onClick={() => setShowFooter(!showFooter)}
+            className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 w-10 h-10 bg-primary-green rounded-lg flex items-start justify-center cursor-pointer">
             <ChevronUp className={`text-title ${showFooter ? 'rotate-180' : ''} transition-transform duration-300`} />
           </div>
           {/* end toggleButton */}
 
         </footer>
         <Suspense fallback={null}>
-          {editFormOpen && <EditProductForm item={item} editFormOpen={editFormOpen} setEditFormOpen={setEditFormOpen} />}
-          {checkFormOpen && <CheckItemForm item={item} checkFormOpen={checkFormOpen} setCheckFormOpen={setCheckFormOpen} />}
+          <Modal item={item} />
         </Suspense>
       </div >
       <Toaster />

@@ -12,17 +12,23 @@ export const ProductsContext = createContext<IProductsContextProps>({
     setData: () => { },
     loading: true,
     setLoading: () => { },
+    modal: {
+        state: 'CLOSED',
+        type: ''
+    },
+    setModal: () => { },
     optionMenu: null,
     setOptionMenu: () => { },
-    editFormOpen: false,
-    setEditFormOpen: () => { },
-    checkFormOpen: false,
-    setCheckFormOpen: () => { },
     totalValue: '0',
     setTotalValue: () => { },
+    stipulatedValue: 'não definido',
+    setStipulatedValue: () => { },
+    situation: 'good',
+    setSituation: () => { },
 
     fetchData: async () => { },
     formatNumber: () => '',
+    deleteAllItems: async () => { },
     handleUpdateItem: async () => { },
     handleDeleteItem: async () => { },
     handleCheckItem: async () => { },
@@ -34,10 +40,14 @@ export const ProductsProvider = ({ children }: { children: React.ReactNode }) =>
     /* ====> states <==== */
     const [data, setData] = useState<IProductProps[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
+    const [modal, setModal] = useState<any>({
+        state: 'CLOSED',
+        type: ''
+    })
     const [optionMenu, setOptionMenu] = useState<number | null>(null);
-    const [editFormOpen, setEditFormOpen] = useState<boolean>(false);
-    const [checkFormOpen, setCheckFormOpen] = useState<boolean>(false);
     const [totalValue, setTotalValue] = useState<string>('0');
+    const [stipulatedValue, setStipulatedValue] = useState<string>('não definido');
+    const [situation, setSituation] = useState<string>('good');
 
     /* ====> hooks <==== */
     const { toast } = useToast();
@@ -60,12 +70,36 @@ export const ProductsProvider = ({ children }: { children: React.ReactNode }) =>
     function caculateTotalValue() {
 
         let total: number = 0;
-        // const values = data.map(product => product.value);
-        data.forEach(item => {
+        const checkedItems = data.filter(product => product.checked === true);
+        checkedItems.forEach(item => {
             const parsedTotal = (parseFloat(item.value.replace(',', '.')) * item.quantity);
             total += parsedTotal;
         })
         setTotalValue(total.toFixed(2).replace('.', ','))
+
+    }
+
+    async function deleteAllItems() {
+
+        try {
+
+            const { error } = await supabase.from('products').delete().gt('id', 0);
+
+            if (error) {
+                console.log(error);
+                return
+            }
+
+            toast({
+                description: "Lista de compras resetada com sucesso.",
+                action: <ToastAction altText="Ok">Ok</ToastAction>
+            });
+
+        } catch (error) {
+            console.log(error)
+        }
+
+        fetchData();
 
     }
 
@@ -81,7 +115,10 @@ export const ProductsProvider = ({ children }: { children: React.ReactNode }) =>
             });
             fetchData();
             setTimeout(() => {
-                setEditFormOpen(false);
+                setModal({
+                    state: 'CLOSED',
+                    type: ''
+                });
             }, 1000)
         }
     }
@@ -117,7 +154,10 @@ export const ProductsProvider = ({ children }: { children: React.ReactNode }) =>
                 action: <ToastAction altText="Ok">Ok</ToastAction>
             });
             fetchData();
-            setCheckFormOpen(false);
+            setModal({
+                state: 'CLOSED',
+                type: ''
+            });
         }
     }
 
@@ -147,23 +187,62 @@ export const ProductsProvider = ({ children }: { children: React.ReactNode }) =>
         caculateTotalValue();
     }, [data]);
 
+    useEffect(() => {
+
+        if (!localStorage.getItem('STIPULATED_VALUE')) {
+            setModal({
+                state: 'OPEN',
+                type: 'LIMIT_VALUE'
+            });
+        } else {
+            const value = JSON.parse(localStorage.getItem('STIPULATED_VALUE') || 'não definido');
+            setStipulatedValue(value);
+        }
+
+    }, []);
+
+    useEffect(() => {
+
+        if (stipulatedValue === 'não definido') return;
+
+        const parsedTotal = parseFloat(totalValue.replace(',', '.'));
+        const parsedStipulated = parseFloat(stipulatedValue.replace(',', '.'));
+
+        if (parsedTotal < (parsedStipulated * 0.8)) {
+            setSituation('good');
+        }
+
+        if (parsedTotal >= (parsedStipulated * 0.8) && parsedTotal < parsedStipulated) {
+            setSituation('normal');
+        }
+
+        if (parsedTotal >= parsedStipulated) {
+            setSituation('bad');
+        }
+
+
+    }, [totalValue])
+
     return (
         <ProductsContext.Provider value={{
             data,
             setData,
             loading,
             setLoading,
+            modal,
+            setModal,
             optionMenu,
             setOptionMenu,
-            editFormOpen,
-            setEditFormOpen,
-            checkFormOpen,
-            setCheckFormOpen,
             totalValue,
             setTotalValue,
+            stipulatedValue,
+            setStipulatedValue,
+            situation,
+            setSituation,
 
             fetchData,
             formatNumber,
+            deleteAllItems,
             handleUpdateItem,
             handleDeleteItem,
             handleCheckItem,
