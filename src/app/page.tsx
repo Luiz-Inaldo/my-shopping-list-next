@@ -8,10 +8,12 @@ import { Toaster } from "@/components/ui/toaster"
 import { ProductsContext } from "@/context/ProductsContext";
 import { IProductProps } from "@/types/product";
 import { Modal } from "@/components/Modal";
+import { supabase } from "@/lib/api";
+import { useRouter } from "next/navigation";
 
 export default function Home() {
 
-  const { data, loading, optionMenu,
+  const { setUser, data, loading, optionMenu,
     stipulatedValue, setModal,
     situation, deleteAllItems,
     totalValue, handleDismarkItem, handleCheckItem,
@@ -26,6 +28,9 @@ export default function Home() {
     checked: false
   });
   const [showFooter, setShowFooter] = useState<boolean>(false);
+  console.log(data)
+
+  const router = useRouter();
 
   /* ----> refs <----- */
   const dropDownRef = useRef<any>(null);
@@ -58,9 +63,33 @@ export default function Home() {
     return () => document.removeEventListener("click", clickHandler);
   });
 
+  useEffect(() => {
+    const fetchUser = async () => {
+      const { data: session } = await supabase.auth.getSession();
+
+      console.log(session)
+
+      if (session !== null) {
+        const { data: { user }, error } = await supabase.auth.getUser();
+
+        if (error) { 
+          console.log('Erro ao buscar o usuário:', error.message);
+          router.push('/auth/login');
+        } else {
+          setUser(user);
+        }
+
+      } else {
+        console.log('Não existe sessão ativa!');
+        router.push('/auth/login');
+      }
+    }
+    fetchUser();
+  }, [router])
+
   return (
     <React.Fragment>
-      <div className="flex flex-col gap-10 w-[430px] mx-auto bg-gray-background">
+      <div className="relative flex flex-col gap-10 w-[430px] mx-auto bg-gray-background">
         <header className="relative w-full h-[120px] bg-primary-green flex flex-col items-center justify-center shadow-md">
           <h1 className="text-3xl uppercase font-bold text-title">
             Minha lista de compras
@@ -80,7 +109,7 @@ export default function Home() {
             />
           </div> */}
 
-          <div 
+          <div
             onClick={() => deleteAllItems()}
             className="flex items-center justify-center gap-2 self-start">
             <RotateCcw size={16} />
@@ -184,7 +213,7 @@ export default function Home() {
 
 
         </main >
-        <footer className={`fixed bottom-0 w-full ${showFooter ? 'translate-y-0' : 'translate-y-full'} bg-primary-green transition-all duration-300 flex flex-col justify-center`}>
+        <footer className={`fixed bottom-0 w-[430px] ${showFooter ? 'translate-y-0' : 'translate-y-full'} bg-primary-green transition-all duration-300 flex flex-col justify-center`}>
 
           <div className="grid grid-cols-2 gap-3 px-5 py-6">
             <div className="col-span-2 flex gap-2 p-2 items-center justify-between text-title border-b border-title">

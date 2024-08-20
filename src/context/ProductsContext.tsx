@@ -8,6 +8,8 @@ import { ToastAction } from "@/components/ui/toast";
 import { useToast } from "@/components/ui/use-toast";
 
 export const ProductsContext = createContext<IProductsContextProps>({
+    user: {},
+    setUser: () => { },
     data: [],
     setData: () => { },
     loading: true,
@@ -38,6 +40,7 @@ export const ProductsContext = createContext<IProductsContextProps>({
 export const ProductsProvider = ({ children }: { children: React.ReactNode }) => {
 
     /* ====> states <==== */
+    const [user, setUser] = useState<any>(null);
     const [data, setData] = useState<IProductProps[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
     const [modal, setModal] = useState<any>({
@@ -54,7 +57,9 @@ export const ProductsProvider = ({ children }: { children: React.ReactNode }) =>
 
     /* ====> functions <==== */
     async function fetchData() {
-        const { data, error } = await supabase.from('products').select('*');
+        if (user === null) return;
+
+        const { data, error } = await supabase.from('products').select('*').eq('user_id', user.id);
         if (error) {
             console.error(error);
         } else {
@@ -181,7 +186,7 @@ export const ProductsProvider = ({ children }: { children: React.ReactNode }) =>
     /* ====> effects <==== */
     useEffect(() => {
         fetchData();
-    }, []);
+    }, [user]);
 
     useEffect(() => {
         caculateTotalValue();
@@ -225,6 +230,8 @@ export const ProductsProvider = ({ children }: { children: React.ReactNode }) =>
 
     return (
         <ProductsContext.Provider value={{
+            user,
+            setUser,
             data,
             setData,
             loading,

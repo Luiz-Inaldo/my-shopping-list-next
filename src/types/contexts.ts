@@ -2,6 +2,8 @@ import { IEditItemProps } from "./editItem";
 import { IProductProps } from "./product";
 
 export interface IProductsContextProps {
+    user: any,
+    setUser: React.Dispatch<React.SetStateAction<any>>;
     data: IProductProps[];
     setData: React.Dispatch<React.SetStateAction<IProductProps[]>>;
     loading: boolean;
