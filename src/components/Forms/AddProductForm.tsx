@@ -23,7 +23,7 @@ import { ProductsContext } from '@/context/ProductsContext';
 export const AddProductForm = () => {
 
     const { toast } = useToast();
-    const { fetchData } = useContext(ProductsContext);
+    const { user, fetchData } = useContext(ProductsContext);
     const {
         register,
         watch,
@@ -38,7 +38,8 @@ export const AddProductForm = () => {
         const item = {
             ...data,
             value: '0,00',
-            checked: false
+            checked: false,
+            user_id: user.id
         }
 
         try {
