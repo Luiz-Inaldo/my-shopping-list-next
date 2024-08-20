@@ -88,7 +88,7 @@ export const ProductsProvider = ({ children }: { children: React.ReactNode }) =>
 
         try {
 
-            const { error } = await supabase.from('products').delete().gt('id', 0);
+            const { error } = await supabase.from('products').delete().eq('user_id', user.id);
 
             if (error) {
                 console.log(error);
