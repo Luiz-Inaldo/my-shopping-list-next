@@ -4,10 +4,11 @@ import { IProductProps } from "./product";
 export interface IProductsContextProps {
     user: any,
     setUser: React.Dispatch<React.SetStateAction<any>>;
-    data: IProductProps[];
-    setData: React.Dispatch<React.SetStateAction<IProductProps[]>>;
-    loading: boolean;
-    setLoading: React.Dispatch<React.SetStateAction<boolean>>;
+    // data: IProductProps[] | undefined;
+    // setData: React.Dispatch<React.SetStateAction<IProductProps[]>>;
+    // loading: boolean;
+    // setLoading: React.Dispatch<React.SetStateAction<boolean>>;
+    // isPending: boolean;
     modal: {
         state: string;
         type:string;
@@ -25,7 +26,8 @@ export interface IProductsContextProps {
     situation: string;
     setSituation: React.Dispatch<React.SetStateAction<string>>;
 
-    fetchData: () => Promise<void>;
+    fetchData: () => Promise<IProductProps[] | undefined>;
+    addItem: (item: any) => Promise<void>;
     formatNumber: (value: string, quantity: number) => string;
     deleteAllItems: () => Promise<void>;
     handleUpdateItem: (object: IEditItemProps, itemID: number) => Promise<void>;

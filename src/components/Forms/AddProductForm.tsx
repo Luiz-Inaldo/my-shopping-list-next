@@ -15,15 +15,13 @@ import { IFormItem } from '@/types/formItem'
 import { ShadSelect } from '../Select'
 import { SelectItem } from '../ui/select'
 import { CATEGORIES } from '@/constants/constants'
-import { supabase } from '@/lib/api'
-import { useToast } from "@/components/ui/use-toast"
-import { ToastAction } from '../ui/toast'
 import { ProductsContext } from '@/context/ProductsContext';
+import { useQueryClient } from '@tanstack/react-query';
 
 export const AddProductForm = () => {
 
-    const { toast } = useToast();
-    const { user, fetchData } = useContext(ProductsContext);
+    const { user, addItem } = useContext(ProductsContext);
+    const queryClient = useQueryClient();
     const {
         register,
         watch,
@@ -41,30 +39,9 @@ export const AddProductForm = () => {
             checked: false,
             user_id: user.id
         }
-
-        try {
-
-            const response = await supabase.from('products').insert([item]).select();
-
-            if (response.status === 201) {
-
-                toast({
-                    description: "Produto adicionado com sucesso.",
-                    action: <ToastAction altText="Ok">Ok</ToastAction>
-                });
-
-                fetchData();
-
-            } else {
-
-            }
-
-            reset();
-
-        } catch (error) {
-            console.log(error)
-        }
-
+        await addItem(item);
+        queryClient.invalidateQueries({ queryKey: ['products'] });
+        reset();
     }
 
     return (

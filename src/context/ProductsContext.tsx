@@ -1,4 +1,4 @@
-"use client";
+
 import { IProductsContextProps } from "@/types/contexts";
 import { createContext, useEffect, useState } from "react";
 import { supabase } from "@/lib/api";
@@ -6,14 +6,16 @@ import { IProductProps } from "@/types/product";
 import { IEditItemProps } from "@/types/editItem";
 import { ToastAction } from "@/components/ui/toast";
 import { useToast } from "@/components/ui/use-toast";
+import { Query, useQuery, useQueryClient } from "@tanstack/react-query";
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 
 export const ProductsContext = createContext<IProductsContextProps>({
     user: {},
     setUser: () => { },
-    data: [],
-    setData: () => { },
-    loading: true,
-    setLoading: () => { },
+    // data: [],
+    // loading: true,
+    // setLoading: () => { },
+    // isPending: false,
     modal: {
         state: 'CLOSED',
         type: ''
@@ -27,9 +29,9 @@ export const ProductsContext = createContext<IProductsContextProps>({
     setStipulatedValue: () => { },
     situation: 'good',
     setSituation: () => { },
-
-    fetchData: async () => { },
     formatNumber: () => '',
+    addItem: async () => { },
+    fetchData: async () => [],
     deleteAllItems: async () => { },
     handleUpdateItem: async () => { },
     handleDeleteItem: async () => { },
@@ -39,10 +41,10 @@ export const ProductsContext = createContext<IProductsContextProps>({
 
 export const ProductsProvider = ({ children }: { children: React.ReactNode }) => {
 
+    const queryClientClass = new QueryClient();
+
     /* ====> states <==== */
     const [user, setUser] = useState<any>(null);
-    const [data, setData] = useState<IProductProps[]>([]);
-    const [loading, setLoading] = useState<boolean>(true);
     const [modal, setModal] = useState<any>({
         state: 'CLOSED',
         type: ''
@@ -56,15 +58,14 @@ export const ProductsProvider = ({ children }: { children: React.ReactNode }) =>
     const { toast } = useToast();
 
     /* ====> functions <==== */
-    async function fetchData() {
-        if (user === null) return;
+    async function fetchData(): Promise<IProductProps[] | undefined> {
+        if (user === null) return [];
 
         const { data, error } = await supabase.from('products').select('*').eq('user_id', user.id);
         if (error) {
             console.error(error);
         } else {
-            setData(data);
-            setLoading(false);
+            return data;
         }
     }
 
@@ -72,16 +73,25 @@ export const ProductsProvider = ({ children }: { children: React.ReactNode }) =>
         return (parseFloat(value.replace(',', '.')) * quantity).toFixed(2).replace('.', ',')
     }
 
-    function caculateTotalValue() {
+    async function addItem(item: any) {
+        try {
 
-        let total: number = 0;
-        const checkedItems = data.filter(product => product.checked === true);
-        checkedItems.forEach(item => {
-            const parsedTotal = (parseFloat(item.value.replace(',', '.')) * item.quantity);
-            total += parsedTotal;
-        })
-        setTotalValue(total.toFixed(2).replace('.', ','))
+            const response = await supabase.from('products').insert([item]).select();
 
+            if (response.status === 201) {
+
+                toast({
+                    description: "Produto adicionado com sucesso.",
+                    action: <ToastAction altText="Ok">Ok</ToastAction>
+                });
+
+            } else {
+
+            }
+
+        } catch (error) {
+            console.log(error)
+        }
     }
 
     async function deleteAllItems() {
@@ -188,9 +198,7 @@ export const ProductsProvider = ({ children }: { children: React.ReactNode }) =>
         fetchData();
     }, [user]);
 
-    useEffect(() => {
-        caculateTotalValue();
-    }, [data]);
+    
 
     useEffect(() => {
 
@@ -232,10 +240,11 @@ export const ProductsProvider = ({ children }: { children: React.ReactNode }) =>
         <ProductsContext.Provider value={{
             user,
             setUser,
-            data,
-            setData,
-            loading,
-            setLoading,
+            // data,
+            // setData,
+            // loading,
+            // setLoading,
+            // isPending,
             modal,
             setModal,
             optionMenu,
@@ -248,6 +257,7 @@ export const ProductsProvider = ({ children }: { children: React.ReactNode }) =>
             setSituation,
 
             fetchData,
+            addItem,
             formatNumber,
             deleteAllItems,
             handleUpdateItem,
@@ -255,7 +265,9 @@ export const ProductsProvider = ({ children }: { children: React.ReactNode }) =>
             handleCheckItem,
             handleDismarkItem
         }}>
-            {children}
+            <QueryClientProvider client={queryClientClass}>
+                {children}
+            </QueryClientProvider>
         </ProductsContext.Provider>
     )
 }
