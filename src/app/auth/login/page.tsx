@@ -1,18 +1,14 @@
 'use client'
+import { User } from '@/interfaces/user';
 import { supabase } from '@/lib/api'
 import { LoaderCircle, LogInIcon } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import React, { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form';
 
-type User = {
-    email: string,
-    password: string
-}
-
 export default function LogIn() {
 
-    const [isAuth, setIsAuth] = useState<boolean>(false);
+    const [loading, setLoading] = useState<boolean>(false);
 
     const router = useRouter();
     const {
@@ -22,7 +18,7 @@ export default function LogIn() {
 
     async function onSubmit(userCredentials: User) {
 
-        setIsAuth(true);
+        setLoading(true);
 
         const { data, error } = await supabase.auth.signInWithPassword(userCredentials);
 
@@ -32,14 +28,14 @@ export default function LogIn() {
             router.push('/');
         }
 
-        setIsAuth(false);
+        setLoading(false);
 
     };
 
     return (
         <div className='bg-primary-green max-w-[430px] min-h-screen flex flex-col items-center justify-center'>
             <div className='w-[350px] rounded bg-snow p-5 shadow-md'>
-                <h2 className='text-2xl uppercase text-center text-subtitle mb-5 border-b border-[#DDD]'>LogIn</h2>
+                <h2 className='text-2xl uppercase text-center text-subtitle mb-5 border-b border-[#DDD]'>SignIn</h2>
                 <form onSubmit={handleSubmit(onSubmit)} className='flex flex-col gap-3' >
                     <label htmlFor="email">
                         <span>E-mail:</span>
@@ -62,7 +58,7 @@ export default function LogIn() {
                     <button
                         type='submit'
                         className='w-full uppercase flex gap-2 items-center justify-center bg-primary-green py-2 px-3 rounded text-title mt-10'>
-                        {isAuth ? (
+                        {loading ? (
                             <>
                                 <span>Autenticando...</span>
                                 <LoaderCircle className='animate-spin' size={18} />
