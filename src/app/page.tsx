@@ -28,7 +28,6 @@ export default function Home() {
     checked: false
   });
   const [showFooter, setShowFooter] = useState<boolean>(false);
-  console.log(data)
 
   const router = useRouter();
 
@@ -66,8 +65,6 @@ export default function Home() {
   useEffect(() => {
     const fetchUser = async () => {
       const { data: session } = await supabase.auth.getSession();
-
-      console.log(session)
 
       if (session !== null) {
         const { data: { user }, error } = await supabase.auth.getUser();
@@ -164,7 +161,7 @@ export default function Home() {
                                   />
                                   {optionMenu === item.id && (
                                     <>
-                                      <div ref={dropDownRef} className='absolute z-10 py-1 right-7 rounded shadow border border-gray-200 bg-snow grid gap-1'>
+                                      <div ref={dropDownRef} className={`${optionMenu === item.id ? 'animate-in fade-in-0 zoom-in-85' : 'animate-out fade-out-0 zoom-out-85'} absolute z-10 py-1 right-7 rounded shadow border border-gray-200 bg-snow grid gap-1`}>
                                         <span
                                           className='px-3 text-paragraph'
                                           onClick={() => {
@@ -180,7 +177,13 @@ export default function Home() {
                                         <hr />
                                         <span
                                           className='px-3 text-paragraph'
-                                          onClick={() => handleDeleteItem(item.id)}>
+                                          onClick={() => {
+                                            setOptionMenu(null);
+                                            setModal({
+                                              state: 'OPEN',
+                                              type: 'DELETE_PRODUCT'
+                                            })
+                                          }}>
                                           Excluir
                                         </span>
                                       </div>
