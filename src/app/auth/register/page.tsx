@@ -2,6 +2,7 @@
 import { toast } from '@/components/ui/use-toast';
 import { RegisterProps } from '@/interfaces/user';
 import { supabase } from '@/lib/api';
+import { APP_ROUTES } from '@/routes/app-routes';
 import { ToastAction } from '@radix-ui/react-toast';
 import { LoaderCircle } from 'lucide-react';
 import { useRouter } from 'next/navigation';
@@ -41,7 +42,7 @@ export default function Register() {
                 description: "Usuário cadastrado com sucesso. Redirecionando...",
                 action: <ToastAction altText="Ok">Ok</ToastAction>
             });
-            setTimeout(() => router.push('/auth/login'), 1000);
+            setTimeout(() => router.push(APP_ROUTES.public.login.name), 1000);
         }
 
         setLoading(false);
