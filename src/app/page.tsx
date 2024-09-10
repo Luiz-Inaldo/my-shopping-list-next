@@ -1,6 +1,6 @@
 "use client";
 import React, { Suspense, useContext, useEffect, useRef, useState } from "react";
-import { ChevronUp, EllipsisVertical, RotateCcw, Search } from "lucide-react";
+import { ChevronUp, EllipsisVertical, ShoppingBagIcon } from "lucide-react";
 import { AddProductForm } from "@/components/Forms/AddProductForm";
 import { CATEGORIES } from "@/constants/constants";
 import { Skeleton } from "@/components/ui/skeleton"
@@ -10,11 +10,12 @@ import { IProductProps } from "@/types/product";
 import { Modal } from "@/components/Modal";
 import { supabase } from "@/lib/api";
 import { useRouter } from "next/navigation";
+import Menu from "@/components/Menu";
 
 export default function Home() {
 
   const { setUser, data, loading, optionMenu,
-    stipulatedValue, setModal,
+    user, stipulatedValue, setModal,
     situation, deleteAllItems,
     totalValue, handleDismarkItem, handleCheckItem,
     setOptionMenu, formatNumber, handleDeleteItem
@@ -69,7 +70,7 @@ export default function Home() {
       if (session !== null) {
         const { data: { user }, error } = await supabase.auth.getUser();
 
-        if (error) { 
+        if (error) {
           console.log('Erro ao buscar o usuário:', error.message);
           router.push('/auth/login');
         } else {
@@ -87,11 +88,11 @@ export default function Home() {
   return (
     <React.Fragment>
       <div className="relative flex flex-col gap-10 w-[430px] mx-auto bg-gray-background">
-        <header className="relative w-full h-[120px] bg-primary-green flex flex-col items-center justify-center shadow-md">
-          <h1 className="text-3xl uppercase font-bold text-title">
+        <header className="relative w-full p-4 bg-primary-green shadow-md flex items-center gap-4">
+          <Menu user={user} />
+          <h1 className="text-2xl font-bold text-title">
             Minha lista de compras
           </h1>
-          <p className="text-xs text-title self-end mr-10">(v1)</p>
         </header>
         <main className={`flex flex-col items-center gap-5 px-5 py-3 ${showFooter ? 'mb-96' : 'mb-10'}`}>
           {/* <div className="w-full flex gap-3 items-center mb-5">
@@ -105,13 +106,6 @@ export default function Home() {
               className="w-full text-paragraph rounded border border-gray-400 px-3 py-2 h-8"
             />
           </div> */}
-
-          <div
-            onClick={() => deleteAllItems()}
-            className="flex items-center justify-center gap-2 self-start">
-            <RotateCcw size={16} />
-            <span>Resetar lista</span>
-          </div>
 
           <h2 className="text-2xl text-subtitle font-bold">
             Categorias
@@ -247,6 +241,15 @@ export default function Home() {
           {/* add item button */}
           <AddProductForm />
           {/* end add item button */}
+
+          {/* finish purchase button */}
+          <div
+            onClick={() => console.log('compra fechada')}
+            className='mb-5 bg-[#924d16] rounded-full w-fit mx-auto px-3 py-2 flex gap-2 items-center justify-center cursor-pointer shadow-md transition-all duration-300 ease-in-out text-snow'>
+            <ShoppingBagIcon className="svg-shadow" size={20} />
+            <span className="text-shadow-base">Finalizar Compra</span>
+          </div>
+          {/* end finish purchase button */}
 
           {/* toggleButton */}
           <div

@@ -1,6 +1,8 @@
 'use client'
+import { toast } from '@/components/ui/use-toast';
 import { RegisterProps } from '@/interfaces/user';
 import { supabase } from '@/lib/api';
+import { ToastAction } from '@radix-ui/react-toast';
 import { LoaderCircle } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import React, { useState } from 'react'
@@ -27,14 +29,19 @@ export default function Register() {
             options: {
                 data: {
                     name: userCredentials.username
-                }
+                },
+                emailRedirectTo: undefined
             }
         });
 
         if (error) {
             throw new Error("não foi possível cadastrar o usuário")
         } else {
-            router.push('/auth/login');
+            toast({
+                description: "Usuário cadastrado com sucesso. Redirecionando...",
+                action: <ToastAction altText="Ok">Ok</ToastAction>
+            });
+            setTimeout(() => router.push('/auth/login'), 1000);
         }
 
         setLoading(false);
