@@ -1,7 +1,9 @@
 'use client'
+import { ToastAction } from '@/components/ui/toast';
 import { toast } from '@/components/ui/use-toast';
 import { User } from '@/interfaces/user';
 import { supabase } from '@/lib/api'
+import { APP_ROUTES } from '@/routes/app-routes';
 import { LoaderCircle, LogInIcon } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import React, { useEffect, useState } from 'react'
@@ -27,9 +29,10 @@ export default function LogIn() {
             console.log("não foi possível fazer login", error.message)
         } else {
             toast({
-                description: "Login realizado com sucesso!"
+                description: "Login realizado com sucesso!",
+                action: <ToastAction altText="Ok">Ok</ToastAction>
             });
-            setTimeout(() => router.push('/'), 1000)
+            setTimeout(() => router.push(APP_ROUTES.private.home.name), 2000)
             
         }
 

@@ -11,6 +11,7 @@ import { Modal } from "@/components/Modal";
 import { supabase } from "@/lib/api";
 import { useRouter } from "next/navigation";
 import Menu from "@/components/Menu";
+import { APP_ROUTES } from "@/routes/app-routes";
 
 export default function Home() {
 
@@ -72,14 +73,14 @@ export default function Home() {
 
         if (error) {
           console.log('Erro ao buscar o usuário:', error.message);
-          router.push('/auth/login');
+          router.push(APP_ROUTES.public.login.name);
         } else {
           setUser(user);
         }
 
       } else {
         console.log('Não existe sessão ativa!');
-        router.push('/auth/login');
+        router.push(APP_ROUTES.public.login.name);
       }
     }
     fetchUser();
