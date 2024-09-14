@@ -1,17 +1,18 @@
 'use client'
-import { ToastAction } from '@/components/ui/toast';
-import { toast } from '@/components/ui/use-toast';
+import useMySwal from '@/hooks/useMySwal';
 import { User } from '@/interfaces/user';
 import { supabase } from '@/lib/api'
 import { APP_ROUTES } from '@/routes/app-routes';
-import { LoaderCircle, LogInIcon } from 'lucide-react';
+import { Eye, EyeOff, LoaderCircle, LogInIcon } from 'lucide-react';
 import { useRouter } from 'next/navigation';
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import { useForm } from 'react-hook-form';
 
 export default function LogIn() {
 
     const [loading, setLoading] = useState<boolean>(false);
+    const [isPasswordVisible, setIsPasswordVisible] = useState<boolean>(false);
+    const swal = useMySwal();
 
     const router = useRouter();
     const {
@@ -26,14 +27,33 @@ export default function LogIn() {
         const { data, error } = await supabase.auth.signInWithPassword(userCredentials);
 
         if (error) {
-            console.log("não foi possível fazer login", error.message)
+            if (error.code === 'invalid_credentials') {
+                swal.fire({
+                    icon: "error",
+                    title: "Oops!",
+                    text: "Credenciais de login inválidas, ou não existem.",
+                    confirmButtonText: "Ok"
+                })
+            } else {
+                swal.fire({
+                    icon: "error",
+                    title: "Oops!",
+                    text: "Houve um erro ao tentar o login.",
+                    confirmButtonText: "Ok"
+                })
+            }
         } else {
-            toast({
-                description: "Login realizado com sucesso!",
-                action: <ToastAction altText="Ok">Ok</ToastAction>
-            });
+            swal.fire({
+                icon: "success",
+                toast: true,
+                position: "bottom-right",
+                text: "Login realizado com sucesso.",
+                showConfirmButton: false,
+                timer: 2000,
+                timerProgressBar: true
+            })
             setTimeout(() => router.push(APP_ROUTES.private.home.name), 2000)
-            
+
         }
 
         setLoading(false);
@@ -54,14 +74,29 @@ export default function LogIn() {
                             className='w-full text-paragraph rounded border border-gray-400 px-3 py-2 h-8'
                         />
                     </label>
-                    <label htmlFor="password">
+                    <label htmlFor="password" className='relative'>
                         <span>Senha:</span>
                         <input
-                            type="password"
+                            type={isPasswordVisible ? 'text' : 'password'}
                             placeholder='Sua senha'
                             {...register('password', { required: true })}
                             className='w-full text-paragraph rounded border border-gray-400 px-3 py-2 h-8'
                         />
+
+                        {isPasswordVisible ? (
+                            <EyeOff
+                                size={14}
+                                className='absolute right-2 top-[34px] text-paragraph cursor-pointer'
+                                onClick={() => setIsPasswordVisible(false)}
+                            />
+                        ) : (
+                            <Eye
+                                size={14}
+                                className='absolute right-2 top-[34px] text-paragraph cursor-pointer'
+                                onClick={() => setIsPasswordVisible(true)}
+                            />
+                        )}
+
                     </label>
                     <button
                         type='submit'
