@@ -1,4 +1,5 @@
-import React from 'react'
+'use client'
+import React, { useContext } from 'react'
 import {
     Sheet,
     SheetContent,
@@ -7,20 +8,21 @@ import {
     SheetTitle,
     SheetTrigger,
 } from "@/components/ui/sheet"
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { ChartSpline, House, LogOut, MenuIcon, ScrollText, Settings } from 'lucide-react'
-import { User } from '@supabase/supabase-js'
 import Link from 'next/link'
 import { supabase } from '@/lib/api'
 import { useRouter } from 'next/navigation'
 import { APP_ROUTES } from '@/routes/app-routes'
 import useMySwal from '@/hooks/useMySwal'
+import { ProductsContext } from '@/context/ProductsContext'
 
-const Menu = ({ user }: { user: User | null }) => {
+const Menu = () => {
 
     const router = useRouter();
     const Swal = useMySwal();
     const date = new Date();
+
+    const { user } = useContext(ProductsContext);
 
     const logout = async () => {
         try {
@@ -48,14 +50,10 @@ const Menu = ({ user }: { user: User | null }) => {
                 <SheetTrigger>
                     <MenuIcon size={20} />
                 </SheetTrigger>
-                <SheetContent side={'left'}>
+                <SheetContent side={'right'}>
                     <SheetHeader className='h-full'>
                         <SheetTitle className='text-left pb-2 border-b text-subtitle flex items-end gap-2'>
-                            <Avatar className='avatar-shadow-minor'>
-                                <AvatarImage src="https://github.com/shadcn.png" />
-                                <AvatarFallback>CN</AvatarFallback>
-                            </Avatar>
-                            Olá, {user?.user_metadata.name || 'Usuário sem nome.'}
+                            <h1>MENU</h1>
                         </SheetTitle>
                         <SheetDescription className='text-left h-full text-base flex flex-col justify-between'>
                             <ul className='grid text-paragraph mt-5'>
@@ -78,7 +76,7 @@ const Menu = ({ user }: { user: User | null }) => {
                                     </Link>
                                 </li>
                                 <li className='py-2'>
-                                    <Link href="/" className='flex items-center gap-2 cursor-pointer'>
+                                    <Link href="/settings" className='flex items-center gap-2 cursor-pointer'>
                                         <Settings size={16} />
                                         Configurações
                                     </Link>

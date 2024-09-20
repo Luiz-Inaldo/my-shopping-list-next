@@ -20,6 +20,8 @@ export const DeleteProduct = ({ item }: { item: IProductProps | undefined }) => 
         }
     }, [modal])
 
+    console.log(item)
+
     return (
         <React.Fragment>
             {isVisible && (
