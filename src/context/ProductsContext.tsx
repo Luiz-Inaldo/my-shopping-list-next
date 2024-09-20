@@ -29,7 +29,6 @@ export const ProductsContext = createContext<IProductsContextProps>({
     setSituation: () => { },
 
     fetchData: async () => { },
-    formatNumber: () => '',
     deleteAllItems: async () => { },
     handleUpdateItem: async () => { },
     handleDeleteItem: async () => { },
@@ -47,7 +46,7 @@ export const ProductsProvider = ({ children }: { children: React.ReactNode }) =>
         state: 'CLOSED',
         type: ''
     })
-    const [optionMenu, setOptionMenu] = useState<number | null>(null);
+    const [optionMenu, setOptionMenu] = useState<string | null>(null);
     const [totalValue, setTotalValue] = useState<string>('0');
     const [stipulatedValue, setStipulatedValue] = useState<string>('não definido');
     const [situation, setSituation] = useState<string>('good');
@@ -59,6 +58,7 @@ export const ProductsProvider = ({ children }: { children: React.ReactNode }) =>
     async function fetchData() {
         if (user === null) return;
 
+        setLoading(true);
         const { data, error } = await supabase.from('products').select('*').eq('user_id', user.id);
         if (error) {
             console.error(error);
@@ -66,10 +66,6 @@ export const ProductsProvider = ({ children }: { children: React.ReactNode }) =>
             setData(data);
             setLoading(false);
         }
-    }
-
-    function formatNumber(value: string, quantity: number) {
-        return (parseFloat(value.replace(',', '.')) * quantity).toFixed(2).replace('.', ',')
     }
 
     function caculateTotalValue() {
@@ -108,7 +104,7 @@ export const ProductsProvider = ({ children }: { children: React.ReactNode }) =>
 
     }
 
-    async function handleUpdateItem(object: IEditItemProps, itemID: number) {
+    async function handleUpdateItem(object: IEditItemProps, itemID: string) {
         const { data, error } = await supabase.from('products').update(object).eq('id', itemID);
 
         if (error) {
@@ -128,7 +124,8 @@ export const ProductsProvider = ({ children }: { children: React.ReactNode }) =>
         }
     }
 
-    async function handleDeleteItem(itemID: number) {
+    async function handleDeleteItem(itemID: string) {
+        console.log(itemID)
         const { data, error } = await supabase.from('products').delete().eq('id', itemID);
         if (error) {
             console.log(error);
@@ -139,6 +136,12 @@ export const ProductsProvider = ({ children }: { children: React.ReactNode }) =>
             });
             fetchData();
             setOptionMenu(null);
+            setTimeout(() => {
+                setModal({
+                    state: 'CLOSED',
+                    type: ''
+                });
+            }, 1000)
         }
     }
 
@@ -248,7 +251,6 @@ export const ProductsProvider = ({ children }: { children: React.ReactNode }) =>
             setSituation,
 
             fetchData,
-            formatNumber,
             deleteAllItems,
             handleUpdateItem,
             handleDeleteItem,

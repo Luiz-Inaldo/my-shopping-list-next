@@ -1,18 +1,19 @@
-"use client";
 import React from "react";
 import LoggedLayout from "@/components/layout/LoggedLayout";
 import Main from "@/components/Main";
-import SessionVerifier from "@/components/SessionVerifier";
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Minha lista de compras",
+};
 
 export default function Home() {
 
   return (
     <>
-      <SessionVerifier>
-        <LoggedLayout>
-          <Main />
-        </LoggedLayout>
-      </SessionVerifier>
+      <LoggedLayout>
+        <Main />
+      </LoggedLayout>
     </>
   );
 }

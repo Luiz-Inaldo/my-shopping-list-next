@@ -16,8 +16,8 @@ export interface IProductsContextProps {
         state: string;
         type:string;
     }>>;
-    optionMenu: number | null;
-    setOptionMenu: React.Dispatch<React.SetStateAction<number | null>>;
+    optionMenu: string | null;
+    setOptionMenu: React.Dispatch<React.SetStateAction<string | null>>;
     totalValue: string;
     setTotalValue: React.Dispatch<React.SetStateAction<string>>;
     stipulatedValue: string;
@@ -26,10 +26,9 @@ export interface IProductsContextProps {
     setSituation: React.Dispatch<React.SetStateAction<string>>;
 
     fetchData: () => Promise<void>;
-    formatNumber: (value: string, quantity: number) => string;
     deleteAllItems: () => Promise<void>;
-    handleUpdateItem: (object: IEditItemProps, itemID: number) => Promise<void>;
-    handleDeleteItem: (itemID: number) => Promise<void>;
+    handleUpdateItem: (object: IEditItemProps, itemID: string) => Promise<void>;
+    handleDeleteItem: (itemID: string) => Promise<void>;
     handleCheckItem:(item: IProductProps, object?: IEditItemProps) => Promise<void>;
     handleDismarkItem: (item: IProductProps) => Promise<void>;
 }

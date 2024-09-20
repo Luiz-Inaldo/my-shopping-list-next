@@ -35,6 +35,13 @@ const SessionVerifier = ({ children }: { children: React.ReactNode }) => {
         fetchUser();
     }, [router]);
 
+    useEffect(() => {
+        if (isSessionVerified === false) {
+            console.log('renderizando página de login')
+            router.push(APP_ROUTES.public.login.name);
+        }
+    }, [isSessionVerified, router]);
+
     if (isSessionVerified === null) {
         return (
             <GlobalLoader />
@@ -43,7 +50,6 @@ const SessionVerifier = ({ children }: { children: React.ReactNode }) => {
 
     return (
         <>
-            {!isSessionVerified && router.push(APP_ROUTES.public.login.name)}
             {isSessionVerified && children}
         </>
     )
