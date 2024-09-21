@@ -61,7 +61,7 @@ export default function LogIn() {
     };
 
     return (
-        <div className='bg-primary-green max-w-[430px] min-h-screen flex flex-col items-center justify-center'>
+        <div className='bg-primary-blue max-w-[430px] min-h-screen flex flex-col items-center justify-center'>
             <div className='w-[350px] rounded bg-snow p-5 shadow-md'>
                 <h2 className='text-2xl uppercase text-center text-subtitle mb-5 border-b border-[#DDD]'>SignIn</h2>
                 <form onSubmit={handleSubmit(onSubmit)} className='flex flex-col gap-3' >
@@ -100,7 +100,7 @@ export default function LogIn() {
                     </label>
                     <button
                         type='submit'
-                        className='w-full uppercase flex gap-2 items-center justify-center bg-primary-green py-2 px-3 rounded text-title mt-10'>
+                        className='w-full uppercase flex gap-2 items-center justify-center bg-primary-blue py-2 px-3 rounded text-title mt-10'>
                         {loading ? (
                             <>
                                 <span>Autenticando...</span>

@@ -21,7 +21,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={itim.className}>
-        <div className="relative flex flex-col gap-10 w-[430px] min-h-screen mx-auto bg-gray-background">
+        <div className="relative flex flex-col gap-10 w-[430px] min-h-screen mx-auto bg-[#fafafa]">
           {isPrivateRoute ? (
             <ProductsProvider>
               <SessionVerifier>

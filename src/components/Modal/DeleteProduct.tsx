@@ -31,7 +31,7 @@ export const DeleteProduct = ({ item }: { item: IProductProps | undefined }) => 
                         <button
                             type='button'
                             onClick={() => handleDeleteItem(item!.id)}
-                            className='col-span-1 flex items-center justify-center w-full bg-primary-green py-2 px-3 rounded text-title'>
+                            className='col-span-1 flex items-center justify-center w-full bg-primary-blue py-2 px-3 rounded text-title'>
                             Sim
                         </button>
                         <button

@@ -72,7 +72,7 @@ export const AddProductForm = () => {
             <DrawerTrigger className='flex items-center justify-center'>
                 <button
                     onClick={() => console.log('abriu')}
-                    className='mb-2 bg-secondary-green rounded-full px-3 py-2 flex gap-2 items-center justify-center cursor-pointer shadow-md transition-all duration-300 ease-in-out text-snow'>
+                    className='mb-2 bg-secondary-blue rounded-full px-3 py-2 flex gap-2 items-center justify-center cursor-pointer shadow-md transition-all duration-300 ease-in-out text-snow'>
                     <Plus className='svg-shadow' size={20} />
                     <span className='text-shadow-base'>Novo Produto</span>
                 </button>
@@ -126,7 +126,7 @@ export const AddProductForm = () => {
 
                     </div>
                     <DrawerFooter>
-                        <button type='submit' className='flex items-center justify-center w-full bg-primary-green py-2 px-3 rounded text-title'>
+                        <button type='submit' className='flex items-center justify-center w-full bg-primary-blue py-2 px-3 rounded text-title'>
                             Adicionar
                         </button>
                     </DrawerFooter>

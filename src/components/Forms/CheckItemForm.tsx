@@ -51,7 +51,7 @@ export const CheckItemForm = ({ item }: { item: IProductProps | undefined }) => 
                         <div className='grid grid-cols-2 gap-2 mt-5'>
                             <button
                                 type='submit'
-                                className='col-span-1 flex items-center justify-center w-full bg-primary-green py-2 px-3 rounded text-title'>
+                                className='col-span-1 flex items-center justify-center w-full bg-primary-blue py-2 px-3 rounded text-title'>
                                 Marcar Produto
                             </button>
                             <button
