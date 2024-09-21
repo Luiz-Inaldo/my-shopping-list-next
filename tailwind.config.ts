@@ -54,9 +54,9 @@ const config = {
         },
         snow: "#FAFAFA",
         "gray-background": "#E6E6E6",
-        "primary-green": "#3DF566",
-        "secondary-green": "#0A7122", 
-        title: "#00340E",
+        "primary-blue": "#89CFF0",
+        "secondary-blue": "#1E3A8A", 
+        title: "#0B1B2D",
         subtitle: "#3a3a3a",
         paragraph: "#6a6a6a"
       },

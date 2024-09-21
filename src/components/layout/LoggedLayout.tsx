@@ -10,7 +10,7 @@ const LoggedLayout = ({ children }: { children: React.ReactNode }) => {
 
     return (
         <>
-            <header className="relative w-full p-4 bg-primary-green shadow-md flex items-center justify-between">
+            <header className="relative w-full p-4 bg-[#89CFF0] shadow-md flex items-center justify-between">
                 <div className='flex items-center gap-3'>
                     <Avatar className='avatar-shadow-minor'>
                         <AvatarImage src="https://github.com/shadcn.png" />

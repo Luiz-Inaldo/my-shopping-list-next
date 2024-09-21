@@ -57,7 +57,7 @@ const NonPurchaseList = ({ setPurchase }: { setPurchase: (listname: string) => v
                         {showInput ? (
                             <button
                                 type="submit"
-                                className='mt-5 bg-primary-green rounded-full px-3 py-2 flex gap-2 items-center justify-center cursor-pointer shadow-md transition-all duration-300 ease-in-out text-title'>
+                                className='mt-5 bg-primary-blue rounded-full px-3 py-2 flex gap-2 items-center justify-center cursor-pointer shadow-md transition-all duration-300 ease-in-out text-title'>
                                 <Check size={20} />
                                 <span>Vamos começar</span>
                             </button>
@@ -65,7 +65,7 @@ const NonPurchaseList = ({ setPurchase }: { setPurchase: (listname: string) => v
                             <button
                                 type="button"
                                 onClick={() => setShowInput(true)}
-                                className='bg-primary-green rounded-full px-3 py-2 flex gap-2 items-center justify-center cursor-pointer shadow-md transition-all duration-300 ease-in-out text-title'>
+                                className='bg-primary-blue rounded-full px-3 py-2 flex gap-2 items-center justify-center cursor-pointer shadow-md transition-all duration-300 ease-in-out text-title'>
                                 <ClipboardList size={20} />
                                 <span>Iniciar nova lista</span>
                             </button>

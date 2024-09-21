@@ -49,7 +49,7 @@ const Main = () => {
       {purchaseActive && (
         <footer
           className={`fixed z-20 bottom-0 w-[430px] ${showFooter ? "translate-y-0" : "translate-y-full"
-            } bg-primary-green transition-all duration-300 flex flex-col justify-center`}
+            } bg-primary-blue transition-all duration-300 flex flex-col justify-center`}
         >
           <div className="grid grid-cols-2 gap-3 px-5 py-6">
             <div className="col-span-2 flex gap-2 p-2 items-center justify-between text-title border-b border-title">
@@ -93,7 +93,7 @@ const Main = () => {
           {/* finish purchase button */}
           <div
             onClick={() => console.log("compra fechada")}
-            className="mb-5 bg-[#924d16] rounded-full w-fit mx-auto px-3 py-2 flex gap-2 items-center justify-center cursor-pointer shadow-md transition-all duration-300 ease-in-out text-snow"
+            className="mb-5 bg-[#FF7F50] rounded-full w-fit mx-auto px-3 py-2 flex gap-2 items-center justify-center cursor-pointer shadow-md transition-all duration-300 ease-in-out text-white"
           >
             <ShoppingBagIcon className="svg-shadow" size={20} />
             <span className="text-shadow-base">Finalizar Compra</span>
@@ -103,7 +103,7 @@ const Main = () => {
           {/* toggleButton */}
           <div
             onClick={() => setShowFooter(!showFooter)}
-            className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 w-10 h-10 bg-primary-green rounded-lg flex items-start justify-center cursor-pointer"
+            className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 w-10 h-10 bg-primary-blue rounded-lg flex items-start justify-center cursor-pointer"
           >
             <ChevronUp
               className={`text-title ${showFooter ? "rotate-180" : ""
