@@ -138,7 +138,7 @@ const ShoppingList = () => {
                                                                                         className={`${optionMenu === item.id
                                                                                             ? "animate-in fade-in-0 zoom-in-85"
                                                                                             : "animate-out fade-out-0 zoom-out-85"
-                                                                                            } absolute z-10 py-1 right-7 rounded shadow border border-gray-200 bg-snow grid gap-1`}
+                                                                                            } absolute z-40 py-1 right-7 rounded shadow border border-gray-200 bg-snow grid gap-1`}
                                                                                     >
                                                                                         <span
                                                                                             className="px-3 text-paragraph"

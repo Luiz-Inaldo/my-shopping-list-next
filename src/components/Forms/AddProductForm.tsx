@@ -70,12 +70,12 @@ export const AddProductForm = () => {
     return (
         <Drawer>
             <DrawerTrigger className='flex items-center justify-center'>
-                <button
+                <div
                     onClick={() => console.log('abriu')}
                     className='mb-2 bg-secondary-blue rounded-full px-3 py-2 flex gap-2 items-center justify-center cursor-pointer shadow-md transition-all duration-300 ease-in-out text-snow'>
                     <Plus className='svg-shadow' size={20} />
                     <span className='text-shadow-base'>Novo Produto</span>
-                </button>
+                </div>
             </DrawerTrigger>
             <DrawerContent>
                 <form

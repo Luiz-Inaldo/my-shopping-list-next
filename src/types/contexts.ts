@@ -10,7 +10,11 @@ export interface IProductsContextProps {
     setLoading: React.Dispatch<React.SetStateAction<boolean>>;
     modal: {
         state: string;
-        type:string;
+        type: ''
+        | 'LIMIT_VALUE'
+        | 'DELETE_PRODUCT'
+        | 'EDIT_PRODUCT'
+        | 'CHECK_PRODUCT';
     }
     setModal: React.Dispatch<React.SetStateAction<{
         state: string;
