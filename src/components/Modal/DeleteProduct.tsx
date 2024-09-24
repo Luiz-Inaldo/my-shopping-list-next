@@ -1,5 +1,5 @@
 import { ProductsContext } from '@/context/ProductsContext';
-import { IProductProps } from '@/types/product';
+import { IProductProps } from '@/types';
 import React, { useContext, useEffect, useState } from 'react'
 
 export const DeleteProduct = ({ item }: { item: IProductProps | undefined }) => {
