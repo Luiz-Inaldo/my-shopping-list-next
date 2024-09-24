@@ -1,6 +1,6 @@
 import { ProductsContext } from '@/context/ProductsContext';
-import { IEditItemProps } from '@/types/editItem';
-import { IProductProps } from '@/types/product';
+import { IEditItemProps } from '@/types';
+import { IProductProps } from '@/types';
 import React, { useContext, useEffect, useState } from 'react'
 import { Controller, useForm } from 'react-hook-form';
 

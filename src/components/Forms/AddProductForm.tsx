@@ -11,7 +11,6 @@ import {
 } from "@/components/ui/drawer"
 import { Plus } from 'lucide-react'
 import { useForm } from 'react-hook-form'
-import { IFormItem } from '@/types/formItem'
 import { ShadSelect } from '../Select'
 import { SelectItem } from '../ui/select'
 import { CATEGORIES } from '@/constants/constants'
@@ -19,6 +18,7 @@ import { supabase } from '@/lib/api'
 import { useToast } from "@/components/ui/use-toast"
 import { ToastAction } from '../ui/toast'
 import { ProductsContext } from '@/context/ProductsContext';
+import { IFormItem } from '@/types';
 
 export const AddProductForm = () => {
 
@@ -35,10 +35,10 @@ export const AddProductForm = () => {
 
     // funções
     async function onSubmit(data: IFormItem) {
+
         const item = {
             ...data,
             value: '0,00',
-            checked: false,
             user_id: user.id
         }
 
@@ -102,7 +102,7 @@ export const AddProductForm = () => {
 
                         <label htmlFor="category" className='relative flex flex-col'>
                             <span className='text-subtitle'>Categoria:</span>
-                            <ShadSelect control={control}>
+                            <ShadSelect control={control} label='Escolha a categoria' name="category">
                                 {CATEGORIES.map(category => (
                                     <SelectItem key={category.name} value={category.name}>{category.name}</SelectItem>
                                 ))}
@@ -112,7 +112,7 @@ export const AddProductForm = () => {
                             </span>}
                         </label>
 
-                        <label htmlFor="quantity" className='relative flex flex-col'>
+                        <label htmlFor="quantity" className='relative flex items-center gap-2'>
                             <span className='text-subtitle'>Quantidade:</span>
                             <input
                                 type="number"
@@ -123,6 +123,16 @@ export const AddProductForm = () => {
                                 Campo obrigatório
                             </span>}
                         </label>
+
+                        <label htmlFor="checked" className='relative flex items-center gap-5'>
+                            <span className='text-subtitle'>Já adquirido?</span>
+                            <input
+                                type="checkbox"
+                                className="w-4 h-4 accent-primary-blue border-2 border-paragraph rounded"
+                                {...register('checked')}
+                            />
+                        </label>
+
 
                     </div>
                     <DrawerFooter>

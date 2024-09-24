@@ -1,7 +1,7 @@
 import React, { useContext } from 'react'
 import { EditProductForm } from '../Forms/EditProductForm'
 import { CheckItemForm } from '../Forms/CheckItemForm'
-import { IProductProps } from '@/types/product'
+import { IProductProps } from '@/types'
 import { ProductsContext } from '@/context/ProductsContext'
 import { LimitedValueForm } from '../Forms/LimitedValueForm'
 import { DeleteProduct } from './DeleteProduct'

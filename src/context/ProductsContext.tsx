@@ -1,9 +1,9 @@
 "use client";
-import { IProductsContextProps } from "@/types/contexts";
+import { IProductsContextProps } from "@/types";
 import { createContext, useEffect, useState } from "react";
 import { supabase } from "@/lib/api";
-import { IProductProps } from "@/types/product";
-import { IEditItemProps } from "@/types/editItem";
+import { IProductProps } from "@/types";
+import { IEditItemProps } from "@/types";
 import { ToastAction } from "@/components/ui/toast";
 import { useToast } from "@/components/ui/use-toast";
 

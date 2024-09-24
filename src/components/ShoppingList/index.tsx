@@ -2,7 +2,7 @@ import React, { Suspense, useContext, useEffect, useRef, useState } from 'react'
 import { Skeleton } from '../ui/skeleton';
 import { CATEGORIES } from '@/constants/constants';
 import { ProductsContext } from '@/context/ProductsContext';
-import { IProductProps } from '@/types/product';
+import { IProductProps } from '@/types';
 import { Modal } from '../Modal';
 import { ChevronDown, EllipsisVertical } from 'lucide-react';
 import formatNumber from '@/functions/formatNumber';

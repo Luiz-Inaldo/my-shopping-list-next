@@ -1,6 +1,3 @@
-import { IEditItemProps } from "./editItem";
-import { IProductProps } from "./product";
-
 export interface IProductsContextProps {
     user: any,
     setUser: React.Dispatch<React.SetStateAction<any>>;
@@ -35,4 +32,17 @@ export interface IProductsContextProps {
     handleDeleteItem: (itemID: string) => Promise<void>;
     handleCheckItem:(item: IProductProps, object?: IEditItemProps) => Promise<void>;
     handleDismarkItem: (item: IProductProps) => Promise<void>;
+}
+
+export interface IFormItem extends Omit<IProductProps, 'id' | 'value'> {}
+
+export interface IEditItemProps extends Omit<IProductProps, 'id' | 'category' | 'checked'> {}
+
+export interface IProductProps {
+    id: string;
+    name: string;
+    category: string;
+    quantity: number;
+    value: string;
+    checked: boolean;
 }
