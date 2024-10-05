@@ -46,3 +46,11 @@ export interface IProductProps {
     value: string;
     checked: boolean;
 }
+
+export interface IPurchaseProps {
+    title: string;
+    purchase_date: string;
+    purchase_items: string;
+    total_price: string;
+    user_id: string;
+}
