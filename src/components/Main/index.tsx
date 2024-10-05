@@ -3,29 +3,69 @@ import React, {
   useContext,
   useState,
 } from "react";
-import { ChevronUp, ShoppingBagIcon } from "lucide-react";
+import { ChevronUp, LoaderCircle, ShoppingBagIcon } from "lucide-react";
 import { AddProductForm } from "@/components/Forms/AddProductForm";
 import { ProductsContext } from "@/context/ProductsContext";
 import useLocalStorage from "@/hooks/useLocalStorage";
 import NonPurchaseList from "../NonPurchaseList";
 import ShoppingList from "../ShoppingList";
+import { IPurchaseProps } from "@/types";
+import { toast } from "../ui/use-toast";
+import { ToastAction } from "../ui/toast";
+import { supabase } from "@/lib/api";
 
 const Main = () => {
   const {
     data,
+    user,
     stipulatedValue,
+    deleteAllItems,
     situation,
     totalValue
   } = useContext(ProductsContext);
-  
+
   const [showFooter, setShowFooter] = useState<boolean>(false);
+  const [savingPurchase, setSavingPurchase] = useState<boolean>(false);
   const { purchaseActive, setPurchase } = useLocalStorage();
+
+  async function finalizePurchase() {
+
+    setSavingPurchase(true);
+    const currentDateMoment = new Date();
+
+    const currentPurchase: IPurchaseProps = {
+      title: JSON.parse(localStorage.getItem('purchase') || ''),
+      purchase_date: currentDateMoment.toLocaleString(),
+      purchase_items: JSON.stringify(data),
+      total_price: totalValue,
+      user_id: user.id
+    }
+
+    try {
+      const response = await supabase.from("purchases").insert([currentPurchase]).select();
+      if (response.status === 201) {
+        toast({
+          description: "Compra salva com sucesso!.",
+          action: <ToastAction altText="Ok">Ok</ToastAction>
+        });
+        deleteAllItems();
+        localStorage.removeItem('purchase')
+      }
+    } catch (error) {
+      toast({
+        description: "Houve um problema ao salvar a compra.",
+        action: <ToastAction altText="Ok">Ok</ToastAction>
+      });
+    } finally {
+      setSavingPurchase(false);
+    }
+
+  }
 
   return (
     <React.Fragment>
       <main
-        className={`flex flex-col items-center py-3 ${showFooter ? "mb-96" : "mb-10"
-          }`}
+        className={`py-3 ${showFooter ? "mb-96" : "mb-10"}`}
       >
         {/* <div className="w-full flex gap-3 items-center mb-5">
             <Search
@@ -92,10 +132,14 @@ const Main = () => {
 
           {/* finish purchase button */}
           <div
-            onClick={() => console.log("compra fechada")}
+            onClick={finalizePurchase}
             className="mb-5 bg-[#FF7F50] rounded-full w-fit mx-auto px-3 py-2 flex gap-2 items-center justify-center cursor-pointer shadow-md transition-all duration-300 ease-in-out text-white"
           >
-            <ShoppingBagIcon className="svg-shadow" size={20} />
+            {savingPurchase ? (
+              <LoaderCircle size={20} className='animate-spin' />
+            ) : (
+              <ShoppingBagIcon className="svg-shadow" size={20} />
+            )}
             <span className="text-shadow-base">Finalizar Compra</span>
           </div>
           {/* end finish purchase button */}

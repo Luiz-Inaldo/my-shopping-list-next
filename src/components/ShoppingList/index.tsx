@@ -21,6 +21,7 @@ const ShoppingList = () => {
         value: "",
         checked: false,
     });
+    const [listName, setListName] = useState<string>('');
 
     /* ----> function <----- */
     const handleItemCheckbox = (item: IProductProps) => {
@@ -51,9 +52,20 @@ const ShoppingList = () => {
         return () => document.removeEventListener("click", clickHandler);
     });
 
+    useEffect(() => {
+        const listNameFromLocal = JSON.parse(localStorage.getItem('purchase') || '');
+        if (listNameFromLocal !== '') {
+            setListName(listNameFromLocal)
+        }
+    }, [])
+
     return (
         <>
-            <h2 className="text-2xl text-subtitle font-bold mb-5">Categorias</h2>
+            <h2 className='text-2xl mb-10 font-bold px-4 pb-1 border-b border-[#999] w-fit mx-auto'>
+                {listName}
+            </h2>
+
+            {/* <p className="text-xl ml-3 text-subtitle mb-5">Categorias</p> */}
 
             {/* caregory list */}
             {CATEGORIES.map((category) => {
@@ -61,10 +73,12 @@ const ShoppingList = () => {
                     (product) => product.category === category.name
                 );
 
+                const ordenedProducts = products.sort((a, b) => a.name.localeCompare(b.name))
+
                 return (
                     <CategoryWrapper
                         key={category.name}
-                        activeCondition={products.length > 0}
+                        activeCondition={ordenedProducts.length > 0}
                     >
                         {(handleClick, open) => {
                             return (
@@ -80,8 +94,8 @@ const ShoppingList = () => {
                                         <div className='flex items-center gap-3'>
                                             <category.icon />
                                             <span className="text-lg">{category.name}</span>
-                                            {products.length > 0 && (
-                                                <span className='italic'>({products.length} produtos)</span>
+                                            {ordenedProducts.length > 0 && (
+                                                <span className='italic'>({ordenedProducts.length} produtos)</span>
                                             )}
                                         </div>
                                         <ChevronDown
@@ -97,18 +111,18 @@ const ShoppingList = () => {
                                     ) : (
                                         <>
                                             <div
-                                            className={`${open ? 'max-h-[10000px]' : 'max-h-0'} overflow-hidden transition-all duration-500`}
+                                                className={`${open ? 'max-h-[10000px]' : 'max-h-0'} overflow-hidden transition-all duration-500`}
                                             >
-                                                {products.length > 0 ? (
+                                                {ordenedProducts.length > 0 ? (
                                                     <React.Fragment>
-                                                        {products.map((item) => (
+                                                        {ordenedProducts.map((item) => (
                                                             <div
                                                                 key={item.name}
                                                                 className="flex flex-col gap-4 ml-2 mt-2 p-1 rounded"
                                                             >
                                                                 <div
                                                                     className={`relative flex flex-col gap-2 ${item.checked
-                                                                        ? "!text-green-600"
+                                                                        ? "font-bold"
                                                                         : "text-paragraph"
                                                                         }`}
                                                                 >
