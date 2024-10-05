@@ -48,6 +48,7 @@ export interface IProductProps {
 }
 
 export interface IPurchaseProps {
+    id?: string;
     title: string;
     purchase_date: string;
     purchase_items: string;

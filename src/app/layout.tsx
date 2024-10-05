@@ -1,5 +1,5 @@
 'use client'
-import { Itim } from "next/font/google";
+import { Itim, Quicksand } from "next/font/google";
 import "../styles/globals.css";
 import { ProductsProvider } from "@/context/ProductsContext";
 import { Toaster } from "@/components/ui/toaster";
@@ -7,7 +7,7 @@ import SessionVerifier from "@/components/SessionVerifier";
 import useCheckRoute from "@/hooks/useCheckRoute";
 import { usePathname } from "next/navigation";
 
-const itim = Itim({ weight: '400', subsets: ["latin"] });
+const quicksand = Quicksand({ weight: ['300', '400', '500', '700'], subsets: ["latin"] });
 
 export default function RootLayout({
   children,
@@ -20,7 +20,7 @@ export default function RootLayout({
 
   return (
     <html lang="en">
-      <body className={itim.className}>
+      <body className={quicksand.className}>
         <div className="relative flex flex-col gap-10 w-[430px] min-h-screen mx-auto bg-[#fafafa]">
           {isPrivateRoute ? (
             <ProductsProvider>

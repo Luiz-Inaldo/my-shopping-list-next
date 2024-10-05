@@ -64,7 +64,7 @@ const Menu = () => {
                                     </Link>
                                 </li>
                                 <li className='py-2'>
-                                    <Link href="/" className='flex items-center gap-2 cursor-pointer'>
+                                    <Link href="/historic" className='flex items-center gap-2 cursor-pointer'>
                                         <ScrollText size={16} />
                                         Histórico
                                     </Link>

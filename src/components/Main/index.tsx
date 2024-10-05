@@ -33,10 +33,12 @@ const Main = () => {
     setSavingPurchase(true);
     const currentDateMoment = new Date();
 
+    const itemsToSave = data.filter(item => item.checked);
+
     const currentPurchase: IPurchaseProps = {
       title: JSON.parse(localStorage.getItem('purchase') || ''),
       purchase_date: currentDateMoment.toLocaleString(),
-      purchase_items: JSON.stringify(data),
+      purchase_items: JSON.stringify(itemsToSave),
       total_price: totalValue,
       user_id: user.id
     }
@@ -131,7 +133,7 @@ const Main = () => {
           {/* end add item button */}
 
           {/* finish purchase button */}
-          <div
+          <button
             onClick={finalizePurchase}
             className="mb-5 bg-[#FF7F50] rounded-full w-fit mx-auto px-3 py-2 flex gap-2 items-center justify-center cursor-pointer shadow-md transition-all duration-300 ease-in-out text-white"
           >
@@ -141,7 +143,7 @@ const Main = () => {
               <ShoppingBagIcon className="svg-shadow" size={20} />
             )}
             <span className="text-shadow-base">Finalizar Compra</span>
-          </div>
+          </button>
           {/* end finish purchase button */}
 
           {/* toggleButton */}

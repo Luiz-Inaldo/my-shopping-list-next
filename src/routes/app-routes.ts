@@ -5,6 +5,9 @@ export const APP_ROUTES = {
         },
         settings: {
             name: "/settings"
+        },
+        historic: {
+            name: "/historic"
         }
     },
     public: {
