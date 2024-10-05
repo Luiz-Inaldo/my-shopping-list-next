@@ -13,11 +13,25 @@ const config = {
     container: {
       center: true,
       padding: "2rem",
-      screens: {
-        "2xl": "1400px",
-      },
     },
     extend: {
+      screens: {
+        "2xsm": "375px",
+        "xsm": "425px",
+        "2xl": "1400px",
+      },
+      height: {
+        "screen-dvh":  "100dvh",
+        "screen-svh":  "100svh",
+      },
+      minHeight: {
+        "screen-dvh":  "100dvh",
+        "screen-svh":  "100svh",
+      },
+      maxHeight: {
+        "screen-dvh":   "100dvh",
+        "screen-svh":   "100svh",
+      },
       colors: {
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
