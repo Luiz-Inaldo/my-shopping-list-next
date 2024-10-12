@@ -1,66 +1,87 @@
 'use client'
 import React, {
   useContext,
+  useEffect,
   useState,
 } from "react";
 import { ChevronUp, LoaderCircle, ShoppingBagIcon } from "lucide-react";
 import { AddProductForm } from "@/components/Forms/AddProductForm";
 import { ProductsContext } from "@/context/ProductsContext";
-import useLocalStorage from "@/hooks/useLocalStorage";
 import NonPurchaseList from "../NonPurchaseList";
 import ShoppingList from "../ShoppingList";
-import { IPurchaseProps } from "@/types";
+import { IPurchaseProps, ISupabasePurchaseProps } from "@/types";
 import { toast } from "../ui/use-toast";
 import { ToastAction } from "../ui/toast";
 import { supabase } from "@/lib/api";
+import { formatCurrency } from "@/functions/formatCurrency";
+import { useRouter } from "next/navigation";
+import { APP_ROUTES } from "@/routes/app-routes";
 
 const Main = () => {
   const {
     data,
     user,
-    stipulatedValue,
+    currentPurchase,
     deleteAllItems,
+    deleteCurrentPurchase,
     situation,
     totalValue
   } = useContext(ProductsContext);
 
   const [showFooter, setShowFooter] = useState<boolean>(false);
   const [savingPurchase, setSavingPurchase] = useState<boolean>(false);
-  const { purchaseActive, setPurchase } = useLocalStorage();
+  const router = useRouter();
 
   async function finalizePurchase() {
 
     setSavingPurchase(true);
-    const currentDateMoment = new Date();
 
-    const itemsToSave = data.filter(item => item.checked);
+    // verifica se ao menos possui um item na lista
+    
 
-    const currentPurchase: IPurchaseProps = {
-      title: JSON.parse(localStorage.getItem('purchase') || ''),
-      purchase_date: currentDateMoment.toLocaleString(),
-      purchase_items: JSON.stringify(itemsToSave),
-      total_price: totalValue,
-      user_id: user.id
-    }
+      const currentDateMoment = new Date();
 
-    try {
-      const response = await supabase.from("purchases").insert([currentPurchase]).select();
-      if (response.status === 201) {
+      const itemsToSave = data.filter(item => item.checked);
+
+      if (itemsToSave.length > 0) {
+        
+        const purchase: IPurchaseProps = {
+          title: currentPurchase?.list_name || '',
+          purchase_date: currentDateMoment.toLocaleString(),
+          purchase_items: JSON.stringify(itemsToSave),
+          total_price: totalValue,
+          user_id: user.id
+        }
+  
+        try {
+          const response = await supabase.from("purchases").insert([purchase]).select();
+          if (response.status === 201) {
+            deleteAllItems();
+            deleteCurrentPurchase();
+            router.push(APP_ROUTES.private.purchase_saved.name(purchase.title)); // redireciona para outra página
+          }
+        } catch (error) {
+          toast({
+            description: "Houve um erro ao salvar a compra.",
+            action: <ToastAction altText="Ok">Ok</ToastAction>
+          });
+        } finally {
+          setSavingPurchase(false);
+        }
+
+      } else {
+
         toast({
-          description: "Compra salva com sucesso!.",
+          description: "A compra deve ter pelo menos um item marcado para ser salva",
           action: <ToastAction altText="Ok">Ok</ToastAction>
         });
-        deleteAllItems();
-        localStorage.removeItem('purchase')
+
+        setSavingPurchase(false);
+
       }
-    } catch (error) {
-      toast({
-        description: "Houve um problema ao salvar a compra.",
-        action: <ToastAction altText="Ok">Ok</ToastAction>
-      });
-    } finally {
-      setSavingPurchase(false);
-    }
+
+
+
 
   }
 
@@ -81,14 +102,14 @@ const Main = () => {
             />
           </div> */}
 
-        {(data.length === 0 && !purchaseActive) ? (
-          <NonPurchaseList setPurchase={setPurchase} />
+        {(data.length === 0 && !currentPurchase) ? (
+          <NonPurchaseList user={user} />
         ) : (
-          <ShoppingList />
+          <ShoppingList listname={currentPurchase?.list_name} />
         )}
       </main>
 
-      {purchaseActive && (
+      {currentPurchase && (
         <footer
           className={`fixed z-20 bottom-0 w-[430px] ${showFooter ? "translate-y-0" : "translate-y-full"
             } bg-primary-blue transition-all duration-300 flex flex-col justify-center`}
@@ -103,15 +124,12 @@ const Main = () => {
 
             <div className="col-span-2 flex gap-2 p-2 items-center text-title border-b border-title">
               <h3 className="flex-1">Valor Total: </h3>
-              <span className="p-1">R$ {totalValue}</span>
+              <span className="p-1">{formatCurrency(totalValue || "0")}</span>
             </div>
 
             <div className="col-span-2 flex gap-2 p-2 items-center text-title border-b border-title">
               <h3 className="flex-1">Gasto Estipulado: </h3>
-              <span className="p-1">{`${stipulatedValue !== "não definido"
-                ? `R$ ${stipulatedValue}`
-                : "não definido"
-                }`}</span>
+              <span className="p-1">{formatCurrency(currentPurchase?.list_max_value || "0")}</span>
             </div>
 
             <div className="col-span-2 flex gap-2 p-2 items-center text-title border-b border-title">

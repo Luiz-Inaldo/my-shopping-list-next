@@ -21,12 +21,14 @@ export interface IProductsContextProps {
     setOptionMenu: React.Dispatch<React.SetStateAction<string | null>>;
     totalValue: string;
     setTotalValue: React.Dispatch<React.SetStateAction<string>>;
-    stipulatedValue: string;
-    setStipulatedValue: React.Dispatch<React.SetStateAction<string>>;
     situation: string;
     setSituation: React.Dispatch<React.SetStateAction<string>>;
+    currentPurchase: ISupabasePurchaseProps | null;
+    setCurrentPurchase: React.Dispatch<React.SetStateAction<ISupabasePurchaseProps | null>>;
 
     fetchData: () => Promise<void>;
+    fetchPurchaseData: () => Promise<void>;
+    deleteCurrentPurchase: () => Promise<void>;
     deleteAllItems: () => Promise<void>;
     handleUpdateItem: (object: IEditItemProps, itemID: string) => Promise<void>;
     handleDeleteItem: (itemID: string) => Promise<void>;
@@ -34,9 +36,9 @@ export interface IProductsContextProps {
     handleDismarkItem: (item: IProductProps) => Promise<void>;
 }
 
-export interface IFormItem extends Omit<IProductProps, 'id' | 'value'> {}
+export interface IFormItem extends Omit<IProductProps, 'id'> {}
 
-export interface IEditItemProps extends Omit<IProductProps, 'id' | 'category' | 'checked'> {}
+export interface IEditItemProps extends Omit<IProductProps, 'category' | 'checked'> {}
 
 export interface IProductProps {
     id: string;
@@ -53,5 +55,12 @@ export interface IPurchaseProps {
     purchase_date: string;
     purchase_items: string;
     total_price: string;
+    user_id: string;
+}
+
+export interface ISupabasePurchaseProps {
+    id: string;
+    list_name: string;
+    list_max_value: string;
     user_id: string;
 }
