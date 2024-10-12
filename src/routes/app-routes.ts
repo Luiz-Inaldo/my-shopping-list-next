@@ -7,7 +7,13 @@ export const APP_ROUTES = {
             name: "/settings"
         },
         historic: {
-            name: "/historic"
+            name: "/historic",
+            children: {
+                name: (title: string) => `/historic/${title}`
+            }
+        },
+        purchase_saved: {
+            name: (title: string) => `/purchase-saved/${title}`
         }
     },
     public: {

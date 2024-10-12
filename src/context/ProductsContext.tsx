@@ -1,5 +1,5 @@
 "use client";
-import { IProductsContextProps } from "@/types";
+import { IProductsContextProps, ISupabasePurchaseProps } from "@/types";
 import { createContext, useEffect, useState } from "react";
 import { supabase } from "@/lib/api";
 import { IProductProps } from "@/types";
@@ -23,12 +23,14 @@ export const ProductsContext = createContext<IProductsContextProps>({
     setOptionMenu: () => { },
     totalValue: '0',
     setTotalValue: () => { },
-    stipulatedValue: 'não definido',
-    setStipulatedValue: () => { },
     situation: 'good',
     setSituation: () => { },
+    currentPurchase: null,
+    setCurrentPurchase: () => { },
 
     fetchData: async () => { },
+    fetchPurchaseData: async () => { },
+    deleteCurrentPurchase: async () => { },
     deleteAllItems: async () => { },
     handleUpdateItem: async () => { },
     handleDeleteItem: async () => { },
@@ -48,8 +50,8 @@ export const ProductsProvider = ({ children }: { children: React.ReactNode }) =>
     })
     const [optionMenu, setOptionMenu] = useState<string | null>(null);
     const [totalValue, setTotalValue] = useState<string>('0');
-    const [stipulatedValue, setStipulatedValue] = useState<string>('não definido');
     const [situation, setSituation] = useState<string>('good');
+    const [currentPurchase, setCurrentPurchase] = useState<ISupabasePurchaseProps | null>(null);
 
     /* ====> hooks <==== */
     const { toast } = useToast();
@@ -66,6 +68,16 @@ export const ProductsProvider = ({ children }: { children: React.ReactNode }) =>
             setData(data);
             setLoading(false);
         }
+    }
+
+    async function fetchPurchaseData () {
+        if (user === null) return;
+        const { data, error } = await supabase.from('active_purchases').select('*').eq("user_id", user.id);
+        if (error) {
+            console.error(error)
+            return;
+        }
+        setCurrentPurchase(data.length > 0 ? data[0] : null);
     }
 
     function caculateTotalValue() {
@@ -91,11 +103,6 @@ export const ProductsProvider = ({ children }: { children: React.ReactNode }) =>
                 return
             }
 
-            toast({
-                description: "Lista de compras resetada com sucesso.",
-                action: <ToastAction altText="Ok">Ok</ToastAction>
-            });
-
         } catch (error) {
             console.log(error)
         }
@@ -104,8 +111,21 @@ export const ProductsProvider = ({ children }: { children: React.ReactNode }) =>
 
     }
 
+    async function deleteCurrentPurchase() {
+        const { error } = await supabase.from('active_purchases').delete().eq('user_id', user.id);
+
+        if (error) {
+            console.log(error);
+            return;
+        }
+
+        fetchPurchaseData();
+
+    }
+
     async function handleUpdateItem(object: IEditItemProps, itemID: string) {
         const { data, error } = await supabase.from('products').update(object).eq('id', itemID);
+        console.log(object)
 
         if (error) {
             console.log(error);
@@ -114,7 +134,15 @@ export const ProductsProvider = ({ children }: { children: React.ReactNode }) =>
                 description: "Produto alterado com sucesso.",
                 action: <ToastAction altText="Ok">Ok</ToastAction>
             });
-            fetchData();
+            // fetchData();
+            setData((oldData) => { 
+                return oldData.map(product => {
+                    if (product.id === itemID) {
+                        return { ...product, name: object.name, quantity: object.quantity, value: object.value };
+                    }
+                    return product;
+                });
+            })
             setTimeout(() => {
                 setModal({
                     state: 'CLOSED',
@@ -134,7 +162,9 @@ export const ProductsProvider = ({ children }: { children: React.ReactNode }) =>
                 description: "Produto removido da sua lista de compras.",
                 action: <ToastAction altText="Ok">Ok</ToastAction>
             });
-            fetchData();
+            setData((oldData) => { 
+                return oldData.filter(item => item.id !== itemID);
+            })
             setOptionMenu(null);
             setTimeout(() => {
                 setModal({
@@ -161,7 +191,14 @@ export const ProductsProvider = ({ children }: { children: React.ReactNode }) =>
                 description: "Produto marcado como adiquirido.",
                 action: <ToastAction altText="Ok">Ok</ToastAction>
             });
-            fetchData();
+            setData((oldData) => { 
+                return oldData.map(product => {
+                    if (product.id === item.id) {
+                        return { ...product, checked: !item.checked };
+                    }
+                    return product;
+                });
+            })
             setModal({
                 state: 'CLOSED',
                 type: ''
@@ -181,7 +218,14 @@ export const ProductsProvider = ({ children }: { children: React.ReactNode }) =>
         if (error) {
             console.log(error);
         } else {
-            fetchData();
+            setData((oldData) => { 
+                return oldData.map(product => {
+                    if (product.id === item.id) {
+                        return { ...product, checked: !item.checked };
+                    }
+                    return product;
+                });
+            })
         }
 
     }
@@ -189,6 +233,7 @@ export const ProductsProvider = ({ children }: { children: React.ReactNode }) =>
     /* ====> effects <==== */
     useEffect(() => {
         fetchData();
+        fetchPurchaseData();
     }, [user]);
 
     useEffect(() => {
@@ -197,39 +242,24 @@ export const ProductsProvider = ({ children }: { children: React.ReactNode }) =>
 
     useEffect(() => {
 
-        if (!localStorage.getItem('STIPULATED_VALUE')) {
-            setModal({
-                state: 'OPEN',
-                type: 'LIMIT_VALUE'
-            });
-        } else {
-            const value = JSON.parse(localStorage.getItem('STIPULATED_VALUE') || 'não definido');
-            setStipulatedValue(value);
+        if (currentPurchase) {
+            const parsedTotal = parseFloat(totalValue.replace(',', '.'));
+            const parsedMaxValue = parseFloat(currentPurchase?.list_max_value.replace(',', '.'));
+
+            if (parsedTotal < (parsedMaxValue * 0.8)) {
+                setSituation('good');
+            }
+
+            if (parsedTotal >= (parsedMaxValue * 0.8) && parsedTotal < parsedMaxValue) {
+                setSituation('normal');
+            }
+
+            if (parsedTotal >= parsedMaxValue) {
+                setSituation('bad');
+            }
         }
 
-    }, []);
-
-    useEffect(() => {
-
-        if (stipulatedValue === 'não definido') return;
-
-        const parsedTotal = parseFloat(totalValue.replace(',', '.'));
-        const parsedStipulated = parseFloat(stipulatedValue.replace(',', '.'));
-
-        if (parsedTotal < (parsedStipulated * 0.8)) {
-            setSituation('good');
-        }
-
-        if (parsedTotal >= (parsedStipulated * 0.8) && parsedTotal < parsedStipulated) {
-            setSituation('normal');
-        }
-
-        if (parsedTotal >= parsedStipulated) {
-            setSituation('bad');
-        }
-
-
-    }, [totalValue])
+    }, [totalValue]);
 
     return (
         <ProductsContext.Provider value={{
@@ -245,12 +275,14 @@ export const ProductsProvider = ({ children }: { children: React.ReactNode }) =>
             setOptionMenu,
             totalValue,
             setTotalValue,
-            stipulatedValue,
-            setStipulatedValue,
+            currentPurchase,
+            setCurrentPurchase,
             situation,
             setSituation,
 
             fetchData,
+            fetchPurchaseData,
+            deleteCurrentPurchase,
             deleteAllItems,
             handleUpdateItem,
             handleDeleteItem,

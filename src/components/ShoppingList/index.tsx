@@ -8,7 +8,7 @@ import { ChevronDown, EllipsisVertical } from 'lucide-react';
 import formatNumber from '@/functions/formatNumber';
 import CategoryWrapper from '../Category';
 
-const ShoppingList = () => {
+const ShoppingList = ({ listname }: { listname: string | undefined }) => {
 
     const { data, loading, setModal, handleCheckItem, handleDismarkItem,
         optionMenu, setOptionMenu
@@ -21,7 +21,6 @@ const ShoppingList = () => {
         value: "",
         checked: false,
     });
-    const [listName, setListName] = useState<string>('');
 
     /* ----> function <----- */
     const handleItemCheckbox = (item: IProductProps) => {
@@ -52,17 +51,10 @@ const ShoppingList = () => {
         return () => document.removeEventListener("click", clickHandler);
     });
 
-    useEffect(() => {
-        const listNameFromLocal = JSON.parse(localStorage.getItem('purchase') || '');
-        if (listNameFromLocal !== '') {
-            setListName(listNameFromLocal)
-        }
-    }, [])
-
     return (
         <>
             <h2 className='text-2xl mb-10 font-bold px-4 pb-1 border-b border-[#999] w-fit mx-auto'>
-                {listName}
+                {listname && listname}
             </h2>
 
             {/* <p className="text-xl ml-3 text-subtitle mb-5">Categorias</p> */}
@@ -95,7 +87,7 @@ const ShoppingList = () => {
                                             <category.icon />
                                             <span className="text-lg">{category.name}</span>
                                             {ordenedProducts.length > 0 && (
-                                                <span className='italic'>({ordenedProducts.length} produtos)</span>
+                                                <span className='italic'>({ordenedProducts.length} produto(s))</span>
                                             )}
                                         </div>
                                         <ChevronDown

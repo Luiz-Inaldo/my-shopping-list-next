@@ -2,6 +2,7 @@
 import LoggedLayout from '@/components/layout/LoggedLayout';
 import { ProductsContext } from '@/context/ProductsContext';
 import { supabase } from '@/lib/api';
+import { APP_ROUTES } from '@/routes/app-routes';
 import { IProductProps, IPurchaseProps } from '@/types';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -55,7 +56,7 @@ export default function Settings() {
                             ) : (
                                 purchasesList.map((purchase) => (
                                     <Link
-                                        href={`/historic/${purchase.title}`}
+                                        href={APP_ROUTES.private.historic.children.name(purchase.title)}
                                         key={purchase.id}
                                         className='bg-subtitle/15 border border-gray-100 rounded shadow-md p-2 flex flex-col gap-5'
                                     >
