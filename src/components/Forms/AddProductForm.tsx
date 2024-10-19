@@ -23,7 +23,7 @@ import { IFormItem } from '@/types';
 export const AddProductForm = () => {
 
     const { toast } = useToast();
-    const { user, setData } = useContext(ProductsContext);
+    const { user, fetchData } = useContext(ProductsContext);
     const {
         register,
         watch,
@@ -55,9 +55,7 @@ export const AddProductForm = () => {
                     action: <ToastAction altText="Ok">Ok</ToastAction>
                 });
 
-                setData((oldData: any) => {
-                    return [...oldData, item]
-                })
+                fetchData();
 
             } else {
 

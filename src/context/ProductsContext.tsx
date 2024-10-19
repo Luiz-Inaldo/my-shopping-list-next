@@ -125,7 +125,6 @@ export const ProductsProvider = ({ children }: { children: React.ReactNode }) =>
 
     async function handleUpdateItem(object: IEditItemProps, itemID: string) {
         const { data, error } = await supabase.from('products').update(object).eq('id', itemID);
-        console.log(object)
 
         if (error) {
             console.log(error);
@@ -153,7 +152,6 @@ export const ProductsProvider = ({ children }: { children: React.ReactNode }) =>
     }
 
     async function handleDeleteItem(itemID: string) {
-        console.log(itemID)
         const { data, error } = await supabase.from('products').delete().eq('id', itemID);
         if (error) {
             console.log(error);

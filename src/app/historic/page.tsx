@@ -14,7 +14,6 @@ export default function Settings() {
     const [purchasesList, setPurchasesList] = useState<IPurchaseProps[]>([]);
     const [loading, setLoading] = useState<boolean>(false);
 
-    console.log(purchasesList)
 
     useEffect(() => {
         const getPurchases = async () => {

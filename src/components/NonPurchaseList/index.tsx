@@ -26,8 +26,7 @@ const NonPurchaseList = ({ user }: {
 
     const onSubmit = async (listData: NewListProps) => {
         setIsSeting(true);
-        await sleep(2)
-        // setPurchase(data.listname);
+        await sleep(2);
 
         const { error } = await supabase.from("active_purchases").insert([{
             list_name: listData.list_name,
@@ -81,7 +80,7 @@ const NonPurchaseList = ({ user }: {
                             <label htmlFor="list_max_value" className="text-subtitle">
                                 <span>Defina um valor máximo para essa lista (R$):</span>
                                 <input
-                                    type="number"
+                                    type="text"
                                     className='w-full text-paragraph rounded border border-gray-400 px-3 py-2 h-8'
                                     {...register("list_max_value", {
                                         required: {
