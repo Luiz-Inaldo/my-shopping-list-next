@@ -70,7 +70,7 @@ export const ProductsProvider = ({ children }: { children: React.ReactNode }) =>
         }
     }
 
-    async function fetchPurchaseData () {
+    async function fetchPurchaseData() {
         if (user === null) return;
         const { data, error } = await supabase.from('active_purchases').select('*').eq("user_id", user.id);
         if (error) {
@@ -134,7 +134,7 @@ export const ProductsProvider = ({ children }: { children: React.ReactNode }) =>
                 action: <ToastAction altText="Ok">Ok</ToastAction>
             });
             // fetchData();
-            setData((oldData) => { 
+            setData((oldData) => {
                 return oldData.map(product => {
                     if (product.id === itemID) {
                         return { ...product, name: object.name, quantity: object.quantity, value: object.value };
@@ -160,7 +160,7 @@ export const ProductsProvider = ({ children }: { children: React.ReactNode }) =>
                 description: "Produto removido da sua lista de compras.",
                 action: <ToastAction altText="Ok">Ok</ToastAction>
             });
-            setData((oldData) => { 
+            setData((oldData) => {
                 return oldData.filter(item => item.id !== itemID);
             })
             setOptionMenu(null);
@@ -189,10 +189,14 @@ export const ProductsProvider = ({ children }: { children: React.ReactNode }) =>
                 description: "Produto marcado como adiquirido.",
                 action: <ToastAction altText="Ok">Ok</ToastAction>
             });
-            setData((oldData) => { 
+            setData((oldData) => {
                 return oldData.map(product => {
                     if (product.id === item.id) {
-                        return { ...product, checked: !item.checked };
+                        return {
+                            ...product,
+                            value: object?.value ? object.value : item.value,
+                            checked: !item.checked
+                        };
                     }
                     return product;
                 });
@@ -216,7 +220,7 @@ export const ProductsProvider = ({ children }: { children: React.ReactNode }) =>
         if (error) {
             console.log(error);
         } else {
-            setData((oldData) => { 
+            setData((oldData) => {
                 return oldData.map(product => {
                     if (product.id === item.id) {
                         return { ...product, checked: !item.checked };
