@@ -36,7 +36,7 @@ export const DeleteProduct = ({ item }: { item: IProductProps | undefined }) => 
                             type='button'
                             onClick={() => setModal({
                                 state: 'CLOSED',
-                                type: ''
+                                type: null
                             })}
                             className='col-span-1 flex items-center justify-center w-full border border-title py-2 px-3 rounded text-title'>
                             Cancelar

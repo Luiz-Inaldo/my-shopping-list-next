@@ -1,3 +1,5 @@
+export type ModalStateProps = "OPEN" | "CLOSED";
+export type ModalTypeProps = null | 'LIMIT_VALUE' | 'DELETE_PRODUCT' | 'EDIT_PRODUCT' | 'CHECK_PRODUCT' | 'DELETE_PURCHASE'
 export interface IProductsContextProps {
     user: any,
     setUser: React.Dispatch<React.SetStateAction<any>>;
@@ -6,16 +8,12 @@ export interface IProductsContextProps {
     loading: boolean;
     setLoading: React.Dispatch<React.SetStateAction<boolean>>;
     modal: {
-        state: string;
-        type: ''
-        | 'LIMIT_VALUE'
-        | 'DELETE_PRODUCT'
-        | 'EDIT_PRODUCT'
-        | 'CHECK_PRODUCT';
+        state: ModalStateProps,
+        type: ModalTypeProps
     }
     setModal: React.Dispatch<React.SetStateAction<{
-        state: string;
-        type:string;
+        state: ModalStateProps;
+        type: ModalTypeProps;
     }>>;
     optionMenu: string | null;
     setOptionMenu: React.Dispatch<React.SetStateAction<string | null>>;
@@ -34,6 +32,12 @@ export interface IProductsContextProps {
     handleDeleteItem: (itemID: string) => Promise<void>;
     handleCheckItem:(item: IProductProps, object?: IEditItemProps) => Promise<void>;
     handleDismarkItem: (item: IProductProps) => Promise<void>;
+}
+
+export interface IPuchasesContextProps {
+    purchasesList: IPurchaseProps[];
+    setPurchasesList: React.Dispatch<React.SetStateAction<IPurchaseProps[]>>;
+    loading: boolean;
 }
 
 export interface IFormItem extends Omit<IProductProps, 'id'> {}
