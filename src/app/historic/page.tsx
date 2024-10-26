@@ -1,34 +1,40 @@
 "use client";
 import LoggedLayout from '@/components/layout/LoggedLayout';
+import { Modal } from '@/components/Modal';
+import { toast } from '@/components/ui/use-toast';
 import { ProductsContext } from '@/context/ProductsContext';
+import { PurchasesContext } from '@/context/PurchasesContext';
+import { formatCurrency } from '@/functions/formatCurrency';
 import { supabase } from '@/lib/api';
 import { APP_ROUTES } from '@/routes/app-routes';
-import { IProductProps, IPurchaseProps } from '@/types';
+import { IPurchaseProps } from '@/types';
+import { ToastAction } from '@radix-ui/react-toast';
+import { ArrowRight, Router, Trash2 } from 'lucide-react';
 import Image from 'next/image';
-import Link from 'next/link';
-import React, { useContext, useEffect, useState } from 'react';
+import { useRouter } from 'next/navigation';
+import React, { Suspense, useContext, useEffect, useState } from 'react';
 
-export default function Settings() {
+export default function Historic() {
 
-    const { user } = useContext(ProductsContext);
-    const [purchasesList, setPurchasesList] = useState<IPurchaseProps[]>([]);
-    const [loading, setLoading] = useState<boolean>(false);
+    const { setModal } = useContext(ProductsContext);
+    const { purchasesList, loading } = useContext(PurchasesContext);
+    const router = useRouter();
+    const [purchase, setPurchase] = useState<IPurchaseProps>({
+        id: "",
+        title: "",
+        purchase_date: "",
+        purchase_items: "",
+        total_price: "",
+        user_id: "",
+    });
 
-
-    useEffect(() => {
-        const getPurchases = async () => {
-            setLoading(true);
-            const { data, error } = await supabase.from("purchases").select("*").eq("user_id", user.id)
-
-            if (error) {
-                console.error(error);
-            } else {
-                setPurchasesList(data as IPurchaseProps[]);
-            }
-            setLoading(false);
-        }
-        getPurchases();
-    }, [])
+    function handleOpenModal(purchase: IPurchaseProps) {
+        setModal({
+            state: "OPEN",
+            type: "DELETE_PURCHASE"
+        });
+        setPurchase(purchase);
+    }
 
     return (
         <LoggedLayout>
@@ -54,20 +60,40 @@ export default function Settings() {
                                 </div>
                             ) : (
                                 purchasesList.map((purchase) => (
-                                    <Link
-                                        href={APP_ROUTES.private.historic.children.name(purchase.title)}
+                                    <div
                                         key={purchase.id}
-                                        className='bg-subtitle/15 border border-gray-100 rounded shadow-md p-2 flex flex-col gap-5'
+                                        className='bg-subtitle/15 border border-gray-100 rounded shadow-md p-2 flex flex-col gap-3'
                                     >
                                         <div className='flex items-center gap-2'>
-                                            <div className='rounded-full bg-subtitle w-2 h-2'></div>
-                                            <h2 className='font-bold text-subtitle'>{purchase.title}</h2>
+                                            <div className='flex items-center gap-2 flex-1'>
+                                                <div className='rounded-full bg-subtitle w-2 h-2'></div>
+                                                <h2 className='font-bold text-subtitle'>
+                                                    {purchase.title}
+                                                </h2>
+                                            </div>
+                                            <div className='flex items-center justify-center cursor-pointer'>
+                                                <Trash2
+                                                    onClick={() => handleOpenModal(purchase)}
+                                                    size={16}
+                                                />
+                                            </div>
                                         </div>
-                                        <div className='flex items-center justify-between'>
-                                            <span>R$: {purchase.total_price}</span>
-                                            <span>{purchase.purchase_date.split(",")[0]}</span>
+                                        <div className='flex flex-col gap-4'>
+                                            <div className='flex items-center justify-between'>
+                                                <span>{formatCurrency(purchase.total_price)}</span>
+                                                <span>{purchase.purchase_date.split(",")[0]}</span>
+                                            </div>
+                                            <div>
+                                                <p
+                                                    onClick={() => router.push(APP_ROUTES.private.historic.children.name(purchase.title))}
+                                                    className='flex items-center gap-1 font-medium text-blue-900 hover:text-blue-700 transition-colors duration-300'
+                                                >
+                                                    <ArrowRight size={16} />
+                                                    clique para detalhes
+                                                </p>
+                                            </div>
                                         </div>
-                                    </Link>
+                                    </div>
                                 ))
                             )}
                         </>
@@ -75,6 +101,9 @@ export default function Settings() {
 
                 </div>
             </div>
+            <Suspense fallback={null}>
+                <Modal item={purchase} />
+            </Suspense>
         </LoggedLayout>
     )
 }

@@ -16,7 +16,7 @@ export const ProductsContext = createContext<IProductsContextProps>({
     setLoading: () => { },
     modal: {
         state: 'CLOSED',
-        type: ''
+        type: null
     },
     setModal: () => { },
     optionMenu: null,
@@ -46,7 +46,7 @@ export const ProductsProvider = ({ children }: { children: React.ReactNode }) =>
     const [loading, setLoading] = useState<boolean>(true);
     const [modal, setModal] = useState<any>({
         state: 'CLOSED',
-        type: ''
+        type: null
     })
     const [optionMenu, setOptionMenu] = useState<string | null>(null);
     const [totalValue, setTotalValue] = useState<string>('0');
@@ -145,7 +145,7 @@ export const ProductsProvider = ({ children }: { children: React.ReactNode }) =>
             setTimeout(() => {
                 setModal({
                     state: 'CLOSED',
-                    type: ''
+                    type: null
                 });
             }, 1000)
         }
@@ -167,7 +167,7 @@ export const ProductsProvider = ({ children }: { children: React.ReactNode }) =>
             setTimeout(() => {
                 setModal({
                     state: 'CLOSED',
-                    type: ''
+                    type: null
                 });
             }, 1000)
         }
@@ -203,7 +203,7 @@ export const ProductsProvider = ({ children }: { children: React.ReactNode }) =>
             })
             setModal({
                 state: 'CLOSED',
-                type: ''
+                type: null
             });
         }
     }
