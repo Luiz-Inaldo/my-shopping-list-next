@@ -56,7 +56,7 @@ export interface IProductProps {
 export interface IPurchaseProps {
     id?: string;
     title: string;
-    purchase_date: string;
+    purchase_date: any;
     purchase_items: string;
     total_price: string;
     user_id: string;

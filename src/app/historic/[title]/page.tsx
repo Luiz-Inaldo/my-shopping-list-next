@@ -108,7 +108,7 @@ export default function HistoricPage() {
                                     {`ID: ${purchase.id}`}
                                 </p>
                                 <p className='text-sm font-medium'>
-                                    {`Data: ${purchase.purchase_date}`}
+                                    {`Data: ${purchase.purchase_date.split("T")[0].split("-").reverse().join("/")} ${purchase.purchase_date.split("T")[1].split(".")[0]}`}
                                 </p>
                             </div>
                             {/* end slip header */}
