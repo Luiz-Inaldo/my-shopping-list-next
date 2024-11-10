@@ -36,6 +36,10 @@ export default function Historic() {
         setPurchase(purchase);
     }
 
+    console.log(
+        purchasesList
+    )
+
     return (
         <LoggedLayout>
             <div className='w-full px-5'>
@@ -81,7 +85,7 @@ export default function Historic() {
                                         <div className='flex flex-col gap-4'>
                                             <div className='flex items-center justify-between'>
                                                 <span>{formatCurrency(purchase.total_price)}</span>
-                                                <span>{purchase.purchase_date.split(",")[0]}</span>
+                                                <span>{purchase.purchase_date.split("T")[0].split("-").reverse().join("/")}</span>
                                             </div>
                                             <div>
                                                 <p

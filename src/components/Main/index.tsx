@@ -47,7 +47,7 @@ const Main = () => {
         
         const purchase: IPurchaseProps = {
           title: currentPurchase?.list_name || '',
-          purchase_date: currentDateMoment.toLocaleString(),
+          purchase_date: currentDateMoment,
           purchase_items: JSON.stringify(itemsToSave),
           total_price: totalValue,
           user_id: user.id
