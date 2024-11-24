@@ -71,15 +71,15 @@ export const AddProductForm = () => {
 
     return (
         <Drawer>
-            <DrawerTrigger className='flex items-center justify-center'>
+            <DrawerTrigger className='relative flex items-center justify-center'>
+                <span className='absolute w-8 h-8 top-1.5 animate-ping z-[-1] bg-primary-blue rounded-full'></span>
                 <div
                     onClick={() => {}}
-                    className='mb-2 bg-secondary-blue rounded-full px-3 py-2 flex gap-2 items-center justify-center cursor-pointer shadow-md transition-all duration-300 ease-in-out text-snow'>
-                    <Plus className='svg-shadow' size={20} />
-                    <span className='text-shadow-base'>Novo Produto</span>
+                    className='bg-secondary-blue rounded-full w-11 h-11 flex items-center justify-center cursor-pointer shadow-md transition-all duration-300 ease-in-out text-snow'>
+                    <Plus className='svg-shadow' size={24} />
                 </div>
             </DrawerTrigger>
-            <DrawerContent>
+            <DrawerContent className='bg-secondary-dark rounded border-secondary-dark'>
                 <form
                     onSubmit={handleSubmit(onSubmit)}
                 >
@@ -90,7 +90,7 @@ export const AddProductForm = () => {
                     <div className='flex flex-col gap-5 p-5'>
 
                         <label htmlFor="name" className='relative flex flex-col'>
-                            <span className='text-subtitle'>Nome do produto:</span>
+                            <span className='text-paragraph font-semibold'>Nome do produto:</span>
                             <input
                                 type="text"
                                 placeholder="Digite o nome do produto"
@@ -103,7 +103,7 @@ export const AddProductForm = () => {
                         </label>
 
                         <label htmlFor="category" className='relative flex flex-col col-span-1'>
-                            <span className='text-subtitle'>Categoria:</span>
+                            <span className='text-paragraph font-semibold'>Categoria:</span>
                             <ShadSelect control={control} label='Escolha a categoria' name="category">
                                 {CATEGORIES.map(category => (
                                     <SelectItem key={category.name} value={category.name}>{category.name}</SelectItem>
@@ -116,7 +116,7 @@ export const AddProductForm = () => {
 
                         <div className='grid grid-cols-2 gap-2'>
                             <label htmlFor="quantity" className='relative flex flex-col col-span-1'>
-                                <span className='text-subtitle'>Quantidade:</span>
+                                <span className='text-paragraph font-semibold'>Quantidade:</span>
                                 <input
                                     type="number"
                                     className='w-36 text-paragraph rounded border border-gray-400 px-3 py-2 h-8'
@@ -128,7 +128,7 @@ export const AddProductForm = () => {
                             </label>
 
                             <label htmlFor="value" className='relative flex flex-col'>
-                                <span className='text-subtitle'>Valor:</span>
+                                <span className='text-paragraph font-semibold'>Valor:</span>
                                 <input
                                     type="text"
                                     defaultValue={"0,00"}
@@ -141,7 +141,7 @@ export const AddProductForm = () => {
 
 
                         <label htmlFor="checked" className='relative flex items-center gap-5'>
-                            <span className='text-subtitle'>Já adquirido?</span>
+                            <span className='text-paragraph font-semibold'>Já adquirido?</span>
                             <input
                                 type="checkbox"
                                 className="w-4 h-4 accent-primary-blue border-2 border-paragraph rounded"
@@ -152,7 +152,7 @@ export const AddProductForm = () => {
 
                     </div>
                     <DrawerFooter>
-                        <button type='submit' className='flex items-center justify-center w-full bg-primary-blue py-2 px-3 rounded text-title'>
+                        <button type='submit' className='flex items-center justify-center w-full bg-secondary-blue py-2 px-3 rounded text-snow'>
                             Adicionar
                         </button>
                     </DrawerFooter>

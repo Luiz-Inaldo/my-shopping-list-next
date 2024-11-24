@@ -35,12 +35,12 @@ export const EditProductForm = ({ item }: { item: IProductProps | undefined }) =
     return (
         <React.Fragment>
             {isVisible && (
-                <div className={`${isFading ? 'opacity-100 visible' : 'opacity-0 invisible'} w-[350px] rounded bg-snow transition-all duration-500`}>
+                <div className={`${isFading ? 'opacity-100 visible' : 'opacity-0 invisible'} w-[350px] rounded bg-secondary-dark border border-paragraph/30 transition-all duration-500`}>
                     <form onSubmit={handleSubmit(onSubmit)} className='flex flex-col gap-3 p-5'>
                         <h1 className='text-subtitle text-xl text-center'>O que deseja editar no produto?</h1>
-                        <hr />
-                        <label htmlFor="name" className='flex flex-col'>
-                            <span className='text-subtitle'>Nome:</span>
+                        
+                        <label htmlFor="name" className='flex flex-col mt-3'>
+                            <span className='text-paragraph font-semibold'>Nome:</span>
                             <Controller
                                 control={control}
                                 name="name"
@@ -56,7 +56,7 @@ export const EditProductForm = ({ item }: { item: IProductProps | undefined }) =
                         </label>
                         <div className='grid grid-cols-2 gap-3'>
                             <label htmlFor="value" className='flex flex-col col-span-1'>
-                                <span className='text-subtitle'>Valor:</span>
+                                <span className='text-paragraph font-semibold'>Valor:</span>
                                 <Controller
                                     control={control}
                                     name="value"
@@ -71,7 +71,7 @@ export const EditProductForm = ({ item }: { item: IProductProps | undefined }) =
                                 />
                             </label>
                             <label htmlFor="quantity" className='flex flex-col col-span-1'>
-                                <span className='text-subtitle'>Quantidade:</span>
+                                <span className='text-paragraph font-semibold'>Quantidade:</span>
                                 <Controller
                                     control={control}
                                     name="quantity"
@@ -89,7 +89,7 @@ export const EditProductForm = ({ item }: { item: IProductProps | undefined }) =
                         <div className='grid grid-cols-2 gap-2 mt-5'>
                             <button
                                 type='submit'
-                                className='col-span-1 flex items-center justify-center w-full bg-primary-blue py-2 px-3 rounded text-title'>
+                                className='col-span-1 flex items-center justify-center w-full bg-secondary-blue py-2 px-3 rounded text-snow'>
                                 Finalizar Edição
                             </button>
                             <button

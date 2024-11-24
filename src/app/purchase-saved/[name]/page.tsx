@@ -1,14 +1,11 @@
 "use client";
-import { ProductsContext } from "@/context/ProductsContext";
 import Image from "next/image";
 import Link from "next/link";
-import { useParams } from "next/navigation";
-import { useContext } from "react";
 
 export default function PurchaseSaved() {
 
     return (
-        <div className="flex flex-col items-center p-10">
+        <div className="flex flex-col items-center p-10 w-[430px] mx-auto bg-secondary-dark min-h-dvh">
             <Image
                 src="/images/well_done.svg"
                 alt="pessoas comemorando"
@@ -26,7 +23,7 @@ export default function PurchaseSaved() {
                 </Link>
                 <Link
                     href="/"
-                    className="px-3 py-2 flex items-center justify-center cursor-pointer uppercase text-sm"
+                    className="px-3 py-2 flex items-center justify-center cursor-pointer uppercase text-sm text-link"
                 >
                     <span className="underline">ir para página principal</span>
                 </Link>
