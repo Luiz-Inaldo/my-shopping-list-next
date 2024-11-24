@@ -3,7 +3,7 @@ import React from 'react'
 
 const GlobalLoader = () => {
   return (
-    <div className='h-screen w-full grid place-items-center'>
+    <div className='h-screen w-full grid place-items-center bg-snow'>
         <LoaderCircle size={85} className='animate-spin' />
     </div>
   )

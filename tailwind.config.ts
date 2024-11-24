@@ -67,12 +67,14 @@ const config = {
           foreground: "hsl(var(--card-foreground))",
         },
         snow: "#FAFAFA",
-        "gray-background": "#E6E6E6",
-        "primary-blue": "#89CFF0",
-        "secondary-blue": "#1E3A8A", 
-        title: "#0B1B2D",
-        subtitle: "#3a3a3a",
-        paragraph: "#6a6a6a"
+        "primary-dark": "#0E0E0E",
+        "secondary-dark": "#171616",
+        "primary-blue": "#A0CFF7",
+        "secondary-blue": "#0066CC", 
+        title: "#EFEFEF",
+        subtitle: "#D2D2D2",
+        paragraph: "#7B7B7B",
+        link: "#E0E0E0"
       },
       borderRadius: {
         lg: "var(--radius)",
@@ -80,6 +82,26 @@ const config = {
         sm: "calc(var(--radius) - 4px)",
       },
       keyframes: {
+        "progress-bar": {
+          "0%": {
+            width: "0"
+          },
+          "20%": {
+            width: "20%"
+          },
+          "40%": {
+            width: "40%"
+          },
+          "60%": {
+            width: "60%"
+          },
+          "80%": {
+            width: "80%"
+          },
+          "100%": {
+            width: "100%"
+          },
+        },
         "accordion-down": {
           from: { height: "0" },
           to: { height: "var(--radix-accordion-content-height)" },
@@ -90,6 +112,7 @@ const config = {
         },
       },
       animation: {
+        "progress": "progress-bar 10s linear forwards",
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
       },

@@ -22,7 +22,7 @@ export default function RootLayout({
   return (
     <html lang="pt-br">
       <body className={quicksand.className}>
-        <div className="relative flex flex-col gap-10 w-[430px] min-h-dvh mx-auto bg-[#fafafa]">
+        <div className="relative">
           {isPrivateRoute ? (
             <ProductsProvider>
               <SessionVerifier>

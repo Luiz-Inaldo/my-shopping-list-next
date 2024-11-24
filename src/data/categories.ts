@@ -15,27 +15,27 @@ export const CATEGORIES_LIST = [
   {
     name: "Mercearia",
     icon: UtensilsCrossed,
-    color: "#D4EAC7"
+    color: "#4CAF50"
   },
   {
     name: "Limpeza",
     icon: SprayCan,
-    color: "#D1E7F3"
+    color: "#44a1ec"
   },
   {
     name: "Frios e Laticínios",
     icon: Milk,
-    color: "#F7E7CE"
+    color: "#ffdaa0"
   },
   {
     name: "Carnes e Peixes",
     icon: Beef,
-    color: "#F4A89A"
+    color: "#f37066"
   },
   {
     name: "Padaria",
     icon: CakeSlice,
-    color: "#FCE7A5"
+    color: "#ffd557"
   },
   {
     name: "Higiene Pessoal",
@@ -45,7 +45,7 @@ export const CATEGORIES_LIST = [
   {
     name: "Bebidas",
     icon: Wine,
-    color: "#A4D7E1"
+    color: "#88d1df"
   },
   {
     name: "Congelados",
@@ -55,7 +55,7 @@ export const CATEGORIES_LIST = [
   {
     name: "Hortifruti",
     icon: Apple,
-    color: "#B2E6B2"
+    color: "#93e393"
   },
   {
     name: "Outros",

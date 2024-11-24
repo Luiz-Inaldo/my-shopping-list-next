@@ -1,4 +1,4 @@
-import LoggedLayout from "@/components/layout/LoggedLayout";
+import LoggedLayout from "@/components/layout/MainLayout";
 
 export default function Statistics() {
     return(

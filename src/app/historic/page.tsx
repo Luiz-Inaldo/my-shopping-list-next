@@ -1,5 +1,5 @@
 "use client";
-import LoggedLayout from '@/components/layout/LoggedLayout';
+import LoggedLayout from '@/components/layout/MainLayout';
 import { Modal } from '@/components/Modal';
 import { toast } from '@/components/ui/use-toast';
 import { ProductsContext } from '@/context/ProductsContext';
@@ -36,13 +36,9 @@ export default function Historic() {
         setPurchase(purchase);
     }
 
-    console.log(
-        purchasesList
-    )
-
     return (
         <LoggedLayout>
-            <div className='w-full px-5'>
+            <div className='w-full px-5 min-h-dvh'>
                 <h1 className='text-xl font-semibold mb-8 max-w-[370px] text-subtitle text-ellipsis overflow-hidden whitespace-nowrap'>
                     Histórico de Compras
                 </h1>

@@ -29,6 +29,7 @@
     --chart-3: 197 37% 24%;
     --chart-4: 43 74% 66%;
     --chart-5: 27 87% 67%;
+    --header-height: 68px;
   }
 
   .dark {
@@ -64,7 +65,7 @@
     @apply border-border;
   }
   body {
-    @apply bg-gray-400 text-foreground;
+    @apply bg-gray-400 font-medium;
   }
 }
 
@@ -82,9 +83,13 @@
 }
 
 .avatar-shadow-minor {
-  filter: drop-shadow(0px 0px 3px rgba(0, 0, 0, 0.9));
+  filter: drop-shadow(0px 0px 3px rgba(0, 0, 0, 0.5));
 }
 
 .avatar-shadow-base {
   filter: drop-shadow(2px 2px 1px rgba(0, 0, 0, 0.5));
+}
+
+.main-container {
+  min-height: calc(100dvh - var(--header-height));
 }
