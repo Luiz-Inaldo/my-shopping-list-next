@@ -17,7 +17,7 @@ const Footer = () => {
 
     useEffect(() => {
         if (pathname === "/") {
-            setIsAllowed((data.length > 0 && currentPurchase) ? true : false);
+            setIsAllowed((data.length > 0 || currentPurchase) ? true : false);
         } else {
             if (allowedRoutes.includes(pathname)) {
                 setIsAllowed(true);

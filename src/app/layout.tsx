@@ -7,6 +7,7 @@ import SessionVerifier from "@/components/SessionVerifier";
 import useCheckRoute from "@/hooks/useCheckRoute";
 import { usePathname } from "next/navigation";
 import { PurchasesProvider } from "@/context/PurchasesContext";
+import VerifyDevice from "@/components/VerifyDevice";
 
 const quicksand = Quicksand({ weight: ['300', '400', '500', '700'], subsets: ["latin"] });
 
@@ -24,6 +25,7 @@ export default function RootLayout({
       <body className={quicksand.className}>
         <div className="relative">
           {isPrivateRoute ? (
+            <VerifyDevice>
             <ProductsProvider>
               <SessionVerifier>
                 <PurchasesProvider>
@@ -31,6 +33,7 @@ export default function RootLayout({
                 </PurchasesProvider>
               </SessionVerifier>
             </ProductsProvider>
+            </VerifyDevice>
           ) : (
             <>
               {children}
