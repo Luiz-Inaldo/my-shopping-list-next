@@ -5,7 +5,7 @@ import Footer from '../Footer'
 const LoggedLayout = ({ children }: { children: React.ReactNode }) => {
 
     return (
-        <div className='flex flex-col gap-10 justify-between bg-primary-dark max-w-[430px] min-h-dvh mx-auto'>
+        <div className='container bg-primary-dark'>
             <Header />
             {children}
             <Footer />

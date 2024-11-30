@@ -22,6 +22,9 @@ export const APP_ROUTES = {
         },
         register :{
             name: "/auth/register"
+        },
+        errorDevice: {
+            name: "/device-error"
         }
     }
 }
