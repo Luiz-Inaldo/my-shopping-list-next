@@ -68,13 +68,14 @@ const config = {
         },
         snow: "#FAFAFA",
         "primary-dark": "#0E0E0E",
-        "secondary-dark": "#171616",
+        "secondary-dark": "#343a40",
+        "dark-button-color": "#0466c8",
         "primary-blue": "#A0CFF7",
         "secondary-blue": "#0066CC", 
-        title: "#EFEFEF",
-        subtitle: "#D2D2D2",
-        paragraph: "#7B7B7B",
-        link: "#E0E0E0"
+        titledark: "#f8f9fa",
+        subtitledark: "#ced4da",
+        paragraphdark: "#adb5bd",
+        linkdark: "#E9ECEF"
       },
       borderRadius: {
         lg: "var(--radius)",

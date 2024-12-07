@@ -41,8 +41,8 @@ export const LimitedValueForm = () => {
             {isVisible && (
                 <div className={`${isFading ? 'opacity-100 visible' : 'opacity-0 invisible'} w-[350px] p-5 rounded bg-snow transition-all duration-500`}>
                     <form onSubmit={handleSubmit(onSubmit)} >
-                        <h2 className='text-xl text-center text-subtitle mb-5 border-b border-paragraph'>Bem-vindo, usuário!</h2>
-                        <p className='text-paragraph text-center'>
+                        <h2 className='text-xl text-center text-subtitledark mb-5 border-b border-paragraph'>Bem-vindo, usuário!</h2>
+                        <p className='text-paragraphdark text-center'>
                             Identificamos que você não definiu nenhum valor estipulado para suas compras.
                             Se desejar, informe o valor máximo que deseja gastar nas compras*
                         </p>
@@ -50,12 +50,12 @@ export const LimitedValueForm = () => {
                             type="text"
                             placeholder='Informe o valor máximo'
                             {...register('max_value', { required: true })}
-                            className='w-full text-paragraph rounded border border-gray-400 px-3 py-2 h-8 mt-10'
+                            className='w-full text-paragraphdark rounded border border-gray-400 px-3 py-2 h-8 mt-10'
                         />
                         <div className='grid grid-cols-2 gap-2 my-5'>
                             <button
                                 type='submit'
-                                className='col-span-1 flex items-center justify-center w-full bg-primary-blue py-2 px-3 rounded text-title'>
+                                className='col-span-1 flex items-center justify-center w-full bg-primary-blue py-2 px-3 rounded text-titledark'>
                                 Definir Valor
                             </button>
                             <button
@@ -64,11 +64,11 @@ export const LimitedValueForm = () => {
                                     state: 'CLOSED',
                                     type: null
                                 })}
-                                className='col-span-1 flex items-center justify-center w-full border border-title py-2 px-3 rounded text-title'>
+                                className='col-span-1 flex items-center justify-center w-full border border-title py-2 px-3 rounded text-titledark'>
                                 Agora não!
                             </button>
                         </div>
-                        <p className='text-xs text-paragraph text-center'>
+                        <p className='text-xs text-paragraphdark text-center'>
                             *(esse valor poderá ser alterado a qualquer momento nas configurações do aplicativo)
                         </p>
                     </form>

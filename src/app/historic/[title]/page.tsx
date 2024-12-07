@@ -81,7 +81,7 @@ export default function HistoricPage() {
             <div className='p-5 grid 2xsm:grid-cols-1 gap-10'>
 
                 {/* breadcrumb */}
-                <div className='flex items-center gap-2 text-sm text-subtitle'>
+                <div className='flex items-center gap-2 text-sm text-subtitledark'>
                     {/* <ArrowLeft size={20} /> */}
                     <Link
                         href="/historic"
@@ -101,7 +101,7 @@ export default function HistoricPage() {
                             className='flex flex-col p-5 gap-4 border border-gray-400 rounded-md bg-yellow-50 shadow'>
                             {/* slip header */}
                             <div className='text-center'>
-                                <h1 className='text-subtitle font-semibold pb-1 mb-2 border-b border-dashed border-gray-400'>
+                                <h1 className='text-subtitledark font-semibold pb-1 mb-2 border-b border-dashed border-gray-400'>
                                     {decodedTitle}
                                 </h1>
                                 <p className='text-sm'>
@@ -137,7 +137,7 @@ export default function HistoricPage() {
                                 {
                                     Array.isArray(purchase.purchase_items) && (
                                         purchase.purchase_items.sort((a, b) => a.name.localeCompare(b.name)).map((item: IProductProps, index: number) => (
-                                            <div key={item.id} className='flex uppercase text-[10px] text-subtitle'>
+                                            <div key={item.id} className='flex uppercase text-[10px] text-subtitledark'>
                                                 <div className='flex-1 flex items-center p-[2px] max-w-[215px] text-ellipsis overflow-hidden whitespace-nowrap'>
                                                     {`${index + 1} - ${item.name}`}
                                                 </div>
@@ -156,7 +156,7 @@ export default function HistoricPage() {
                                 }
                                 {/* end content items */}
 
-                                <div className='flex items-center justify-between uppercase text-md font-medium mb-5 mt-2 text-subtitle'>
+                                <div className='flex items-center justify-between uppercase text-md font-medium mb-5 mt-2 text-subtitledark'>
                                     <span>total R$</span>
                                     <span>{purchase.total_price}</span>
                                 </div>
@@ -164,7 +164,7 @@ export default function HistoricPage() {
                             </div>
                             {/* end slip content */}
 
-                            <p className='text-xs text-paragraph text-center'>
+                            <p className='text-xs text-paragraphdark text-center'>
                                 Esse slip não tem valor fiscal
                             </p>
                         </div>
@@ -178,7 +178,7 @@ export default function HistoricPage() {
 
                     </React.Fragment>
                 ) : (
-                    <p className='text-center text-paragraph text-xs'>carregando cupom...</p>
+                    <p className='text-center text-paragraphdark text-xs'>carregando cupom...</p>
                 )}
             </div>
         </>

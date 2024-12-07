@@ -37,10 +37,10 @@ export const EditProductForm = ({ item }: { item: IProductProps | undefined }) =
             {isVisible && (
                 <div className={`${isFading ? 'opacity-100 visible' : 'opacity-0 invisible'} w-[350px] rounded bg-secondary-dark border border-paragraph/30 transition-all duration-500`}>
                     <form onSubmit={handleSubmit(onSubmit)} className='flex flex-col gap-3 p-5'>
-                        <h1 className='text-subtitle text-xl text-center'>O que deseja editar no produto?</h1>
+                        <h1 className='text-subtitledark text-xl text-center'>O que deseja editar no produto?</h1>
                         
                         <label htmlFor="name" className='flex flex-col mt-3'>
-                            <span className='text-paragraph font-semibold'>Nome:</span>
+                            <span className='text-paragraphdark font-semibold'>Nome:</span>
                             <Controller
                                 control={control}
                                 name="name"
@@ -49,14 +49,14 @@ export const EditProductForm = ({ item }: { item: IProductProps | undefined }) =
                                     <input
                                         type="text"
                                         {...field}
-                                        className='w-full text-paragraph rounded border border-gray-400 px-3 py-2 h-8 text-ellipsis overflow-hidden whitespace-nowrap'
+                                        className='w-full text-paragraphdark rounded border border-gray-400 px-3 py-2 h-8 text-ellipsis overflow-hidden whitespace-nowrap'
                                     />
                                 )}
                             />
                         </label>
                         <div className='grid grid-cols-2 gap-3'>
                             <label htmlFor="value" className='flex flex-col col-span-1'>
-                                <span className='text-paragraph font-semibold'>Valor:</span>
+                                <span className='text-paragraphdark font-semibold'>Valor:</span>
                                 <Controller
                                     control={control}
                                     name="value"
@@ -65,13 +65,13 @@ export const EditProductForm = ({ item }: { item: IProductProps | undefined }) =
                                         <input
                                             type="text"
                                             {...field}
-                                            className='w-full text-paragraph rounded border border-gray-400 px-3 py-2 h-8'
+                                            className='w-full text-paragraphdark rounded border border-gray-400 px-3 py-2 h-8'
                                         />
                                     )}
                                 />
                             </label>
                             <label htmlFor="quantity" className='flex flex-col col-span-1'>
-                                <span className='text-paragraph font-semibold'>Quantidade:</span>
+                                <span className='text-paragraphdark font-semibold'>Quantidade:</span>
                                 <Controller
                                     control={control}
                                     name="quantity"
@@ -80,7 +80,7 @@ export const EditProductForm = ({ item }: { item: IProductProps | undefined }) =
                                         <input
                                             type="number"
                                             {...field}
-                                            className='w-full text-paragraph rounded border border-gray-400 px-3 py-2 h-8'
+                                            className='w-full text-paragraphdark rounded border border-gray-400 px-3 py-2 h-8'
                                         />
                                     )}
                                 />
@@ -98,7 +98,7 @@ export const EditProductForm = ({ item }: { item: IProductProps | undefined }) =
                                     state: 'CLOSED',
                                     type: null
                                 })}
-                                className='col-span-1 flex items-center justify-center w-full border border-title py-2 px-3 rounded text-title'>
+                                className='col-span-1 flex items-center justify-center w-full border border-title py-2 px-3 rounded text-titledark'>
                                 Cancelar
                             </button>
                         </div>

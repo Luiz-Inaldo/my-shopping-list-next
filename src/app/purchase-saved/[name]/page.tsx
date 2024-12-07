@@ -12,8 +12,8 @@ export default function PurchaseSaved() {
                 width={200}
                 height={200}
             />
-            <h1 className="text-subtitle text-xl text-center font-semibold my-4">Sua compra foi salva com sucesso.</h1>
-            <p className="text-paragraph text-center">Consulte-a em sua área de históricos para mais detalhes</p>
+            <h1 className="text-subtitledark text-xl text-center font-semibold my-4">Sua compra foi salva com sucesso.</h1>
+            <p className="text-paragraphdark text-center">Consulte-a em sua área de históricos para mais detalhes</p>
             <div className="flex flex-col gap-1 mt-8">
                 <Link
                     href="/historic"
@@ -23,7 +23,7 @@ export default function PurchaseSaved() {
                 </Link>
                 <Link
                     href="/"
-                    className="px-3 py-2 flex items-center justify-center cursor-pointer uppercase text-sm text-link"
+                    className="px-3 py-2 flex items-center justify-center cursor-pointer uppercase text-sm text-linkdark"
                 >
                     <span className="underline">ir para página principal</span>
                 </Link>

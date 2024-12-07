@@ -22,7 +22,7 @@ export const ShadSelect = ({control, children, label, name}: {
             rules={{ required: true }}
             render={({ field:{ onChange, value} }) => (
                 <Select onValueChange={onChange} value={value}>
-                    <SelectTrigger className="w-full text-paragraph rounded border border-gray-400 px-3 py-2 h-8">
+                    <SelectTrigger className="w-full text-paragraphdark rounded border border-gray-400 px-3 py-2 h-8">
                         <SelectValue placeholder={label || ''} />
                     </SelectTrigger>
                     <SelectContent>

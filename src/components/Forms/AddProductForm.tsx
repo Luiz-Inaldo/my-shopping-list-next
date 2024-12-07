@@ -90,11 +90,11 @@ export const AddProductForm = () => {
                     <div className='flex flex-col gap-5 p-5'>
 
                         <label htmlFor="name" className='relative flex flex-col'>
-                            <span className='text-paragraph font-semibold'>Nome do produto:</span>
+                            <span className='text-paragraphdark font-semibold'>Nome do produto:</span>
                             <input
                                 type="text"
                                 placeholder="Digite o nome do produto"
-                                className='w-full text-paragraph rounded border border-gray-400 px-3 py-2 h-8'
+                                className='w-full text-paragraphdark rounded border border-gray-400 px-3 py-2 h-8'
                                 {...register('name', { required: true })}
                             />
                             {errors.name && <span className='text-xs text-red-500'>
@@ -103,7 +103,7 @@ export const AddProductForm = () => {
                         </label>
 
                         <label htmlFor="category" className='relative flex flex-col col-span-1'>
-                            <span className='text-paragraph font-semibold'>Categoria:</span>
+                            <span className='text-paragraphdark font-semibold'>Categoria:</span>
                             <ShadSelect control={control} label='Escolha a categoria' name="category">
                                 {CATEGORIES.map(category => (
                                     <SelectItem key={category.name} value={category.name}>{category.name}</SelectItem>
@@ -116,10 +116,10 @@ export const AddProductForm = () => {
 
                         <div className='grid grid-cols-2 gap-2'>
                             <label htmlFor="quantity" className='relative flex flex-col col-span-1'>
-                                <span className='text-paragraph font-semibold'>Quantidade:</span>
+                                <span className='text-paragraphdark font-semibold'>Quantidade:</span>
                                 <input
                                     type="number"
-                                    className='w-36 text-paragraph rounded border border-gray-400 px-3 py-2 h-8'
+                                    className='w-36 text-paragraphdark rounded border border-gray-400 px-3 py-2 h-8'
                                     {...register('quantity', { required: true })}
                                 />
                                 {errors.name && <span className='text-xs text-red-500'>
@@ -128,12 +128,12 @@ export const AddProductForm = () => {
                             </label>
 
                             <label htmlFor="value" className='relative flex flex-col'>
-                                <span className='text-paragraph font-semibold'>Valor:</span>
+                                <span className='text-paragraphdark font-semibold'>Valor:</span>
                                 <input
                                     type="text"
                                     defaultValue={"0,00"}
                                     placeholder="Digite o valor do produto"
-                                    className='w-36 text-paragraph rounded border border-gray-400 px-3 py-2 h-8'
+                                    className='w-36 text-paragraphdark rounded border border-gray-400 px-3 py-2 h-8'
                                     {...register('value')}
                                 />
                             </label>
@@ -141,7 +141,7 @@ export const AddProductForm = () => {
 
 
                         <label htmlFor="checked" className='relative flex items-center gap-5'>
-                            <span className='text-paragraph font-semibold'>Já adquirido?</span>
+                            <span className='text-paragraphdark font-semibold'>Já adquirido?</span>
                             <input
                                 type="checkbox"
                                 className="w-4 h-4 accent-primary-blue border-2 border-paragraph rounded"

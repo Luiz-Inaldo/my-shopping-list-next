@@ -38,20 +38,20 @@ export const CheckItemForm = ({ item }: { item: IProductProps | undefined }) => 
             {isVisible && (
                 <div className={`${isFading ? 'opacity-100 visible' : 'opacity-0 invisible'} w-[350px] rounded bg-snow transition-all duration-500`}>
                     <form onSubmit={handleSubmit(onSubmit)} className='flex flex-col gap-3 p-5'>
-                        <h1 className='text-subtitle text-xl text-center'>Quanto você pagará por esse produto?</h1>
+                        <h1 className='text-subtitledark text-xl text-center'>Quanto você pagará por esse produto?</h1>
                         <label htmlFor="value" className='flex flex-col'>
                             <input
                                 defaultValue={item?.value}
                                 type="text"
                                 {...register('value', { required: true })}
                                 placeholder="R$: 0,00"
-                                className='w-full text-paragraph rounded border border-gray-400 px-3 py-2 h-8 text-ellipsis overflow-hidden whitespace-nowrap'
+                                className='w-full text-paragraphdark rounded border border-gray-400 px-3 py-2 h-8 text-ellipsis overflow-hidden whitespace-nowrap'
                             />
                         </label>
                         <div className='grid grid-cols-2 gap-2 mt-5'>
                             <button
                                 type='submit'
-                                className='col-span-1 flex items-center justify-center w-full bg-primary-blue py-2 px-3 rounded text-title'>
+                                className='col-span-1 flex items-center justify-center w-full bg-primary-blue py-2 px-3 rounded text-titledark'>
                                 Marcar Produto
                             </button>
                             <button
@@ -60,7 +60,7 @@ export const CheckItemForm = ({ item }: { item: IProductProps | undefined }) => 
                                     state: 'CLOSED',
                                     type: null
                                 })}
-                                className='col-span-1 flex items-center justify-center w-full border border-title py-2 px-3 rounded text-title'>
+                                className='col-span-1 flex items-center justify-center w-full border border-title py-2 px-3 rounded text-titledark'>
                                 Cancelar
                             </button>
                         </div>
