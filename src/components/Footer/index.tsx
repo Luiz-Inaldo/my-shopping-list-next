@@ -34,7 +34,7 @@ const Footer = () => {
                     style={{
                         boxShadow: "0 -3px 4px rgb(0 0 0 / 0.1)"
                     }}
-                    className='sticky bottom-0 left-0 z-[3] bg-secondary-dark py-2 px-4 flex items-center justify-center'>
+                    className='fixed bottom-0 left-0 z-[3] w-full bg-secondary-dark py-2 px-4 flex items-center justify-center'>
                     <ul className='flex flex-1 items-center justify-between'>
                         <li>
                             <Link href={APP_ROUTES.private.home.name} className={`grid gap-1 p-2 place-items-center border-b ${pathname === "/" ? "text-linkdark border-link" : "text-paragraphdark border-transparent"}`}>

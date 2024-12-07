@@ -16,7 +16,7 @@ const Main = () => {
   return (
     <React.Fragment>
       <main
-        className={`main-container py-3 px-5 mb-10 flex flex-col gap-5`}
+        className={`main-container py-28 px-5 flex flex-col gap-5`}
       >
         {(data.length === 0 && !currentPurchase) ? (
           <NonPurchaseList user={user} />

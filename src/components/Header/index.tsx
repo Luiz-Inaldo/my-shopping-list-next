@@ -36,7 +36,7 @@ const Header = () => {
     }, [])
 
     return (
-        <header ref={headerRef} className="sticky top-0 left-0 z-[3] w-full p-4 bg-secondary-dark flex items-center justify-between transition-shadow duration-500">
+        <header ref={headerRef} className="fixed top-0 left-0 z-[3] w-full p-4 bg-secondary-dark flex items-center justify-between transition-shadow duration-500">
             <div className='flex items-center gap-3 cursor-pointer overflow-hidden'>
                 <Avatar className='border-2 border-snow'>
                     <AvatarImage src="images/profile.JPG" />

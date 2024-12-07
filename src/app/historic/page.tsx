@@ -38,7 +38,7 @@ export default function Historic() {
 
     return (
         <LoggedLayout>
-            <div className='w-full px-5 min-h-dvh'>
+            <div className='w-full px-5 py-28'>
                 <h1 className='text-xl font-semibold mb-8 max-w-[370px] text-subtitledark text-ellipsis overflow-hidden whitespace-nowrap'>
                     Histórico de Compras
                 </h1>
@@ -62,16 +62,16 @@ export default function Historic() {
                                 purchasesList.map((purchase) => (
                                     <div
                                         key={purchase.id}
-                                        className='bg-subtitle/15 border border-gray-100 rounded shadow-md p-2 flex flex-col gap-3'
+                                        className='bg-secondary-dark/80 border border-gray-100 rounded shadow-md p-2 flex flex-col gap-3'
                                     >
                                         <div className='flex items-center gap-2'>
                                             <div className='flex items-center gap-2 flex-1'>
-                                                <div className='rounded-full bg-subtitle w-2 h-2'></div>
+                                                <div className='rounded-full bg-dark-button-color w-2 h-2'></div>
                                                 <h2 className='font-bold text-subtitledark'>
                                                     {purchase.title}
                                                 </h2>
                                             </div>
-                                            <div className='flex items-center justify-center cursor-pointer'>
+                                            <div className='flex items-center justify-center cursor-pointer text-paragraphdark'>
                                                 <Trash2
                                                     onClick={() => handleOpenModal(purchase)}
                                                     size={16}
@@ -79,18 +79,17 @@ export default function Historic() {
                                             </div>
                                         </div>
                                         <div className='flex flex-col gap-4'>
-                                            <div className='flex items-center justify-between'>
+                                            <div className='flex items-center justify-between text-paragraphdark'>
                                                 <span>{formatCurrency(purchase.total_price)}</span>
                                                 <span>{purchase.purchase_date.split("T")[0].split("-").reverse().join("/")}</span>
                                             </div>
                                             <div>
-                                                <p
+                                                <button
                                                     onClick={() => router.push(APP_ROUTES.private.historic.children.name(purchase.title))}
-                                                    className='flex items-center gap-1 font-medium text-blue-900 hover:text-blue-700 transition-colors duration-300'
+                                                    className='flex items-center gap-1 font-medium bg-paragraphdark py-0.5 px-2 rounded-full text-sm'
                                                 >
-                                                    <ArrowRight size={16} />
-                                                    clique para detalhes
-                                                </p>
+                                                    detalhes
+                                                </button>
                                             </div>
                                         </div>
                                     </div>
