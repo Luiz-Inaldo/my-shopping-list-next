@@ -152,13 +152,13 @@ const ShoppingList = ({ listname }: { listname: string | undefined }) => {
 
     return (
         <>
-            <h2 className='text-2xl font-bold px-4 pb-1 uppercase text-subtitle w-fit mx-auto'>
+            <h2 className='text-2xl font-bold px-4 pb-1 uppercase text-subtitledark w-fit mx-auto'>
                 {listname && listname}
             </h2>
 
             <Fade triggerOnce>
                 <div className='rounded bg-secondary-dark p-2 shadow'>
-                    <div className={`flex items-center justify-between gap-2 text-subtitle ${showPurchaseInfo && "mb-3"} transition-all duration-500`}>
+                    <div className={`flex items-center justify-between gap-2 text-subtitledark ${showPurchaseInfo && "mb-3"} transition-all duration-500`}>
 
                         <div className='flex gap-2 items-center'>
                             <Info size={16} />
@@ -179,24 +179,24 @@ const ShoppingList = ({ listname }: { listname: string | undefined }) => {
 
                     <div className={`${showPurchaseInfo ? "max-h-[1000px]" : "max-h-0"} transition-all duration-500 overflow-hidden grid gap-5`}>
                         <ul className={`flex flex-col gap-1`}>
-                            <li className="col-span-2 flex gap-2 items-center justify-between text-paragraph">
+                            <li className="col-span-2 flex gap-2 items-center justify-between text-paragraphdark">
                                 <h3 className="flex-1">Itens comprados: </h3>
                                 <span className="p-1 font-semibold">
                                     {data.filter((item) => item.checked === true).length}
                                 </span>
                             </li>
 
-                            <li className="col-span-2 flex gap-2 items-center text-paragraph">
+                            <li className="col-span-2 flex gap-2 items-center text-paragraphdark">
                                 <h3 className="flex-1">Valor Total: </h3>
                                 <span className="p-1 font-semibold">{formatCurrency(totalValue || "0")}</span>
                             </li>
 
-                            <li className="col-span-2 flex gap-2 items-center text-paragraph">
+                            <li className="col-span-2 flex gap-2 items-center text-paragraphdark">
                                 <h3 className="flex-1">Gasto Estipulado: </h3>
                                 <span className="p-1 font-semibold">{formatCurrency(currentPurchase?.list_max_value || "0")}</span>
                             </li>
 
-                            <li className="col-span-2 flex gap-2 items-center text-paragraph">
+                            <li className="col-span-2 flex gap-2 items-center text-paragraphdark">
                                 <h3 className="flex-1">Situação: </h3>
                                 <span
                                     className={`py-1 px-3 text-sm rounded-full ${situation === "good" && "bg-green-100"
@@ -263,7 +263,7 @@ const ShoppingList = ({ listname }: { listname: string | undefined }) => {
                 <input
                     type="text"
                     placeholder="Busque um produto específico..."
-                    className="w-full placeholder:text-paragraph text-paragraph bg-secondary-dark rounded-sm px-3 py-2 h-8"
+                    className="w-full placeholder:text-paragraphdark text-paragraphdark bg-secondary-dark rounded-sm px-3 py-2 h-8"
                 />
             </div>
 
@@ -331,7 +331,7 @@ const ShoppingList = ({ listname }: { listname: string | undefined }) => {
                                                                     className="flex flex-col gap-4 rounded"
                                                                 >
                                                                     <div
-                                                                        className={`relative rounded pl-3 py-3 flex flex-col gap-2 text-paragraph ${item.checked
+                                                                        className={`relative rounded pl-3 py-3 flex flex-col gap-2 text-paragraphdark ${item.checked
                                                                             && "font-semibold bg-snow/5"
                                                                             }`}
                                                                     >
@@ -363,7 +363,7 @@ const ShoppingList = ({ listname }: { listname: string | undefined }) => {
                                                                                             className={`${optionMenu === item.id
                                                                                                 ? "animate-in fade-in-0 zoom-in-85"
                                                                                                 : "animate-out fade-out-0 zoom-out-85"
-                                                                                                } absolute z-40 py-1 right-7 -top-2 rounded shadow border border-paragraph bg-secondary-dark text-link text-sm grid gap-1`}
+                                                                                                } absolute z-40 py-1 right-7 -top-2 rounded shadow border border-paragraph bg-secondary-dark text-linkdark text-sm grid gap-1`}
                                                                                         >
                                                                                             <span
                                                                                                 className="px-3"
@@ -413,7 +413,7 @@ const ShoppingList = ({ listname }: { listname: string | undefined }) => {
                                                             ))}
                                                         </React.Fragment>
                                                     ) : (
-                                                        <p className="text-paragraph text-center mt-2">
+                                                        <p className="text-paragraphdark text-center mt-2">
                                                             Sem itens
                                                         </p>
                                                     )}

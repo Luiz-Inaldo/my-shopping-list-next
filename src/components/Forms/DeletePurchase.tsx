@@ -61,7 +61,7 @@ export const DeletePurchase = ({ purchase }: { purchase: IPurchaseProps | undefi
                         <button
                             type='button'
                             onClick={() => deletePurchase(purchase)}
-                            className='col-span-1 flex items-center justify-center w-full bg-primary-blue py-2 px-3 rounded text-title'>
+                            className='col-span-1 flex items-center justify-center w-full bg-primary-blue py-2 px-3 rounded text-titledark'>
                             Sim
                         </button>
                         <button
@@ -70,7 +70,7 @@ export const DeletePurchase = ({ purchase }: { purchase: IPurchaseProps | undefi
                                 state: 'CLOSED',
                                 type: null
                             })}
-                            className='col-span-1 flex items-center justify-center w-full border border-title py-2 px-3 rounded text-title'>
+                            className='col-span-1 flex items-center justify-center w-full border border-title py-2 px-3 rounded text-titledark'>
                             Cancelar
                         </button>
                     </div>

@@ -39,7 +39,7 @@ export default function Historic() {
     return (
         <LoggedLayout>
             <div className='w-full px-5 min-h-dvh'>
-                <h1 className='text-xl font-semibold mb-8 max-w-[370px] text-subtitle text-ellipsis overflow-hidden whitespace-nowrap'>
+                <h1 className='text-xl font-semibold mb-8 max-w-[370px] text-subtitledark text-ellipsis overflow-hidden whitespace-nowrap'>
                     Histórico de Compras
                 </h1>
                 <div className='grid 2xsm:grid-cols-1 gap-4'>
@@ -67,7 +67,7 @@ export default function Historic() {
                                         <div className='flex items-center gap-2'>
                                             <div className='flex items-center gap-2 flex-1'>
                                                 <div className='rounded-full bg-subtitle w-2 h-2'></div>
-                                                <h2 className='font-bold text-subtitle'>
+                                                <h2 className='font-bold text-subtitledark'>
                                                     {purchase.title}
                                                 </h2>
                                             </div>

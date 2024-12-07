@@ -52,11 +52,11 @@ const Menu = () => {
                 </SheetTrigger>
                 <SheetContent side={'right'}>
                     <SheetHeader className='h-full'>
-                        <SheetTitle className='text-left pb-2 border-b text-subtitle flex items-end gap-2'>
+                        <SheetTitle className='text-left pb-2 border-b text-subtitledark flex items-end gap-2'>
                             <h1>MENU</h1>
                         </SheetTitle>
                         <SheetDescription className='text-left h-full text-base flex flex-col justify-between'>
-                            <ul className='grid text-paragraph mt-5'>
+                            <ul className='grid text-paragraphdark mt-5'>
                                 <li className='py-2'>
                                     <Link href="/" className='flex items-center gap-2 cursor-pointer'>
                                         <House size={16} />
