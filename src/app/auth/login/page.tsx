@@ -1,14 +1,18 @@
 'use client'
+import useMySwal from '@/hooks/useMySwal';
 import { User } from '@/interfaces/user';
 import { supabase } from '@/lib/api'
-import { LoaderCircle, LogInIcon } from 'lucide-react';
+import { APP_ROUTES } from '@/routes/app-routes';
+import { Eye, EyeOff, LoaderCircle, LogInIcon } from 'lucide-react';
 import { useRouter } from 'next/navigation';
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import { useForm } from 'react-hook-form';
 
 export default function LogIn() {
 
     const [loading, setLoading] = useState<boolean>(false);
+    const [isPasswordVisible, setIsPasswordVisible] = useState<boolean>(false);
+    const swal = useMySwal();
 
     const router = useRouter();
     const {
@@ -23,9 +27,33 @@ export default function LogIn() {
         const { data, error } = await supabase.auth.signInWithPassword(userCredentials);
 
         if (error) {
-            console.log("não foi possível fazer login", error.message)
+            if (error.code === 'invalid_credentials') {
+                swal.fire({
+                    icon: "error",
+                    title: "Oops!",
+                    text: "Credenciais de login inválidas, ou não existem.",
+                    confirmButtonText: "Ok"
+                })
+            } else {
+                swal.fire({
+                    icon: "error",
+                    title: "Oops!",
+                    text: "Houve um erro ao tentar o login.",
+                    confirmButtonText: "Ok"
+                })
+            }
         } else {
-            router.push('/');
+            swal.fire({
+                icon: "success",
+                toast: true,
+                position: "bottom-right",
+                text: "Login realizado com sucesso.",
+                showConfirmButton: false,
+                timer: 2000,
+                timerProgressBar: true
+            })
+            setTimeout(() => router.push(APP_ROUTES.private.home.name), 2000)
+
         }
 
         setLoading(false);
@@ -33,9 +61,9 @@ export default function LogIn() {
     };
 
     return (
-        <div className='bg-primary-green max-w-[430px] min-h-screen flex flex-col items-center justify-center'>
+        <div className='bg-primary-blue max-w-[430px] min-h-screen flex flex-col items-center justify-center'>
             <div className='w-[350px] rounded bg-snow p-5 shadow-md'>
-                <h2 className='text-2xl uppercase text-center text-subtitle mb-5 border-b border-[#DDD]'>SignIn</h2>
+                <h2 className='text-2xl uppercase text-center text-subtitledark mb-5 border-b border-[#DDD]'>SignIn</h2>
                 <form onSubmit={handleSubmit(onSubmit)} className='flex flex-col gap-3' >
                     <label htmlFor="email">
                         <span>E-mail:</span>
@@ -43,21 +71,36 @@ export default function LogIn() {
                             type="text"
                             placeholder='Seu e-mail'
                             {...register('email', { required: true })}
-                            className='w-full text-paragraph rounded border border-gray-400 px-3 py-2 h-8'
+                            className='w-full text-paragraphdark rounded border border-gray-400 px-3 py-2 h-8'
                         />
                     </label>
-                    <label htmlFor="password">
+                    <label htmlFor="password" className='relative'>
                         <span>Senha:</span>
                         <input
-                            type="password"
+                            type={isPasswordVisible ? 'text' : 'password'}
                             placeholder='Sua senha'
                             {...register('password', { required: true })}
-                            className='w-full text-paragraph rounded border border-gray-400 px-3 py-2 h-8'
+                            className='w-full text-paragraphdark rounded border border-gray-400 px-3 py-2 h-8'
                         />
+
+                        {isPasswordVisible ? (
+                            <EyeOff
+                                size={14}
+                                className='absolute right-2 top-[34px] text-paragraphdark cursor-pointer'
+                                onClick={() => setIsPasswordVisible(false)}
+                            />
+                        ) : (
+                            <Eye
+                                size={14}
+                                className='absolute right-2 top-[34px] text-paragraphdark cursor-pointer'
+                                onClick={() => setIsPasswordVisible(true)}
+                            />
+                        )}
+
                     </label>
                     <button
                         type='submit'
-                        className='w-full uppercase flex gap-2 items-center justify-center bg-primary-green py-2 px-3 rounded text-title mt-10'>
+                        className='w-full uppercase flex gap-2 items-center justify-center bg-primary-blue py-2 px-3 rounded text-titledark mt-10'>
                         {loading ? (
                             <>
                                 <span>Autenticando...</span>

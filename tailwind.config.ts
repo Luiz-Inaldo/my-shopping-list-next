@@ -13,11 +13,25 @@ const config = {
     container: {
       center: true,
       padding: "2rem",
-      screens: {
-        "2xl": "1400px",
-      },
     },
     extend: {
+      screens: {
+        "2xsm": "375px",
+        "xsm": "425px",
+        "2xl": "1400px",
+      },
+      height: {
+        "screen-dvh":  "100dvh",
+        "screen-svh":  "100svh",
+      },
+      minHeight: {
+        "screen-dvh":  "100dvh",
+        "screen-svh":  "100svh",
+      },
+      maxHeight: {
+        "screen-dvh":   "100dvh",
+        "screen-svh":   "100svh",
+      },
       colors: {
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
@@ -53,12 +67,15 @@ const config = {
           foreground: "hsl(var(--card-foreground))",
         },
         snow: "#FAFAFA",
-        "gray-background": "#E6E6E6",
-        "primary-green": "#3DF566",
-        "secondary-green": "#0A7122", 
-        title: "#00340E",
-        subtitle: "#3a3a3a",
-        paragraph: "#6a6a6a"
+        "primary-dark": "#212529",
+        "secondary-dark": "#343a40",
+        "dark-button-color": "#0466c8",
+        "primary-blue": "#A0CFF7",
+        "secondary-blue": "#0066CC", 
+        titledark: "#f8f9fa",
+        subtitledark: "#ced4da",
+        paragraphdark: "#adb5bd",
+        linkdark: "#E9ECEF"
       },
       borderRadius: {
         lg: "var(--radius)",
@@ -66,6 +83,26 @@ const config = {
         sm: "calc(var(--radius) - 4px)",
       },
       keyframes: {
+        "progress-bar": {
+          "0%": {
+            width: "0"
+          },
+          "20%": {
+            width: "20%"
+          },
+          "40%": {
+            width: "40%"
+          },
+          "60%": {
+            width: "60%"
+          },
+          "80%": {
+            width: "80%"
+          },
+          "100%": {
+            width: "100%"
+          },
+        },
         "accordion-down": {
           from: { height: "0" },
           to: { height: "var(--radix-accordion-content-height)" },
@@ -76,6 +113,7 @@ const config = {
         },
       },
       animation: {
+        "progress": "progress-bar 10s linear forwards",
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
       },

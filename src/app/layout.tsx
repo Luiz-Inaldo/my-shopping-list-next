@@ -1,25 +1,47 @@
-import type { Metadata } from "next";
-import { Itim } from "next/font/google";
+'use client'
+import { Itim, Quicksand } from "next/font/google";
 import "../styles/globals.css";
 import { ProductsProvider } from "@/context/ProductsContext";
+import { Toaster } from "@/components/ui/toaster";
+import SessionVerifier from "@/components/SessionVerifier";
+import useCheckRoute from "@/hooks/useCheckRoute";
+import { usePathname } from "next/navigation";
+import { PurchasesProvider } from "@/context/PurchasesContext";
+import VerifyDevice from "@/components/VerifyDevice";
 
-const itim = Itim({ weight: '400', subsets: ["latin"] });
-
-export const metadata: Metadata = {
-  title: "Minha lista de compras",
-};
+const quicksand = Quicksand({ weight: ['300', '400', '500', '700'], subsets: ["latin"] });
 
 export default function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+
+  const pathname = usePathname();
+  const isPrivateRoute = useCheckRoute(pathname);
+
   return (
-    <html lang="en">
-      <body className={itim.className}>
-        <ProductsProvider>
-          {children}
-        </ProductsProvider>
+    <html lang="pt-br">
+      <body className={quicksand.className}>
+        <div className="relative">
+          {isPrivateRoute ? (
+            <VerifyDevice>
+            <ProductsProvider>
+              <SessionVerifier>
+                <PurchasesProvider>
+                  {children}
+                </PurchasesProvider>
+              </SessionVerifier>
+            </ProductsProvider>
+            </VerifyDevice>
+          ) : (
+            <>
+              {children}
+            </>
+          )}
+
+        </div>
+        <Toaster />
       </body>
     </html>
   );
