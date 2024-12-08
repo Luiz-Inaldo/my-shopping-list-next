@@ -1,8 +1,4 @@
-import { Quicksand } from "next/font/google";
-import "../../styles/globals.css";
 import { Metadata } from "next";
-
-const quicksand = Quicksand({ weight: ['300', '400', '500', '700'], subsets: ["latin"] });
 
 export const metadata: Metadata = {
   title: "Erro de dispositivo",
@@ -21,12 +17,8 @@ export default function RootLayout({
 }>) {
 
   return (
-    <html lang="pt-br">
-      <body className={quicksand.className}>
-        <div className="relative">
-          {children}
-        </div>
-      </body>
-    </html>
+    <>
+    {children}
+    </>
   );
 }

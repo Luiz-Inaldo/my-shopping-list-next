@@ -38,6 +38,7 @@ export interface IPuchasesContextProps {
     purchasesList: IPurchaseProps[];
     setPurchasesList: React.Dispatch<React.SetStateAction<IPurchaseProps[]>>;
     loading: boolean;
+    filterPurchases: (filter: IFilterProps) => void;
 }
 
 export interface IFormItem extends Omit<IProductProps, 'id'> {}
@@ -67,4 +68,9 @@ export interface ISupabasePurchaseProps {
     list_name: string;
     list_max_value: string;
     user_id: string;
+}
+
+export interface IFilterProps {
+    month: string | number;
+    year: string | number;
 }

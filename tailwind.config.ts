@@ -67,7 +67,7 @@ const config = {
           foreground: "hsl(var(--card-foreground))",
         },
         snow: "#FAFAFA",
-        "primary-dark": "#0E0E0E",
+        "primary-dark": "#212529",
         "secondary-dark": "#343a40",
         "dark-button-color": "#0466c8",
         "primary-blue": "#A0CFF7",

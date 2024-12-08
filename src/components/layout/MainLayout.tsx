@@ -6,7 +6,6 @@ const LoggedLayout = ({ children }: { children: React.ReactNode }) => {
 
     return (
         <div className='container bg-primary-dark'>
-            <Header />
             {children}
             <Footer />
         </div>
