@@ -1,19 +1,20 @@
 "use client";
-import formatNumber from '@/functions/formatNumber';
 import { supabase } from '@/lib/api';
-import { IProductProps, IPurchaseProps } from '@/types';
-import jsPDF from "jspdf";
-import html2canvas from "html2canvas";
-import { ChevronRight, FileCheck } from 'lucide-react';
-import Link from 'next/link';
+import { IPurchaseProps } from '@/types';
+import { ChevronLeft, UtensilsCrossed } from 'lucide-react';
 import { useParams } from 'next/navigation';
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useState } from 'react';
+import LoggedLayout from '@/components/layout/MainLayout';
+import Header from '@/components/Header';
+import Link from 'next/link';
+import { APP_ROUTES } from '@/routes/app-routes';
+import { CATEGORIES } from '@/constants/constants';
+import { calculatePercentage } from '@/functions/categoryPercentage';
 
 export default function HistoricPage() {
     const params = useParams();
     const { title } = params;
     const decodedTitle = decodeURIComponent(title as string);
-    const slipRef = useRef<HTMLDivElement | null>(null);
 
     const [purchase, setPurchase] = useState<IPurchaseProps>({
         id: "",
@@ -23,34 +24,6 @@ export default function HistoricPage() {
         total_price: "",
         user_id: "",
     })
-
-    // função de baixar o pdf do cupom
-    const generatePDF = () => {
-        const slip = slipRef.current && slipRef.current;
-
-        if (slip) {
-            html2canvas(slip).then((canvas) => {
-                const imgData = canvas.toDataURL("image/png", 0.1);
-                const pdf = new jsPDF();
-                const pageHeight = 287 // altura da página do PDF em mm
-                const imgHeight = (canvas.height * 104) / canvas.width;
-                let heightLeft = imgHeight;
-                let position = 10;
-                
-                pdf.addImage(imgData, 'PNG', 10, 7, 104, imgHeight);
-                heightLeft -= pageHeight;
-                
-                while (heightLeft >= 0) {
-                    position = heightLeft - imgHeight;
-                    pdf.addPage();
-                    pdf.addImage(imgData, 'PNG', 10, position, 104, imgHeight);
-                    heightLeft -= pageHeight;
-                }
-                pdf.save(`${decodedTitle}.pdf`);
-            });
-        };
-
-    }
 
     //chamada para a api do supabase
     useEffect(() => {
@@ -78,109 +51,69 @@ export default function HistoricPage() {
 
     return (
         <>
-            <div className='p-5 grid 2xsm:grid-cols-1 gap-10'>
-
-                {/* breadcrumb */}
-                <div className='flex items-center gap-2 text-sm text-subtitledark'>
-                    {/* <ArrowLeft size={20} /> */}
-                    <Link
-                        href="/historic"
-                        className='text-blue-700'
-                    >
-                        Histórico
-                    </Link>
-                    <ChevronRight size={20} />
-                    <p>{decodedTitle}</p>
-                </div>
-                {/* end breadcrumb */}
-
-                {purchase.purchase_items.length > 0 ? (
-                    <React.Fragment>
-                        <div
-                            ref={slipRef}
-                            className='flex flex-col p-5 gap-4 border border-gray-400 rounded-md bg-yellow-50 shadow'>
-                            {/* slip header */}
-                            <div className='text-center'>
-                                <h1 className='text-subtitledark font-semibold pb-1 mb-2 border-b border-dashed border-gray-400'>
-                                    {decodedTitle}
-                                </h1>
-                                <p className='text-sm'>
-                                    {`ID: ${purchase.id}`}
-                                </p>
-                                <p className='text-sm font-medium'>
-                                    {`Data: ${purchase.purchase_date.split("T")[0].split("-").reverse().join("/")} ${purchase.purchase_date.split("T")[1].split(".")[0]}`}
-                                </p>
-                            </div>
-                            {/* end slip header */}
-
-                            {/* slip content */}
-                            <div className='flex flex-col gap-1 border-t border-b border-dashed border-gray-400'>
-
-                                {/* content header */}
-                                <div className='flex uppercase text-[10px] border-b border-dashed border-gray-400'>
-                                    <div className='flex-1 flex items-center p-[2px]'>
-                                        # descrição
-                                    </div>
-                                    <div className='flex items-center p-[2px] basis-9'>
-                                        qntd
-                                    </div>
-                                    <div className='flex items-center p-[2px] basis-11'>
-                                        vl unit
-                                    </div>
-                                    <div className='flex items-center p-[2px] basis-[50px]'>
-                                        vl total
-                                    </div>
-                                </div>
-                                {/* end content header */}
-
-                                {/* content items */}
-                                {
-                                    Array.isArray(purchase.purchase_items) && (
-                                        purchase.purchase_items.sort((a, b) => a.name.localeCompare(b.name)).map((item: IProductProps, index: number) => (
-                                            <div key={item.id} className='flex uppercase text-[10px] text-subtitledark'>
-                                                <div className='flex-1 flex items-center p-[2px] max-w-[215px] text-ellipsis overflow-hidden whitespace-nowrap'>
-                                                    {`${index + 1} - ${item.name}`}
-                                                </div>
-                                                <div className='flex items-center p-[2px] basis-9 justify-end'>
-                                                    {item.quantity}
-                                                </div>
-                                                <div className='flex items-center p-[2px] basis-11 justify-end'>
-                                                    {item.value.replace(".", ",") || "0,00"}
-                                                </div>
-                                                <div className='flex items-center p-[2px] basis-[50px] justify-end'>
-                                                    {formatNumber(item.value, item.quantity)}
-                                                </div>
-                                            </div>
-                                        ))
-                                    )
-                                }
-                                {/* end content items */}
-
-                                <div className='flex items-center justify-between uppercase text-md font-medium mb-5 mt-2 text-subtitledark'>
-                                    <span>total R$</span>
-                                    <span>{purchase.total_price}</span>
-                                </div>
-
-                            </div>
-                            {/* end slip content */}
-
-                            <p className='text-xs text-paragraphdark text-center'>
-                                Esse slip não tem valor fiscal
-                            </p>
+            <LoggedLayout>
+                <Header
+                    content={(_: any) => (
+                        <div className='flex gap-3 items-center'>
+                            <Link href={APP_ROUTES.private.historic.name}>
+                                <ChevronLeft
+                                    size={20}
+                                    className='text-titledark'
+                                />
+                            </Link>
+                            <h1 className='text-lg font-semibold max-w-[370px] text-titledark text-ellipsis overflow-hidden whitespace-nowrap'>
+                                Visualização de Histórico
+                            </h1>
                         </div>
+                    )}
+                />
 
-                        <button
-                            onClick={generatePDF}
-                            className='mb-2 bg-secondary-blue rounded-full px-3 py-2 flex gap-2 items-center justify-center cursor-pointer shadow-md transition-all duration-300 ease-in-out text-snow'>
-                            <FileCheck size={20} />
-                            salvar como PDF
-                        </button>
+                <div className='w-full px-5 py-[100px]'>
+                    <div className='flex flex-col gap-10'>
+                        <h2 className='text-lg text-subtitledark font-semibold'>{decodedTitle}</h2>
+                        <div className='flex flex-col gap-5'>
+                            <div className='grid gap-2'>
+                                <h3 className='text-subtitledark'>Informações Gerais</h3>
+                                <div className='bg-secondary-dark/80 p-3 rounded-md'>
+                                    <div className="flex items-center gap-1">
+                                        <p className='text-paragraphdark'>Valor Total:</p>
+                                        <p className='text-paragraphdark font-semibold'>{purchase.total_price}</p>
+                                    </div>
+                                    <div className="flex items-center gap-1 mb-5">
+                                        <p className='text-paragraphdark'>Data da compra:</p>
+                                        <p className='text-paragraphdark font-semibold'> {purchase.purchase_date.split("T")[0].split("-").reverse().join("/")}</p>
+                                    </div>
 
-                    </React.Fragment>
-                ) : (
-                    <p className='text-center text-paragraphdark text-xs'>carregando cupom...</p>
-                )}
-            </div>
+                                    <Link
+                                        href={APP_ROUTES.private.historic.details.children(decodedTitle)}
+                                        className='py-2 px-4 bg-secondary-blue text-linkdark flex items-center justify-center rounded-md w-full'>
+                                        GERAR CUPOM
+                                    </Link>
+                                </div>
+                            </div>
+                            <div className='grid gap-2'>
+                                <h3 className='text-subtitledark'>Estatísticas da compra</h3>
+                                <div className='bg-secondary-dark/80 p-3 rounded-md grid gap-4'>
+                                    {CATEGORIES.map((category) => (
+                                        <div key={category.name} className='flex items-center gap-2'>
+                                            <category.icon strokeWidth={1.5} size={18} className='shrink-0 text-paragraphdark' />
+                                            <p className='shrink-0 text-paragraphdark'>{category.name}</p>
+                                            <span
+                                                style={{
+                                                    backgroundColor: category.color,
+                                                    width: calculatePercentage(purchase.purchase_items, category.name),
+                                                }}
+                                                className='h-4 rounded-md'
+                                            />
+                                            <p className='shrink-0 text-paragraphdark'>{calculatePercentage(purchase.purchase_items, category.name)}</p>
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </LoggedLayout>
         </>
     );
 };
