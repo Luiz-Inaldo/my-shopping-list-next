@@ -160,7 +160,7 @@ export default function Historic() {
                                                 </div>
                                                 <div>
                                                     <Link
-                                                        href={APP_ROUTES.private.historic.children.name(purchase.title)}
+                                                        href={APP_ROUTES.private.historic.details.name(purchase.title)}
                                                         className='flex items-center gap-1 font-medium text-sm text-paragraphdark'
                                                     >
                                                         ver detalhes
