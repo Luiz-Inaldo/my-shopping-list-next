@@ -42,7 +42,7 @@ export const ProductsProvider = ({ children }: { children: React.ReactNode }) =>
 
     /* ====> states <==== */
     const [user, setUser] = useState<any>(null);
-    const [data, setData] = useState<IProductProps[]>([]);
+    const [data, setData] = useState<IProductProps[] | null>(null);
     const [loading, setLoading] = useState<boolean>(true);
     const [modal, setModal] = useState<any>({
         state: 'CLOSED',
@@ -83,7 +83,7 @@ export const ProductsProvider = ({ children }: { children: React.ReactNode }) =>
     function caculateTotalValue() {
 
         let total: number = 0;
-        const checkedItems = data.filter(product => product.checked === true);
+        const checkedItems = data?.filter(product => product.checked === true) || [];
         checkedItems.forEach(item => {
             const parsedTotal = (parseFloat(item.value.replace(',', '.')) * item.quantity);
             total += parsedTotal;
@@ -135,7 +135,7 @@ export const ProductsProvider = ({ children }: { children: React.ReactNode }) =>
             });
             // fetchData();
             setData((oldData) => {
-                return oldData.map(product => {
+                return oldData!.map(product => {
                     if (product.id === itemID) {
                         return { ...product, name: object.name, quantity: object.quantity, value: object.value };
                     }
@@ -161,7 +161,7 @@ export const ProductsProvider = ({ children }: { children: React.ReactNode }) =>
                 action: <ToastAction altText="Ok">Ok</ToastAction>
             });
             setData((oldData) => {
-                return oldData.filter(item => item.id !== itemID);
+                return oldData!.filter(item => item.id !== itemID);
             })
             setOptionMenu(null);
             setTimeout(() => {
@@ -190,7 +190,7 @@ export const ProductsProvider = ({ children }: { children: React.ReactNode }) =>
                 action: <ToastAction altText="Ok">Ok</ToastAction>
             });
             setData((oldData) => {
-                return oldData.map(product => {
+                return oldData!.map(product => {
                     if (product.id === item.id) {
                         return {
                             ...product,
@@ -221,7 +221,7 @@ export const ProductsProvider = ({ children }: { children: React.ReactNode }) =>
             console.log(error);
         } else {
             setData((oldData) => {
-                return oldData.map(product => {
+                return oldData!.map(product => {
                     if (product.id === item.id) {
                         return { ...product, checked: !item.checked };
                     }

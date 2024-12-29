@@ -72,7 +72,7 @@ export const AddProductForm = () => {
     return (
         <Drawer>
             <DrawerTrigger className='relative flex items-center justify-center'>
-                <span className='absolute w-8 h-8 top-1.5 animate-ping z-[-1] bg-primary-blue rounded-full'></span>
+                {/* <span className='absolute w-8 h-8 top-1.5 animate-ping z-[-1] bg-primary-blue rounded-full'></span> */}
                 <div
                     onClick={() => {}}
                     className='bg-secondary-blue rounded-full w-11 h-11 flex items-center justify-center cursor-pointer shadow-md transition-all duration-300 ease-in-out text-snow'>
@@ -94,7 +94,7 @@ export const AddProductForm = () => {
                             <input
                                 type="text"
                                 placeholder="Digite o nome do produto"
-                                className='w-full text-paragraphdark rounded border border-gray-400 px-3 py-2 h-8'
+                                className='w-full text-slate-900 rounded border border-gray-400 px-3 py-2 h-8'
                                 {...register('name', { required: true })}
                             />
                             {errors.name && <span className='text-xs text-red-500'>
@@ -119,7 +119,7 @@ export const AddProductForm = () => {
                                 <span className='text-paragraphdark font-semibold'>Quantidade:</span>
                                 <input
                                     type="number"
-                                    className='w-36 text-paragraphdark rounded border border-gray-400 px-3 py-2 h-8'
+                                    className='w-36 text-slate-900 rounded border border-gray-400 px-3 py-2 h-8'
                                     {...register('quantity', { required: true })}
                                 />
                                 {errors.name && <span className='text-xs text-red-500'>
@@ -133,7 +133,7 @@ export const AddProductForm = () => {
                                     type="text"
                                     defaultValue={"0,00"}
                                     placeholder="Digite o valor do produto"
-                                    className='w-36 text-paragraphdark rounded border border-gray-400 px-3 py-2 h-8'
+                                    className='w-36 text-slate-900 rounded border border-gray-400 px-3 py-2 h-8'
                                     {...register('value')}
                                 />
                             </label>

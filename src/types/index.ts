@@ -3,8 +3,8 @@ export type ModalTypeProps = null | 'LIMIT_VALUE' | 'DELETE_PRODUCT' | 'EDIT_PRO
 export interface IProductsContextProps {
     user: any,
     setUser: React.Dispatch<React.SetStateAction<any>>;
-    data: IProductProps[];
-    setData: React.Dispatch<React.SetStateAction<IProductProps[]>>;
+    data: IProductProps[] | null;
+    setData: React.Dispatch<React.SetStateAction<IProductProps[] | null>>;
     loading: boolean;
     setLoading: React.Dispatch<React.SetStateAction<boolean>>;
     modal: {

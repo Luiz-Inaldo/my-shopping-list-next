@@ -16,6 +16,7 @@ const Main = () => {
     data,
     user,
     currentPurchase,
+    loading
   } = useContext(ProductsContext);
 
   return (
@@ -46,10 +47,14 @@ const Main = () => {
       <main
         className={`main-container py-28 px-5 flex flex-col gap-5`}
       >
-        {(data.length === 0 && !currentPurchase) ? (
-          <NonPurchaseList user={user} />
-        ) : (
-          <ShoppingList listname={currentPurchase?.list_name} />
+        {loading ? (<p className="text-paragraphdark font-medium text-xl text-center">Carregando lista...</p>) : (
+          <>
+            {(data?.length === 0 && !currentPurchase) ? (
+              <NonPurchaseList user={user} />
+            ) : (
+              <ShoppingList listname={currentPurchase?.list_name} />
+            )}
+          </>
         )}
       </main>
     </React.Fragment>

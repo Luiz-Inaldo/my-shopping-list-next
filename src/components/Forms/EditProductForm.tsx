@@ -35,7 +35,7 @@ export const EditProductForm = ({ item }: { item: IProductProps | undefined }) =
     return (
         <React.Fragment>
             {isVisible && (
-                <div className={`${isFading ? 'opacity-100 visible' : 'opacity-0 invisible'} w-[350px] rounded bg-secondary-dark border border-paragraph/30 transition-all duration-500`}>
+                <div className={`${isFading ? 'opacity-100 visible' : 'opacity-0 invisible'} w-[350px] rounded bg-secondary-dark border border-paragraphdark/30 transition-all duration-500`}>
                     <form onSubmit={handleSubmit(onSubmit)} className='flex flex-col gap-3 p-5'>
                         <h1 className='text-subtitledark text-xl text-center'>O que deseja editar no produto?</h1>
                         
@@ -49,7 +49,7 @@ export const EditProductForm = ({ item }: { item: IProductProps | undefined }) =
                                     <input
                                         type="text"
                                         {...field}
-                                        className='w-full text-paragraphdark rounded border border-gray-400 px-3 py-2 h-8 text-ellipsis overflow-hidden whitespace-nowrap'
+                                        className='w-full text-slate-900 rounded border border-gray-400 px-3 py-2 h-8 text-ellipsis overflow-hidden whitespace-nowrap'
                                     />
                                 )}
                             />
@@ -65,7 +65,7 @@ export const EditProductForm = ({ item }: { item: IProductProps | undefined }) =
                                         <input
                                             type="text"
                                             {...field}
-                                            className='w-full text-paragraphdark rounded border border-gray-400 px-3 py-2 h-8'
+                                            className='w-full text-slate-900 rounded border border-gray-400 px-3 py-2 h-8'
                                         />
                                     )}
                                 />
@@ -80,7 +80,7 @@ export const EditProductForm = ({ item }: { item: IProductProps | undefined }) =
                                         <input
                                             type="number"
                                             {...field}
-                                            className='w-full text-paragraphdark rounded border border-gray-400 px-3 py-2 h-8'
+                                            className='w-full text-slate-900 rounded border border-gray-400 px-3 py-2 h-8'
                                         />
                                     )}
                                 />

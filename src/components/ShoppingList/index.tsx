@@ -4,7 +4,7 @@ import { CATEGORIES } from '@/constants/constants';
 import { ProductsContext } from '@/context/ProductsContext';
 import { IProductProps, IPurchaseProps } from '@/types';
 import { Modal } from '../Modal';
-import { Check, ChevronDown, ChevronUp, EllipsisVertical, Info, ShoppingBagIcon, X } from 'lucide-react';
+import { Check, ChevronDown, ChevronUp, EllipsisVertical, Info, Search, ShoppingBagIcon, X } from 'lucide-react';
 import formatNumber from '@/functions/formatNumber';
 import CategoryWrapper from '../Category';
 import { formatCurrency } from '@/functions/formatCurrency';
@@ -81,7 +81,7 @@ const ShoppingList = ({ listname }: { listname: string | undefined }) => {
 
         const currentDateMoment = new Date();
 
-        const itemsToSave = data.filter(item => item.checked);
+        const itemsToSave = data?.filter(item => item.checked) || [];
 
         if (itemsToSave.length > 0) {
 
@@ -182,7 +182,7 @@ const ShoppingList = ({ listname }: { listname: string | undefined }) => {
                             <li className="col-span-2 flex gap-2 items-center justify-between text-paragraphdark">
                                 <h3 className="flex-1">Itens comprados: </h3>
                                 <span className="p-1 font-semibold">
-                                    {data.filter((item) => item.checked === true).length}
+                                    {data?.filter((item) => item.checked === true).length || 0}
                                 </span>
                             </li>
 
@@ -199,8 +199,7 @@ const ShoppingList = ({ listname }: { listname: string | undefined }) => {
                             <li className="col-span-2 flex gap-2 items-center text-paragraphdark">
                                 <h3 className="flex-1">Situação: </h3>
                                 <span
-                                    className={`py-1 px-3 text-sm rounded-full ${situation === "good" && "bg-green-100"
-                                        } ${situation === "normal" && "bg-yellow-400 text-black"} ${situation === "bad" && "bg-red-400 text-snow"
+                                    className={`py-1 px-3 text-sm rounded-full text-black ${situation === "good" && "bg-green-300"} ${situation === "normal" && "bg-yellow-400"} ${situation === "bad" && "bg-red-400"
                                         }`}
                                 >
                                     {situation === "good" && "Boa"}
@@ -259,21 +258,27 @@ const ShoppingList = ({ listname }: { listname: string | undefined }) => {
                 </div>
             </Fade>
 
-            <div className="w-full flex gap-3 items-center mb-5">
+            {/* search bar */}
+            {/* <div className="w-full flex items-center mb-5">
                 <input
                     type="text"
                     placeholder="Busque um produto específico..."
-                    className="w-full placeholder:text-paragraphdark text-paragraphdark bg-secondary-dark rounded-sm px-3 py-2 h-8"
+                    className="w-full placeholder:text-paragraphdark text-paragraphdark bg-secondary-dark rounded-tl-sm rounded-bl-sm px-3 py-2 h-8"
                 />
-            </div>
+                <button
+                    className='rounded-tr-sm rounded-br-sm h-8 w-11 bg-secondary-blue flex items-center justify-center border border-secondary-dark'
+                >
+                    <Search size={16} className='text-snow' />
+                </button>
+            </div> */}
 
             {/* caregory list */}
             {CATEGORIES.map((category) => {
-                const products = data.filter(
+                const products = data?.filter(
                     (product) => product.category === category.name
                 );
 
-                const ordenedProducts = products.sort((a, b) => a.name.localeCompare(b.name))
+                const ordenedProducts = products?.sort((a, b) => a.name.localeCompare(b.name)) || []
 
                 return (
                     <Fade key={category.name} damping={2} cascade triggerOnce>
@@ -363,7 +368,7 @@ const ShoppingList = ({ listname }: { listname: string | undefined }) => {
                                                                                             className={`${optionMenu === item.id
                                                                                                 ? "animate-in fade-in-0 zoom-in-85"
                                                                                                 : "animate-out fade-out-0 zoom-out-85"
-                                                                                                } absolute z-40 py-1 right-7 -top-2 rounded shadow border border-paragraph bg-secondary-dark text-linkdark text-sm grid gap-1`}
+                                                                                                } absolute z-40 py-1 right-7 -top-2 rounded shadow border border-paragraphdark/30 bg-secondary-dark text-linkdark text-sm grid gap-1`}
                                                                                         >
                                                                                             <span
                                                                                                 className="px-3"
@@ -378,7 +383,7 @@ const ShoppingList = ({ listname }: { listname: string | undefined }) => {
                                                                                             >
                                                                                                 Editar
                                                                                             </span>
-                                                                                            <hr className='border-paragraph' />
+                                                                                            <hr className='border-paragraphdark/30' />
                                                                                             <span
                                                                                                 className="px-3"
                                                                                                 onClick={() => {

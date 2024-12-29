@@ -17,7 +17,7 @@ const Footer = () => {
 
     useEffect(() => {
         if (pathname === "/") {
-            setIsAllowed((data.length > 0 || currentPurchase) ? true : false);
+            setIsAllowed((data && data.length > 0 || currentPurchase) ? true : false);
         } else {
             if (allowedRoutes.includes(pathname)) {
                 setIsAllowed(true);
@@ -29,7 +29,7 @@ const Footer = () => {
 
     return (
         <>
-            {(isAllowed || data.length > 0) && (
+            {(isAllowed || data && data.length > 0) && (
                 <footer
                     style={{
                         boxShadow: "0 -3px 4px rgb(0 0 0 / 0.1)"
