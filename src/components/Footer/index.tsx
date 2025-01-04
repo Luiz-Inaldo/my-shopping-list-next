@@ -7,7 +7,7 @@ import { AddProductForm } from '../Forms/AddProductForm';
 import { APP_ROUTES } from '@/routes/app-routes';
 import { ProductsContext } from '@/context/ProductsContext';
 
-const allowedRoutes = ["/", "/settings", "/historic"]
+const allowedRoutes = ["/", "/settings", "/historic", "/menu"]
 
 const Footer = () => {
 
@@ -65,7 +65,7 @@ const Footer = () => {
                             </Link>
                         </li>
                         <li>
-                            <Link href={""} className={`grid gap-1 p-2 place-items-center border-b ${pathname === "/more" ? "text-linkdark border-link" : "text-paragraphdark border-transparent"}`}>
+                            <Link href={APP_ROUTES.private.menu.name} className={`grid gap-1 p-2 place-items-center border-b ${pathname === "/menu" ? "text-linkdark border-link" : "text-paragraphdark border-transparent"}`}>
                                 <Menu size={16} />
                                 <span className='text-xs'>Mais</span>
                             </Link>
