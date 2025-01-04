@@ -16,6 +16,9 @@ export const APP_ROUTES = {
         },
         purchase_saved: {
             name: (title: string) => `/purchase-saved/${title}`
+        },
+        menu: {
+            name: "/menu"
         }
     },
     public: {

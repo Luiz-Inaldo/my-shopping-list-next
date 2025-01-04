@@ -7,7 +7,7 @@ import NonPurchaseList from "../NonPurchaseList";
 import ShoppingList from "../ShoppingList";
 import Header from "../Header";
 import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar'
-import { ChevronRight, SlidersHorizontal } from "lucide-react";
+import { ChevronRight, Menu, SlidersHorizontal } from "lucide-react";
 import Link from "next/link";
 import { APP_ROUTES } from "@/routes/app-routes";
 
@@ -37,9 +37,15 @@ const Main = () => {
                 <ChevronRight size={16} className={`${visible ? "opacity-100 translate-x-0 ml-2" : "opacity-0 -translate-x-full"} transition-all duration-200 text-titledark`} />
               </div>
             </div>
-            <Link href={APP_ROUTES.private.settings.name}>
-              <SlidersHorizontal size={20} className='cursor-pointer text-titledark' />
-            </Link>
+            {currentPurchase ? (
+              <Link href={APP_ROUTES.private.settings.name}>
+                <SlidersHorizontal size={20} className='cursor-pointer text-titledark' />
+              </Link>
+            ) : (
+              <Link href={APP_ROUTES.private.menu.name}>
+                <Menu size={20} className='cursor-pointer text-titledark' />
+              </Link>
+            )}
           </>
 
         )}
