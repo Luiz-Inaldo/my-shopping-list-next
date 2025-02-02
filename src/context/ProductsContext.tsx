@@ -6,14 +6,15 @@ import { IProductProps } from "@/types";
 import { IEditItemProps } from "@/types";
 import { ToastAction } from "@/components/ui/toast";
 import { useToast } from "@/components/ui/use-toast";
+import { QueryClient, useQuery, useQueryClient } from "@tanstack/react-query";
 
 export const ProductsContext = createContext<IProductsContextProps>({
     user: {},
     setUser: () => { },
     data: [],
-    setData: () => { },
-    loading: true,
-    setLoading: () => { },
+    // setData: () => { },
+    loadingProducts: true,
+    queryClient: null,
     modal: {
         state: 'CLOSED',
         type: null
@@ -28,7 +29,7 @@ export const ProductsContext = createContext<IProductsContextProps>({
     currentPurchase: null,
     setCurrentPurchase: () => { },
 
-    fetchData: async () => { },
+    refetchProducts: async () => undefined,
     fetchPurchaseData: async () => { },
     deleteCurrentPurchase: async () => { },
     deleteAllItems: async () => { },
@@ -42,8 +43,6 @@ export const ProductsProvider = ({ children }: { children: React.ReactNode }) =>
 
     /* ====> states <==== */
     const [user, setUser] = useState<any>(null);
-    const [data, setData] = useState<IProductProps[] | null>(null);
-    const [loading, setLoading] = useState<boolean>(true);
     const [modal, setModal] = useState<any>({
         state: 'CLOSED',
         type: null
@@ -55,18 +54,25 @@ export const ProductsProvider = ({ children }: { children: React.ReactNode }) =>
 
     /* ====> hooks <==== */
     const { toast } = useToast();
+    const queryClient = useQueryClient();
+
+    /* ====> react query <==== */
+    const {data, isLoading: loadingProducts, refetch: refetchProducts} = useQuery<IProductProps[] | undefined>({
+        queryKey: ['products'],
+        queryFn: fetchData,
+        refetchOnWindowFocus: false,
+        enabled: user !== null
+    });
 
     /* ====> functions <==== */
     async function fetchData() {
-        if (user === null) return;
-
-        setLoading(true);
-        const { data, error } = await supabase.from('products').select('*').eq('user_id', user.id);
-        if (error) {
-            console.error(error);
-        } else {
-            setData(data);
-            setLoading(false);
+        if (user !== null) {
+            const { data, error } = await supabase.from('products').select('*').eq('user_id', user.id);
+            if (error) {
+                console.error(error);
+                return;
+            }
+            return data as IProductProps[];
         }
     }
 
@@ -133,15 +139,22 @@ export const ProductsProvider = ({ children }: { children: React.ReactNode }) =>
                 description: "Produto alterado com sucesso.",
                 action: <ToastAction altText="Ok">Ok</ToastAction>
             });
-            // fetchData();
-            setData((oldData) => {
-                return oldData!.map(product => {
+            queryClient.setQueryData(['products'], (oldData: IProductProps[]) => {
+                return oldData?.map((product: IProductProps) => {
                     if (product.id === itemID) {
                         return { ...product, name: object.name, quantity: object.quantity, value: object.value };
                     }
                     return product;
                 });
-            })
+            });
+            // setData((oldData) => {
+            //     return oldData!.map(product => {
+            //         if (product.id === itemID) {
+            //             return { ...product, name: object.name, quantity: object.quantity, value: object.value };
+            //         }
+            //         return product;
+            //     });
+            // })
             setTimeout(() => {
                 setModal({
                     state: 'CLOSED',
@@ -160,9 +173,12 @@ export const ProductsProvider = ({ children }: { children: React.ReactNode }) =>
                 description: "Produto removido da sua lista de compras.",
                 action: <ToastAction altText="Ok">Ok</ToastAction>
             });
-            setData((oldData) => {
-                return oldData!.filter(item => item.id !== itemID);
+            queryClient.setQueryData(['products'], (oldData: IProductProps[]) => {
+                return oldData?.filter((item: IProductProps) => item.id !== itemID);
             })
+            // setData((oldData) => {
+            //     return oldData!.filter(item => item.id !== itemID);
+            // })
             setOptionMenu(null);
             setTimeout(() => {
                 setModal({
@@ -189,8 +205,8 @@ export const ProductsProvider = ({ children }: { children: React.ReactNode }) =>
                 description: "Produto marcado como adiquirido.",
                 action: <ToastAction altText="Ok">Ok</ToastAction>
             });
-            setData((oldData) => {
-                return oldData!.map(product => {
+            queryClient.setQueryData(["products"], (oldData: IProductProps[]) => {
+                return oldData?.map(product => {
                     if (product.id === item.id) {
                         return {
                             ...product,
@@ -201,6 +217,18 @@ export const ProductsProvider = ({ children }: { children: React.ReactNode }) =>
                     return product;
                 });
             })
+            // setData((oldData) => {
+            //     return oldData!.map(product => {
+            //         if (product.id === item.id) {
+            //             return {
+            //                 ...product,
+            //                 value: object?.value ? object.value : item.value,
+            //                 checked: !item.checked
+            //             };
+            //         }
+            //         return product;
+            //     });
+            // })
             setModal({
                 state: 'CLOSED',
                 type: null
@@ -220,14 +248,22 @@ export const ProductsProvider = ({ children }: { children: React.ReactNode }) =>
         if (error) {
             console.log(error);
         } else {
-            setData((oldData) => {
-                return oldData!.map(product => {
+            queryClient.setQueryData(["products"], (oldData: IProductProps[]) => {
+                return oldData?.map(product => {
                     if (product.id === item.id) {
                         return { ...product, checked: !item.checked };
                     }
                     return product;
                 });
             })
+            // setData((oldData) => {
+            //     return oldData!.map(product => {
+            //         if (product.id === item.id) {
+            //             return { ...product, checked: !item.checked };
+            //         }
+            //         return product;
+            //     });
+            // })
         }
 
     }
@@ -236,10 +272,12 @@ export const ProductsProvider = ({ children }: { children: React.ReactNode }) =>
     useEffect(() => {
         fetchData();
         fetchPurchaseData();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [user]);
 
     useEffect(() => {
         caculateTotalValue();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [data]);
 
     useEffect(() => {
@@ -247,30 +285,30 @@ export const ProductsProvider = ({ children }: { children: React.ReactNode }) =>
         if (currentPurchase) {
             const parsedTotal = parseFloat(totalValue.replace(',', '.'));
             const parsedMaxValue = parseFloat(currentPurchase?.list_max_value.replace(',', '.'));
-
+            
             if (parsedTotal < (parsedMaxValue * 0.8)) {
                 setSituation('good');
             }
-
+            
             if (parsedTotal >= (parsedMaxValue * 0.8) && parsedTotal < parsedMaxValue) {
                 setSituation('normal');
             }
-
+            
             if (parsedTotal >= parsedMaxValue) {
                 setSituation('bad');
             }
         }
 
-    }, [totalValue]);
+    }, [totalValue, currentPurchase]);
 
     return (
         <ProductsContext.Provider value={{
             user,
             setUser,
             data,
-            setData,
-            loading,
-            setLoading,
+            // setData,
+            loadingProducts,
+            queryClient,
             modal,
             setModal,
             optionMenu,
@@ -282,7 +320,7 @@ export const ProductsProvider = ({ children }: { children: React.ReactNode }) =>
             situation,
             setSituation,
 
-            fetchData,
+            refetchProducts,
             fetchPurchaseData,
             deleteCurrentPurchase,
             deleteAllItems,

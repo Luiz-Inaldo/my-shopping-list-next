@@ -23,7 +23,7 @@ import { IFormItem } from '@/types';
 export const AddProductForm = () => {
 
     const { toast } = useToast();
-    const { user, fetchData } = useContext(ProductsContext);
+    const { user, refetchProducts, queryClient } = useContext(ProductsContext);
     const {
         register,
         watch,
@@ -32,6 +32,8 @@ export const AddProductForm = () => {
         reset,
         handleSubmit
     } = useForm<IFormItem>();
+
+    queryClient && queryClient.invalidateQueries({queryKey: ['products']});
 
     // funções
     async function onSubmit(data: IFormItem) {
@@ -55,7 +57,8 @@ export const AddProductForm = () => {
                     action: <ToastAction altText="Ok">Ok</ToastAction>
                 });
 
-                fetchData();
+                // fetchData();
+                refetchProducts();
 
             } else {
 
@@ -74,7 +77,7 @@ export const AddProductForm = () => {
             <DrawerTrigger className='relative flex items-center justify-center'>
                 {/* <span className='absolute w-8 h-8 top-1.5 animate-ping z-[-1] bg-primary-blue rounded-full'></span> */}
                 <div
-                    onClick={() => {}}
+                    onClick={() => { }}
                     className='bg-secondary-blue rounded-full w-11 h-11 flex items-center justify-center cursor-pointer shadow-md transition-all duration-300 ease-in-out text-snow'>
                     <Plus className='svg-shadow' size={24} />
                 </div>

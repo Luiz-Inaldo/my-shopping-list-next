@@ -1,12 +1,14 @@
+import { QueryClient } from "@tanstack/react-query";
+
 export type ModalStateProps = "OPEN" | "CLOSED";
 export type ModalTypeProps = null | 'LIMIT_VALUE' | 'DELETE_PRODUCT' | 'EDIT_PRODUCT' | 'CHECK_PRODUCT' | 'DELETE_PURCHASE'
 export interface IProductsContextProps {
     user: any,
     setUser: React.Dispatch<React.SetStateAction<any>>;
-    data: IProductProps[] | null;
-    setData: React.Dispatch<React.SetStateAction<IProductProps[] | null>>;
-    loading: boolean;
-    setLoading: React.Dispatch<React.SetStateAction<boolean>>;
+    data: IProductProps[] | undefined;
+    // setData: React.Dispatch<React.SetStateAction<IProductProps[] | null>>;
+    loadingProducts: boolean;
+    queryClient: QueryClient | null;
     modal: {
         state: ModalStateProps,
         type: ModalTypeProps
@@ -24,7 +26,7 @@ export interface IProductsContextProps {
     currentPurchase: ISupabasePurchaseProps | null;
     setCurrentPurchase: React.Dispatch<React.SetStateAction<ISupabasePurchaseProps | null>>;
 
-    fetchData: () => Promise<void>;
+    refetchProducts: any;
     fetchPurchaseData: () => Promise<void>;
     deleteCurrentPurchase: () => Promise<void>;
     deleteAllItems: () => Promise<void>;
