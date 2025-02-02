@@ -18,7 +18,7 @@ import { Fade } from "react-awesome-reveal";
 
 const ShoppingList = ({ listname }: { listname: string | undefined }) => {
 
-    const { data, user, loading, setModal, handleCheckItem, handleDismarkItem,
+    const { data, user, loadingProducts, setModal, handleCheckItem, handleDismarkItem,
         optionMenu, setOptionMenu, currentPurchase, totalValue, situation,
         deleteAllItems, deleteCurrentPurchase,
     } = useContext(ProductsContext);
@@ -318,7 +318,7 @@ const ShoppingList = ({ listname }: { listname: string | undefined }) => {
                                                 className={`${open ? 'rotate-180' : 'rotate-0'} transition-transform duration-200 cursor-pointer`} />
                                         </div>
 
-                                        {loading ? (
+                                        {loadingProducts ? (
                                             <div className="flex flex-col gap-2 ml-2 mt-2 p-1">
                                                 <Skeleton className="w-36 h-4" />
                                                 <Skeleton className="w-80 h-4" />
