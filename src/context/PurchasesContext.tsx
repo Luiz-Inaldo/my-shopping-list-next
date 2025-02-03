@@ -1,21 +1,20 @@
 import { supabase } from "@/lib/api";
 import { IFilterProps, IPuchasesContextProps, IPurchaseProps } from "@/types";
-import React, { createContext, useContext, useEffect, useState } from "react";
+import React, { createContext, use, useContext, useEffect, useState } from "react";
 import { ProductsContext } from "./ProductsContext";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 
 export const PurchasesContext = createContext<IPuchasesContextProps>({
     purchasesList: [],
-    setPurchasesList: () => { },
-    loading: false,
+    purchasesLoading: false,
     filterPurchases: async () => { }
 });
 
 export const PurchasesProvider = ({ children }: { children: React.ReactNode }) => {
 
-    const { user } = useContext(ProductsContext)
-    const [purchasesList, setPurchasesList] = useState<IPurchaseProps[]>([]);
+    const { user } = useContext(ProductsContext);
     const [auxData, setAuxData] = useState<IPurchaseProps[]>([]);
-    const [loading, setLoading] = useState<boolean>(true);
+    const queryClient = useQueryClient();
 
     const getPurchases = async () => {
 
@@ -24,12 +23,18 @@ export const PurchasesProvider = ({ children }: { children: React.ReactNode }) =
         if (error) {
             console.error(error);
         } else {
-            setPurchasesList(data as IPurchaseProps[]);
+            // setPurchasesList(data as IPurchaseProps[]);
             setAuxData(data as IPurchaseProps[]);
+            return data as IPurchaseProps[];
         }
 
-        setLoading(false);
     }
+
+    const { data: purchasesList, isLoading: purchasesLoading, refetch: refetchPurchases } = useQuery({
+        queryKey: ["purchases"],
+        queryFn: getPurchases,
+        refetchOnWindowFocus: false
+    })
 
     const filterPurchases = async (filter: IFilterProps) => {
 
@@ -38,7 +43,8 @@ export const PurchasesProvider = ({ children }: { children: React.ReactNode }) =
 
         // primeiro caso: os dois parâmetros são string
         if (typeof month === "string" && typeof year === "string") {
-            setPurchasesList(auxData);
+            // setPurchasesList(auxData);
+            queryClient.setQueryData(["purchases"], auxData);
         }
         // segundo caso: ambos parâmetros number
         else if (typeof month === 'number' && typeof year === 'number') {
@@ -48,7 +54,7 @@ export const PurchasesProvider = ({ children }: { children: React.ReactNode }) =
                 purchase.purchase_date.split("T")[0].split("-")[1] === (month + 1).toString()
             );
 
-            setPurchasesList(filteredData);
+            queryClient.setQueryData(["purchases"], filteredData);
 
         }
         // terceiro caso: mês string e ano number
@@ -60,7 +66,7 @@ export const PurchasesProvider = ({ children }: { children: React.ReactNode }) =
 
             console.log(filteredData);
 
-            setPurchasesList(filteredData);
+            queryClient.setQueryData(["purchases"], filteredData);
 
         }
         // quarto caso: mês number e ano string
@@ -70,17 +76,18 @@ export const PurchasesProvider = ({ children }: { children: React.ReactNode }) =
                 purchase.purchase_date.split("T")[0].split("-")[1] === (month + 1).toString()
             );
 
-            setPurchasesList(filteredData);
+            queryClient.setQueryData(["purchases"], filteredData);
 
         }
     }
 
     useEffect(() => {
         getPurchases();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
 
     return (
-        <PurchasesContext.Provider value={{ purchasesList, setPurchasesList, loading, filterPurchases }}>
+        <PurchasesContext.Provider value={{ purchasesList, purchasesLoading, filterPurchases }}>
             {children}
         </PurchasesContext.Provider>
     )

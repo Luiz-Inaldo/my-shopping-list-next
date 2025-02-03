@@ -10,7 +10,6 @@ import { IFilterProps, IPurchaseProps } from '@/types';
 import { Trash2 } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
 import React, { Suspense, useCallback, useContext, useEffect, useState } from 'react';
 
 const months = [
@@ -33,8 +32,7 @@ const years = [2024, 2025]
 export default function Historic() {
 
     const { setModal } = useContext(ProductsContext);
-    const { purchasesList, loading, filterPurchases } = useContext(PurchasesContext);
-    const router = useRouter();
+    const { purchasesList, purchasesLoading, filterPurchases } = useContext(PurchasesContext);
     const [purchase, setPurchase] = useState<IPurchaseProps>({
         id: "",
         title: "",
@@ -54,7 +52,7 @@ export default function Historic() {
             type: "DELETE_PURCHASE"
         });
         setPurchase(purchase);
-    }, [])
+    }, [setModal])
 
     const handleFilterPurchases = (e: React.ChangeEvent<HTMLSelectElement>, type: string) => {
 
@@ -70,7 +68,8 @@ export default function Historic() {
     };
 
     useEffect(() => {
-        filterPurchases(filterStates)
+        filterPurchases(filterStates);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [filterStates]);
 
     return (
@@ -118,11 +117,11 @@ export default function Historic() {
 
                     <hr className='border-gray-600 mb-5' />
 
-                    {loading ? (
+                    {purchasesLoading ? (
                         <p className='text-center text-paragraphdark'>carregando histórico...</p>
                     ) : (
                         <>
-                            {purchasesList.length === 0 ? (
+                            {purchasesList?.length === 0 ? (
                                 <div className='flex flex-col items-center gap-3 mt-10'>
                                     <Image
                                         src={'/images/feeling_blue.svg'}
@@ -134,7 +133,7 @@ export default function Historic() {
                                 </div>
                             ) : (
                                 <React.Fragment>
-                                    {purchasesList.map((purchase) => (
+                                    {purchasesList?.map((purchase) => (
                                         <div
                                             key={purchase.id}
                                             className='bg-secondary-dark/80 border border-gray-600 rounded shadow-md p-2 flex flex-col gap-3'
