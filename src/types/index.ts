@@ -37,10 +37,10 @@ export interface IProductsContextProps {
 }
 
 export interface IPuchasesContextProps {
-    purchasesList: IPurchaseProps[];
-    setPurchasesList: React.Dispatch<React.SetStateAction<IPurchaseProps[]>>;
-    loading: boolean;
+    purchasesList: IPurchaseProps[] | undefined;
+    purchasesLoading: boolean;
     filterPurchases: (filter: IFilterProps) => void;
+    queryClient: QueryClient | null;
 }
 
 export interface IFormItem extends Omit<IProductProps, 'id'> {}
