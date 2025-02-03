@@ -7,7 +7,8 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 export const PurchasesContext = createContext<IPuchasesContextProps>({
     purchasesList: [],
     purchasesLoading: false,
-    filterPurchases: async () => { }
+    filterPurchases: async () => { },
+    queryClient: null
 });
 
 export const PurchasesProvider = ({ children }: { children: React.ReactNode }) => {
@@ -87,7 +88,7 @@ export const PurchasesProvider = ({ children }: { children: React.ReactNode }) =
     }, [])
 
     return (
-        <PurchasesContext.Provider value={{ purchasesList, purchasesLoading, filterPurchases }}>
+        <PurchasesContext.Provider value={{ purchasesList, purchasesLoading, filterPurchases, queryClient }}>
             {children}
         </PurchasesContext.Provider>
     )

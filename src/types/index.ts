@@ -40,6 +40,7 @@ export interface IPuchasesContextProps {
     purchasesList: IPurchaseProps[] | undefined;
     purchasesLoading: boolean;
     filterPurchases: (filter: IFilterProps) => void;
+    queryClient: QueryClient | null;
 }
 
 export interface IFormItem extends Omit<IProductProps, 'id'> {}
