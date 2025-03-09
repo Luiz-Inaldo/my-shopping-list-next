@@ -1,10 +1,10 @@
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Minha Lista | Menu",
+  title: "Minha Lista | Minhas Estatísticas",
   description: "Acesso ao menu principal.",
   openGraph: {
-    title: "Minha Lista | Menu",
+    title: "Minha Lista | Minhas Estatísticas",
     description: "Acesso ao menu principal.",
   }
 };

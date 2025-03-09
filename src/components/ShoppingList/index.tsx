@@ -1,6 +1,6 @@
 import React, { Suspense, useContext, useEffect, useRef, useState } from 'react'
 import { Skeleton } from '../ui/skeleton';
-import { CATEGORIES } from '@/constants/constants';
+import { CATEGORIES } from '@/constants/categories';
 import { ProductsContext } from '@/context/ProductsContext';
 import { IProductProps, IPurchaseProps } from '@/types';
 import { Modal } from '../Modal';
