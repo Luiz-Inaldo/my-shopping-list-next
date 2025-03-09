@@ -59,7 +59,7 @@ const Footer = () => {
                             </li>
                         )}
                         <li>
-                            <Link href={""} className={`grid gap-1 p-2 place-items-center border-b ${pathname === "/statistics" ? "text-linkdark border-link" : "text-paragraphdark border-transparent"}`}>
+                            <Link href={APP_ROUTES.private.statistics.name} className={`grid gap-1 p-2 place-items-center border-b ${pathname === "/statistics" ? "text-linkdark border-link" : "text-paragraphdark border-transparent"}`}>
                                 <ChartSpline size={16} />
                                 <span className='text-xs'>Estatísticas</span>
                             </Link>

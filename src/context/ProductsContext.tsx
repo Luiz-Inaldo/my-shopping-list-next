@@ -6,15 +6,14 @@ import { IProductProps } from "@/types";
 import { IEditItemProps } from "@/types";
 import { ToastAction } from "@/components/ui/toast";
 import { useToast } from "@/components/ui/use-toast";
-import { QueryClient, useQuery, useQueryClient } from "@tanstack/react-query";
 
 export const ProductsContext = createContext<IProductsContextProps>({
     user: {},
     setUser: () => { },
     data: [],
-    // setData: () => { },
+    setData: () => { },
     loadingProducts: true,
-    queryClient: null,
+
     modal: {
         state: 'CLOSED',
         type: null
@@ -29,7 +28,7 @@ export const ProductsContext = createContext<IProductsContextProps>({
     currentPurchase: null,
     setCurrentPurchase: () => { },
 
-    refetchProducts: async () => undefined,
+    fetchData: async () => { },
     fetchPurchaseData: async () => { },
     deleteCurrentPurchase: async () => { },
     deleteAllItems: async () => { },
@@ -42,6 +41,8 @@ export const ProductsContext = createContext<IProductsContextProps>({
 export const ProductsProvider = ({ children }: { children: React.ReactNode }) => {
 
     /* ====> states <==== */
+    const [data, setData] = useState<IProductProps[] | null>(null);
+    const [loadingProducts, setLoadingProducts] = useState<boolean>(true);
     const [user, setUser] = useState<any>(null);
     const [modal, setModal] = useState<any>({
         state: 'CLOSED',
@@ -54,25 +55,18 @@ export const ProductsProvider = ({ children }: { children: React.ReactNode }) =>
 
     /* ====> hooks <==== */
     const { toast } = useToast();
-    const queryClient = useQueryClient();
-
-    /* ====> react query <==== */
-    const {data, isLoading: loadingProducts, refetch: refetchProducts} = useQuery<IProductProps[] | undefined>({
-        queryKey: ['products'],
-        queryFn: fetchData,
-        refetchOnWindowFocus: false,
-        enabled: user !== null
-    });
 
     /* ====> functions <==== */
     async function fetchData() {
+        setLoadingProducts(true);
         if (user !== null) {
             const { data, error } = await supabase.from('products').select('*').eq('user_id', user.id);
             if (error) {
                 console.error(error);
                 return;
             }
-            return data as IProductProps[];
+            setLoadingProducts(false);
+            return setData(data as IProductProps[]);
         }
     }
 
@@ -139,22 +133,14 @@ export const ProductsProvider = ({ children }: { children: React.ReactNode }) =>
                 description: "Produto alterado com sucesso.",
                 action: <ToastAction altText="Ok">Ok</ToastAction>
             });
-            queryClient.setQueryData(['products'], (oldData: IProductProps[]) => {
-                return oldData?.map((product: IProductProps) => {
+            setData((oldData) => {
+                return oldData!.map(product => {
                     if (product.id === itemID) {
                         return { ...product, name: object.name, quantity: object.quantity, value: object.value };
                     }
                     return product;
                 });
-            });
-            // setData((oldData) => {
-            //     return oldData!.map(product => {
-            //         if (product.id === itemID) {
-            //             return { ...product, name: object.name, quantity: object.quantity, value: object.value };
-            //         }
-            //         return product;
-            //     });
-            // })
+            })
             setTimeout(() => {
                 setModal({
                     state: 'CLOSED',
@@ -173,12 +159,9 @@ export const ProductsProvider = ({ children }: { children: React.ReactNode }) =>
                 description: "Produto removido da sua lista de compras.",
                 action: <ToastAction altText="Ok">Ok</ToastAction>
             });
-            queryClient.setQueryData(['products'], (oldData: IProductProps[]) => {
-                return oldData?.filter((item: IProductProps) => item.id !== itemID);
+            setData((oldData) => {
+                return oldData!.filter(item => item.id !== itemID);
             })
-            // setData((oldData) => {
-            //     return oldData!.filter(item => item.id !== itemID);
-            // })
             setOptionMenu(null);
             setTimeout(() => {
                 setModal({
@@ -205,8 +188,8 @@ export const ProductsProvider = ({ children }: { children: React.ReactNode }) =>
                 description: "Produto marcado como adiquirido.",
                 action: <ToastAction altText="Ok">Ok</ToastAction>
             });
-            queryClient.setQueryData(["products"], (oldData: IProductProps[]) => {
-                return oldData?.map(product => {
+            setData((oldData) => {
+                return oldData!.map(product => {
                     if (product.id === item.id) {
                         return {
                             ...product,
@@ -217,18 +200,6 @@ export const ProductsProvider = ({ children }: { children: React.ReactNode }) =>
                     return product;
                 });
             })
-            // setData((oldData) => {
-            //     return oldData!.map(product => {
-            //         if (product.id === item.id) {
-            //             return {
-            //                 ...product,
-            //                 value: object?.value ? object.value : item.value,
-            //                 checked: !item.checked
-            //             };
-            //         }
-            //         return product;
-            //     });
-            // })
             setModal({
                 state: 'CLOSED',
                 type: null
@@ -248,22 +219,14 @@ export const ProductsProvider = ({ children }: { children: React.ReactNode }) =>
         if (error) {
             console.log(error);
         } else {
-            queryClient.setQueryData(["products"], (oldData: IProductProps[]) => {
-                return oldData?.map(product => {
+            setData((oldData) => {
+                return oldData!.map(product => {
                     if (product.id === item.id) {
                         return { ...product, checked: !item.checked };
                     }
                     return product;
                 });
             })
-            // setData((oldData) => {
-            //     return oldData!.map(product => {
-            //         if (product.id === item.id) {
-            //             return { ...product, checked: !item.checked };
-            //         }
-            //         return product;
-            //     });
-            // })
         }
 
     }
@@ -306,9 +269,8 @@ export const ProductsProvider = ({ children }: { children: React.ReactNode }) =>
             user,
             setUser,
             data,
-            // setData,
+            setData,
             loadingProducts,
-            queryClient,
             modal,
             setModal,
             optionMenu,
@@ -320,7 +282,7 @@ export const ProductsProvider = ({ children }: { children: React.ReactNode }) =>
             situation,
             setSituation,
 
-            refetchProducts,
+            fetchData,
             fetchPurchaseData,
             deleteCurrentPurchase,
             deleteAllItems,

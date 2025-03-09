@@ -9,7 +9,7 @@ import { PurchasesContext } from '@/context/PurchasesContext';
 export const DeletePurchase = ({ purchase }: { purchase: IPurchaseProps | undefined }) => {
 
     const { modal, setModal } = useContext(ProductsContext);
-    const { purchasesList, queryClient } = useContext(PurchasesContext);
+    const { purchasesList, setPurchasesList } = useContext(PurchasesContext);
     const [isVisible, setIsVisible] = useState<boolean>(false);
     const [isFading, setIsFading] = useState<boolean>(false);
 
@@ -29,7 +29,7 @@ export const DeletePurchase = ({ purchase }: { purchase: IPurchaseProps | undefi
                 description: "Compra excluída com sucesso.",
                 action: <ToastAction altText="Ok">Ok</ToastAction>
             });
-            queryClient?.setQueryData(["purchases"], purchasesList?.filter(item => item.id !== purchase.id));
+            setPurchasesList(purchasesList?.filter(item => item.id !== purchase.id))
 
         }
 

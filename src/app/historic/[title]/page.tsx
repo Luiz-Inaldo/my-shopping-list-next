@@ -8,7 +8,7 @@ import LoggedLayout from '@/components/layout/MainLayout';
 import Header from '@/components/Header';
 import Link from 'next/link';
 import { APP_ROUTES } from '@/routes/app-routes';
-import { CATEGORIES } from '@/constants/constants';
+import { CATEGORIES } from '@/constants/categories';
 import { calculatePercentage } from '@/functions/categoryPercentage';
 
 export default function HistoricPage() {

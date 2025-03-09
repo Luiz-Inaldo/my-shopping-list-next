@@ -2,6 +2,8 @@
 import Header from '@/components/Header';
 import LoggedLayout from '@/components/layout/MainLayout';
 import { Modal } from '@/components/Modal';
+import { MONTHS } from '@/constants/months';
+import { YEARS } from '@/constants/years';
 import { ProductsContext } from '@/context/ProductsContext';
 import { PurchasesContext } from '@/context/PurchasesContext';
 import { formatCurrency } from '@/functions/formatCurrency';
@@ -12,22 +14,6 @@ import Image from 'next/image';
 import Link from 'next/link';
 import React, { Suspense, useCallback, useContext, useEffect, useState } from 'react';
 
-const months = [
-    "janeiro",
-    "fevereiro",
-    "março",
-    "abril",
-    "maio",
-    "junho",
-    "julho",
-    "agosto",
-    "setembro",
-    "outubro",
-    "novembro",
-    "dezembro"
-];
-
-const years = [2024, 2025]
 
 export default function Historic() {
 
@@ -95,7 +81,7 @@ export default function Historic() {
                                 className='w-full placeholder:text-paragraphdark text-paragraphdark bg-secondary-dark rounded-sm px-3 py-2'
                             >
                                 <option value="todos">Todos os meses</option>
-                                {months.map((month, index) => (
+                                {MONTHS.map((month, index) => (
                                     <option key={month} value={index}>{month}</option>
                                 ))}
                             </select>
@@ -108,7 +94,7 @@ export default function Historic() {
                                 className='w-full placeholder:text-paragraphdark text-paragraphdark bg-secondary-dark rounded-sm px-3 py-2'
                             >
                                 <option value="todos">Todos os anos</option>
-                                {years.map((year) => (
+                                {YEARS.map((year) => (
                                     <option key={year} value={year}>{year}</option>
                                 ))}
                             </select>

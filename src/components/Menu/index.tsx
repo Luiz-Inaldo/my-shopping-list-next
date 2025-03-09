@@ -14,15 +14,12 @@ import { supabase } from '@/lib/api'
 import { useRouter } from 'next/navigation'
 import { APP_ROUTES } from '@/routes/app-routes'
 import useMySwal from '@/hooks/useMySwal'
-import { ProductsContext } from '@/context/ProductsContext'
 
 const Menu = () => {
 
     const router = useRouter();
     const Swal = useMySwal();
     const date = new Date();
-
-    const { user } = useContext(ProductsContext);
 
     const logout = async () => {
         try {

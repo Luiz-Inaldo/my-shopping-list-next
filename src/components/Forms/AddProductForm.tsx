@@ -13,7 +13,7 @@ import { Plus } from 'lucide-react'
 import { useForm } from 'react-hook-form'
 import { ShadSelect } from '../Select'
 import { SelectItem } from '../ui/select'
-import { CATEGORIES } from '@/constants/constants'
+import { CATEGORIES } from '@/constants/categories'
 import { supabase } from '@/lib/api'
 import { useToast } from "@/components/ui/use-toast"
 import { ToastAction } from '../ui/toast'
@@ -23,7 +23,7 @@ import { IFormItem } from '@/types';
 export const AddProductForm = () => {
 
     const { toast } = useToast();
-    const { user, refetchProducts, queryClient } = useContext(ProductsContext);
+    const { user, fetchData } = useContext(ProductsContext);
     const {
         register,
         watch,
@@ -32,8 +32,6 @@ export const AddProductForm = () => {
         reset,
         handleSubmit
     } = useForm<IFormItem>();
-
-    queryClient && queryClient.invalidateQueries({queryKey: ['products']});
 
     // funções
     async function onSubmit(data: IFormItem) {
@@ -57,8 +55,7 @@ export const AddProductForm = () => {
                     action: <ToastAction altText="Ok">Ok</ToastAction>
                 });
 
-                // fetchData();
-                refetchProducts();
+                fetchData();
 
             } else {
 
