@@ -7,7 +7,7 @@ import { AddProductForm } from '../Forms/AddProductForm';
 import { APP_ROUTES } from '@/routes/app-routes';
 import { ProductsContext } from '@/context/ProductsContext';
 
-const allowedRoutes = ["/", "/settings", "/historic", "/menu"]
+const allowedRoutes = ["/", "/settings", "/historic", "/menu", '/statistics']
 
 const Footer = () => {
 

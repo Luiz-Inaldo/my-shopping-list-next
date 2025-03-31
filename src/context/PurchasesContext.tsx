@@ -34,6 +34,8 @@ export const PurchasesProvider = ({ children }: { children: React.ReactNode }) =
 
     const filterPurchases = async (filter: IFilterProps) => {
 
+        // if (purchasesList.length === 0) filterPurchases(filter);
+
         const month = filter.month;
         const year = filter.year;
 
@@ -46,7 +48,7 @@ export const PurchasesProvider = ({ children }: { children: React.ReactNode }) =
 
             const filteredData = auxData.filter(purchase =>
                 purchase.purchase_date.split("T")[0].split("-")[0] === year.toString() &&
-                purchase.purchase_date.split("T")[0].split("-")[1] === (month + 1).toString()
+                purchase.purchase_date.split("T")[0].split("-")[1] === String(month + 1).padStart(2, '0')
             );
 
             setPurchasesList(filteredData);
