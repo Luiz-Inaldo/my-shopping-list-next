@@ -1,4 +1,5 @@
 import { AnnualStatisticsChart } from '@/components/Charts/AnnualStatisticsChart';
+import { LastSixMonthsChart } from '@/components/Charts/LastSixMonthsChart';
 import { YEARS } from '@/constants/years';
 import { PurchasesContext } from '@/context/PurchasesContext';
 import { IPurchaseProps } from '@/types';
@@ -8,15 +9,33 @@ import React, { useCallback, useContext, useEffect, useRef, useState } from 'rea
 export const LastSixMonthsSection = () => {
 
     const { purchasesList } = useContext(PurchasesContext);
-    
+
     const [data, setData] = useState<IPurchaseProps[]>([]);
 
     const filterLock = useRef(true);
 
     // functions
     const filterLastSixMonthsPurchases = useCallback(async () => {
+        let numberOfMonths = 6;
+        const startMonth = new Date().getMonth() + 1;
+        let lastMonth = startMonth;
+        let year = new Date().getFullYear();
 
-        // TODO: ajustar lógica aqui.
+        while (numberOfMonths > 0) {
+            lastMonth -= 1;
+            if (lastMonth === 0) {
+                lastMonth = 12;
+                year -= 1;
+            }
+            numberOfMonths -= 1;
+        }
+
+        const filteredData = purchasesList.filter(purchase => 
+            purchase.purchase_date.split("T")[0] >= `${year}-${String(lastMonth).padStart(2, '0')}-01` &&
+            purchase.purchase_date.split("T")[0] <= `${String(new Date().getFullYear())}-${String(startMonth).padStart(2, '0')}-31` 
+        ).sort((a, b) => new Date(a.purchase_date).getTime() - new Date(b.purchase_date).getTime())
+
+        setData(filteredData);
 
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [purchasesList])
@@ -36,15 +55,8 @@ export const LastSixMonthsSection = () => {
 
     return (
         <section className="grid gap-5">
-            <div>
-                <p className="text-paragraphdark font-bold mb-3">Resumo dos últimos 6 meses:</p>
-                
-            </div>
-            {/* <AnnualStatisticsChart
-                title={filterStates.dataType === 'percentual' ? 'Resumo por Categoria (%)' : 'Resumo por Categoria (R$)'}
-                dataType={filterStates.dataType}
-                data={filterLock.current ? [] : data}
-            /> */}
+            <p className="text-paragraphdark font-bold">Resumo dos últimos 6 meses:</p>
+            <LastSixMonthsChart data={filterLock.current ? [] : data} />
         </section>
     )
 }
