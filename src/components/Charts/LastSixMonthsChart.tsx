@@ -127,10 +127,9 @@ export function LastSixMonthsChart({ data }: { data: IPurchaseProps[] }) {
                     </AreaChart>
                 </ChartContainer>
             </CardContent>
-            <CardFooter>
-                <div className="flex w-full items-center gap-2 text-sm">
-                    <TrendingUp size={16} className="mr-1 text-titledark" />
-                    <p className="text-paragraphdark">
+            {data && data.length > 0 && (
+                <CardFooter>
+                    <p className="text-paragraphdark text-sm">
                         <b>{"Período de: "}</b>
                         {MONTHS[Number(data[0].purchase_date.split("T")[0].split("-")[1] - 1)].slice(0, 3)}
                         -
@@ -140,8 +139,8 @@ export function LastSixMonthsChart({ data }: { data: IPurchaseProps[] }) {
                         -
                         {data[data.length - 1].purchase_date.split("T")[0].split("-")[0]}
                     </p>
-                </div>
-            </CardFooter>
+                </CardFooter>
+            )}
         </Card>
     )
 }
