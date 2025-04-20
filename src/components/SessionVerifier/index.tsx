@@ -33,11 +33,11 @@ const SessionVerifier = ({ children }: { children: React.ReactNode }) => {
             }
         };
         fetchUser();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [router]);
 
     useEffect(() => {
         if (isSessionVerified === false) {
-            console.log('renderizando página de login')
             router.push(APP_ROUTES.public.login.name);
         }
     }, [isSessionVerified, router]);
