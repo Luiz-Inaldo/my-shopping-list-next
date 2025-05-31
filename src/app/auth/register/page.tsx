@@ -26,21 +26,29 @@ export default function Register() {
 
         setLoading(true);
 
-        const { data, error } = await supabase.auth.signUp({
+        const { data, error: signUpError } = await supabase.auth.signUp({
             email: userCredentials.email,
             password: userCredentials.password,
-            options: {
-                data: {
-                    name: userCredentials.username
-                }
-            }
         });
 
-        if (error) {
+        const { error: profileError } = await supabase.from('profiles').insert({
+            email: userCredentials.email,
+            user_name: userCredentials.username,
+            profile_img: ''
+        });
+
+        if (signUpError) {
             swal.fire({
                 icon: "error",
                 title: "Oops!",
                 text: "Houve algum problema ao cadastrar o usuário",
+                confirmButtonText: "Ok"
+            })
+        } else if (profileError) {
+            swal.fire({
+                icon: "error",
+                title: "Oops!",
+                text: "O usuário foi cadastrado e você receberá um e-mail, porém houve algum problema ao criar o perfil. Contate o administrador.",
                 confirmButtonText: "Ok"
             })
         } else {
