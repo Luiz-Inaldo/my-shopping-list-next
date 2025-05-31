@@ -1,6 +1,8 @@
 'use client'
 import React, {
   useContext,
+  useEffect,
+  useState,
 } from "react";
 import { ProductsContext } from "@/context/ProductsContext";
 import NonPurchaseList from "../NonPurchaseList";
@@ -10,6 +12,8 @@ import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar'
 import { ChevronRight, Menu, SlidersHorizontal } from "lucide-react";
 import Link from "next/link";
 import { APP_ROUTES } from "@/routes/app-routes";
+import Image from "next/image";
+import getProfile from "@/services/userProfileServices";
 
 const Main = () => {
   const {
@@ -19,6 +23,20 @@ const Main = () => {
     loadingProducts
   } = useContext(ProductsContext);
 
+  const [userProfile, setUserProfile] = useState<any>(null);
+
+  async function fetchProfileData() {
+    const profileData = await getProfile(user?.email);
+    setUserProfile(profileData);
+  }
+
+  useEffect(() => {
+    if (user) {
+      fetchProfileData()
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [user])
+
   return (
     <React.Fragment>
       <Header
@@ -26,8 +44,15 @@ const Main = () => {
           <>
             <div className='flex items-center gap-3 cursor-pointer overflow-hidden'>
               <Avatar className='border-2 border-snow'>
-                <AvatarImage src="images/profile.JPG" />
-                <AvatarFallback>CN</AvatarFallback>
+                <AvatarImage src={userProfile?.profile_img} />
+                <AvatarFallback>
+                  <Image
+                    src='/images/avatars/default-avatar.png'
+                    alt='no-profile-img'
+                    width={36}
+                    height={36}
+                  />
+                </AvatarFallback>
               </Avatar>
               <div className='flex items-center'>
                 <p className={`${visible ? "max-w-[89px] mr-1" : "max-w-0"} overflow-hidden whitespace-nowrap text-titledark transition-all duration-200`}>
