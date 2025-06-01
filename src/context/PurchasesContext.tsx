@@ -1,7 +1,7 @@
 import { supabase } from "@/lib/api";
 import { IFilterProps, IPuchasesContextProps, IPurchaseProps } from "@/types";
-import React, { createContext, use, useContext, useEffect, useState } from "react";
-import { ProductsContext } from "./ProductsContext";
+import React, { createContext, useEffect, useState } from "react";
+import useGeneralUserStore from "@/store/generalUserStore";
 
 export const PurchasesContext = createContext<IPuchasesContextProps>({
     purchasesList: [],
@@ -12,14 +12,21 @@ export const PurchasesContext = createContext<IPuchasesContextProps>({
 
 export const PurchasesProvider = ({ children }: { children: React.ReactNode }) => {
 
-    const { user } = useContext(ProductsContext);
+    /**
+     * ==========>> store <<===========
+     */
+    const user = useGeneralUserStore(store => store.user);
+
+    /**
+     * ==========>> states <<===========
+     */
     const [purchasesList, setPurchasesList] = useState<IPurchaseProps[]>([]);
     const [purchasesLoading, setPurchasesLoading] = useState<boolean>(false);
     const [auxData, setAuxData] = useState<IPurchaseProps[]>([]);
 
     const getPurchases = async () => {
         setPurchasesLoading(true);
-        const { data, error } = await supabase.from("purchases").select("*").eq("user_id", user.id)
+        const { data, error } = await supabase.from("purchases").select("*").eq("user_id", user?.id)
 
         if (error) {
             console.error(error);

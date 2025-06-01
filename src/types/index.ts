@@ -1,8 +1,8 @@
 export type ModalStateProps = "OPEN" | "CLOSED";
 export type ModalTypeProps = null | 'LIMIT_VALUE' | 'DELETE_PRODUCT' | 'EDIT_PRODUCT' | 'CHECK_PRODUCT' | 'DELETE_PURCHASE'
 export interface IProductsContextProps {
-    user: any,
-    setUser: React.Dispatch<React.SetStateAction<any>>;
+    // user: any,
+    // setUser: React.Dispatch<React.SetStateAction<any>>;
     data: IProductProps[] | null;
     setData: React.Dispatch<React.SetStateAction<IProductProps[] | null>>;
     loadingProducts: boolean;

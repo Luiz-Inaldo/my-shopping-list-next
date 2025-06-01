@@ -5,11 +5,14 @@ import { APP_ROUTES } from '@/routes/app-routes';
 import { useRouter } from 'next/navigation';
 import React, { useContext, useEffect, useState } from 'react'
 import GlobalLoader from '../GlobalLoader';
+import useGeneralUserStore from '@/store/generalUserStore';
+import { TSupabaseUserInfo } from '@/types/supabase';
 
 const SessionVerifier = ({ children }: { children: React.ReactNode }) => {
 
     const [isSessionVerified, setIsSessionVerified] = useState<boolean | null>(null);
-    const { setUser } = useContext(ProductsContext)
+    // const { setUser } = useContext(ProductsContext)
+    const setUser = useGeneralUserStore(store => store.setUser)
     const router = useRouter();
 
     useEffect(() => {
@@ -25,7 +28,7 @@ const SessionVerifier = ({ children }: { children: React.ReactNode }) => {
                 if (error) {
                     setIsSessionVerified(false);
                 } else {
-                    setUser(user);
+                    setUser(user as unknown as TSupabaseUserInfo);
                     setIsSessionVerified(true);
                 }
             } else {
