@@ -14,16 +14,21 @@ import Link from "next/link";
 import { APP_ROUTES } from "@/routes/app-routes";
 import Image from "next/image";
 import getProfile from "@/services/userProfileServices";
+import useGeneralUserStore from "@/store/generalUserStore";
 
 const Main = () => {
   const {
     data,
-    user,
     currentPurchase,
     loadingProducts
   } = useContext(ProductsContext);
 
-  const [userProfile, setUserProfile] = useState<any>(null);
+  /**
+   * ===========>> STORE <<============
+   */
+  const user = useGeneralUserStore(store => store.user)
+  const userProfile = useGeneralUserStore(store => store.userProfile)
+  const setUserProfile = useGeneralUserStore(store => store.setUserProfile)
 
   async function fetchProfileData() {
     const profileData = await getProfile(user?.email);
@@ -81,7 +86,7 @@ const Main = () => {
         {loadingProducts ? (<p className="text-paragraphdark font-medium text-xl text-center">Carregando lista...</p>) : (
           <>
             {(data?.length === 0 && !currentPurchase) ? (
-              <NonPurchaseList user={user} />
+              <NonPurchaseList />
             ) : (
               <ShoppingList listname={currentPurchase?.list_name} />
             )}

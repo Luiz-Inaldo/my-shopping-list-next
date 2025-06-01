@@ -7,6 +7,7 @@ import { ProductsContext } from '@/context/ProductsContext';
 import useMySwal from '@/hooks/useMySwal';
 import { supabase } from '@/lib/api';
 import { APP_ROUTES } from '@/routes/app-routes';
+import useGeneralUserStore from '@/store/generalUserStore';
 import { Blocks, LogOut } from 'lucide-react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
@@ -14,9 +15,7 @@ import React, { useContext } from 'react'
 
 export default function Menu() {
 
-    const {
-        user
-    } = useContext(ProductsContext);
+    const user = useGeneralUserStore(store => store.user)
 
     const swal = useMySwal();
     const router = useRouter();

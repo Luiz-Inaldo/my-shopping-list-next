@@ -1,15 +1,16 @@
 "use client";
 import { IProductsContextProps, ISupabasePurchaseProps } from "@/types";
-import { createContext, useEffect, useState } from "react";
+import { createContext, use, useEffect, useState } from "react";
 import { supabase } from "@/lib/api";
 import { IProductProps } from "@/types";
 import { IEditItemProps } from "@/types";
 import { ToastAction } from "@/components/ui/toast";
 import { useToast } from "@/components/ui/use-toast";
+import useGeneralUserStore from "@/store/generalUserStore";
 
 export const ProductsContext = createContext<IProductsContextProps>({
-    user: {},
-    setUser: () => { },
+    // user: {},
+    // setUser: () => { },
     data: [],
     setData: () => { },
     loadingProducts: true,
@@ -39,11 +40,15 @@ export const ProductsContext = createContext<IProductsContextProps>({
 });
 
 export const ProductsProvider = ({ children }: { children: React.ReactNode }) => {
+    /**
+     * =======>> store <<========
+     */
+    const user = useGeneralUserStore(store => store.user);
 
     /* ====> states <==== */
     const [data, setData] = useState<IProductProps[] | null>(null);
     const [loadingProducts, setLoadingProducts] = useState<boolean>(true);
-    const [user, setUser] = useState<any>(null);
+    // const [user, setUser] = useState<any>(null);
     const [modal, setModal] = useState<any>({
         state: 'CLOSED',
         type: null
@@ -96,7 +101,7 @@ export const ProductsProvider = ({ children }: { children: React.ReactNode }) =>
 
         try {
 
-            const { error } = await supabase.from('products').delete().eq('user_id', user.id);
+            const { error } = await supabase.from('products').delete().eq('user_id', user?.id);
 
             if (error) {
                 console.log(error);
@@ -112,7 +117,7 @@ export const ProductsProvider = ({ children }: { children: React.ReactNode }) =>
     }
 
     async function deleteCurrentPurchase() {
-        const { error } = await supabase.from('active_purchases').delete().eq('user_id', user.id);
+        const { error } = await supabase.from('active_purchases').delete().eq('user_id', user?.id);
 
         if (error) {
             console.log(error);
@@ -266,8 +271,6 @@ export const ProductsProvider = ({ children }: { children: React.ReactNode }) =>
 
     return (
         <ProductsContext.Provider value={{
-            user,
-            setUser,
             data,
             setData,
             loadingProducts,

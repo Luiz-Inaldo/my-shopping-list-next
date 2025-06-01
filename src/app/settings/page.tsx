@@ -2,26 +2,23 @@
 import Header from '@/components/Header';
 import LoggedLayout from '@/components/layout/MainLayout';
 import ChangeAvatarModal from '@/components/Modal/ChangeAvatarModal';
-import SettingsModal from '@/components/Modal/ChangeAvatarModal';
 import ThemeSwitcher from '@/components/Switcher';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { ToastAction } from '@/components/ui/toast';
 import { toast } from '@/components/ui/use-toast';
-import { ProductsContext } from '@/context/ProductsContext';
 import { supabase } from '@/lib/api';
 import getProfile from '@/services/userProfileServices';
-import { EllipsisVertical, Lock, Palette, Pencil, User } from 'lucide-react';
+import useGeneralUserStore from '@/store/generalUserStore';
+import { EllipsisVertical, Lock, Palette, Pencil} from 'lucide-react';
 import Image from 'next/image';
-import React, { useContext, useEffect, useState } from 'react'
-import { set } from 'react-hook-form';
+import React, { useEffect } from 'react'
 
 export default function Settings() {
 
-    const { user } = useContext(ProductsContext);
-
-    // TODO: Modificar lógica de get
-    const [userProfile, setUserProfile] = useState<any>(null);
+    const user = useGeneralUserStore(store => store.user)
+    const userProfile = useGeneralUserStore(store => store.userProfile)
+    const setUserProfile = useGeneralUserStore(store => store.setUserProfile)
 
     async function removeAvatar() {
         try {

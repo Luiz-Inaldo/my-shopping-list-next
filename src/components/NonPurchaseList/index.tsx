@@ -1,6 +1,7 @@
 import { ProductsContext } from '@/context/ProductsContext';
 import { sleep } from '@/functions/sleep';
 import { supabase } from '@/lib/api';
+import useGeneralUserStore from '@/store/generalUserStore';
 import { Check, ClipboardList, LoaderCircle } from 'lucide-react'
 import Image from 'next/image'
 import React, { useContext, useState } from 'react'
@@ -11,12 +12,12 @@ type NewListProps = {
     list_max_value: string;
 }
 
-const NonPurchaseList = ({ user }: {
-    user: any;
-}) => {
+const NonPurchaseList = () => {
+
+    const user = useGeneralUserStore(store => store.user)
 
     const [showInput, setShowInput] = useState<boolean>(false);
-    const [isSeting, setIsSeting] = useState<boolean>(false);
+    const [isSettingPurchase, setIsSettingPurchase] = useState<boolean>(false);
     const {
         register,
         handleSubmit,
@@ -25,13 +26,13 @@ const NonPurchaseList = ({ user }: {
     const { fetchPurchaseData } = useContext(ProductsContext);
 
     const onSubmit = async (listData: NewListProps) => {
-        setIsSeting(true);
+        setIsSettingPurchase(true);
         await sleep(2);
 
         const { error } = await supabase.from("active_purchases").insert([{
             list_name: listData.list_name,
             list_max_value: listData.list_max_value,
-            user_id: user.id
+            user_id: user?.id
         }]);
 
         if (error) {
@@ -39,12 +40,12 @@ const NonPurchaseList = ({ user }: {
         }
 
         fetchPurchaseData();
-        setIsSeting(false)
+        setIsSettingPurchase(false)
     }
 
     return (
         <div className="grid place-items-center">
-            {isSeting ? (
+            {isSettingPurchase ? (
                 <>
                     <LoaderCircle size={70} className='text-subtitledark animate-spin mb-5 mt-28' />
                     <span className='text-subtitledark text-center'>Um momento... Estamos criando sua lista.</span>
