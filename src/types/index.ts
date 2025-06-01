@@ -59,7 +59,7 @@ export interface IPurchaseProps {
     purchase_date: any;
     purchase_items: string;
     total_price: string;
-    user_id: string;
+    user_id: string | undefined;
 }
 
 export interface ISupabasePurchaseProps {

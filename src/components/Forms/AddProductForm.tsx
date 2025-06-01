@@ -19,11 +19,14 @@ import { useToast } from "@/components/ui/use-toast"
 import { ToastAction } from '../ui/toast'
 import { ProductsContext } from '@/context/ProductsContext';
 import { IFormItem } from '@/types';
+import useGeneralUserStore from '@/store/generalUserStore';
 
 export const AddProductForm = () => {
 
+    const user = useGeneralUserStore(store => store.user)
+
     const { toast } = useToast();
-    const { user, fetchData } = useContext(ProductsContext);
+    const { fetchData } = useContext(ProductsContext);
     const {
         register,
         watch,
@@ -38,7 +41,7 @@ export const AddProductForm = () => {
 
         const item = {
             ...data,
-            user_id: user.id
+            user_id: user?.id
         }
         if (item.value === "") {
             item.value = "0,00"

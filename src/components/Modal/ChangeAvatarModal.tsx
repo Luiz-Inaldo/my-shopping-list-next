@@ -16,6 +16,7 @@ import { Check, LoaderCircle } from 'lucide-react';
 import { toast } from '../ui/use-toast';
 import { supabase } from '@/lib/api';
 import { ProductsContext } from '@/context/ProductsContext';
+import useGeneralUserStore from '@/store/generalUserStore';
 
 const ChangeAvatarModal = ({ children, currentAvatarUrl, refetch }: { 
     children?: React.ReactNode;
@@ -23,7 +24,7 @@ const ChangeAvatarModal = ({ children, currentAvatarUrl, refetch }: {
     refetch?: () => void
 }) => {
 
-    const { user } = useContext(ProductsContext);
+    const user = useGeneralUserStore(store => store.user)
 
     const [selectedAvatar, setSelectedAvatar] = useState<string>(currentAvatarUrl ?? '');
     const [isLoading, setIsLoading] = useState<boolean>(false);

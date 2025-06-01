@@ -15,10 +15,13 @@ import { ToastAction } from '@radix-ui/react-toast';
 import { APP_ROUTES } from '@/routes/app-routes';
 import { sleep } from '@/functions/sleep';
 import { Fade } from "react-awesome-reveal";
+import useGeneralUserStore from '@/store/generalUserStore';
 
 const ShoppingList = ({ listname }: { listname: string | undefined }) => {
+    
+    const user = useGeneralUserStore(store => store.user);
 
-    const { data, user, loadingProducts, setModal, handleCheckItem, handleDismarkItem,
+    const { data, loadingProducts, setModal, handleCheckItem, handleDismarkItem,
         optionMenu, setOptionMenu, currentPurchase, totalValue, situation,
         deleteAllItems, deleteCurrentPurchase,
     } = useContext(ProductsContext);
@@ -90,7 +93,7 @@ const ShoppingList = ({ listname }: { listname: string | undefined }) => {
                 purchase_date: currentDateMoment,
                 purchase_items: JSON.stringify(itemsToSave),
                 total_price: totalValue,
-                user_id: user.id
+                user_id: user?.id
             }
 
             try {
