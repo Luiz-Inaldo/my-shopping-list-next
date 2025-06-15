@@ -48,7 +48,7 @@ const Main = () => {
         content={(_, visible) => (
           <>
             <div className='flex items-center gap-3 cursor-pointer overflow-hidden'>
-              <Avatar className='border-2 border-snow'>
+              <Avatar className='border-2 border-title'>
                 <AvatarImage src={userProfile?.profile_img} />
                 <AvatarFallback>
                   <Image
@@ -60,20 +60,20 @@ const Main = () => {
                 </AvatarFallback>
               </Avatar>
               <div className='flex items-center'>
-                <p className={`${visible ? "max-w-[89px] mr-1" : "max-w-0"} overflow-hidden whitespace-nowrap text-titledark transition-all duration-200`}>
+                <p className={`${visible ? "max-w-[89px] mr-1" : "max-w-0"} overflow-hidden whitespace-nowrap text-title transition-all duration-200`}>
                   Bem-vindo,
                 </p>
-                <p className='text-titledark'>{user?.user_metadata?.name || 'Usuário sem nome.'}</p>
-                <ChevronRight size={16} className={`${visible ? "opacity-100 translate-x-0 ml-2" : "opacity-0 -translate-x-full"} transition-all duration-200 text-titledark`} />
+                <p className='text-title'>{user?.user_metadata?.name || 'Usuário sem nome.'}</p>
+                <ChevronRight size={16} className={`${visible ? "opacity-100 translate-x-0 ml-2" : "opacity-0 -translate-x-full"} transition-all duration-200 text-title`} />
               </div>
             </div>
             {currentPurchase ? (
               <Link href={APP_ROUTES.private.settings.name}>
-                <SlidersHorizontal size={20} className='cursor-pointer text-titledark' />
+                <SlidersHorizontal size={20} className='cursor-pointer text-title' />
               </Link>
             ) : (
               <Link href={APP_ROUTES.private.menu.name}>
-                <Menu size={20} className='cursor-pointer text-titledark' />
+                <Menu size={20} className='cursor-pointer text-title' />
               </Link>
             )}
           </>
@@ -83,7 +83,7 @@ const Main = () => {
       <main
         className={`main-container py-28 px-5 flex flex-col gap-5`}
       >
-        {loadingProducts ? (<p className="text-paragraphdark font-medium text-xl text-center">Carregando lista...</p>) : (
+        {loadingProducts ? (<p className="text-gray-800 dark:text-gray-100 font-medium text-xl text-center">Carregando lista...</p>) : (
           <>
             {(data?.length === 0 && !currentPurchase) ? (
               <NonPurchaseList />

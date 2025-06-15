@@ -25,6 +25,7 @@ const Footer = () => {
                 setIsAllowed(false);
             }
         }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [data, currentPurchase])
 
     return (
@@ -32,18 +33,18 @@ const Footer = () => {
             {(isAllowed || data && data.length > 0) && (
                 <footer
                     style={{
-                        boxShadow: "0 -3px 4px rgb(0 0 0 / 0.1)"
+                        boxShadow: "0 0 4px rgb(0 0 0 / 0.1)"
                     }}
-                    className='fixed bottom-0 left-0 z-[3] w-full bg-secondary-dark py-2 px-4 flex items-center justify-center'>
+                    className='fixed bottom-0 left-0 z-[3] w-full bg-app-container py-2 px-4 flex items-center justify-center'>
                     <ul className='flex flex-1 items-center justify-between'>
                         <li>
-                            <Link href={APP_ROUTES.private.home.name} className={`grid gap-1 p-2 place-items-center border-b ${pathname === "/" ? "text-linkdark border-link" : "text-paragraphdark border-transparent"}`}>
+                            <Link href={APP_ROUTES.private.home.name} className={`grid gap-1 p-2 place-items-center border-b ${pathname === "/" ? "text-secondary-blue dark:text-title border-secondary-blue dark:border-title" : "text-subtitle border-transparent"}`}>
                                 <House size={16} />
                                 <span className='text-xs'>Início</span>
                             </Link>
                         </li>
                         <li>
-                            <Link href={APP_ROUTES.private.historic.name} className={`grid gap-1 p-2 place-items-center border-b ${pathname === "/historic" ? "text-linkdark border-link" : "text-paragraphdark border-transparent"}`}>
+                            <Link href={APP_ROUTES.private.historic.name} className={`grid gap-1 p-2 place-items-center border-b ${pathname === "/historic" ? "text-secondary-blue dark:text-title border-secondary-blue dark:border-title" : "text-subtitle border-transparent"}`}>
                                 <FileText size={16} />
                                 <span className='text-xs'>Histórico</span>
                             </Link>
@@ -52,20 +53,20 @@ const Footer = () => {
                             <AddProductForm />
                         ) : (
                             <li>
-                                <Link href={APP_ROUTES.private.settings.name} className={`grid gap-1 p-2 place-items-center border-b ${pathname === "/settings" ? "text-linkdark border-link" : "text-paragraphdark border-transparent"}`}>
+                                <Link href={APP_ROUTES.private.settings.name} className={`grid gap-1 p-2 place-items-center border-b ${pathname === "/settings" ? "text-secondary-blue dark:text-title border-secondary-blue dark:border-title" : "text-subtitle border-transparent"}`}>
                                     <SlidersHorizontal size={16} />
                                     <span className='text-xs'>Ajustes</span>
                                 </Link>
                             </li>
                         )}
                         <li>
-                            <Link href={APP_ROUTES.private.statistics.name} className={`grid gap-1 p-2 place-items-center border-b ${pathname === "/statistics" ? "text-linkdark border-link" : "text-paragraphdark border-transparent"}`}>
+                            <Link href={APP_ROUTES.private.statistics.name} className={`grid gap-1 p-2 place-items-center border-b ${pathname === "/statistics" ? "text-secondary-blue dark:text-title border-secondary-blue dark:border-title" : "text-subtitle border-transparent"}`}>
                                 <ChartSpline size={16} />
                                 <span className='text-xs'>Estatísticas</span>
                             </Link>
                         </li>
                         <li>
-                            <Link href={APP_ROUTES.private.menu.name} className={`grid gap-1 p-2 place-items-center border-b ${pathname === "/menu" ? "text-linkdark border-link" : "text-paragraphdark border-transparent"}`}>
+                            <Link href={APP_ROUTES.private.menu.name} className={`grid gap-1 p-2 place-items-center border-b ${pathname === "/menu" ? "text-secondary-blue dark:text-title border-secondary-blue dark:border-title" : "text-subtitle border-transparent"}`}>
                                 <Menu size={16} />
                                 <span className='text-xs'>Mais</span>
                             </Link>

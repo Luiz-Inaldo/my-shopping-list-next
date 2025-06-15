@@ -5,7 +5,7 @@ import Footer from '../Footer'
 const LoggedLayout = ({ children }: { children: React.ReactNode }) => {
 
     return (
-        <div className='container bg-primary-dark'>
+        <div className='container bg-app-background'>
             {children}
             <Footer />
         </div>

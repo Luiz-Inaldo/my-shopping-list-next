@@ -30,6 +30,13 @@
     --chart-4: 43 74% 66%;
     --chart-5: 27 87% 67%;
     --header-height: 68px;
+    --app-background: #fafafa;
+    --app-primary: #A0CFF7;
+    --app-container: white;
+    --title: #212529;
+    --subtitle: #343a40;
+    --paragraph: #838587;
+    --link: #E9ECEF;
   }
 
   .dark {
@@ -57,6 +64,13 @@
     --chart-3: 30 80% 55%;
     --chart-4: 280 65% 60%;
     --chart-5: 340 75% 55%;
+    --app-background: #1f2123;
+    --app-primary: #353739;
+    --app-container: #353739;
+    --title: #dfe1e4;
+    --subtitle: #b8bcc0;
+    --paragraph: #8f949b;
+    --link: #E9ECEF;
   }
 }
 
