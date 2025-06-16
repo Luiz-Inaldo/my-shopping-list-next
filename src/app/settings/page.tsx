@@ -67,7 +67,7 @@ export default function Settings() {
         content={(_) => <h2 className="text-title text-lg">Ajustes</h2>}
       />
       <main className="main-container py-28 px-5 flex flex-col gap-8">
-        <div className="flex gap-5 items-center bg-app-container shadow-md p-4 rounded-sm">
+        <div className="flex gap-5 items-center bg-app-container border border-border shadow-md p-4 rounded-sm">
           <div className="relative">
             <Avatar className="w-[70px] h-[70px]">
               <AvatarImage src={userProfile?.profile_img} />
@@ -106,7 +106,7 @@ export default function Settings() {
         </div>
         <div>
           <h2 className="text-subtitle mb-3">Ajustes do perfil</h2>
-          <div className="grid gap-3 bg-app-container shadow-md p-4 rounded-sm">
+          <div className="grid gap-3 bg-app-container border border-border shadow-md p-4 rounded-sm">
             <div className="flex gap-3 items-center text-subtitle">
               <Lock size={16} />
               <p className="text-sm">Alterar senha</p>
@@ -119,7 +119,7 @@ export default function Settings() {
         </div>
         <div>
           <h2 className="text-subtitle mb-3">Ajustes do sistema</h2>
-          <div className="grid gap-3 bg-app-container shadow-md p-4 rounded-sm">
+          <div className="grid gap-3 bg-app-container border border-border shadow-md p-4 rounded-sm">
             <div className="flex gap-3 items-center justify-between text-subtitle">
               <div className="flex gap-3 items-center">
                 <Palette size={16} />

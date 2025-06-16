@@ -15,7 +15,8 @@ import React, { useContext } from 'react'
 
 export default function Menu() {
 
-    const user = useGeneralUserStore(store => store.user)
+    const user = useGeneralUserStore(store => store.user);
+    const userProfile = useGeneralUserStore(store => store.userProfile);
 
     const swal = useMySwal();
     const router = useRouter();
@@ -56,13 +57,13 @@ export default function Menu() {
             <Header
                 content={(_) => (
                     <div className='flex items-center gap-3 cursor-pointer overflow-hidden'>
-                        <Avatar className='border-2 border-snow'>
-                            <AvatarImage src="images/profile.JPG" />
+                        <Avatar className='border-2 border-title'>
+                            <AvatarImage src={userProfile?.profile_img} />
                             <AvatarFallback>CN</AvatarFallback>
                         </Avatar>
                         <div className='flex flex-col gap-1'>
-                            <p className='text-titledark'>{user?.user_metadata?.name || 'Usuário sem nome.'}</p>
-                            <Link href={APP_ROUTES.private.settings.name} className='text-xs text-linkdark underline'>
+                            <p className='text-title'>{user?.user_metadata?.name || 'Usuário sem nome.'}</p>
+                            <Link href={APP_ROUTES.private.settings.name} className='text-xs text-link underline'>
                                 Acessar o perfil
                             </Link>
                         </div>
@@ -71,15 +72,15 @@ export default function Menu() {
             />
 
             <div className='main-container py-28 px-5 flex flex-col gap-10'>
-                <h1 className='text-titledark text-2xl font-bold'>Menu</h1>
-                <div className='flex flex-col gap-3'>
+                <h1 className='text-subtitle text-xl font-bold'>Menu</h1>
+                <div className='flex flex-col gap-3 text-paragraph'>
                     <Link href={"#"} className='flex gap-4'>
-                        <Blocks size={20} className='text-paragraphdark' />
-                        <span className='text-linkdark'>Sobre o aplicativo</span>
+                        <Blocks size={20} />
+                        <span>Sobre o aplicativo</span>
                     </Link>
                     <button className='flex gap-4' onClick={logout}>
-                        <LogOut size={20} className='text-paragraphdark' />
-                        <span className='text-linkdark'>Sair</span>
+                        <LogOut size={20} />
+                        <span>Sair</span>
                     </button>
                 </div>
             </div>

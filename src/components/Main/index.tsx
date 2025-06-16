@@ -13,7 +13,6 @@ import { ChevronRight, Menu, SlidersHorizontal } from "lucide-react";
 import Link from "next/link";
 import { APP_ROUTES } from "@/routes/app-routes";
 import Image from "next/image";
-import getProfile from "@/services/userProfileServices";
 import useGeneralUserStore from "@/store/generalUserStore";
 
 const Main = () => {
@@ -28,19 +27,6 @@ const Main = () => {
    */
   const user = useGeneralUserStore(store => store.user)
   const userProfile = useGeneralUserStore(store => store.userProfile)
-  const setUserProfile = useGeneralUserStore(store => store.setUserProfile)
-
-  async function fetchProfileData() {
-    const profileData = await getProfile(user?.email);
-    setUserProfile(profileData);
-  }
-
-  useEffect(() => {
-    if (user) {
-      fetchProfileData()
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [user])
 
   return (
     <React.Fragment>

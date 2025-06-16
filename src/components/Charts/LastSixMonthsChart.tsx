@@ -73,74 +73,93 @@ export function LastSixMonthsChart({ data }: { data: IPurchaseProps[] }) {
     }, [data]);
 
     return (
-        <Card className="bg-secondary-dark border-0 rounded-sm">
-            <CardHeader>
-                <CardTitle className="text-xl text-titledark font-semibold">Valor de compras por mês</CardTitle>
-            </CardHeader>
-            <CardContent>
-                <ChartContainer config={chartConfig}>
-                    <AreaChart
-                        accessibilityLayer
-                        data={chartData}
-                        margin={{
-                            left: 20,
-                            right: 20,
-                        }}
-                    >
-                        <CartesianGrid vertical={false} />
-                        <XAxis
-                            dataKey="month"
-                            tickLine={false}
-                            axisLine={false}
-                            tickMargin={8}
-                            tickFormatter={(value) => value.slice(0, 3)}
-                        />
-                        <ChartTooltip
-                            cursor
-                            content={({ label, payload }) => {
-                                const item = payload?.[0];
-                                if (!item) return null;
+      <Card className="bg-app-container border border-border shadow-md rounded-sm">
+        <CardHeader>
+          <CardTitle className="text-lg text-subtitle font-semibold">
+            Valor de compras por mês
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <ChartContainer config={chartConfig}>
+            <AreaChart
+              accessibilityLayer
+              data={chartData}
+              margin={{
+                left: 20,
+                right: 20,
+              }}
+            >
+              <CartesianGrid vertical={false} />
+              <XAxis
+                dataKey="month"
+                tickLine={false}
+                axisLine={false}
+                tickMargin={8}
+                tickFormatter={(value) => value.slice(0, 3)}
+              />
+              <ChartTooltip
+                cursor
+                content={({ label, payload }) => {
+                  const item = payload?.[0];
+                  if (!item) return null;
 
-                                return (
-                                    <div className="p-2 rounded-md bg-secondary-dark border border-border shadow-md">
-                                        <div className="flex items-center gap-2">
-                                            <div className="w-1 h-7 rounded-full bg-[#44a1ec]" />
-                                            <div className="flex flex-col">
-                                                <span className="text-sm font-semibold text-titledark">{label}</span>
-                                                <div className="flex items-center gap-10">
-                                                    <span className="text-paragraphdark">Total: </span>
-                                                    <span className="text-xs text-titledark">R$ {item.value}</span>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                );
-                            }}
-                        />
-                        <Area
-                            dataKey="value"
-                            type="linear"
-                            fill="#44a1ec"
-                            fillOpacity={0.4}
-                            stroke="#44a1ec"
-                        />
-                    </AreaChart>
-                </ChartContainer>
-            </CardContent>
-            {data && data.length > 0 && (
-                <CardFooter>
-                    <p className="text-paragraphdark text-sm">
-                        <b>{"Período de: "}</b>
-                        {MONTHS[Number(data[0].purchase_date.split("T")[0].split("-")[1] - 1)].slice(0, 3)}
-                        -
-                        {data[0].purchase_date.split("T")[0].split("-")[0]}
-                        {" a "}
-                        {MONTHS[Number(data[data.length - 1].purchase_date.split("T")[0].split("-")[1] - 1)].slice(0, 3)}
-                        -
-                        {data[data.length - 1].purchase_date.split("T")[0].split("-")[0]}
-                    </p>
-                </CardFooter>
-            )}
-        </Card>
-    )
+                  return (
+                    <div className="p-2 rounded-md bg-app-container border border-border shadow-md">
+                      <div className="flex items-center gap-2">
+                        <div className="w-1 h-7 rounded-full bg-[var(--category-1)]" />
+                        <div className="flex flex-col">
+                          <span className="text-sm font-semibold text-subtitle">
+                            {label}
+                          </span>
+                          <div className="flex items-center gap-10">
+                            <span className="text-paragraph">Total: </span>
+                            <span className="text-xs text-subtitle font-semibold">
+                              R$ {item.value}
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  );
+                }}
+              />
+              <Area
+                dataKey="value"
+                type="linear"
+                fill="var(--category-1)"
+                fillOpacity={0.4}
+                stroke="var(--category-1)"
+              />
+            </AreaChart>
+          </ChartContainer>
+        </CardContent>
+        {data && data.length > 0 && (
+          <CardFooter>
+            <p className="text-paragraph text-sm">
+              {"Período de: "}
+              <b>
+                {MONTHS[
+                  Number(data[0].purchase_date.split("T")[0].split("-")[1] - 1)
+                ].slice(0, 3)}
+                -{data[0].purchase_date.split("T")[0].split("-")[0]}
+                {" a "}
+                {MONTHS[
+                  Number(
+                    data[data.length - 1].purchase_date
+                      .split("T")[0]
+                      .split("-")[1] - 1
+                  )
+                ].slice(0, 3)}
+                -
+                {
+                  data[data.length - 1].purchase_date
+                    .split("T")[0]
+                    .split("-")[0]
+                }
+              </b>
+            </p>
+          </CardFooter>
+        )}
+      </Card>
+    );
 }

@@ -13,7 +13,7 @@ export default function Statistics() {
             <Header
                 content={(_) => (
                     <div className='flex items-center gap-3 cursor-pointer overflow-hidden'>
-                        <h2 className="text-titledark text-lg">Estatísticas</h2>
+                        <h2 className="text-title text-lg">Estatísticas</h2>
                     </div>
                 )}
             />

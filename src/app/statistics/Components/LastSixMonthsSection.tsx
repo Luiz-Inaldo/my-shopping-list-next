@@ -55,7 +55,7 @@ export const LastSixMonthsSection = () => {
 
     return (
         <section className="grid gap-5">
-            <p className="text-paragraphdark font-bold">Resumo dos últimos 6 meses:</p>
+            <p className="text-subtitle font-bold">Resumo dos últimos 6 meses:</p>
             <LastSixMonthsChart data={filterLock.current ? [] : data} />
         </section>
     )

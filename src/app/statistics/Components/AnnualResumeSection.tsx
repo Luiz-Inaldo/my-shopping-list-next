@@ -46,33 +46,33 @@ const AnnualResumeSection = () => {
     return (
         <section className="grid gap-5">
             <div>
-                <p className="text-paragraphdark font-bold mb-3">Resumo anual:</p>
-                <div className='p-4 bg-secondary-dark rounded-sm'>
-                    <p className="text-paragraphdark mb-5">Filtrar por:</p>
+                <p className="text-subtitle font-bold mb-3">Resumo anual:</p>
+                <div className='p-4 bg-app-container border border-border shadow-md rounded-sm'>
+                    <p className="text-subtitle mb-5">Filtrar por:</p>
                     <div className="flex flex-col justify-center gap-3">
                         <div className="flex items-center gap-3">
-                            <p className="text-paragraphdark">Ano:</p>
+                            <p className="text-subtitle">Ano:</p>
                             <select
                                 value={filterStates.year}
                                 onChange={(e) => {
                                     setFilterStates((prev) => ({ ...prev, year: Number(e.target.value) }))
                                 }}
-                                className='max-w-25 placeholder:text-paragraphdark text-paragraphdark bg-primary-dark rounded-sm px-3 py-2'
+                                className='max-w-25 placeholder:text-paragraph text-paragraph bg-app-container dark:bg-app-background border rounded-sm px-3 py-2'
                             >
                                 {YEARS.map((year) => (
                                     <option key={year} value={year}>{year}</option>
                                 ))}
                             </select>
                         </div>
-                        <hr className='border-paragraphdark/30'/>
+                        <hr className='border-border'/>
                         <div className="flex flex-1 items-center gap-3">
-                            <p className="text-paragraphdark">Tipo de visualização:</p>
+                            <p className="text-subtitle">Tipo de visualização:</p>
                             <select
                                 value={filterStates.dataType}
                                 onChange={(e) => {
                                     setFilterStates((prev) => ({ ...prev, dataType: e.target.value as AnnualFilterProps['dataType'] }))
                                 }}
-                                className='max-w-25 placeholder:text-paragraphdark text-paragraphdark bg-primary-dark rounded-sm px-3 py-2'
+                                className='max-w-25 placeholder:text-paragraph text-paragraph bg-app-container dark:bg-app-background border rounded-sm px-3 py-2'
                             >
                                 <option value="percentual">Porcentagem</option>
                                 <option value="value">Valor</option>

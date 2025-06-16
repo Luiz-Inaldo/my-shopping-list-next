@@ -7,10 +7,12 @@ import React, { useContext, useEffect, useState } from 'react'
 import GlobalLoader from '../GlobalLoader';
 import useGeneralUserStore from '@/store/generalUserStore';
 import { TSupabaseUserInfo } from '@/types/supabase';
+import { useTheme } from '@/hooks/useTheme';
 
 const SessionVerifier = ({ children }: { children: React.ReactNode }) => {
 
     const [isSessionVerified, setIsSessionVerified] = useState<boolean | null>(null);
+    const { theme } = useTheme();
     // const { setUser } = useContext(ProductsContext)
     const setUser = useGeneralUserStore(store => store.setUser)
     const router = useRouter();
