@@ -208,31 +208,31 @@ const ShoppingList = ({ listname }: { listname: string | undefined }) => {
             } transition-all duration-500 overflow-hidden grid gap-5`}
           >
             <ul className={`flex flex-col gap-1`}>
-              <li className="col-span-2 flex gap-2 items-center justify-between">
-                <h3 className="flex-1 text-paragraph">Itens comprados: </h3>
+              <li className="col-span-2 flex gap-2 items-center justify-between text-sm">
+                <h3 className="flex-1 text-subtitle">Itens comprados: </h3>
                 <span className="font-semibold text-subtitle">
                   {data?.filter((item) => item.checked === true).length || 0}
                 </span>
               </li>
 
-              <li className="col-span-2 flex gap-2 items-center">
-                <h3 className="flex-1 text-paragraph">Valor Total: </h3>
+              <li className="col-span-2 flex gap-2 items-center text-sm">
+                <h3 className="flex-1 text-subtitle">Valor Total: </h3>
                 <span className="font-semibold text-subtitle">
                   {formatCurrency(totalValue || "0")}
                 </span>
               </li>
 
-              <li className="col-span-2 flex gap-2 items-center">
-                <h3 className="flex-1 text-paragraph">Gasto Estipulado: </h3>
+              <li className="col-span-2 flex gap-2 items-center text-sm">
+                <h3 className="flex-1 text-subtitle">Gasto Estipulado: </h3>
                 <span className="font-semibold text-subtitle">
                   {formatCurrency(currentPurchase?.list_max_value || "0")}
                 </span>
               </li>
 
-              <li className="col-span-2 flex gap-2 items-center">
-                <h3 className="flex-1 text-paragraph">Situação: </h3>
+              <li className="col-span-2 flex gap-2 items-center text-sm">
+                <h3 className="flex-1 text-subtitle">Situação: </h3>
                 <span
-                  className={`py-1 px-3 text-sm rounded-full text-black ${
+                  className={`py-0.5 px-2.5 text-sm rounded-full text-black ${
                     situation === "good" && "bg-green-300"
                   } ${situation === "normal" && "bg-yellow-400"} ${
                     situation === "bad" && "bg-red-400"

@@ -8,6 +8,7 @@ import useGeneralUserStore from "@/store/generalUserStore";
 const LoggedLayout = ({ children }: { children: React.ReactNode }) => {
   const { theme, toggleTheme } = useTheme();
   const user = useGeneralUserStore((store) => store.user);
+  const userProfile = useGeneralUserStore((store) => store.userProfile);
   const setUserProfile = useGeneralUserStore((store) => store.setUserProfile);
 
   async function fetchProfileData() {
@@ -16,7 +17,7 @@ const LoggedLayout = ({ children }: { children: React.ReactNode }) => {
   }
 
   useEffect(() => {
-    if (user) {
+    if (user && !userProfile) {
       fetchProfileData();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps

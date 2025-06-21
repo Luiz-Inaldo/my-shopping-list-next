@@ -54,13 +54,6 @@ export default function Settings() {
     setUserProfile(profileData);
   }
 
-  useEffect(() => {
-    if (user) {
-      fetchProfile();
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [user]);
-
   return (
     <LoggedLayout>
       <Header

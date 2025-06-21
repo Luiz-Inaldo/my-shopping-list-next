@@ -89,7 +89,7 @@
     @apply border-border;
   }
   body {
-    @apply bg-secondary-dark font-medium;
+    @apply bg-app-background font-medium;
   }
 }
 
