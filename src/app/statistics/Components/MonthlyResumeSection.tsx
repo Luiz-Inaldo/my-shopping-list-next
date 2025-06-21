@@ -49,43 +49,43 @@ export const MonthlyResumeSection = () => {
     return (
         <section className="grid gap-5">
             <div>
-                <p className="text-paragraphdark font-bold mb-3">Resumo mensal:</p>
-                <div className='p-4 bg-secondary-dark rounded-sm'>
-                    <p className="text-paragraphdark mb-5">Filtrar por:</p>
+                <p className="text-subtitle font-bold mb-3">Resumo mensal:</p>
+                <div className='p-4 bg-app-container shadow-md border border-border rounded-sm'>
+                    <p className="text-subtitle mb-5">Filtrar por:</p>
                     <div className="flex items-center gap-3 mb-3">
                         <select
                             value={filterStates.month}
                             onChange={(e) => {
                                 setFilterStates((prev) => ({ ...prev, month: Number(e.target.value) }))
                             }}
-                            className='flex-1 placeholder:text-paragraphdark text-paragraphdark bg-primary-dark rounded-sm px-3 py-2'
+                            className='flex-1 placeholder:text-paragraphdark text-paragraph bg-app-container dark:bg-app-background border rounded-sm px-3 py-2'
                         >
                             {MONTHS.map((month, index) => (
                                 <option key={month} value={index}>{month}</option>
                             ))}
                         </select>
-                        <p className="text-paragraphdark">de</p>
+                        <p className="text-subtitle">de</p>
                         <select
                             value={filterStates.year}
                             onChange={(e) => {
                                 setFilterStates((prev) => ({ ...prev, year: Number(e.target.value) }))
                             }}
-                            className='flex-1 placeholder:text-paragraphdark text-paragraphdark bg-primary-dark rounded-sm px-3 py-2'
+                            className='flex-1 placeholder:text-paragraph text-paragraph bg-app-container dark:bg-app-background border rounded-sm px-3 py-2'
                         >
                             {YEARS.map((year) => (
                                 <option key={year} value={year}>{year}</option>
                             ))}
                         </select>
                     </div>
-                    <hr className='border-paragraphdark/30 mb-3'/>
+                    <hr className='border-border mb-3'/>
                     <div className="flex items-center gap-3">
-                        <p className='text-paragraphdark'>Tipo de visualização:</p>
+                        <p className='text-subtitle flex-1 w-full'>Tipo de visualização:</p>
                         <select
                             value={filterStates.dataType}
                             onChange={(e) => {
                                 setFilterStates((prev) => ({ ...prev, dataType: e.target.value as MonthlyFilterProps['dataType'] }))
                             }}
-                            className='max-w-25 placeholder:text-paragraphdark text-paragraphdark bg-primary-dark rounded-sm px-3 py-2'
+                            className='placeholder:text-paragraph text-paragraph bg-app-container dark:bg-app-background border rounded-sm px-3 py-2'
                         >
                             <option value="percentual">Porcentagem</option>
                             <option value="value">Valor</option>

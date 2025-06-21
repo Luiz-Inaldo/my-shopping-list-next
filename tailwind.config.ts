@@ -33,7 +33,7 @@ const config = {
         "screen-svh":   "100svh",
       },
       colors: {
-        border: "hsl(var(--border))",
+        border: "var(--border)",
         input: "hsl(var(--input))",
         ring: "hsl(var(--ring))",
         background: "hsl(var(--background))",
@@ -67,15 +67,18 @@ const config = {
           foreground: "hsl(var(--card-foreground))",
         },
         snow: "#FAFAFA",
+        "app-background": "var(--app-background)",
+        "app-primary": "var(--app-primary)",
+        "app-container": "var(--app-container)",
         "primary-dark": "#212529",
         "secondary-dark": "#343a40",
         "dark-button-color": "#0466c8",
         "primary-blue": "#A0CFF7",
         "secondary-blue": "#0066CC", 
-        titledark: "#f8f9fa",
-        subtitledark: "#ced4da",
-        paragraphdark: "#adb5bd",
-        linkdark: "#E9ECEF"
+        title: "var(--title)",
+        subtitle: "var(--subtitle)",
+        paragraph: "var(--paragraph)",
+        link: "var(--link)"
       },
       borderRadius: {
         lg: "var(--radius)",

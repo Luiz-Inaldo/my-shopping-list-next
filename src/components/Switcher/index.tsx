@@ -1,30 +1,27 @@
-import styles from './styles.module.css';
-import React from 'react';
+import styles from "./styles.module.css";
+import React from "react";
 
-export default function ThemeSwitcher() {
+export default function ThemeSwitcher({ theme, toggleTheme }: { theme: string, toggleTheme: () => void }) {
 
-    const [theme, setTheme] = React.useState('light')
+  return (
+    <>
+      <label
+        htmlFor="switcher"
+        onClick={() => {
+          toggleTheme();
+        }}
+        className={`${styles["switcher-container"]} bg-gray-200 dark:bg-app-background`}
+      >
+        <input
+          checked={theme === "dark"}
+          name="switcher"
+          type="checkbox"
+          readOnly
+          className={styles["switcher-checkbox"]}
+        />
 
-    return (
-        <>
-            <label
-                htmlFor="switcher"
-                onClick={() => {
-                    setTheme(theme === 'light' ? 'dark' : 'light')
-                }}
-                className={`${styles['switcher-container']} bg-primary-dark`}
-            >
-
-                <input
-                    checked={theme === 'dark'}
-                    name="switcher"
-                    type="checkbox"
-                    readOnly
-                    className={styles['switcher-checkbox']}
-                />
-
-                <div className={styles['switcher-trigger']} />
-            </label>
-        </>
-    );
+        <div className={styles["switcher-trigger"]} />
+      </label>
+    </>
+  );
 }

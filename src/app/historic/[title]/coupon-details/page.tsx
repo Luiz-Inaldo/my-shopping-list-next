@@ -59,33 +59,34 @@ export default function CouponDetails() {
             if (error) {
                 console.error(error);
             } else {
-                setPurchase(data);
+                setPurchase((prev) => {
+                    return {
+                        id: data.id,
+                        title: data.title,
+                        purchase_date: data.purchase_date,
+                        purchase_items:
+                          typeof data.purchase_items === "string"
+                            ? JSON.parse(data.purchase_items)
+                            : data.purchase_items,
+                        total_price: data.total_price,
+                        user_id: data.user_id,
+                    };
+                });
             }
         }
         fetchPurchase();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
-
-    useEffect(() => {
-        if (purchase.purchase_items.length > 0) {
-            setPurchase(old => {
-                return {
-                    ...old,
-                    purchase_items: typeof old.purchase_items === 'string' ? JSON.parse(old.purchase_items) : old.purchase_items
-                }
-            })
-        }
-    }, [purchase.purchase_items])
 
     return (
         <>
-            <div className='p-5 grid 2xsm:grid-cols-1 gap-10'>
+            <div className='p-5 grid 2xsm:grid-cols-1 gap-10 bg-app-background'>
 
                 {/* breadcrumb */}
-                <div className='flex items-center gap-2 text-sm text-subtitledark'>
-                    {/* <ArrowLeft size={20} /> */}
+                <div className='flex items-center gap-2 text-sm text-subtitle'>
                     <Link
                         href={`/historic/${decodedTitle}`}
-                        className='text-subtitledark'
+                        className='text-subtitle'
                     >
                         Histórico
                     </Link>
@@ -98,10 +99,10 @@ export default function CouponDetails() {
                     <React.Fragment>
                         <div
                             ref={slipRef}
-                            className='flex flex-col p-5 gap-4 border border-gray-400 rounded-md bg-yellow-50 shadow'>
+                            className='flex flex-col p-5 gap-4 rounded-md border border-border bg-app-container shadow-md'>
                             {/* slip header */}
-                            <div className='text-center'>
-                                <h1 className='text-secondary-dark font-semibold pb-1 mb-2 border-b border-dashed border-gray-400'>
+                            <div className='text-center text-subtitle'>
+                                <h1 className='font-semibold pb-1 mb-2 border-b border-dashed border-paragraph'>
                                     {decodedTitle}
                                 </h1>
                                 <p className='text-sm'>
@@ -114,10 +115,10 @@ export default function CouponDetails() {
                             {/* end slip header */}
 
                             {/* slip content */}
-                            <div className='flex flex-col gap-1 border-t border-b border-dashed border-gray-400'>
+                            <div className='flex flex-col gap-1 border-t border-b border-dashed border-paragraph'>
 
                                 {/* content header */}
-                                <div className='flex uppercase text-[10px] border-b border-dashed border-gray-400'>
+                                <div className='flex uppercase text-subtitle text-[10px] border-b border-dashed border-paragraph'>
                                     <div className='flex-1 flex items-center p-[2px]'>
                                         # descrição
                                     </div>
@@ -137,7 +138,7 @@ export default function CouponDetails() {
                                 {
                                     Array.isArray(purchase.purchase_items) && (
                                         purchase.purchase_items.sort((a, b) => a.name.localeCompare(b.name)).map((item: IProductProps, index: number) => (
-                                            <div key={item.id} className='flex uppercase text-[10px] text-secondary-dark'>
+                                            <div key={item.id} className='flex uppercase text-[10px] text-subtitle'>
                                                 <div className='flex-1 flex items-center p-[2px] max-w-[215px] text-ellipsis overflow-hidden whitespace-nowrap'>
                                                     {`${index + 1} - ${item.name}`}
                                                 </div>
@@ -156,7 +157,7 @@ export default function CouponDetails() {
                                 }
                                 {/* end content items */}
 
-                                <div className='flex items-center justify-between uppercase text-md font-medium mb-5 mt-2 text-secondary-dark'>
+                                <div className='flex items-center justify-between uppercase text-md font-medium mb-5 mt-2 text-subtitle'>
                                     <span>total R$</span>
                                     <span>{purchase.total_price}</span>
                                 </div>
@@ -164,7 +165,7 @@ export default function CouponDetails() {
                             </div>
                             {/* end slip content */}
 
-                            <p className='text-xs text-secondary-dark text-center'>
+                            <p className='text-xs text-subtitle text-center'>
                                 Esse slip não tem valor fiscal
                             </p>
                         </div>
@@ -178,7 +179,7 @@ export default function CouponDetails() {
 
                     </React.Fragment>
                 ) : (
-                    <p className='text-center text-secondary-dark text-xs'>carregando cupom...</p>
+                    <p className='text-center text-paragraph text-xs'>carregando cupom...</p>
                 )}
             </div>
         </>

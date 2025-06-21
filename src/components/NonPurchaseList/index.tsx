@@ -47,8 +47,8 @@ const NonPurchaseList = () => {
         <div className="grid place-items-center">
             {isSettingPurchase ? (
                 <>
-                    <LoaderCircle size={70} className='text-subtitledark animate-spin mb-5 mt-28' />
-                    <span className='text-subtitledark text-center'>Um momento... Estamos criando sua lista.</span>
+                    <LoaderCircle size={70} className='text-subtitle animate-spin mb-5 mt-28' />
+                    <span className='text-subtitle text-center'>Um momento... Estamos criando sua lista.</span>
                 </>
             ) : (
                 <>
@@ -59,15 +59,15 @@ const NonPurchaseList = () => {
                         height={150}
                     />
 
-                    <h2 className="mt-5 text-center max-w-72 text-paragraphdark">Parece que você ainda não tem nenhuma lista ativa no momento</h2>
+                    <h2 className="mt-5 text-center max-w-72 text-paragraph">Parece que você ainda não tem nenhuma lista ativa no momento</h2>
 
                     <form onSubmit={handleSubmit(onSubmit)} className='grid place-items-center mt-10 px-3'>
                         <div className={`${showInput ? 'inline' : 'hidden'} flex flex-col gap-3`}>
-                            <label htmlFor='list_name' className="text-subtitledark grid gap-1">
+                            <label htmlFor='list_name' className="text-subtitle grid gap-1">
                                 <span>Defina um nome para essa lista:</span>
                                 <input
                                     type="text"
-                                    className='w-full text-paragraphdark bg-secondary-dark rounded border border-paragraph/30 px-3 py-2 h-8'
+                                    className='w-full text-paragraph bg-app-container rounded border border-paragraph px-3 py-2 h-8'
                                     {...register("list_name", {
                                         required: {
                                             value: true,
@@ -78,11 +78,11 @@ const NonPurchaseList = () => {
 
                             </label>
 
-                            <label htmlFor="list_max_value" className="text-subtitledark grid gap-1">
+                            <label htmlFor="list_max_value" className="text-subtitle grid gap-1">
                                 <span>Defina um valor máximo para essa lista (R$):</span>
                                 <input
                                     type="text"
-                                    className='w-full text-paragraphdark bg-secondary-dark rounded border border-paragraph/30 px-3 py-2 h-8'
+                                    className='w-full text-paragraph bg-app-container rounded border border-paragraph px-3 py-2 h-8'
                                     {...register("list_max_value", {
                                         required: {
                                             value: true,
@@ -96,7 +96,7 @@ const NonPurchaseList = () => {
                         {showInput ? (
                             <button
                                 type="submit"
-                                className='mt-5 bg-secondary-blue rounded-full px-3 py-2 flex gap-2 items-center justify-center cursor-pointer shadow-md transition-all duration-300 ease-in-out text-titledark'>
+                                className='mt-5 bg-secondary-blue rounded-full px-3 py-2 flex gap-2 items-center justify-center cursor-pointer shadow-md transition-all duration-300 ease-in-out text-snow'>
                                 <Check size={20} />
                                 <span>Vamos começar</span>
                             </button>
@@ -104,7 +104,7 @@ const NonPurchaseList = () => {
                             <button
                                 type="button"
                                 onClick={() => setShowInput(true)}
-                                className='bg-secondary-blue rounded-full px-3 py-2 flex gap-2 items-center justify-center cursor-pointer shadow-md transition-all duration-300 ease-in-out text-titledark'>
+                                className='bg-secondary-blue rounded-full px-3 py-2 flex gap-2 items-center justify-center cursor-pointer shadow-md transition-all duration-300 ease-in-out text-snow'>
                                 <ClipboardList size={20} />
                                 <span>Iniciar nova lista</span>
                             </button>
