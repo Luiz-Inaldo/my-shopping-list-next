@@ -1,19 +1,20 @@
 "use client";
 import { IProductsContextProps, ISupabasePurchaseProps } from "@/types";
-import { createContext, useEffect, useState } from "react";
+import { createContext, use, useEffect, useState } from "react";
 import { supabase } from "@/lib/api";
 import { IProductProps } from "@/types";
 import { IEditItemProps } from "@/types";
 import { ToastAction } from "@/components/ui/toast";
 import { useToast } from "@/components/ui/use-toast";
+import useGeneralUserStore from "@/store/generalUserStore";
 
 export const ProductsContext = createContext<IProductsContextProps>({
-    user: {},
-    setUser: () => { },
+    // user: {},
+    // setUser: () => { },
     data: [],
     setData: () => { },
-    loading: true,
-    setLoading: () => { },
+    loadingProducts: true,
+
     modal: {
         state: 'CLOSED',
         type: null
@@ -39,11 +40,15 @@ export const ProductsContext = createContext<IProductsContextProps>({
 });
 
 export const ProductsProvider = ({ children }: { children: React.ReactNode }) => {
+    /**
+     * =======>> store <<========
+     */
+    const user = useGeneralUserStore(store => store.user);
 
     /* ====> states <==== */
-    const [user, setUser] = useState<any>(null);
-    const [data, setData] = useState<IProductProps[]>([]);
-    const [loading, setLoading] = useState<boolean>(true);
+    const [data, setData] = useState<IProductProps[] | null>(null);
+    const [loadingProducts, setLoadingProducts] = useState<boolean>(true);
+    // const [user, setUser] = useState<any>(null);
     const [modal, setModal] = useState<any>({
         state: 'CLOSED',
         type: null
@@ -58,15 +63,15 @@ export const ProductsProvider = ({ children }: { children: React.ReactNode }) =>
 
     /* ====> functions <==== */
     async function fetchData() {
-        if (user === null) return;
-
-        setLoading(true);
-        const { data, error } = await supabase.from('products').select('*').eq('user_id', user.id);
-        if (error) {
-            console.error(error);
-        } else {
-            setData(data);
-            setLoading(false);
+        setLoadingProducts(true);
+        if (user !== null) {
+            const { data, error } = await supabase.from('products').select('*').eq('user_id', user.id);
+            if (error) {
+                console.error(error);
+                return;
+            }
+            setLoadingProducts(false);
+            return setData(data as IProductProps[]);
         }
     }
 
@@ -83,7 +88,7 @@ export const ProductsProvider = ({ children }: { children: React.ReactNode }) =>
     function caculateTotalValue() {
 
         let total: number = 0;
-        const checkedItems = data.filter(product => product.checked === true);
+        const checkedItems = data?.filter(product => product.checked === true) || [];
         checkedItems.forEach(item => {
             const parsedTotal = (parseFloat(item.value.replace(',', '.')) * item.quantity);
             total += parsedTotal;
@@ -96,7 +101,7 @@ export const ProductsProvider = ({ children }: { children: React.ReactNode }) =>
 
         try {
 
-            const { error } = await supabase.from('products').delete().eq('user_id', user.id);
+            const { error } = await supabase.from('products').delete().eq('user_id', user?.id);
 
             if (error) {
                 console.log(error);
@@ -112,7 +117,7 @@ export const ProductsProvider = ({ children }: { children: React.ReactNode }) =>
     }
 
     async function deleteCurrentPurchase() {
-        const { error } = await supabase.from('active_purchases').delete().eq('user_id', user.id);
+        const { error } = await supabase.from('active_purchases').delete().eq('user_id', user?.id);
 
         if (error) {
             console.log(error);
@@ -133,9 +138,8 @@ export const ProductsProvider = ({ children }: { children: React.ReactNode }) =>
                 description: "Produto alterado com sucesso.",
                 action: <ToastAction altText="Ok">Ok</ToastAction>
             });
-            // fetchData();
             setData((oldData) => {
-                return oldData.map(product => {
+                return oldData!.map(product => {
                     if (product.id === itemID) {
                         return { ...product, name: object.name, quantity: object.quantity, value: object.value };
                     }
@@ -161,7 +165,7 @@ export const ProductsProvider = ({ children }: { children: React.ReactNode }) =>
                 action: <ToastAction altText="Ok">Ok</ToastAction>
             });
             setData((oldData) => {
-                return oldData.filter(item => item.id !== itemID);
+                return oldData!.filter(item => item.id !== itemID);
             })
             setOptionMenu(null);
             setTimeout(() => {
@@ -190,7 +194,7 @@ export const ProductsProvider = ({ children }: { children: React.ReactNode }) =>
                 action: <ToastAction altText="Ok">Ok</ToastAction>
             });
             setData((oldData) => {
-                return oldData.map(product => {
+                return oldData!.map(product => {
                     if (product.id === item.id) {
                         return {
                             ...product,
@@ -221,7 +225,7 @@ export const ProductsProvider = ({ children }: { children: React.ReactNode }) =>
             console.log(error);
         } else {
             setData((oldData) => {
-                return oldData.map(product => {
+                return oldData!.map(product => {
                     if (product.id === item.id) {
                         return { ...product, checked: !item.checked };
                     }
@@ -236,10 +240,12 @@ export const ProductsProvider = ({ children }: { children: React.ReactNode }) =>
     useEffect(() => {
         fetchData();
         fetchPurchaseData();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [user]);
 
     useEffect(() => {
         caculateTotalValue();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [data]);
 
     useEffect(() => {
@@ -247,30 +253,27 @@ export const ProductsProvider = ({ children }: { children: React.ReactNode }) =>
         if (currentPurchase) {
             const parsedTotal = parseFloat(totalValue.replace(',', '.'));
             const parsedMaxValue = parseFloat(currentPurchase?.list_max_value.replace(',', '.'));
-
+            
             if (parsedTotal < (parsedMaxValue * 0.8)) {
                 setSituation('good');
             }
-
+            
             if (parsedTotal >= (parsedMaxValue * 0.8) && parsedTotal < parsedMaxValue) {
                 setSituation('normal');
             }
-
+            
             if (parsedTotal >= parsedMaxValue) {
                 setSituation('bad');
             }
         }
 
-    }, [totalValue]);
+    }, [totalValue, currentPurchase]);
 
     return (
         <ProductsContext.Provider value={{
-            user,
-            setUser,
             data,
             setData,
-            loading,
-            setLoading,
+            loadingProducts,
             modal,
             setModal,
             optionMenu,

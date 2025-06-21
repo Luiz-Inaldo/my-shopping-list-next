@@ -23,8 +23,8 @@ export const DeleteProduct = ({ item }: { item: IProductProps | undefined }) => 
     return (
         <React.Fragment>
             {isVisible && (
-                <div className={`${isFading ? 'opacity-100 visible' : 'opacity-0 invisible'} w-[350px] rounded bg-secondary-dark border border-paragraph/30 p-5 transition-all duration-500`}>
-                    <h2 className='text-center text-subtitledark font-semibold'>Deseja realmente deletar o produto?</h2>
+                <div className={`${isFading ? 'opacity-100 visible' : 'opacity-0 invisible'} w-[350px] rounded bg-app-container border p-5 transition-all duration-500`}>
+                    <h2 className='text-center text-subtitle font-semibold'>Deseja realmente deletar o produto?</h2>
                     <div className='flex gap-2 mt-5'>
                         <button
                             type='button'
@@ -38,7 +38,7 @@ export const DeleteProduct = ({ item }: { item: IProductProps | undefined }) => 
                                 state: 'CLOSED',
                                 type: null
                             })}
-                            className='col-span-1 flex items-center justify-center w-full border border-title py-2 px-3 rounded text-titledark'>
+                            className='col-span-1 flex items-center justify-center w-full border border-subtitle py-2 px-3 rounded text-subtitle'>
                             Cancelar
                         </button>
                     </div>

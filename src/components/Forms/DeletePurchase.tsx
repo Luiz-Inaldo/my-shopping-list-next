@@ -29,7 +29,7 @@ export const DeletePurchase = ({ purchase }: { purchase: IPurchaseProps | undefi
                 description: "Compra excluída com sucesso.",
                 action: <ToastAction altText="Ok">Ok</ToastAction>
             });
-            setPurchasesList(purchasesList.filter(item => item.id !== purchase.id));
+            setPurchasesList(purchasesList?.filter(item => item.id !== purchase.id))
 
         }
 
@@ -55,13 +55,13 @@ export const DeletePurchase = ({ purchase }: { purchase: IPurchaseProps | undefi
     return (
         <React.Fragment>
             {isVisible && (
-                <div className={`${isFading ? 'opacity-100 visible' : 'opacity-0 invisible'} w-[350px] rounded bg-snow p-5 transition-all duration-500`}>
-                    <h2 className='text-center'>Deseja realmente deletar a compra do histórico?</h2>
+                <div className={`${isFading ? 'opacity-100 visible' : 'opacity-0 invisible'} w-[350px] rounded bg-secondary-dark p-5 transition-all duration-500`}>
+                    <h2 className='text-center text-subtitledark'>Deseja realmente deletar a compra do histórico?</h2>
                     <div className='flex gap-2 mt-5'>
                         <button
                             type='button'
                             onClick={() => deletePurchase(purchase)}
-                            className='col-span-1 flex items-center justify-center w-full bg-primary-blue py-2 px-3 rounded text-titledark'>
+                            className='col-span-1 flex items-center justify-center w-full bg-secondary-blue py-2 px-3 rounded text-titledark'>
                             Sim
                         </button>
                         <button

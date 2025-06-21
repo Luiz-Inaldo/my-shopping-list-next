@@ -9,6 +9,7 @@ import { usePathname } from "next/navigation";
 import { PurchasesProvider } from "@/context/PurchasesContext";
 import VerifyDevice from "@/components/VerifyDevice";
 
+
 const quicksand = Quicksand({ weight: ['300', '400', '500', '700'], subsets: ["latin"] });
 
 export default function RootLayout({
@@ -26,13 +27,13 @@ export default function RootLayout({
         <div className="relative">
           {isPrivateRoute ? (
             <VerifyDevice>
-            <ProductsProvider>
-              <SessionVerifier>
-                <PurchasesProvider>
-                  {children}
-                </PurchasesProvider>
-              </SessionVerifier>
-            </ProductsProvider>
+              <ProductsProvider>
+                <SessionVerifier>
+                  <PurchasesProvider>
+                    {children}
+                  </PurchasesProvider>
+                </SessionVerifier>
+              </ProductsProvider>
             </VerifyDevice>
           ) : (
             <>

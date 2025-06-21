@@ -5,11 +5,16 @@ import { APP_ROUTES } from '@/routes/app-routes';
 import { useRouter } from 'next/navigation';
 import React, { useContext, useEffect, useState } from 'react'
 import GlobalLoader from '../GlobalLoader';
+import useGeneralUserStore from '@/store/generalUserStore';
+import { TSupabaseUserInfo } from '@/types/supabase';
+import { useTheme } from '@/hooks/useTheme';
 
 const SessionVerifier = ({ children }: { children: React.ReactNode }) => {
 
     const [isSessionVerified, setIsSessionVerified] = useState<boolean | null>(null);
-    const { setUser } = useContext(ProductsContext)
+    const { theme } = useTheme();
+    // const { setUser } = useContext(ProductsContext)
+    const setUser = useGeneralUserStore(store => store.setUser)
     const router = useRouter();
 
     useEffect(() => {
@@ -25,7 +30,7 @@ const SessionVerifier = ({ children }: { children: React.ReactNode }) => {
                 if (error) {
                     setIsSessionVerified(false);
                 } else {
-                    setUser(user);
+                    setUser(user as unknown as TSupabaseUserInfo);
                     setIsSessionVerified(true);
                 }
             } else {
@@ -33,11 +38,11 @@ const SessionVerifier = ({ children }: { children: React.ReactNode }) => {
             }
         };
         fetchUser();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [router]);
 
     useEffect(() => {
         if (isSessionVerified === false) {
-            console.log('renderizando página de login')
             router.push(APP_ROUTES.public.login.name);
         }
     }, [isSessionVerified, router]);

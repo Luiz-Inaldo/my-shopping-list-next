@@ -32,7 +32,7 @@ const Header = ({ content }: {
     }, [])
 
     return (
-        <header ref={headerRef} className="fixed top-0 left-0 z-[3] w-full p-4 bg-secondary-dark flex items-center justify-between transition-shadow duration-500">
+        <header ref={headerRef} className="fixed top-0 left-0 z-[3] w-full p-4 bg-app-primary flex items-center justify-between transition-shadow duration-500">
             {content(this, isIconVisible)}
         </header>
     )

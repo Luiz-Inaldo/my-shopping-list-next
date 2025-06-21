@@ -8,12 +8,20 @@ export const APP_ROUTES = {
         },
         historic: {
             name: "/historic",
-            children: {
-                name: (title: string) => `/historic/${title}`
-            }
+            details: {
+                name: (title: string) => `/historic/${title}`,
+                children: (title: string) => `/historic/${title}/coupon-details/`
+            },
+
         },
         purchase_saved: {
             name: (title: string) => `/purchase-saved/${title}`
+        },
+        menu: {
+            name: "/menu"
+        },
+        statistics: {
+            name: "/statistics"
         }
     },
     public: {

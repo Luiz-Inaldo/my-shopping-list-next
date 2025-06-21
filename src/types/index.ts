@@ -1,12 +1,11 @@
 export type ModalStateProps = "OPEN" | "CLOSED";
 export type ModalTypeProps = null | 'LIMIT_VALUE' | 'DELETE_PRODUCT' | 'EDIT_PRODUCT' | 'CHECK_PRODUCT' | 'DELETE_PURCHASE'
 export interface IProductsContextProps {
-    user: any,
-    setUser: React.Dispatch<React.SetStateAction<any>>;
-    data: IProductProps[];
-    setData: React.Dispatch<React.SetStateAction<IProductProps[]>>;
-    loading: boolean;
-    setLoading: React.Dispatch<React.SetStateAction<boolean>>;
+    // user: any,
+    // setUser: React.Dispatch<React.SetStateAction<any>>;
+    data: IProductProps[] | null;
+    setData: React.Dispatch<React.SetStateAction<IProductProps[] | null>>;
+    loadingProducts: boolean;
     modal: {
         state: ModalStateProps,
         type: ModalTypeProps
@@ -37,7 +36,7 @@ export interface IProductsContextProps {
 export interface IPuchasesContextProps {
     purchasesList: IPurchaseProps[];
     setPurchasesList: React.Dispatch<React.SetStateAction<IPurchaseProps[]>>;
-    loading: boolean;
+    purchasesLoading: boolean;
     filterPurchases: (filter: IFilterProps) => void;
 }
 
@@ -60,7 +59,7 @@ export interface IPurchaseProps {
     purchase_date: any;
     purchase_items: string;
     total_price: string;
-    user_id: string;
+    user_id: string | undefined;
 }
 
 export interface ISupabasePurchaseProps {

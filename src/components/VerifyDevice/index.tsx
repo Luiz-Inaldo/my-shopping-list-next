@@ -3,6 +3,7 @@ import { APP_ROUTES } from '@/routes/app-routes';
 import { useRouter } from 'next/navigation';
 import React from 'react'
 import GlobalLoader from '../GlobalLoader';
+import { useTheme } from '@/hooks/useTheme';
 
 const VerifyDevice = ({ children }: { children: React.ReactNode }) => {
 
