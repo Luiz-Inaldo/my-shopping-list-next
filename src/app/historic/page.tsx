@@ -2,6 +2,7 @@
 import Header from '@/components/Header';
 import LoggedLayout from '@/components/layout/MainLayout';
 import { Modal } from '@/components/Modal';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { MONTHS } from '@/constants/months';
 import { YEARS } from '@/constants/years';
 import { ProductsContext } from '@/context/ProductsContext';
@@ -40,14 +41,14 @@ export default function Historic() {
         setPurchase(purchase);
     }, [setModal])
 
-    const handleFilterPurchases = (e: React.ChangeEvent<HTMLSelectElement>, type: string) => {
+    const handleFilterPurchases = (value: string, type: string) => {
 
-        if (e.target.value === "todos") {
-            setFilterStates((prev) => ({ ...prev, [type]: e.target.value }));
+        if (value === "todos") {
+            setFilterStates((prev) => ({ ...prev, [type]: value }));
         } else {
             setFilterStates(prev => ({
                 ...prev,
-                [type]: parseInt(e.target.value)
+                [type]: parseInt(value)
             }));
         }
 
@@ -76,7 +77,20 @@ export default function Historic() {
 
               <label className="relative flex-1 col-span-1">
                 <span className="text-subtitle">Mês</span>
-                <select
+                <Select onValueChange={(value) => handleFilterPurchases(value, "month")}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Todos os meses" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="todos">Todos os meses</SelectItem>
+                    {MONTHS.map((month, index) => (
+                      <SelectItem key={month} value={String(index)}>
+                        {month}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                {/* <select
                   onChange={(e) => handleFilterPurchases(e, "month")}
                   className="w-full placeholder:text-paragraph text-paragraph bg-app-container dark:bg-app-background border border-border rounded-sm px-3 py-2"
                 >
@@ -86,12 +100,25 @@ export default function Historic() {
                       {month}
                     </option>
                   ))}
-                </select>
+                </select> */}
               </label>
 
               <label className="relative flex-1 col-span-1">
                 <span className="text-subtitle">Ano</span>
-                <select
+                <Select onValueChange={(value) => handleFilterPurchases(value, "year")}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Todos os anos" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="todos">Todos os anos</SelectItem>
+                    {YEARS.map((year) => (
+                      <SelectItem key={year} value={String(year)}>
+                        {year}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                {/* <select
                   onChange={(e) => handleFilterPurchases(e, "year")}
                   className="w-full placeholder:text-paragraph text-paragraph bg-app-container dark:bg-app-background border border-border rounded-sm px-3 py-2"
                 >
@@ -101,7 +128,7 @@ export default function Historic() {
                       {year}
                     </option>
                   ))}
-                </select>
+                </select> */}
               </label>
             </div>
 
