@@ -15,8 +15,8 @@ const AnnualResumeSection = () => {
         year: new Date().getFullYear(),
         dataType: 'percentual'
     });
+    const [filterLock, setFilterLock] = useState(true);
 
-    const filterLock = useRef(true);
 
     // functions
     const filterPurchases = useCallback(async (filter: AnnualFilterProps) => {
@@ -32,16 +32,17 @@ const AnnualResumeSection = () => {
     }, [filterStates.year, purchasesList])
 
     useEffect(() => {
-        if (!filterLock.current) {
+        if (!filterLock) {
             filterPurchases(filterStates);
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [filterStates, filterLock.current]);
+    }, [filterStates, filterLock]);
 
     useEffect(() => {
-        if (purchasesList.length > 0 && filterLock.current) {
-            filterLock.current = false;
+        if (purchasesList.length > 0 && filterLock) {
+            setFilterLock(false);
         }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [purchasesList]);
 
     return (
@@ -70,17 +71,6 @@ const AnnualResumeSection = () => {
                                     ))}
                                 </SelectContent>
                             </Select>
-                            {/* <select
-                                value={filterStates.year}
-                                onChange={(e) => {
-                                    setFilterStates((prev) => ({ ...prev, year: Number(e.target.value) }))
-                                }}
-                                className='max-w-25 placeholder:text-paragraph text-paragraph bg-app-container dark:bg-app-background border rounded-sm px-3 py-2'
-                            >
-                                {YEARS.map((year) => (
-                                    <option key={year} value={year}>{year}</option>
-                                ))}
-                            </select> */}
                         </div>
                         <hr className='border-border'/>
                         <div className="flex flex-1 items-center gap-3">
@@ -106,7 +96,7 @@ const AnnualResumeSection = () => {
             <AnnualStatisticsChart
                 title={filterStates.dataType === 'percentual' ? 'Resumo por Categoria (%)' : 'Resumo por Categoria (R$)'}
                 dataType={filterStates.dataType}
-                data={filterLock.current ? [] : data}
+                data={filterLock ? [] : data}
             />
         </section>
     )
