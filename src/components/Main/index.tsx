@@ -34,14 +34,14 @@ const Main = () => {
         content={(_, visible) => (
           <>
             <div className='flex items-center gap-3 cursor-pointer overflow-hidden'>
-              <Avatar className='border-2 border-title'>
+              <Avatar className='border-2 border-app-container'>
                 <AvatarImage src={userProfile?.profile_img} />
                 <AvatarFallback>
                   <Image
-                    src='/images/avatars/default-avatar.png'
+                    src='/images/avatars/default-avatar.svg'
                     alt='no-profile-img'
-                    width={36}
-                    height={36}
+                    width={28}
+                    height={28}
                   />
                 </AvatarFallback>
               </Avatar>

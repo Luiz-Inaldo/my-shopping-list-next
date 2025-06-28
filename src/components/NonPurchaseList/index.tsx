@@ -47,7 +47,7 @@ const NonPurchaseList = () => {
         <div className="grid place-items-center">
             {isSettingPurchase ? (
                 <>
-                    <LoaderCircle size={70} className='text-subtitle animate-spin mb-5 mt-28' />
+                    <LoaderCircle size={70} className='text-secondary-blue animate-spin mb-5 mt-28' />
                     <span className='text-subtitle text-center'>Um momento... Estamos criando sua lista.</span>
                 </>
             ) : (

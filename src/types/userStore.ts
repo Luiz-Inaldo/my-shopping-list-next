@@ -8,4 +8,7 @@ export type TUserStoreProps = {
     // profile supabase
     userProfile: TSupabaseProfileInfo | null;
     setUserProfile: (userProfile: TSupabaseProfileInfo) => void;
+
+    // reset profile
+    resetProfile: () => void;
 }

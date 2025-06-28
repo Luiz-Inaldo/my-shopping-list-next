@@ -31,6 +31,9 @@ import { APP_ROUTES } from "@/routes/app-routes";
 import { sleep } from "@/functions/sleep";
 import { Fade } from "react-awesome-reveal";
 import useGeneralUserStore from "@/store/generalUserStore";
+import { EditProductForm } from "../Forms/EditProductForm";
+import { DeleteProduct } from "../Forms/DeleteProduct";
+import { ListItemDropdown } from "../Dropdown/ListItemDropdown";
 
 const ShoppingList = ({ listname }: { listname: string | undefined }) => {
   const user = useGeneralUserStore((store) => store.user);
@@ -382,10 +385,7 @@ const ShoppingList = ({ listname }: { listname: string | undefined }) => {
                                     className={`relative rounded pl-3 py-3 flex flex-col gap-2 text-paragraph`}
                                   >
                                     <div className="flex items-center">
-                                      <label
-                                        htmlFor={item.name}
-                                        className="flex-1 flex items-center gap-2"
-                                      >
+                                      <div className="flex-1 flex items-center gap-2">
                                         <input
                                           type="checkbox"
                                           checked={item.checked}
@@ -395,62 +395,17 @@ const ShoppingList = ({ listname }: { listname: string | undefined }) => {
                                           }
                                           className="w-4 h-4 accent-primary-blue border-2 border-paragraph rounded"
                                         />
-                                        <span
-                                          title={item.name}
+                                        <label
+                                          htmlFor={item.name}
                                           className={`max-w-60 text-ellipsis overflow-hidden whitespace-nowrap ${
                                             item.checked &&
                                             "line-through italic"
                                           }`}
                                         >
                                           {item.name}
-                                        </span>
-                                      </label>
-                                      <div className="relative mr-2 w-6 h-6 rounded-full flex items-center justify-center cursor-pointer">
-                                        <EllipsisVertical
-                                          size={16}
-                                          onClick={() => setOptionMenu(item.id)}
-                                        />
-                                        {optionMenu === item.id && (
-                                          <>
-                                            <div
-                                              ref={dropDownRef}
-                                              className={`${
-                                                optionMenu === item.id
-                                                  ? "animate-in fade-in-0 zoom-in-85"
-                                                  : "animate-out fade-out-0 zoom-out-85"
-                                              } absolute z-40 py-1 right-7 -top-2 rounded-lg shadow border border-border bg-app-container text-paragraph text-sm grid gap-1`}
-                                            >
-                                              <span
-                                                className="px-3"
-                                                onClick={() => {
-                                                  setOptionMenu(null);
-                                                  setModal({
-                                                    state: "OPEN",
-                                                    type: "EDIT_PRODUCT",
-                                                  });
-                                                  setItem(item);
-                                                }}
-                                              >
-                                                Editar
-                                              </span>
-                                              <hr className="border-paragraphdark/30" />
-                                              <span
-                                                className="px-3"
-                                                onClick={() => {
-                                                  setOptionMenu(null);
-                                                  setModal({
-                                                    state: "OPEN",
-                                                    type: "DELETE_PRODUCT",
-                                                  });
-                                                  setItem(item);
-                                                }}
-                                              >
-                                                Excluir
-                                              </span>
-                                            </div>
-                                          </>
-                                        )}
+                                        </label>
                                       </div>
+                                      <ListItemDropdown item={item} />
                                     </div>
                                     <div className="flex gap-4">
                                       <span>qntd: {item.quantity}</span>
