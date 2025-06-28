@@ -34,6 +34,7 @@ import useGeneralUserStore from "@/store/generalUserStore";
 import { EditProductForm } from "../Forms/EditProductForm";
 import { DeleteProduct } from "../Forms/DeleteProduct";
 import { ListItemDropdown } from "../Dropdown/ListItemDropdown";
+import { CheckItemForm } from "../Forms/CheckItemForm";
 
 const ShoppingList = ({ listname }: { listname: string | undefined }) => {
   const user = useGeneralUserStore((store) => store.user);
@@ -78,13 +79,7 @@ const ShoppingList = ({ listname }: { listname: string | undefined }) => {
 
   /* ----> function <----- */
   const handleItemCheckbox = (item: IProductProps) => {
-    if (!item.checked && item.value === "0,00") {
-      setModal({
-        state: "OPEN",
-        type: "CHECK_PRODUCT",
-      });
-      setItem(item);
-    } else if (!item.checked && item.value !== "0,00") {
+    if (!item.checked && item.value !== "0,00") {
       handleCheckItem(item);
     } else if (item.checked) {
       handleDismarkItem(item);
@@ -386,15 +381,22 @@ const ShoppingList = ({ listname }: { listname: string | undefined }) => {
                                   >
                                     <div className="flex items-center">
                                       <div className="flex-1 flex items-center gap-2">
-                                        <input
-                                          type="checkbox"
-                                          checked={item.checked}
-                                          id={item.name}
-                                          onClick={() =>
-                                            handleItemCheckbox(item)
-                                          }
-                                          className="w-4 h-4 accent-primary-blue border-2 border-paragraph rounded"
-                                        />
+                                        <>
+                                          {!item.checked &&
+                                          item.value === "0,00" ? (
+                                            <CheckItemForm item={item} />
+                                          ) : (
+                                            <input
+                                              type="checkbox"
+                                              checked={item.checked}
+                                              id={item.name}
+                                              onClick={() =>
+                                                handleItemCheckbox(item)
+                                              }
+                                              className="w-4 h-4 accent-primary-blue border-2 border-paragraph rounded"
+                                            />
+                                          )}
+                                        </>
                                         <label
                                           htmlFor={item.name}
                                           className={`max-w-60 text-ellipsis overflow-hidden whitespace-nowrap ${
