@@ -5,7 +5,7 @@ import { YEARS } from '@/constants/years';
 import { PurchasesContext } from '@/context/PurchasesContext';
 import { IFilterProps, IPurchaseProps } from '@/types';
 import { MonthlyFilterProps } from '@/types/charts';
-import React, { useContext, useEffect, useRef, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 
 export const MonthlyResumeSection = () => {
 
@@ -17,8 +17,7 @@ export const MonthlyResumeSection = () => {
         year: new Date().getFullYear(),
         dataType: 'percentual'
     });
-
-    const filterLock = useRef(true);
+    const [filterLock, setFilterLock] = useState(true);
 
     // functions
     const filterPurchases = async (filter: IFilterProps) => {
@@ -35,16 +34,17 @@ export const MonthlyResumeSection = () => {
     }
 
     useEffect(() => {
-        if (!filterLock.current) {
+        if (!filterLock) {
             filterPurchases(filterStates);
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [filterStates, filterLock.current]);
+    }, [filterStates, filterLock]);
 
     useEffect(() => {
-        if (purchasesList.length > 0 && filterLock.current) {
-            filterLock.current = false;
+        if (purchasesList.length > 0 && filterLock) {
+            setFilterLock(false);
         }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [purchasesList]);
 
     return (
@@ -128,7 +128,7 @@ export const MonthlyResumeSection = () => {
               : "Resumo por Categoria (R$)"
           }
           dataType={filterStates.dataType}
-          data={filterLock.current ? [] : data}
+          data={filterLock ? [] : data}
         />
       </section>
     );
