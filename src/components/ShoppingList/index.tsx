@@ -328,7 +328,7 @@ const ShoppingList = ({ listname }: { listname: string | undefined }) => {
                       style={{
                         backgroundColor: category.backgroundColor,
                       }}
-                      className={`relative z-[2] flex px-3 py-2 items-center rounded justify-between text-subtitle`}
+                      className={`relative z-[2] flex px-3 py-2 items-center rounded justify-between text-subtitle dark:text-snow`}
                     >
                       <div className="relative flex items-center gap-3">
                         <div
