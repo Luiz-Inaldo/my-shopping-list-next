@@ -3,7 +3,6 @@ import Footer from "@/components/Footer";
 import Header from "@/components/Header";
 import LoggedLayout from "@/components/layout/MainLayout";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { ProductsContext } from "@/context/ProductsContext";
 import useMySwal from "@/hooks/useMySwal";
 import { supabase } from "@/lib/api";
 import { APP_ROUTES } from "@/routes/app-routes";
@@ -12,7 +11,6 @@ import { Blocks, LogOut } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import React, { useContext } from "react";
 
 export default function Menu() {
   const user = useGeneralUserStore((store) => store.user);

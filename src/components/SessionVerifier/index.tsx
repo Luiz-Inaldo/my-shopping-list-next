@@ -1,9 +1,8 @@
 'use client'
-import { ProductsContext } from '@/context/ProductsContext';
 import { supabase } from '@/lib/api';
 import { APP_ROUTES } from '@/routes/app-routes';
 import { useRouter } from 'next/navigation';
-import React, { useContext, useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import GlobalLoader from '../GlobalLoader';
 import useGeneralUserStore from '@/store/generalUserStore';
 import { TSupabaseUserInfo } from '@/types/supabase';
