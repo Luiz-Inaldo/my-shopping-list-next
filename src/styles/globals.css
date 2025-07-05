@@ -2,6 +2,14 @@
 @tailwind components;
 @tailwind utilities;
 
+@font-face {
+  font-family: 'Cherry Bomb One';
+  src: url('/fonts/CherryBombOne-Regular.woff2') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
 @layer base {
   :root {
     --background: 0 0% 100%;
@@ -36,7 +44,7 @@
     --category-10: #d1d5db;
     --header-height: 68px;
     --app-background: #fafafa;
-    --app-primary: #A0CFF7;
+    --app-primary: #4CAF50;
     --app-container: white;
     --title: #212529;
     --subtitle: #343a40;
@@ -80,7 +88,7 @@
     --title: #dfe1e4;
     --subtitle: #b8bcc0;
     --paragraph: #8f949b;
-    --link: #E9ECEF;
+    --link: #e9ecef;
   }
 }
 
@@ -90,6 +98,9 @@
   }
   body {
     @apply bg-app-background font-medium;
+  }
+  .logo {
+    @apply font-cherryBomb;
   }
 }
 

@@ -10,7 +10,7 @@ export const APP_ROUTES = {
             name: "/historic",
             details: {
                 name: (title: string) => `/historic/${title}`,
-                children: (title: string) => `/historic/${title}/coupon-details/`
+                children: (title: string) => `/historic/${title}/details`
             },
 
         },
@@ -25,14 +25,11 @@ export const APP_ROUTES = {
         }
     },
     public: {
-        login :{
-            name: "/auth/login"
+        auth :{
+            name: "/auth"
         },
-        register :{
-            name: "/auth/register"
-        },
-        errorDevice: {
-            name: "/device-error"
+        inicio: {
+            name: "/inicio"
         }
     }
 }

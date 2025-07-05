@@ -1,9 +1,8 @@
 'use client'
-import { ProductsContext } from '@/context/ProductsContext';
 import { supabase } from '@/lib/api';
 import { APP_ROUTES } from '@/routes/app-routes';
 import { useRouter } from 'next/navigation';
-import React, { useContext, useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import GlobalLoader from '../GlobalLoader';
 import useGeneralUserStore from '@/store/generalUserStore';
 import { TSupabaseUserInfo } from '@/types/supabase';
@@ -43,7 +42,7 @@ const SessionVerifier = ({ children }: { children: React.ReactNode }) => {
 
     useEffect(() => {
         if (isSessionVerified === false) {
-            router.push(APP_ROUTES.public.login.name);
+            router.push(APP_ROUTES.public.inicio.name);
         }
     }, [isSessionVerified, router]);
 

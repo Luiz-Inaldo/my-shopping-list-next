@@ -4,10 +4,10 @@ import Main from "@/components/Main";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Minha lista | Lista",
+  title: "EzShop | Lista",
   description: "Acompanhe sua lista de compras",
   openGraph: {
-    title: "Minha lista | Lista",
+    title: "EzShop | Lista",
     description: "Acompanhe sua lista de compras",
   }
 };
