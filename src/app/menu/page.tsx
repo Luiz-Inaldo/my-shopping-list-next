@@ -45,7 +45,7 @@ export default function Menu() {
         showConfirmButton: false,
       });
       setTimeout(() => {
-        router.push(APP_ROUTES.public.login.name);
+        router.push(APP_ROUTES.public.auth.name);
       }, 3000);
     }
   }
