@@ -1,5 +1,5 @@
 {
-  "name": "ezshop",
+  "name": "ezlist",
   "version": "0.1.0",
   "private": true,
   "scripts": {
@@ -22,7 +22,9 @@
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.1",
     "jspdf": "^2.5.2",
+    "lottie-react": "^2.4.1",
     "lucide-react": "^0.427.0",
+    "motion": "^12.19.2",
     "next": "14.2.5",
     "react": "^18",
     "react-awesome-reveal": "^4.2.14",

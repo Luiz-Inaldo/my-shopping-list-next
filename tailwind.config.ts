@@ -15,6 +15,10 @@ const config = {
       padding: "2rem",
     },
     extend: {
+      fontFamily: {
+        quicksand: ["Quicksand", "sans-serif"],
+        cherryBomb: ['"Cherry Bomb One"', "cursive"],
+      },
       screens: {
         "2xsm": "375px",
         "xsm": "425px",
@@ -74,6 +78,7 @@ const config = {
         "secondary-dark": "#343a40",
         "dark-button-color": "#0466c8",
         "primary-blue": "#A0CFF7",
+        "default-green": "#4CAF50",
         "secondary-blue": "#0066CC", 
         title: "var(--title)",
         subtitle: "var(--subtitle)",

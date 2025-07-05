@@ -43,7 +43,7 @@ const SessionVerifier = ({ children }: { children: React.ReactNode }) => {
 
     useEffect(() => {
         if (isSessionVerified === false) {
-            router.push(APP_ROUTES.public.login.name);
+            router.push(APP_ROUTES.public.inicio.name);
         }
     }, [isSessionVerified, router]);
 
