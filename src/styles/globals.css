@@ -49,7 +49,8 @@
     --title: #212529;
     --subtitle: #343a40;
     --paragraph: #838587;
-    --link: #0c559e;
+    --link: #3fad42;
+    --action: #FF9800;
   }
 
   .dark {
@@ -88,7 +89,7 @@
     --title: #dfe1e4;
     --subtitle: #b8bcc0;
     --paragraph: #8f949b;
-    --link: #e9ecef;
+    --link: #e3e9e3;
   }
 }
 

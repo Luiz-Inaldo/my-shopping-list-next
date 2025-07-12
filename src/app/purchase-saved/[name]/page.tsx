@@ -18,12 +18,12 @@ export default function PurchaseSaved() {
             <div className="flex flex-col gap-1 mt-8">
                 <Link
                     href={APP_ROUTES.private.historic.name}
-                    className='mb-2 bg-secondary-blue rounded-full px-3 py-2 flex gap-2 items-center justify-center cursor-pointer shadow-md transition-all duration-300 ease-in-out text-snow text-sm uppercase'>
+                    className='mb-2 bg-default-green rounded-full px-3 py-2 flex gap-2 items-center justify-center cursor-pointer shadow-md transition-all duration-300 ease-in-out text-snow text-sm uppercase'>
                     <span>ir para histórico</span>
                 </Link>
                 <Link
                     href={APP_ROUTES.private.home.name}
-                    className="px-3 py-2 flex items-center justify-center cursor-pointer uppercase text-sm text-link"
+                    className="px-3 py-2 flex items-center justify-center cursor-pointer uppercase text-sm text-subtitle"
                 >
                     <span className="underline">ir para página principal</span>
                 </Link>

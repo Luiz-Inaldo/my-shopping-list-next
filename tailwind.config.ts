@@ -83,7 +83,8 @@ const config = {
         title: "var(--title)",
         subtitle: "var(--subtitle)",
         paragraph: "var(--paragraph)",
-        link: "var(--link)"
+        link: "var(--link)",
+        action: "var(--action)",
       },
       borderRadius: {
         lg: "var(--radius)",

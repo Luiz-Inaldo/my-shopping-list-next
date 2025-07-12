@@ -8,6 +8,7 @@ import { ChevronRight, FileCheck } from 'lucide-react';
 import Link from 'next/link';
 import { useParams } from 'next/navigation';
 import React, { useEffect, useRef, useState } from 'react';
+import { Button } from '@/components/ui/button';
 
 export default function CouponDetails() {
     const params = useParams();
@@ -170,12 +171,12 @@ export default function CouponDetails() {
                             </p>
                         </div>
 
-                        <button
+                        <Button
                             onClick={generatePDF}
-                            className='mb-2 bg-secondary-blue rounded-full px-3 py-2 flex gap-2 items-center justify-center cursor-pointer shadow-md transition-all duration-300 ease-in-out text-snow'>
+                            className='mb-2 cursor-pointer shadow-md transition-all duration-300 ease-in-out'>
                             <FileCheck size={20} />
                             salvar como PDF
-                        </button>
+                        </Button>
 
                     </React.Fragment>
                 ) : (
