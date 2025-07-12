@@ -74,7 +74,7 @@ export default function Settings() {
               </AvatarFallback>
             </Avatar>
             <DropdownMenu>
-              <DropdownMenuTrigger className="cursor-pointer absolute p-0 bottom-0 right-0 flex items-center justify-center w-5 h-5 rounded-full bg-secondary-blue">
+              <DropdownMenuTrigger className="cursor-pointer absolute p-0 bottom-0 right-0 flex items-center justify-center w-5 h-5 rounded-full bg-default-green">
                 <EllipsisVertical size={12} className="text-snow" />
               </DropdownMenuTrigger>
               <DropdownMenuContent side="right">

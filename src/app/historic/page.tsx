@@ -1,4 +1,5 @@
 "use client";
+import { DeletePurchase } from '@/components/Forms/DeletePurchase';
 import Header from '@/components/Header';
 import LoggedLayout from '@/components/layout/MainLayout';
 import { Modal } from '@/components/Modal';
@@ -90,17 +91,6 @@ export default function Historic() {
                     ))}
                   </SelectContent>
                 </Select>
-                {/* <select
-                  onChange={(e) => handleFilterPurchases(e, "month")}
-                  className="w-full placeholder:text-paragraph text-paragraph bg-app-container dark:bg-app-background border border-border rounded-sm px-3 py-2"
-                >
-                  <option value="todos">Todos os meses</option>
-                  {MONTHS.map((month, index) => (
-                    <option key={month} value={index}>
-                      {month}
-                    </option>
-                  ))}
-                </select> */}
               </label>
 
               <label className="relative flex-1 col-span-1">
@@ -118,17 +108,6 @@ export default function Historic() {
                     ))}
                   </SelectContent>
                 </Select>
-                {/* <select
-                  onChange={(e) => handleFilterPurchases(e, "year")}
-                  className="w-full placeholder:text-paragraph text-paragraph bg-app-container dark:bg-app-background border border-border rounded-sm px-3 py-2"
-                >
-                  <option value="todos">Todos os anos</option>
-                  {YEARS.map((year) => (
-                    <option key={year} value={year}>
-                      {year}
-                    </option>
-                  ))}
-                </select> */}
               </label>
             </div>
 
@@ -161,17 +140,12 @@ export default function Historic() {
                       >
                         <div className="flex items-center gap-2">
                           <div className="flex items-center gap-2 flex-1">
-                            <div className="rounded-full bg-link w-2 h-2"></div>
+                            <div className="rounded-full bg-action w-2 h-2"></div>
                             <h2 className="text-subtitle">
                               {purchase.title}
                             </h2>
                           </div>
-                          <div className="flex items-center justify-center cursor-pointer text-red-400 dark:text-red-500">
-                            <Trash2
-                              onClick={() => handleOpenModal(purchase)}
-                              size={16}
-                            />
-                          </div>
+                          <DeletePurchase purchase={purchase} />
                         </div>
                         <div className="flex flex-col gap-4">
                           <div className="flex items-center justify-between">
@@ -191,7 +165,7 @@ export default function Historic() {
                               href={APP_ROUTES.private.historic.details.name(
                                 purchase.title
                               )}
-                              className="flex items-center gap-1 font-medium text-sm text-link"
+                              className="w-fit ml-auto py-0.5 px-2 bg-default-green rounded-full flex items-center gap-1 font-medium text-xs text-snow"
                             >
                               ver detalhes
                             </Link>
@@ -205,9 +179,9 @@ export default function Historic() {
             )}
           </div>
         </div>
-        <Suspense fallback={null}>
+        {/* <Suspense fallback={null}>
           <Modal item={purchase} />
-        </Suspense>
+        </Suspense> */}
       </LoggedLayout>
     );
 }
