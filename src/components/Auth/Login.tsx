@@ -7,6 +7,16 @@ import { Eye, EyeOff, LoaderCircle, LogInIcon } from "lucide-react";
 import { useRouter } from "next/navigation";
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+import { Input } from "../ui/input";
+import { Button } from "../ui/button";
 
 export default function LogInForm({
   setCurrentForm,
@@ -18,7 +28,7 @@ export default function LogInForm({
   const swal = useMySwal();
 
   const router = useRouter();
-  const { register, handleSubmit } = useForm<User>();
+  const form = useForm<User>();
 
   async function onSubmit(userCredentials: User) {
     setLoading(true);
@@ -64,72 +74,78 @@ export default function LogInForm({
       {/* <h2 className="text-2xl leading-[1] uppercase text-center text-subtitledark mb-5 border-b border-[#DDD]">
         SignIn
       </h2> */}
-      <form
-        onSubmit={handleSubmit(onSubmit)}
-        className="flex flex-col gap-3 h-full"
-      >
-        <div className="flex flex-col gap-3">
-          <label htmlFor="email">
-            <span className="text-[#212121] font-semibold text-sm">E-mail:</span>
-            <input
-              type="text"
-              placeholder="Seu e-mail"
-              {...register("email", { required: true })}
-              className="text-sm w-full text-gray-500 rounded-full border border-gray-300 px-3 py-2 h-8"
+      <Form {...form}>
+        <form
+          onSubmit={form.handleSubmit(onSubmit)}
+          className="flex flex-col gap-3 h-full"
+        >
+          <div className="flex flex-col gap-3">
+            <FormField
+              control={form.control}
+              name="email"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>E-mail</FormLabel>
+                  <FormControl>
+                    <Input placeholder="Seu e-mail" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
             />
-          </label>
-          <label htmlFor="password" className="relative">
-            <span className="text-[#212121] font-semibold text-sm">Senha:</span>
-            <input
-              type={isPasswordVisible ? "text" : "password"}
-              placeholder="Sua senha"
-              {...register("password", { required: true })}
-              className="text-sm w-full text-gray-500 rounded-full border border-gray-300 px-3 py-2 h-8"
+            <FormField
+              control={form.control}
+              name="password"
+              render={({ field }) => (
+                <FormItem className="relative">
+                  <FormLabel>Senha</FormLabel>
+                  <FormControl>
+                    <Input type={isPasswordVisible ? "text" : "password"} placeholder="Sua senha" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                  {isPasswordVisible ? (
+                    <EyeOff
+                      size={14}
+                      className="absolute right-2 top-[34px] text-gray-400 cursor-pointer"
+                      onClick={() => setIsPasswordVisible(false)}
+                    />
+                  ) : (
+                    <Eye
+                      size={14}
+                      className="absolute right-2 top-[34px] text-gray-400 cursor-pointer"
+                      onClick={() => setIsPasswordVisible(true)}
+                    />
+                  )}
+                </FormItem>
+              )}
             />
-
-            {isPasswordVisible ? (
-              <EyeOff
-                size={14}
-                className="absolute right-2 top-[34px] text-gray-400 cursor-pointer"
-                onClick={() => setIsPasswordVisible(false)}
-              />
-            ) : (
-              <Eye
-                size={14}
-                className="absolute right-2 top-[34px] text-gray-400 cursor-pointer"
-                onClick={() => setIsPasswordVisible(true)}
-              />
-            )}
-          </label>
-        </div>
-        <div className="space-y-2">
-          <button
-            type="submit"
-            className="w-full uppercase flex gap-2 items-center justify-center bg-default-green py-2 px-3 rounded-full text-snow mt-5"
-          >
-            {loading ? (
-              <>
-                <span>Autenticando...</span>
-                <LoaderCircle className="animate-spin" size={18} />
-              </>
-            ) : (
-              <>
-                <span>Entrar</span>
-                <LogInIcon size={18} />
-              </>
-            )}
-          </button>
-          <p className="text-sm text-center text-gray-500 mt-5">
-            Ainda não tem uma conta?{" "}
-            <span
-              onClick={() => setCurrentForm("register")}
-              className="text-default-green cursor-pointer"
-            >
-              Cadastre-se
-            </span>
-          </p>
-        </div>
-      </form>
+          </div>
+          <div className="space-y-2">
+            <Button type="submit" className="w-full uppercase mt-5">
+              {loading ? (
+                <>
+                  <span>Autenticando...</span>
+                  <LoaderCircle className="animate-spin" size={18} />
+                </>
+              ) : (
+                <>
+                  <span>Entrar</span>
+                  <LogInIcon size={18} />
+                </>
+              )}
+            </Button>
+            <p className="text-sm text-center text-gray-500 mt-5">
+              Ainda não tem uma conta?{" "}
+              <span
+                onClick={() => setCurrentForm("register")}
+                className="text-default-green cursor-pointer"
+              >
+                Cadastre-se
+              </span>
+            </p>
+          </div>
+        </form>
+      </Form>
     </div>
   );
 }

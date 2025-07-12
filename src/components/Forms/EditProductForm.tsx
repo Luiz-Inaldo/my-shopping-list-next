@@ -12,6 +12,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "../ui/dialog";
+import { Button } from "../ui/button";
 
 export const EditProductForm = ({
   item,
@@ -49,7 +50,7 @@ export const EditProductForm = ({
           className="flex flex-col gap-3"
         >
           <label htmlFor="name" className="flex flex-col mt-3">
-            <span className="text-subtitle">Nome:</span>
+            <span className="text-subtitle text-sm font-semibold">Nome:</span>
             <Controller
               control={control}
               name="name"
@@ -58,14 +59,14 @@ export const EditProductForm = ({
                 <input
                   type="text"
                   {...field}
-                  className="w-full text-paragraph rounded border px-3 py-2 h-8 text-ellipsis overflow-hidden whitespace-nowrap"
+                  className="w-full text-paragraph text-sm rounded-full border px-3 py-2 h-8 text-ellipsis overflow-hidden whitespace-nowrap"
                 />
               )}
             />
           </label>
           <div className="grid grid-cols-2 gap-3">
             <label htmlFor="value" className="flex flex-col col-span-1">
-              <span className="text-subtitle">Valor:</span>
+              <span className="text-subtitle text-sm font-semibold">Valor:</span>
               <Controller
                 control={control}
                 name="value"
@@ -74,13 +75,13 @@ export const EditProductForm = ({
                   <input
                     type="text"
                     {...field}
-                    className="w-full text-paragraph rounded border px-3 py-2 h-8"
+                    className="w-full text-paragraph text-sm rounded-full border px-3 py-2 h-8"
                   />
                 )}
               />
             </label>
             <label htmlFor="quantity" className="flex flex-col col-span-1">
-              <span className="text-subtitle">Quantidade:</span>
+              <span className="text-subtitle text-sm font-semibold">Quantidade:</span>
               <Controller
                 control={control}
                 name="quantity"
@@ -89,26 +90,27 @@ export const EditProductForm = ({
                   <input
                     type="number"
                     {...field}
-                    className="w-full text-paragraph rounded border px-3 py-2 h-8"
+                    className="w-full text-paragraph text-sm rounded-full border px-3 py-2 h-8"
                   />
                 )}
               />
             </label>
           </div>
           <div className="grid grid-cols-2 gap-2 mt-5">
-            <button
+            <Button
               type="submit"
-              className="col-span-1 flex items-center justify-center w-full bg-secondary-blue py-2 px-3 rounded text-snow"
+              className="col-span-1 w-full rounded-full"
             >
               Finalizar Edição
-            </button>
-            <button
+            </Button>
+            <Button
               type="button"
               onClick={() => setOpen(false)}
-              className="col-span-1 flex items-center justify-center w-full border border-subtitle py-2 px-3 rounded text-subtitle"
+              variant="outline"
+              className="col-span-1 w-full rounded-full"
             >
               Cancelar
-            </button>
+            </Button>
           </div>
         </form>
       </DialogContent>

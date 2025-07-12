@@ -5,6 +5,7 @@ import { toast } from '../ui/use-toast';
 import { ToastAction } from '@radix-ui/react-toast';
 import { supabase } from '@/lib/api';
 import { PurchasesContext } from '@/context/PurchasesContext';
+import { Button } from '../ui/button';
 
 export const DeletePurchase = ({ purchase }: { purchase: IPurchaseProps | undefined }) => {
 
@@ -58,21 +59,22 @@ export const DeletePurchase = ({ purchase }: { purchase: IPurchaseProps | undefi
                 <div className={`${isFading ? 'opacity-100 visible' : 'opacity-0 invisible'} w-[350px] rounded bg-app-container p-5 transition-all duration-500`}>
                     <h2 className='text-center text-subtitle'>Deseja realmente deletar a compra do histórico?</h2>
                     <div className='flex gap-2 mt-5'>
-                        <button
+                        <Button
                             type='button'
                             onClick={() => deletePurchase(purchase)}
-                            className='col-span-1 flex items-center justify-center w-full bg-secondary-blue py-2 px-3 rounded text-snow'>
+                            className='col-span-1 w-full rounded-full'>
                             Sim
-                        </button>
-                        <button
+                        </Button>
+                        <Button
                             type='button'
                             onClick={() => setModal({
                                 state: 'CLOSED',
                                 type: null
                             })}
-                            className='col-span-1 flex items-center justify-center w-full border border-subtitle py-2 px-3 rounded text-subtitle'>
+                            variant="outline"
+                            className='col-span-1 w-full rounded-full'>
                             Cancelar
-                        </button>
+                        </Button>
                     </div>
                 </div>
             )}
