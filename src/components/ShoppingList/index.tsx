@@ -35,6 +35,9 @@ import { EditProductForm } from "../Forms/EditProductForm";
 import { DeleteProduct } from "../Forms/DeleteProduct";
 import { ListItemDropdown } from "../Dropdown/ListItemDropdown";
 import { CheckItemForm } from "../Forms/CheckItemForm";
+import FinalizePurchaseModal from "../Modal/FinalizePurchaseModal";
+import { Checkbox } from "../ui/Custom/Checkbox";
+import { Button } from "../ui/button";
 
 const ShoppingList = ({ listname }: { listname: string | undefined }) => {
   const user = useGeneralUserStore((store) => store.user);
@@ -244,49 +247,53 @@ const ShoppingList = ({ listname }: { listname: string | undefined }) => {
             </ul>
 
             {/* finish purchase button */}
-            <button
-              ref={finalizePurchaseButtonRef}
-              disabled={savingPurchase.status !== "idle"}
-              onClick={finalizePurchase}
-              className={`relative z-[2] mb-2 bg-secondary-blue/80 disabled:pointer-events-none min-w-56 rounded-full w-fit block mx-auto px-3 py-2 cursor-pointer shadow-md transition-all duration-500 ease-in-out text-snow overflow-hidden`}
-            >
-              {/* span thath represents ::before pseudo-class */}
-              <span
-                ref={progressBarRef}
-                style={{
-                  width: `${savingPurchase.progress}%`,
-                  transition: "width 0.5s ease-in-out",
-                }}
-                className={`absolute top-0 left-0 h-full bg-secondary-blue z-0 transition-all`}
-              ></span>
+            <FinalizePurchaseModal
+              finalizePurchase={finalizePurchase}
+              trigger={
+                <Button
+                  ref={finalizePurchaseButtonRef}
+                  disabled={savingPurchase.status !== "idle"}
+                  className={`relative z-[2] mb-2 disabled:pointer-events-none rounded-full w-fit block mx-auto cursor-pointer shadow-md transition-all duration-500 ease-in-out text-snow overflow-hidden`}
+                >
+                  {/* span thath represents ::before pseudo-class */}
+                  <span
+                    ref={progressBarRef}
+                    style={{
+                      width: `${savingPurchase.progress}%`,
+                      transition: "width 0.5s ease-in-out",
+                    }}
+                    className={`absolute top-0 left-0 h-full bg-default-green z-0 transition-all`}
+                  ></span>
 
-              <div className="relative z-[1] flex gap-2 items-center justify-center font-medium">
-                {savingPurchase.status === "idle" && (
-                  <>
-                    <ShoppingBagIcon size={20} />
-                    <span>Finalizar Compra</span>
-                  </>
-                )}
-                {savingPurchase.status === "saving" && (
-                  <>
-                    <ShoppingBagIcon size={20} />
-                    <span>Salvando sua compra...</span>
-                  </>
-                )}
-                {savingPurchase.status === "success" && (
-                  <>
-                    <Check size={20} />
-                    <span>Compra Salva!</span>
-                  </>
-                )}
-                {savingPurchase.status === "error" && (
-                  <>
-                    <X size={20} />
-                    <span>Erro</span>
-                  </>
-                )}
-              </div>
-            </button>
+                  <div className="relative z-[1] flex gap-2 items-center justify-center font-medium">
+                    {savingPurchase.status === "idle" && (
+                      <>
+                        <ShoppingBagIcon size={20} />
+                        <span>Finalizar Compra</span>
+                      </>
+                    )}
+                    {savingPurchase.status === "saving" && (
+                      <>
+                        <ShoppingBagIcon size={20} />
+                        <span>Salvando sua compra...</span>
+                      </>
+                    )}
+                    {savingPurchase.status === "success" && (
+                      <>
+                        <Check size={20} />
+                        <span>Compra Salva!</span>
+                      </>
+                    )}
+                    {savingPurchase.status === "error" && (
+                      <>
+                        <X size={20} />
+                        <span>Erro</span>
+                      </>
+                    )}
+                  </div>
+                </Button>
+              }
+            />
             {/* end finish purchase button */}
           </div>
         </div>
@@ -330,7 +337,7 @@ const ShoppingList = ({ listname }: { listname: string | undefined }) => {
                       }}
                       className={`relative z-[2] flex px-3 py-2 items-center rounded justify-between text-subtitle dark:text-snow`}
                     >
-                      <div className="relative flex items-center gap-3">
+                      <div className="relative flex items-center gap-1">
                         <div
                           style={{
                             backgroundColor: category.backgroundColor,
@@ -340,11 +347,11 @@ const ShoppingList = ({ listname }: { listname: string | undefined }) => {
                           <category.icon />
                         </div>
 
-                        <span className="text-lg pl-12">{category.name}</span>
+                        <span className="pl-10">{category.name}</span>
 
                         {ordenedProducts.length > 0 && (
-                          <span className="italic">
-                            ({ordenedProducts.length} produto(s))
+                          <span className="text-sm">
+                            ({ordenedProducts.length})
                           </span>
                         )}
                       </div>
@@ -377,7 +384,7 @@ const ShoppingList = ({ listname }: { listname: string | undefined }) => {
                                   className="flex flex-col gap-4 rounded"
                                 >
                                   <div
-                                    className={`relative rounded pl-3 py-3 flex flex-col gap-2 text-paragraph`}
+                                    className={`relative text-sm rounded pl-3 py-3 flex flex-col gap-2 text-paragraph`}
                                   >
                                     <div className="flex items-center">
                                       <div className="flex-1 flex items-center gap-2">
@@ -386,15 +393,7 @@ const ShoppingList = ({ listname }: { listname: string | undefined }) => {
                                           item.value === "0,00" ? (
                                             <CheckItemForm item={item} />
                                           ) : (
-                                            <input
-                                              type="checkbox"
-                                              checked={item.checked}
-                                              id={item.name}
-                                              onClick={() =>
-                                                handleItemCheckbox(item)
-                                              }
-                                              className="w-4 h-4 accent-primary-blue border-2 border-paragraph rounded"
-                                            />
+                                            <Checkbox checked={item.checked} onChange={() => handleItemCheckbox(item)} />
                                           )}
                                         </>
                                         <label

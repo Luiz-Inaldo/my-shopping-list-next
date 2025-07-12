@@ -2,6 +2,7 @@ import { ProductsContext } from "@/context/ProductsContext";
 import { IProductProps } from "@/types";
 import React, { useContext, useState } from "react";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "../ui/dialog";
+import { Button } from "../ui/button";
 
 export const DeleteProduct = ({
   item,
@@ -24,20 +25,21 @@ export const DeleteProduct = ({
         </DialogHeader>
         <DialogDescription hidden />
         <div className="flex gap-2 mt-5">
-          <button
+          <Button
             type="button"
             onClick={() => handleDeleteItem(item!.id)}
-            className="col-span-1 flex items-center justify-center w-full bg-secondary-blue py-2 px-3 rounded text-snow"
+            className="col-span-1 w-full rounded-full"
           >
             Sim
-          </button>
-          <button
+          </Button>
+          <Button
             type="button"
             onClick={() => setOpen(false)}
-            className="col-span-1 flex items-center justify-center w-full border border-subtitle py-2 px-3 rounded text-subtitle"
+            variant="outline"
+            className="col-span-1 w-full rounded-full"
           >
             Cancelar
-          </button>
+          </Button>
         </div>
       </DialogContent>
     </Dialog>
