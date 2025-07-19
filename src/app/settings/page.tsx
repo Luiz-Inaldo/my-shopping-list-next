@@ -18,7 +18,6 @@ import getProfile from "@/services/userProfileServices";
 import useGeneralUserStore from "@/store/generalUserStore";
 import { EllipsisVertical, Lock, Palette, Pencil } from "lucide-react";
 import Image from "next/image";
-import React, { useEffect } from "react";
 
 export default function Settings() {
   const user = useGeneralUserStore((store) => store.user);

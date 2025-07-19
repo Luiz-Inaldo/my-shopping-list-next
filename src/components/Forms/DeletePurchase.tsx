@@ -1,5 +1,4 @@
-import { ProductsContext } from '@/context/ProductsContext';
-import { IProductProps, IPurchaseProps } from '@/types';
+import { IPurchaseProps } from '@/types';
 import React, { useContext, useEffect, useState } from 'react'
 import { toast } from '../ui/use-toast';
 import { ToastAction } from '@radix-ui/react-toast';

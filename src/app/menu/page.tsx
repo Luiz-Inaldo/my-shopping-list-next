@@ -3,6 +3,7 @@ import Footer from "@/components/Footer";
 import Header from "@/components/Header";
 import LoggedLayout from "@/components/layout/MainLayout";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { sendToastMessage } from "@/functions/sendToastMessage";
 import useMySwal from "@/hooks/useMySwal";
 import { supabase } from "@/lib/api";
 import { APP_ROUTES } from "@/routes/app-routes";
@@ -11,6 +12,7 @@ import { Blocks, LogOut } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 
 export default function Menu() {
   const user = useGeneralUserStore((store) => store.user);
@@ -23,27 +25,12 @@ export default function Menu() {
     const { error } = await supabase.auth.signOut();
 
     if (error) {
-      swal.fire({
-        toast: true,
-        title: "Erro ao fazer logout",
-        icon: "error",
-        timer: 3000,
-        timerProgressBar: true,
-        position: "bottom-right",
-        showConfirmButton: false,
-      });
+      sendToastMessage({ title: "Erro ao fazer logout", type: "error" });
     } else {
-      swal.fire({
-        toast: true,
-        title: "Deslogado com sucesso",
-        icon: "success",
-        timer: 3000,
-        timerProgressBar: true,
-        position: "bottom-right",
-        showConfirmButton: false,
-      });
+      sendToastMessage({ title: "Logout realizado com sucesso", type: "success" });
       setTimeout(() => {
-        router.push(APP_ROUTES.public.auth.name);
+        toast.dismiss();
+        router.push(APP_ROUTES.public.auth.name)
       }, 3000);
     }
   }

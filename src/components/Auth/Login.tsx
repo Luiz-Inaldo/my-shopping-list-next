@@ -3,7 +3,7 @@ import useMySwal from "@/hooks/useMySwal";
 import { User } from "@/interfaces/user";
 import { supabase } from "@/lib/api";
 import { APP_ROUTES } from "@/routes/app-routes";
-import { Eye, EyeOff, LoaderCircle, LogInIcon } from "lucide-react";
+import { Check, Eye, EyeOff, LoaderCircle, LogInIcon, X } from "lucide-react";
 import { useRouter } from "next/navigation";
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
@@ -17,6 +17,7 @@ import {
 } from "@/components/ui/form";
 import { Input } from "../ui/input";
 import { Button } from "../ui/button";
+import { toast } from "sonner";
 
 export default function LogInForm({
   setCurrentForm,
@@ -39,31 +40,37 @@ export default function LogInForm({
 
     if (error) {
       if (error.code === "invalid_credentials") {
-        swal.fire({
-          icon: "error",
-          title: "Oops!",
-          text: "Credenciais de login inválidas, ou não existem.",
-          confirmButtonText: "Ok",
+        toast.error("Credenciais de login inválidas.", {
+          classNames: {
+            toast: '!bg-black !border-0',
+            title: '!text-snow'
+          },
+          position: 'top-center',
+          icon: <X className="text-red-500 text-lg" />
         });
       } else {
-        swal.fire({
-          icon: "error",
-          title: "Oops!",
-          text: "Houve um erro ao tentar o login.",
-          confirmButtonText: "Ok",
+        toast.error("Houve um erro ao logar.", {
+          classNames: {
+            toast: '!bg-black !border-0',
+            title: '!text-snow'
+          },
+          position: 'top-center',
+          icon: <X className="text-red-500 text-lg" />
         });
       }
     } else {
-      swal.fire({
-        icon: "success",
-        toast: true,
-        position: "bottom-right",
-        text: "Login realizado com sucesso.",
-        showConfirmButton: false,
-        timer: 2000,
-        timerProgressBar: true,
-      });
-      setTimeout(() => router.push(APP_ROUTES.private.home.name), 2000);
+      toast.success("Login realizado com sucesso.", {
+          classNames: {
+            toast: '!bg-black !border-0',
+            title: '!text-snow'
+          },
+          position: 'top-center',
+          icon: <Check className="text-emerald-500 text-lg" />
+        });
+      setTimeout(() => {
+        toast.dismiss();
+        router.push(APP_ROUTES.private.home.name)
+      }, 2000);
     }
 
     setLoading(false);
@@ -71,9 +78,7 @@ export default function LogInForm({
 
   return (
     <div className="w-full h-full rounded-tr-3xl rounded-tl-3xl border border-gray-200 bg-white p-5 shadow-md">
-      {/* <h2 className="text-2xl leading-[1] uppercase text-center text-subtitledark mb-5 border-b border-[#DDD]">
-        SignIn
-      </h2> */}
+      
       <Form {...form}>
         <form
           onSubmit={form.handleSubmit(onSubmit)}

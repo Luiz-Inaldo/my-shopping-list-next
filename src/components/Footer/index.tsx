@@ -35,7 +35,7 @@ const Footer = () => {
                     style={{
                         boxShadow: "0 0 4px rgb(0 0 0 / 0.1)"
                     }}
-                    className='fixed bottom-0 left-0 z-[3] w-full bg-app-container py-2 px-4 flex items-center justify-center'>
+                    className='fixed bottom-0 left-0 z-[3] w-full bg-app-container rounded-tr-2xl rounded-tl-2xl py-2 px-4 flex items-center justify-center'>
                     <ul className='w-full gap-2 grid grid-cols-5 justify-center'>
                         <li>
                             <Link href={APP_ROUTES.private.home.name} className={`grid gap-1 p-2 place-items-center border-b ${pathname === "/" ? "text-default-green dark:text-title border-default-green dark:border-title" : "text-subtitle border-transparent"}`}>
