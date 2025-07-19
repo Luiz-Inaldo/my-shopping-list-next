@@ -2,7 +2,7 @@
 import { Itim, Quicksand } from "next/font/google";
 import "../styles/globals.css";
 import { ProductsProvider } from "@/context/ProductsContext";
-import { Toaster } from "@/components/ui/toaster";
+import { Toaster } from "@/components/ui/sonner";
 import SessionVerifier from "@/components/SessionVerifier";
 import useCheckRoute from "@/hooks/useCheckRoute";
 import { usePathname } from "next/navigation";

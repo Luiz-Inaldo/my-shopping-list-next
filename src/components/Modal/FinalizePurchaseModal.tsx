@@ -27,7 +27,7 @@ const FinalizePurchaseModal = ({
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>{trigger}</DialogTrigger>
-      <DialogContent className="2xsm:max-w-[400px] rounded-lg">
+      <DialogContent>
         <DialogHeader className="space-y-5">
           <DialogTitle>Finalizar Compra</DialogTitle>
           <DialogDescription>

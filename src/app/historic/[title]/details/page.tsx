@@ -147,10 +147,10 @@ export default function CouponDetails() {
                                                     {item.quantity}
                                                 </div>
                                                 <div className='flex items-center p-[2px] basis-11 justify-end'>
-                                                    {item.value.replace(".", ",") || "0,00"}
+                                                    {(item.value || "0,00").replace(".", ",")}
                                                 </div>
                                                 <div className='flex items-center p-[2px] basis-[50px] justify-end'>
-                                                    {formatNumber(item.value, item.quantity)}
+                                                    {formatNumber(item.value || "0", item.quantity || 0)}
                                                 </div>
                                             </div>
                                         ))
