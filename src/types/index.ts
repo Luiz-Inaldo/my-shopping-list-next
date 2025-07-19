@@ -46,10 +46,10 @@ export interface IEditItemProps extends Omit<IProductProps, 'category' | 'checke
 
 export interface IProductProps {
     id: string;
-    name: string | undefined;
-    category: string | undefined;
-    quantity: number | undefined;
-    value: string | undefined;
+    name: string;
+    category: string;
+    quantity: number;
+    value: string;
     checked: boolean;
 }
 

@@ -40,8 +40,13 @@ export const AddProductForm = () => {
       ...data,
       user_id: user?.id,
     };
+
     if (item.value === "") {
       item.value = "0,00";
+    }
+
+    if (!item.quantity) {
+      item.quantity = 0;
     }
 
     try {
