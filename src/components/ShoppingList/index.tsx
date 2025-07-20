@@ -25,19 +25,16 @@ import CategoryWrapper from "../Category";
 import { formatCurrency } from "@/functions/formatCurrency";
 import { supabase } from "@/lib/api";
 import { useRouter } from "next/navigation";
-import { toast } from "../ui/use-toast";
-import { ToastAction } from "@radix-ui/react-toast";
 import { APP_ROUTES } from "@/routes/app-routes";
 import { sleep } from "@/functions/sleep";
 import { Fade } from "react-awesome-reveal";
 import useGeneralUserStore from "@/store/generalUserStore";
-import { EditProductForm } from "../Forms/EditProductForm";
-import { DeleteProduct } from "../Forms/DeleteProduct";
 import { ListItemDropdown } from "../Dropdown/ListItemDropdown";
 import { CheckItemForm } from "../Forms/CheckItemForm";
 import FinalizePurchaseModal from "../Modal/FinalizePurchaseModal";
 import { Checkbox } from "../ui/Custom/Checkbox";
 import { Button } from "../ui/button";
+import { sendToastMessage } from "@/functions/sendToastMessage";
 
 const ShoppingList = ({ listname }: { listname: string | undefined }) => {
   const user = useGeneralUserStore((store) => store.user);
@@ -45,7 +42,6 @@ const ShoppingList = ({ listname }: { listname: string | undefined }) => {
   const {
     data,
     loadingProducts,
-    setModal,
     handleCheckItem,
     handleDismarkItem,
     optionMenu,
@@ -138,8 +134,8 @@ const ShoppingList = ({ listname }: { listname: string | undefined }) => {
           await sleep(1.5);
 
           deleteAllItems();
-          deleteCurrentPurchase();
           router.push(APP_ROUTES.private.purchase_saved.name(purchase.title)); // redireciona para outra página
+          deleteCurrentPurchase();
         }
       } catch (error) {
         if (progressBarRef.current) {
@@ -147,11 +143,10 @@ const ShoppingList = ({ listname }: { listname: string | undefined }) => {
         }
       }
     } else {
-      toast({
-        description:
-          "A compra deve ter pelo menos um item marcado para ser salva",
-        action: <ToastAction altText="Ok">Ok</ToastAction>,
-      });
+      sendToastMessage({
+        title: "A compra deve ter pelo menos um item marcado para ser salva",
+        type: "warning"
+      })
 
       setSavingPurchase((old) => ({
         progress: 0,

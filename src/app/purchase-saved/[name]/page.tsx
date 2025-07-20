@@ -8,13 +8,13 @@ export default function PurchaseSaved() {
     return (
         <div className="flex flex-col items-center p-10 w-[430px] mx-auto bg-app-background min-h-dvh">
             <Image
-                src="/images/well_done.svg"
+                src="/images/celebration.svg"
                 alt="pessoas comemorando"
-                width={200}
-                height={200}
+                width={250}
+                height={250}
             />
-            <h1 className="text-subtitle text-xl text-center font-semibold my-4">Sua compra foi salva com sucesso.</h1>
-            <p className="text-paragraph text-center">Consulte-a em sua área de históricos para mais detalhes</p>
+            <h1 className="text-subtitle text-lg text-center font-semibold my-4">Sua compra foi salva com sucesso.</h1>
+            <p className="text-sm text-paragraph text-center">Consulte-a em sua área de históricos para mais detalhes</p>
             <div className="flex flex-col gap-1 mt-8">
                 <Link
                     href={APP_ROUTES.private.historic.name}

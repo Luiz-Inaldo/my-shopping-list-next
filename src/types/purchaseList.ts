@@ -1,4 +1,4 @@
-export type NewListProps = {
-    list_name: string;
-    list_max_value: string;
-}
+import z from "zod";
+import { createListSchema } from "./zodTypes";
+
+export type NewListProps = z.infer<typeof createListSchema>;
