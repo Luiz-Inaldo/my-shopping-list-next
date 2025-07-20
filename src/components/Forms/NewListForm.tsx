@@ -12,6 +12,8 @@ import { ProductsContext } from '@/context/ProductsContext'
 import { Button } from '../ui/button';
 import { Input } from '../ui/input';
 import { Check, LoaderCircle } from 'lucide-react';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { createListSchema } from '@/types/zodTypes';
 
 const NewListForm = ({ children }: { children: React.ReactNode }) => {
 
@@ -19,9 +21,10 @@ const NewListForm = ({ children }: { children: React.ReactNode }) => {
     const [isSettingPurchase, setPurchaseTransition] = useTransition();
     const { fetchPurchaseData } = useContext(ProductsContext);
 
-    const form = useForm<NewListProps>();
+    const form = useForm<NewListProps>({
+        resolver: zodResolver(createListSchema)
+    });
 
-    const canCreateList = form.watch("list_name") && form.watch("list_max_value");
 
     const onSubmit = async (listData: NewListProps) => {
         setPurchaseTransition(async () => {
@@ -94,7 +97,7 @@ const NewListForm = ({ children }: { children: React.ReactNode }) => {
                         <Button
                             type="submit"
                             className='w-full cursor-pointer shadow-md'
-                            disabled={isSettingPurchase || !canCreateList}
+                            disabled={isSettingPurchase}
                         >
                             {isSettingPurchase ? (
                                 <>

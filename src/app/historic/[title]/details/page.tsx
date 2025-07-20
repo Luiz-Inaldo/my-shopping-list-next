@@ -139,8 +139,8 @@ export default function CouponDetails() {
                                 {
                                     Array.isArray(purchase.purchase_items) && (
                                         purchase.purchase_items.sort((a, b) => a.name.localeCompare(b.name)).map((item: IProductProps, index: number) => (
-                                            <div key={item.id} className='flex uppercase text-[10px] text-subtitle'>
-                                                <div className='flex-1 flex items-center p-[2px] max-w-[215px] text-ellipsis overflow-hidden whitespace-nowrap'>
+                                            <div key={item.id} className='flex items-start uppercase text-[10px] text-subtitle'>
+                                                <div className='flex-1 flex items-center p-[2px] max-w-[215px]'>
                                                     {`${index + 1} - ${item.name}`}
                                                 </div>
                                                 <div className='flex items-center p-[2px] basis-9 justify-end'>

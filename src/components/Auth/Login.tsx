@@ -18,6 +18,8 @@ import {
 import { Input } from "../ui/input";
 import { Button } from "../ui/button";
 import { toast } from "sonner";
+import { loginFormSchema } from "@/types/zodTypes";
+import { zodResolver } from "@hookform/resolvers/zod";
 
 export default function LogInForm({
   setCurrentForm,
@@ -29,7 +31,9 @@ export default function LogInForm({
   const swal = useMySwal();
 
   const router = useRouter();
-  const form = useForm<User>();
+  const form = useForm<User>({
+    resolver: zodResolver(loginFormSchema)
+  });
 
   async function onSubmit(userCredentials: User) {
     setLoading(true);

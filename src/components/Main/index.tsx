@@ -25,7 +25,6 @@ const Main = () => {
   /**
    * ===========>> STORE <<============
    */
-  const user = useGeneralUserStore(store => store.user)
   const userProfile = useGeneralUserStore(store => store.userProfile)
 
   return (
@@ -49,7 +48,7 @@ const Main = () => {
                 <p className={`${visible ? "max-w-[89px] mr-1" : "max-w-0"} overflow-hidden whitespace-nowrap text-title transition-all duration-200`}>
                   Bem-vindo,
                 </p>
-                <p className='text-title'>{user?.user_metadata?.name || 'Usuário sem nome.'}</p>
+                <p className='text-title'>{userProfile?.user_name || 'Usuário sem nome.'}</p>
                 <ChevronRight size={16} className={`${visible ? "opacity-100 translate-x-0 ml-2" : "opacity-0 -translate-x-full"} transition-all duration-200 text-title`} />
               </div>
             </div>

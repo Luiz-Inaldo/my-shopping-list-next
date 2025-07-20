@@ -15,10 +15,10 @@ import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 
 export default function Menu() {
-  const user = useGeneralUserStore((store) => store.user);
+  
   const userProfile = useGeneralUserStore((store) => store.userProfile);
+  const resetProfile = useGeneralUserStore((store) => store.resetProfile);
 
-  const swal = useMySwal();
   const router = useRouter();
 
   async function logout() {
@@ -28,6 +28,7 @@ export default function Menu() {
       sendToastMessage({ title: "Erro ao fazer logout", type: "error" });
     } else {
       sendToastMessage({ title: "Logout realizado com sucesso", type: "success" });
+      resetProfile();
       setTimeout(() => {
         toast.dismiss();
         router.push(APP_ROUTES.public.auth.name)
@@ -53,7 +54,7 @@ export default function Menu() {
             </Avatar>
             <div className="flex flex-col gap-1">
               <p className="text-title">
-                {user?.user_metadata?.name || "Usuário sem nome."}
+                {userProfile?.user_name || "Usuário sem nome."}
               </p>
               <Link
                 href={APP_ROUTES.private.settings.name}

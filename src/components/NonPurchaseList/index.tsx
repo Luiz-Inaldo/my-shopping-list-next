@@ -9,10 +9,10 @@ const NonPurchaseList = () => {
     return (
         <div className="grid place-items-center">
             <Image
-                src={'/images/shopping.svg'}
+                src={'/images/grocery.svg'}
                 alt="mulher com carrinho de compras"
-                width={150}
-                height={150}
+                width={200}
+                height={200}
             />
 
             <h2 className="mt-5 text-center max-w-72 text-sm text-paragraph">
