@@ -4,12 +4,12 @@ import Lottie from "lottie-react";
 import shoppingCartWomanAnimation from "@/animations/shopping-cart-woman.json";
 import { APP_ROUTES } from "@/routes/app-routes";
 import { ArrowRightIcon } from "lucide-react";
-import { AnimatePresence, motion } from "framer-motion";
-import useChangeRoute from "@/hooks/useChangeRoute";
+import { motion } from "framer-motion";
+import { usePageOverlay } from "@/context/PageOverlayContext";
 
 export default function StartPage() {
   
-  const {isChangingRoute, handleChangeRoute} = useChangeRoute();
+  const { handleChangeRoute } = usePageOverlay();
 
   return (
     <div className="relative flex flex-col h-dvh w-full bg-white gap-10 p-4 overflow-hidden">
@@ -62,18 +62,6 @@ export default function StartPage() {
           <ArrowRightIcon size={18} />
         </button>
       </motion.div>
-
-      {/* Overlay effect to change route */}
-      <AnimatePresence>
-        {isChangingRoute && (
-          <motion.div
-            initial={{ opacity: 1, x: "100%" }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.2 }}
-            className="absolute inset-0 bg-white z-[1]"
-          ></motion.div>
-        )}
-      </AnimatePresence>
     </div>
   );
 }

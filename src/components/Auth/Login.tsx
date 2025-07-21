@@ -1,11 +1,9 @@
 "use client";
-import useMySwal from "@/hooks/useMySwal";
 import { User } from "@/interfaces/user";
 import { supabase } from "@/lib/api";
 import { APP_ROUTES } from "@/routes/app-routes";
 import { Check, Eye, EyeOff, LoaderCircle, LogInIcon, X } from "lucide-react";
-import { useRouter } from "next/navigation";
-import React, { useState } from "react";
+import React, { useState, useTransition } from "react";
 import { useForm } from "react-hook-form";
 import {
   Form,
@@ -20,50 +18,50 @@ import { Button } from "../ui/button";
 import { toast } from "sonner";
 import { loginFormSchema } from "@/types/zodTypes";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { usePageOverlay } from "@/context/PageOverlayContext";
 
 export default function LogInForm({
   setCurrentForm,
 }: {
   setCurrentForm: (form: string) => void;
 }) {
-  const [loading, setLoading] = useState<boolean>(false);
+  const [loading, loadingTransition] = useTransition();
   const [isPasswordVisible, setIsPasswordVisible] = useState<boolean>(false);
-  const swal = useMySwal();
 
-  const router = useRouter();
+  const { handleChangeRoute } = usePageOverlay();
+
   const form = useForm<User>({
     resolver: zodResolver(loginFormSchema)
   });
 
   async function onSubmit(userCredentials: User) {
-    setLoading(true);
+    loadingTransition(async () => {
+      const { data, error } = await supabase.auth.signInWithPassword(
+        userCredentials
+      );
 
-    const { data, error } = await supabase.auth.signInWithPassword(
-      userCredentials
-    );
-
-    if (error) {
-      if (error.code === "invalid_credentials") {
-        toast.error("Credenciais de login inválidas.", {
-          classNames: {
-            toast: '!bg-black !border-0',
-            title: '!text-snow'
-          },
-          position: 'top-center',
-          icon: <X className="text-red-500 text-lg" />
-        });
+      if (error) {
+        if (error.code === "invalid_credentials") {
+          toast.error("Credenciais de login inválidas.", {
+            classNames: {
+              toast: '!bg-black !border-0',
+              title: '!text-snow'
+            },
+            position: 'top-center',
+            icon: <X className="text-red-500 text-lg" />
+          });
+        } else {
+          toast.error("Houve um erro ao logar.", {
+            classNames: {
+              toast: '!bg-black !border-0',
+              title: '!text-snow'
+            },
+            position: 'top-center',
+            icon: <X className="text-red-500 text-lg" />
+          });
+        }
       } else {
-        toast.error("Houve um erro ao logar.", {
-          classNames: {
-            toast: '!bg-black !border-0',
-            title: '!text-snow'
-          },
-          position: 'top-center',
-          icon: <X className="text-red-500 text-lg" />
-        });
-      }
-    } else {
-      toast.success("Login realizado com sucesso.", {
+        toast.success("Login realizado com sucesso.", {
           classNames: {
             toast: '!bg-black !border-0',
             title: '!text-snow'
@@ -71,18 +69,18 @@ export default function LogInForm({
           position: 'top-center',
           icon: <Check className="text-emerald-500 text-lg" />
         });
-      setTimeout(() => {
-        toast.dismiss();
-        router.push(APP_ROUTES.private.home.name)
-      }, 2000);
-    }
+        setTimeout(() => {
+          toast.dismiss();
+          handleChangeRoute(APP_ROUTES.private.home.name);
+        }, 2000);
+      }
+    })
 
-    setLoading(false);
   }
 
   return (
     <div className="w-full h-full rounded-tr-3xl rounded-tl-3xl border border-gray-200 bg-white p-5 shadow-md">
-      
+
       <Form {...form}>
         <form
           onSubmit={form.handleSubmit(onSubmit)}
