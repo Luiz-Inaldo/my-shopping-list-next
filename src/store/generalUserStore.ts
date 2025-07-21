@@ -10,6 +10,9 @@ const useGeneralUserStore = create<TUserStoreProps>((set) => ({
     // profile supabase
     userProfile: null,
     setUserProfile: (userProfile: any) => set({ userProfile }),
+
+    // reset profile
+    resetProfile: () => set({ userProfile: null, user: null })
 }));
 
 export default useGeneralUserStore;

@@ -1,5 +1,5 @@
 'use client';
-import React, { useContext, useState } from 'react'
+import React, { useState } from 'react'
 import { ToastAction } from '../ui/toast';
 import {
     Dialog,
@@ -15,8 +15,8 @@ import { avatarImgUrls } from '@/constants/avatarImgUrl';
 import { Check, LoaderCircle } from 'lucide-react';
 import { toast } from '../ui/use-toast';
 import { supabase } from '@/lib/api';
-import { ProductsContext } from '@/context/ProductsContext';
 import useGeneralUserStore from '@/store/generalUserStore';
+import { Button } from '../ui/button';
 
 const ChangeAvatarModal = ({ children, currentAvatarUrl, refetch }: { 
     children?: React.ReactNode;
@@ -81,16 +81,16 @@ const ChangeAvatarModal = ({ children, currentAvatarUrl, refetch }: {
                                 height={50}
                                 className="rounded-full mx-auto"
                             />
-                            <div className={`${selectedAvatar === url ? 'opacity-100 visible' : 'opacity-0 invisible'} absolute -right-1.5 top-0 flex items-center justify-center size-5 rounded-full border-2 border-snow bg-dark-button-color text-snow`}>
+                            <div className={`${selectedAvatar === url ? 'opacity-100 visible' : 'opacity-0 invisible'} absolute -right-1.5 top-0 flex items-center justify-center size-5 rounded-full border-2 border-snow bg-default-green text-snow`}>
                                 <Check size={12} />
                             </div>
                         </div>
                     ))}
                 </div>
                 <DialogFooter>
-                    <button
+                    <Button
                         disabled={!selectedAvatar}
-                        className="bg-dark-button-color flex items-center justify-center py-2 px-4 rounded text-snow"
+                        className="text-snow"
                         onClick={changeAvatar}
                     >
                         {
@@ -98,7 +98,7 @@ const ChangeAvatarModal = ({ children, currentAvatarUrl, refetch }: {
                             ? <LoaderCircle size={16} className='animate-spin' />
                             : 'Alterar'
                         }
-                    </button>
+                    </Button>
                 </DialogFooter>
             </DialogContent>
         </Dialog>

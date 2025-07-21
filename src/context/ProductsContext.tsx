@@ -5,8 +5,8 @@ import { supabase } from "@/lib/api";
 import { IProductProps } from "@/types";
 import { IEditItemProps } from "@/types";
 import { ToastAction } from "@/components/ui/toast";
-import { useToast } from "@/components/ui/use-toast";
 import useGeneralUserStore from "@/store/generalUserStore";
+import { sendToastMessage } from "@/functions/sendToastMessage";
 
 export const ProductsContext = createContext<IProductsContextProps>({
     // user: {},
@@ -58,9 +58,6 @@ export const ProductsProvider = ({ children }: { children: React.ReactNode }) =>
     const [situation, setSituation] = useState<string>('good');
     const [currentPurchase, setCurrentPurchase] = useState<ISupabasePurchaseProps | null>(null);
 
-    /* ====> hooks <==== */
-    const { toast } = useToast();
-
     /* ====> functions <==== */
     async function fetchData() {
         setLoadingProducts(true);
@@ -90,7 +87,7 @@ export const ProductsProvider = ({ children }: { children: React.ReactNode }) =>
         let total: number = 0;
         const checkedItems = data?.filter(product => product.checked === true) || [];
         checkedItems.forEach(item => {
-            const parsedTotal = (parseFloat(item.value.replace(',', '.')) * item.quantity);
+            const parsedTotal = (parseFloat((item.value || '0').replace(',', '.')) * (item?.quantity ?? 0));
             total += parsedTotal;
         })
         setTotalValue(total.toFixed(2).replace('.', ','))
@@ -134,10 +131,7 @@ export const ProductsProvider = ({ children }: { children: React.ReactNode }) =>
         if (error) {
             console.log(error);
         } else {
-            toast({
-                description: "Produto alterado com sucesso.",
-                action: <ToastAction altText="Ok">Ok</ToastAction>
-            });
+            sendToastMessage({ title: "Produto atualizado com sucesso.", type: 'success' });
             setData((oldData) => {
                 return oldData!.map(product => {
                     if (product.id === itemID) {
@@ -160,10 +154,7 @@ export const ProductsProvider = ({ children }: { children: React.ReactNode }) =>
         if (error) {
             console.log(error);
         } else {
-            toast({
-                description: "Produto removido da sua lista de compras.",
-                action: <ToastAction altText="Ok">Ok</ToastAction>
-            });
+            sendToastMessage({ title: "Produto removido com sucesso.", type: 'success' });
             setData((oldData) => {
                 return oldData!.filter(item => item.id !== itemID);
             })
@@ -189,10 +180,7 @@ export const ProductsProvider = ({ children }: { children: React.ReactNode }) =>
         if (error) {
             console.log(error);
         } else {
-            toast({
-                description: "Produto marcado como adiquirido.",
-                action: <ToastAction altText="Ok">Ok</ToastAction>
-            });
+            sendToastMessage({ title: `${item.name} marcado como adquirido.`, type: 'success' });
             setData((oldData) => {
                 return oldData!.map(product => {
                     if (product.id === item.id) {

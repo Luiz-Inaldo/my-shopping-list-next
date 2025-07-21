@@ -6,6 +6,7 @@ import React, { useContext, useEffect, useState } from 'react'
 import { AddProductForm } from '../Forms/AddProductForm';
 import { APP_ROUTES } from '@/routes/app-routes';
 import { ProductsContext } from '@/context/ProductsContext';
+import { usePageOverlay } from '@/context/PageOverlayContext';
 
 const allowedRoutes = ["/", "/settings", "/historic", "/menu", '/statistics']
 
@@ -15,9 +16,11 @@ const Footer = () => {
     const { data, currentPurchase } = useContext(ProductsContext);
     const [isAllowed, setIsAllowed] = useState<boolean>(false);
 
+    const { handleChangeRoute } = usePageOverlay();
+
     useEffect(() => {
         if (pathname === "/") {
-            setIsAllowed((data && data.length > 0 || currentPurchase) ? true : false);
+            setIsAllowed(((data && data.length > 0) || currentPurchase) ? true : false);
         } else {
             if (allowedRoutes.includes(pathname)) {
                 setIsAllowed(true);
@@ -30,21 +33,35 @@ const Footer = () => {
 
     return (
         <>
-            {(isAllowed || data && data.length > 0) && (
+            {(isAllowed || (data && data.length > 0)) && (
                 <footer
                     style={{
                         boxShadow: "0 0 4px rgb(0 0 0 / 0.1)"
                     }}
-                    className='fixed bottom-0 left-0 z-[3] w-full bg-app-container py-2 px-4 flex items-center justify-center'>
-                    <ul className='flex flex-1 items-center justify-between'>
+                    className='fixed bottom-0 left-0 z-[3] w-full bg-app-container rounded-tr-2xl rounded-tl-2xl py-2 px-4 flex items-center justify-center'>
+                    <ul className='w-full gap-2 grid grid-cols-5 justify-center'>
                         <li>
-                            <Link href={APP_ROUTES.private.home.name} className={`grid gap-1 p-2 place-items-center border-b ${pathname === "/" ? "text-secondary-blue dark:text-title border-secondary-blue dark:border-title" : "text-subtitle border-transparent"}`}>
+                            <Link
+                                href="#"
+                                className={`grid gap-1 p-2 place-items-center border-b ${pathname === "/" ? "text-default-green dark:text-title border-default-green dark:border-title" : "text-subtitle border-transparent"}`}
+                                onClick={(e) => {
+                                    e.preventDefault()
+                                    handleChangeRoute(APP_ROUTES.private.home.name)
+                                }}
+                            >
                                 <House size={16} />
                                 <span className='text-xs'>Início</span>
                             </Link>
                         </li>
                         <li>
-                            <Link href={APP_ROUTES.private.historic.name} className={`grid gap-1 p-2 place-items-center border-b ${pathname === "/historic" ? "text-secondary-blue dark:text-title border-secondary-blue dark:border-title" : "text-subtitle border-transparent"}`}>
+                            <Link
+                                href="#"
+                                className={`grid gap-1 p-2 place-items-center border-b ${pathname === "/historic" ? "text-default-green dark:text-title border-default-green dark:border-title" : "text-subtitle border-transparent"}`}
+                                onClick={(e) => {
+                                    e.preventDefault()
+                                    handleChangeRoute(APP_ROUTES.private.historic.name)
+                                }}
+                            >
                                 <FileText size={16} />
                                 <span className='text-xs'>Histórico</span>
                             </Link>
@@ -53,20 +70,41 @@ const Footer = () => {
                             <AddProductForm />
                         ) : (
                             <li>
-                                <Link href={APP_ROUTES.private.settings.name} className={`grid gap-1 p-2 place-items-center border-b ${pathname === "/settings" ? "text-secondary-blue dark:text-title border-secondary-blue dark:border-title" : "text-subtitle border-transparent"}`}>
+                                <Link
+                                    href="#"
+                                    className={`grid gap-1 p-2 place-items-center border-b ${pathname === "/settings" ? "text-default-green dark:text-title border-default-green dark:border-title" : "text-subtitle border-transparent"}`}
+                                    onClick={(e) => {
+                                        e.preventDefault()
+                                        handleChangeRoute(APP_ROUTES.private.settings.name)
+                                    }}
+                                >
                                     <SlidersHorizontal size={16} />
                                     <span className='text-xs'>Ajustes</span>
                                 </Link>
                             </li>
                         )}
                         <li>
-                            <Link href={APP_ROUTES.private.statistics.name} className={`grid gap-1 p-2 place-items-center border-b ${pathname === "/statistics" ? "text-secondary-blue dark:text-title border-secondary-blue dark:border-title" : "text-subtitle border-transparent"}`}>
+                            <Link
+                                href="#"
+                                className={`grid gap-1 p-2 place-items-center border-b ${pathname === "/statistics" ? "text-default-green dark:text-title border-default-green dark:border-title" : "text-subtitle border-transparent"}`}
+                                onClick={(e) => {
+                                    e.preventDefault()
+                                    handleChangeRoute(APP_ROUTES.private.statistics.name)
+                                }}
+                            >
                                 <ChartSpline size={16} />
-                                <span className='text-xs'>Estatísticas</span>
+                                <span className='text-xs'>Gráficos</span>
                             </Link>
                         </li>
                         <li>
-                            <Link href={APP_ROUTES.private.menu.name} className={`grid gap-1 p-2 place-items-center border-b ${pathname === "/menu" ? "text-secondary-blue dark:text-title border-secondary-blue dark:border-title" : "text-subtitle border-transparent"}`}>
+                            <Link
+                                href="#"
+                                className={`grid gap-1 p-2 place-items-center border-b ${pathname === "/menu" ? "text-default-green dark:text-title border-default-green dark:border-title" : "text-subtitle border-transparent"}`}
+                                onClick={(e) => {
+                                    e.preventDefault()
+                                    handleChangeRoute(APP_ROUTES.private.menu.name)
+                                }}
+                            >
                                 <Menu size={16} />
                                 <span className='text-xs'>Mais</span>
                             </Link>

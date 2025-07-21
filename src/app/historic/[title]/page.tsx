@@ -36,8 +36,7 @@ export default function HistoricPage() {
       if (error) {
         console.error(error);
       } else {
-        setPurchase((prev) => {
-          return {
+        setPurchase({
             id: data.id,
             title: data.title,
             purchase_date: data.purchase_date,
@@ -47,7 +46,6 @@ export default function HistoricPage() {
                 : data.purchase_items,
             total_price: data.total_price,
             user_id: data.user_id,
-          };
         });
       }
     };
@@ -102,9 +100,9 @@ export default function HistoricPage() {
                     href={APP_ROUTES.private.historic.details.children(
                       decodedTitle
                     )}
-                    className="py-2 px-4 bg-secondary-blue text-snow flex items-center justify-center rounded-md w-full"
+                    className="py-2 px-4 bg-default-green text-snow text-sm flex items-center justify-center rounded-full w-full"
                   >
-                    GERAR CUPOM
+                    Gerar Cupom
                   </Link>
                 </div>
               </div>

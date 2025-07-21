@@ -1,7 +1,9 @@
 "use client";
+import { DeletePurchase } from '@/components/Forms/DeletePurchase';
 import Header from '@/components/Header';
 import LoggedLayout from '@/components/layout/MainLayout';
 import { Modal } from '@/components/Modal';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { MONTHS } from '@/constants/months';
 import { YEARS } from '@/constants/years';
 import { ProductsContext } from '@/context/ProductsContext';
@@ -40,14 +42,14 @@ export default function Historic() {
         setPurchase(purchase);
     }, [setModal])
 
-    const handleFilterPurchases = (e: React.ChangeEvent<HTMLSelectElement>, type: string) => {
+    const handleFilterPurchases = (value: string, type: string) => {
 
-        if (e.target.value === "todos") {
-            setFilterStates((prev) => ({ ...prev, [type]: e.target.value }));
+        if (value === "todos") {
+            setFilterStates((prev) => ({ ...prev, [type]: value }));
         } else {
             setFilterStates(prev => ({
                 ...prev,
-                [type]: parseInt(e.target.value)
+                [type]: parseInt(value)
             }));
         }
 
@@ -76,32 +78,36 @@ export default function Historic() {
 
               <label className="relative flex-1 col-span-1">
                 <span className="text-subtitle">Mês</span>
-                <select
-                  onChange={(e) => handleFilterPurchases(e, "month")}
-                  className="w-full placeholder:text-paragraph text-paragraph bg-app-container dark:bg-app-background border border-border rounded-sm px-3 py-2"
-                >
-                  <option value="todos">Todos os meses</option>
-                  {MONTHS.map((month, index) => (
-                    <option key={month} value={index}>
-                      {month}
-                    </option>
-                  ))}
-                </select>
+                <Select onValueChange={(value) => handleFilterPurchases(value, "month")}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Todos os meses" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="todos">Todos os meses</SelectItem>
+                    {MONTHS.map((month, index) => (
+                      <SelectItem key={month} value={String(index)}>
+                        {month}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
               </label>
 
               <label className="relative flex-1 col-span-1">
                 <span className="text-subtitle">Ano</span>
-                <select
-                  onChange={(e) => handleFilterPurchases(e, "year")}
-                  className="w-full placeholder:text-paragraph text-paragraph bg-app-container dark:bg-app-background border border-border rounded-sm px-3 py-2"
-                >
-                  <option value="todos">Todos os anos</option>
-                  {YEARS.map((year) => (
-                    <option key={year} value={year}>
-                      {year}
-                    </option>
-                  ))}
-                </select>
+                <Select onValueChange={(value) => handleFilterPurchases(value, "year")}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Todos os anos" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="todos">Todos os anos</SelectItem>
+                    {YEARS.map((year) => (
+                      <SelectItem key={year} value={String(year)}>
+                        {year}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
               </label>
             </div>
 
@@ -134,17 +140,12 @@ export default function Historic() {
                       >
                         <div className="flex items-center gap-2">
                           <div className="flex items-center gap-2 flex-1">
-                            <div className="rounded-full bg-link w-2 h-2"></div>
+                            <div className="rounded-full bg-action w-2 h-2"></div>
                             <h2 className="text-subtitle">
                               {purchase.title}
                             </h2>
                           </div>
-                          <div className="flex items-center justify-center cursor-pointer text-red-400 dark:text-red-500">
-                            <Trash2
-                              onClick={() => handleOpenModal(purchase)}
-                              size={16}
-                            />
-                          </div>
+                          <DeletePurchase purchase={purchase} />
                         </div>
                         <div className="flex flex-col gap-4">
                           <div className="flex items-center justify-between">
@@ -164,7 +165,7 @@ export default function Historic() {
                               href={APP_ROUTES.private.historic.details.name(
                                 purchase.title
                               )}
-                              className="flex items-center gap-1 font-medium text-sm text-link"
+                              className="w-fit ml-auto py-0.5 px-2 bg-default-green rounded-full flex items-center gap-1 font-medium text-xs text-snow"
                             >
                               ver detalhes
                             </Link>
@@ -178,9 +179,9 @@ export default function Historic() {
             )}
           </div>
         </div>
-        <Suspense fallback={null}>
+        {/* <Suspense fallback={null}>
           <Modal item={purchase} />
-        </Suspense>
+        </Suspense> */}
       </LoggedLayout>
     );
 }

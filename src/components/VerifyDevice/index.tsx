@@ -1,14 +1,11 @@
 "use client";
-import { APP_ROUTES } from '@/routes/app-routes';
-import { useRouter } from 'next/navigation';
 import React from 'react'
 import GlobalLoader from '../GlobalLoader';
-import { useTheme } from '@/hooks/useTheme';
+import DeviceErrorComponent from '../DeviceError';
 
 const VerifyDevice = ({ children }: { children: React.ReactNode }) => {
 
     const [isMobile, setIsMobile] = React.useState<boolean | null>(null);
-    const router = useRouter();
 
     React.useEffect(() => {
         const deviceWidth = window.innerWidth;
@@ -26,7 +23,9 @@ const VerifyDevice = ({ children }: { children: React.ReactNode }) => {
     }
 
     if (isMobile === false) {
-        router.push(APP_ROUTES.public.errorDevice.name)
+        return (
+            <DeviceErrorComponent />
+        )
     }
 
     return (

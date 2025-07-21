@@ -1,72 +1,83 @@
-import { ProductsContext } from '@/context/ProductsContext';
-import { IEditItemProps } from '@/types';
-import { IProductProps } from '@/types';
-import React, { useContext, useEffect, useState } from 'react'
-import { Controller, useForm } from 'react-hook-form';
+import { ProductsContext } from "@/context/ProductsContext";
+import { IEditItemProps } from "@/types";
+import { IProductProps } from "@/types";
+import { Dialog } from "@radix-ui/react-dialog";
+import React, { useContext, useEffect, useState } from "react";
+import { Controller, useForm } from "react-hook-form";
+import {
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "../ui/dialog";
 
-export const CheckItemForm = ({ item }: { item: IProductProps | undefined }) => {
+export const CheckItemForm = ({
+  item,
+}: {
+  item: IProductProps | undefined;
+}) => {
+  const {
+    register,
+    control,
+    formState: { errors },
+    handleSubmit,
+  } = useForm<IEditItemProps>();
 
-    const {
-        register,
-        control,
-        formState: { errors },
-        handleSubmit
-    } = useForm<IEditItemProps>();
+  const { handleCheckItem } = useContext(ProductsContext);
+  const [open, setOpen] = useState(false);
 
-    const { modal, setModal, handleCheckItem } = useContext(ProductsContext);
-    const [isVisible, setIsVisible] = useState<boolean>(false);
-    const [isFading, setIsFading] = useState<boolean>(false);
+  async function onSubmit(data: IEditItemProps) {
+    handleCheckItem(item!, data);
+  }
 
-    async function onSubmit(data: IEditItemProps) {
-        handleCheckItem(item!, data);
-    }
-
-    useEffect(() => {
-        if (modal.type === 'CHECK_PRODUCT') {
-            setIsVisible(true);
-            const timer = setTimeout(() => { setIsFading(true) }, 100);
-            return () => clearTimeout(timer);
-        } else {
-            setIsFading(false);
-            const timer = setTimeout(() => setIsVisible(false), 500);
-            return () => clearTimeout(timer);
-        }
-    }, [modal])
-
-    return (
-        <React.Fragment>
-            {isVisible && (
-                <div className={`${isFading ? 'opacity-100 visible' : 'opacity-0 invisible'} w-[350px] rounded bg-secondary-dark border border-paragraphdark/30 transition-all duration-500`}>
-                    <form onSubmit={handleSubmit(onSubmit)} className='flex flex-col gap-3 p-5'>
-                        <h1 className='text-subtitledark text-xl text-center'>Quanto você pagará por esse produto?</h1>
-                        <label htmlFor="value" className='flex flex-col'>
-                            <input
-                                defaultValue={item?.value}
-                                type="text"
-                                {...register('value', { required: true })}
-                                placeholder="R$: 0,00"
-                                className='w-full text-slate-900 rounded border border-gray-400 px-3 py-2 h-8 text-ellipsis overflow-hidden whitespace-nowrap'
-                            />
-                        </label>
-                        <div className='grid grid-cols-2 gap-2 mt-5'>
-                            <button
-                                type='submit'
-                                className='col-span-1 flex items-center justify-center w-full bg-primary-blue py-2 px-3 rounded text-titledark'>
-                                Marcar Produto
-                            </button>
-                            <button
-                                type='button'
-                                onClick={() => setModal({
-                                    state: 'CLOSED',
-                                    type: null
-                                })}
-                                className='col-span-1 flex items-center justify-center w-full border border-title py-2 px-3 rounded text-titledark'>
-                                Cancelar
-                            </button>
-                        </div>
-                    </form>
-                </div>
-            )}
-        </React.Fragment>
-    )
-}
+  return (
+    <Dialog open={open} onOpenChange={setOpen}>
+      <DialogTrigger asChild>
+        <input
+          type="checkbox"
+          checked={item?.checked}
+          id={item?.name}
+          className="w-4 h-4 accent-primary-blue border-2 border-paragraph rounded"
+        />
+      </DialogTrigger>
+      <DialogContent
+        className="max-w-[400px]"
+        onClick={(e) => e.stopPropagation()}
+      >
+        <DialogHeader>
+          <DialogTitle className="text-center text-subtitle font-semibold">
+            Quanto você pagará por esse produto?
+          </DialogTitle>
+        </DialogHeader>
+        <DialogDescription hidden />
+        <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-3 p-5">
+          <label htmlFor="value" className="flex flex-col">
+            <input
+              defaultValue={item?.value}
+              type="text"
+              {...register("value", { required: true })}
+              placeholder="R$: 0,00"
+              className="w-full text-subtitle rounded border border-border px-3 py-2 h-8 text-ellipsis overflow-hidden whitespace-nowrap"
+            />
+          </label>
+          <div className="grid grid-cols-2 gap-2 mt-5">
+            <button
+              type="submit"
+              className="col-span-1 flex items-center justify-center w-full bg-secondary-blue py-2 px-3 rounded text-snow"
+            >
+              Marcar Produto
+            </button>
+            <button
+              type="button"
+              onClick={() => setOpen(false)}
+              className="col-span-1 flex items-center justify-center w-full border border-subtitle py-2 px-3 rounded text-subtitle"
+            >
+              Cancelar
+            </button>
+          </div>
+        </form>
+      </DialogContent>
+    </Dialog>
+  );
+};

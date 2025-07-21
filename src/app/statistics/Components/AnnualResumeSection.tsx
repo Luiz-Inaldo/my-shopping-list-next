@@ -1,4 +1,5 @@
 import { AnnualStatisticsChart } from '@/components/Charts/AnnualStatisticsChart';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { YEARS } from '@/constants/years';
 import { PurchasesContext } from '@/context/PurchasesContext';
 import { IPurchaseProps } from '@/types';
@@ -14,13 +15,13 @@ const AnnualResumeSection = () => {
         year: new Date().getFullYear(),
         dataType: 'percentual'
     });
+    const [filterLock, setFilterLock] = useState(true);
 
-    const filterLock = useRef(true);
 
     // functions
     const filterPurchases = useCallback(async (filter: AnnualFilterProps) => {
 
-        const year = filter.year as number;
+        const year = Number(filter.year);
 
         const filteredData = purchasesList.filter(purchase =>
             purchase.purchase_date.split("T")[0].split("-")[0] === year.toString()
@@ -31,16 +32,17 @@ const AnnualResumeSection = () => {
     }, [filterStates.year, purchasesList])
 
     useEffect(() => {
-        if (!filterLock.current) {
+        if (!filterLock) {
             filterPurchases(filterStates);
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [filterStates, filterLock.current]);
+    }, [filterStates, filterLock]);
 
     useEffect(() => {
-        if (purchasesList.length > 0 && filterLock.current) {
-            filterLock.current = false;
+        if (purchasesList.length > 0 && filterLock) {
+            setFilterLock(false);
         }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [purchasesList]);
 
     return (
@@ -52,31 +54,41 @@ const AnnualResumeSection = () => {
                     <div className="flex flex-col justify-center gap-3">
                         <div className="flex items-center gap-3">
                             <p className="text-subtitle">Ano:</p>
-                            <select
-                                value={filterStates.year}
-                                onChange={(e) => {
-                                    setFilterStates((prev) => ({ ...prev, year: Number(e.target.value) }))
+                            <Select
+                                defaultValue={filterStates.year.toString()}
+                                onValueChange={(value) => {
+                                    setFilterStates((prev) => ({ ...prev, year: Number(value) }))
                                 }}
-                                className='max-w-25 placeholder:text-paragraph text-paragraph bg-app-container dark:bg-app-background border rounded-sm px-3 py-2'
                             >
-                                {YEARS.map((year) => (
-                                    <option key={year} value={year}>{year}</option>
-                                ))}
-                            </select>
+                                <SelectTrigger className="w-[100px]">
+                                    <SelectValue placeholder="Ano" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    {YEARS.map((year) => (
+                                        <SelectItem key={year} value={String(year)}>
+                                            {year}
+                                        </SelectItem>
+                                    ))}
+                                </SelectContent>
+                            </Select>
                         </div>
                         <hr className='border-border'/>
                         <div className="flex flex-1 items-center gap-3">
                             <p className="text-subtitle">Tipo de visualização:</p>
-                            <select
-                                value={filterStates.dataType}
-                                onChange={(e) => {
-                                    setFilterStates((prev) => ({ ...prev, dataType: e.target.value as AnnualFilterProps['dataType'] }))
+                            <Select
+                                defaultValue={filterStates.dataType}
+                                onValueChange={(value) => {
+                                    setFilterStates((prev) => ({ ...prev, dataType: value as AnnualFilterProps['dataType'] }))
                                 }}
-                                className='max-w-25 placeholder:text-paragraph text-paragraph bg-app-container dark:bg-app-background border rounded-sm px-3 py-2'
                             >
-                                <option value="percentual">Porcentagem</option>
-                                <option value="value">Valor</option>
-                            </select>
+                                <SelectTrigger className="w-[180px]">
+                                    <SelectValue placeholder="Tipo de visualização" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    <SelectItem value="percentual">Porcentagem</SelectItem>
+                                    <SelectItem value="value">Valor</SelectItem>
+                                </SelectContent>
+                            </Select>
                         </div>
                     </div>
                 </div>
@@ -84,7 +96,7 @@ const AnnualResumeSection = () => {
             <AnnualStatisticsChart
                 title={filterStates.dataType === 'percentual' ? 'Resumo por Categoria (%)' : 'Resumo por Categoria (R$)'}
                 dataType={filterStates.dataType}
-                data={filterLock.current ? [] : data}
+                data={filterLock ? [] : data}
             />
         </section>
     )

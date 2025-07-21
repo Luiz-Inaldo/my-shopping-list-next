@@ -8,6 +8,7 @@ import { ChevronRight, FileCheck } from 'lucide-react';
 import Link from 'next/link';
 import { useParams } from 'next/navigation';
 import React, { useEffect, useRef, useState } from 'react';
+import { Button } from '@/components/ui/button';
 
 export default function CouponDetails() {
     const params = useParams();
@@ -138,18 +139,18 @@ export default function CouponDetails() {
                                 {
                                     Array.isArray(purchase.purchase_items) && (
                                         purchase.purchase_items.sort((a, b) => a.name.localeCompare(b.name)).map((item: IProductProps, index: number) => (
-                                            <div key={item.id} className='flex uppercase text-[10px] text-subtitle'>
-                                                <div className='flex-1 flex items-center p-[2px] max-w-[215px] text-ellipsis overflow-hidden whitespace-nowrap'>
+                                            <div key={item.id} className='flex items-start uppercase text-[10px] text-subtitle'>
+                                                <div className='flex-1 flex items-center p-[2px] max-w-[215px]'>
                                                     {`${index + 1} - ${item.name}`}
                                                 </div>
                                                 <div className='flex items-center p-[2px] basis-9 justify-end'>
                                                     {item.quantity}
                                                 </div>
                                                 <div className='flex items-center p-[2px] basis-11 justify-end'>
-                                                    {item.value.replace(".", ",") || "0,00"}
+                                                    {(item.value || "0,00").replace(".", ",")}
                                                 </div>
                                                 <div className='flex items-center p-[2px] basis-[50px] justify-end'>
-                                                    {formatNumber(item.value, item.quantity)}
+                                                    {formatNumber(item.value || "0", item.quantity || 0)}
                                                 </div>
                                             </div>
                                         ))
@@ -170,12 +171,12 @@ export default function CouponDetails() {
                             </p>
                         </div>
 
-                        <button
+                        <Button
                             onClick={generatePDF}
-                            className='mb-2 bg-secondary-blue rounded-full px-3 py-2 flex gap-2 items-center justify-center cursor-pointer shadow-md transition-all duration-300 ease-in-out text-snow'>
+                            className='mb-2 cursor-pointer shadow-md transition-all duration-300 ease-in-out'>
                             <FileCheck size={20} />
                             salvar como PDF
-                        </button>
+                        </Button>
 
                     </React.Fragment>
                 ) : (
