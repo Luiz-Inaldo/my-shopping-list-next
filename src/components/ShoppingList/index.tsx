@@ -14,9 +14,7 @@ import {
   Check,
   ChevronDown,
   ChevronUp,
-  EllipsisVertical,
   Info,
-  Search,
   ShoppingBagIcon,
   X,
 } from "lucide-react";
@@ -24,8 +22,6 @@ import formatNumber from "@/functions/formatNumber";
 import CategoryWrapper from "../Category";
 import { formatCurrency } from "@/functions/formatCurrency";
 import { supabase } from "@/lib/api";
-import { useRouter } from "next/navigation";
-import { APP_ROUTES } from "@/routes/app-routes";
 import { sleep } from "@/functions/sleep";
 import { Fade } from "react-awesome-reveal";
 import useGeneralUserStore from "@/store/generalUserStore";
@@ -36,7 +32,13 @@ import { Checkbox } from "../ui/Custom/Checkbox";
 import { Button } from "../ui/button";
 import { sendToastMessage } from "@/functions/sendToastMessage";
 
-const ShoppingList = ({ listname }: { listname: string | undefined }) => {
+const ShoppingList = ({ listname, showConcludedDisplay, setShowConcludedDisplay }: 
+  { 
+    listname: string | undefined,
+    showConcludedDisplay: boolean,
+    setShowConcludedDisplay: React.Dispatch<React.SetStateAction<boolean>>
+   }
+) => {
   const user = useGeneralUserStore((store) => store.user);
 
   const {
@@ -52,14 +54,6 @@ const ShoppingList = ({ listname }: { listname: string | undefined }) => {
     deleteAllItems,
     deleteCurrentPurchase,
   } = useContext(ProductsContext);
-  const [item, setItem] = useState<IProductProps>({
-    id: "",
-    name: "",
-    category: "",
-    quantity: 0,
-    value: "",
-    checked: false,
-  });
   const [showPurchaseInfo, setShowPurchaseInfo] = useState<boolean>(true);
   const [savingPurchase, setSavingPurchase] = useState<{
     status: "idle" | "saving" | "success" | "error";
@@ -68,8 +62,6 @@ const ShoppingList = ({ listname }: { listname: string | undefined }) => {
     status: "idle",
     progress: 0,
   });
-
-  const router = useRouter();
 
   /* ----> refs <----- */
   const dropDownRef = useRef<any>(null);
@@ -134,7 +126,7 @@ const ShoppingList = ({ listname }: { listname: string | undefined }) => {
           await sleep(1.5);
 
           deleteAllItems();
-          router.push(APP_ROUTES.private.purchase_saved.name(purchase.title)); // redireciona para outra página
+          setShowConcludedDisplay(true); // vai mostrar página de conclusão
           deleteCurrentPurchase();
         }
       } catch (error) {
@@ -177,9 +169,8 @@ const ShoppingList = ({ listname }: { listname: string | undefined }) => {
       <Fade triggerOnce>
         <div className="rounded-lg bg-app-container border border-border p-2 shadow-lg">
           <div
-            className={`flex items-center justify-between gap-2 text-subtitle ${
-              showPurchaseInfo && "mb-3"
-            } transition-all duration-500`}
+            className={`flex items-center justify-between gap-2 text-subtitle ${showPurchaseInfo && "mb-3"
+              } transition-all duration-500`}
           >
             <div className="flex gap-2 items-center">
               <Info size={16} />
@@ -199,9 +190,8 @@ const ShoppingList = ({ listname }: { listname: string | undefined }) => {
           </div>
 
           <div
-            className={`${
-              showPurchaseInfo ? "max-h-[1000px]" : "max-h-0"
-            } transition-all duration-500 overflow-hidden grid gap-5`}
+            className={`${showPurchaseInfo ? "max-h-[1000px]" : "max-h-0"
+              } transition-all duration-500 overflow-hidden grid gap-5`}
           >
             <ul className={`flex flex-col gap-1`}>
               <li className="col-span-2 flex gap-2 items-center justify-between text-sm">
@@ -228,11 +218,9 @@ const ShoppingList = ({ listname }: { listname: string | undefined }) => {
               <li className="col-span-2 flex gap-2 items-center text-sm">
                 <h3 className="flex-1 text-subtitle">Situação: </h3>
                 <span
-                  className={`py-0.5 px-2.5 text-sm rounded-full text-black ${
-                    situation === "good" && "bg-green-300"
-                  } ${situation === "normal" && "bg-yellow-400"} ${
-                    situation === "bad" && "bg-red-400"
-                  }`}
+                  className={`py-0.5 px-2.5 text-sm rounded-full text-black ${situation === "good" && "bg-green-300"
+                    } ${situation === "normal" && "bg-yellow-400"} ${situation === "bad" && "bg-red-400"
+                    }`}
                 >
                   {situation === "good" && "Boa"}
                   {situation === "normal" && "Atenção ao valor total"}
@@ -353,9 +341,8 @@ const ShoppingList = ({ listname }: { listname: string | undefined }) => {
                       <ChevronDown
                         size={20}
                         onClick={handleClick}
-                        className={`${
-                          open ? "rotate-180" : "rotate-0"
-                        } transition-transform duration-200 cursor-pointer`}
+                        className={`${open ? "rotate-180" : "rotate-0"
+                          } transition-transform duration-200 cursor-pointer`}
                       />
                     </div>
 
@@ -367,9 +354,8 @@ const ShoppingList = ({ listname }: { listname: string | undefined }) => {
                     ) : (
                       <>
                         <div
-                          className={`${
-                            open ? "max-h-[10000px]" : "max-h-0"
-                          } bg-app-container grid overflow-hidden transition-all duration-500`}
+                          className={`${open ? "max-h-[10000px]" : "max-h-0"
+                            } bg-app-container grid overflow-hidden transition-all duration-500`}
                         >
                           {ordenedProducts.length > 0 ? (
                             <React.Fragment>
@@ -385,7 +371,7 @@ const ShoppingList = ({ listname }: { listname: string | undefined }) => {
                                       <div className="flex-1 flex items-center gap-2">
                                         <>
                                           {!item.checked &&
-                                          item.value === "0,00" ? (
+                                            item.value === "0,00" ? (
                                             <CheckItemForm item={item} />
                                           ) : (
                                             <Checkbox checked={item.checked} onChange={() => handleItemCheckbox(item)} />
@@ -393,10 +379,9 @@ const ShoppingList = ({ listname }: { listname: string | undefined }) => {
                                         </>
                                         <label
                                           htmlFor={item.name}
-                                          className={`max-w-60 text-ellipsis overflow-hidden whitespace-nowrap ${
-                                            item.checked &&
+                                          className={`max-w-60 text-ellipsis overflow-hidden whitespace-nowrap ${item.checked &&
                                             "line-through italic"
-                                          }`}
+                                            }`}
                                         >
                                           {item.name}
                                         </label>
@@ -436,10 +421,6 @@ const ShoppingList = ({ listname }: { listname: string | undefined }) => {
           </Fade>
         );
       })}
-      {/* end category list */}
-      <Suspense fallback={null}>
-        <Modal item={item} />
-      </Suspense>
     </>
   );
 };

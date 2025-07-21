@@ -3,6 +3,7 @@ import Footer from "@/components/Footer";
 import Header from "@/components/Header";
 import LoggedLayout from "@/components/layout/MainLayout";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { usePageOverlay } from "@/context/PageOverlayContext";
 import { sendToastMessage } from "@/functions/sendToastMessage";
 import useMySwal from "@/hooks/useMySwal";
 import { supabase } from "@/lib/api";
@@ -11,7 +12,6 @@ import useGeneralUserStore from "@/store/generalUserStore";
 import { Blocks, LogOut } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 
 export default function Menu() {
@@ -19,7 +19,7 @@ export default function Menu() {
   const userProfile = useGeneralUserStore((store) => store.userProfile);
   const resetProfile = useGeneralUserStore((store) => store.resetProfile);
 
-  const router = useRouter();
+  const {handleChangeRoute} = usePageOverlay();
 
   async function logout() {
     const { error } = await supabase.auth.signOut();
@@ -31,7 +31,7 @@ export default function Menu() {
       resetProfile();
       setTimeout(() => {
         toast.dismiss();
-        router.push(APP_ROUTES.public.auth.name)
+        handleChangeRoute(APP_ROUTES.public.auth.name);
       }, 3000);
     }
   }
@@ -58,7 +58,7 @@ export default function Menu() {
               </p>
               <Link
                 href={APP_ROUTES.private.settings.name}
-                className="text-xs text-link underline"
+                className="text-xs text-snow underline"
               >
                 Acessar o perfil
               </Link>
