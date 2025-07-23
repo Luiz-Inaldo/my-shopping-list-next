@@ -71,12 +71,12 @@ export default function AuthPage() {
               duration: 0.5,
               delay: currentForm === "login" ? 0 : 0.6,
             }}
-            initial={{ y: "100%" }}
+            initial={{ y: "50%" }}
             animate={{ y: "0%" }}
-            exit={{ y: "100%" }}
+            exit={{ y: "50%" }}
             style={{
               width: "100%",
-              minHeight: "450px",
+              minHeight: "900px",
             }}
           >
             <LogInForm setCurrentForm={setCurrentForm} />
@@ -89,12 +89,12 @@ export default function AuthPage() {
               duration: 0.5,
               delay: currentForm === "register" ? 0 : 0.6,
             }}
-            initial={{ y: "100%" }}
+            initial={{ y: "50%" }}
             animate={{ y: "0%" }}
-            exit={{ y: "100%" }}
+            exit={{ y: "50%" }}
             style={{
               width: "100%",
-              minHeight: "450px",
+              minHeight: "900px",
             }}
           >
             <RegisterForm />

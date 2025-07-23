@@ -24,10 +24,9 @@ import { sendToastMessage } from "@/functions/sendToastMessage";
 export const AddProductForm = () => {
   const user = useGeneralUserStore((store) => store.user);
 
-  const { fetchData } = useContext(ProductsContext);
+  const { setData } = useContext(ProductsContext);
   const {
     register,
-    watch,
     control,
     formState: { errors },
     reset,
@@ -37,6 +36,7 @@ export const AddProductForm = () => {
   // funções
   async function onSubmit(data: IFormItem) {
     const item = {
+      id: crypto.randomUUID(),
       ...data,
       user_id: user?.id,
     };
@@ -58,7 +58,9 @@ export const AddProductForm = () => {
           type: "success"
         });
 
-        fetchData();
+        // atualiza estado de produtos após atualizar banco
+        setData(previous => [...previous!, item]);
+        // fetchData();
       }
 
       reset()
