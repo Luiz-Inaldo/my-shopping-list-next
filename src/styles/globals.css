@@ -98,7 +98,7 @@
     @apply border-border;
   }
   body {
-    @apply bg-app-background font-medium;
+    @apply bg-app-background;
   }
   .logo {
     @apply font-cherryBomb;
@@ -106,15 +106,16 @@
 }
 
 .container {
+  position: relative;
   display: flex;
   flex-direction: column;
-  gap: 2.5rem;
-  justify-content: space-between;
-  min-width: 375px;
+  gap: 20px;
+  /* justify-content: space-between; */
+  min-width: 325px;
   max-width: 430px;
-  min-height: 100dvh;
+  /* min-height: 100dvh; */
   margin: 0 auto;
-  padding: 0;
+  padding: 16px 16px 92px 16px;
 }
 
 /* independent styles */

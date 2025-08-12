@@ -1,6 +1,7 @@
 "use client";
+import ReactDOM from 'react-dom';
 import { Dialog } from '@radix-ui/react-dialog'
-import React, { useContext, useTransition } from 'react'
+import React, { useContext, useState, useTransition } from 'react'
 import { DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '../ui/dialog'
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from '../ui/form'
 import { useForm } from 'react-hook-form'
@@ -11,15 +12,31 @@ import useGeneralUserStore from '@/store/generalUserStore'
 import { ProductsContext } from '@/context/ProductsContext'
 import { Button } from '../ui/button';
 import { Input } from '../ui/input';
-import { Check, LoaderCircle } from 'lucide-react';
+import { Check, LoaderCircle, Plus } from 'lucide-react';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { createListSchema } from '@/types/zodTypes';
+import { sendToastMessage } from '@/functions/sendToastMessage';
+import { motion } from 'motion/react';
 
-const NewListForm = ({ children }: { children: React.ReactNode }) => {
+const addButtonVariants = {
+    initial: {
+        opacity: 0
+    },
+    animate: {
+        opacity: 1
+    },
+    transition: {
+        duration: 0.5,
+        delay: 1
+    }
+} as const;
+
+const NewListForm = () => {
 
     const user = useGeneralUserStore(store => store.user);
     const [isSettingPurchase, setPurchaseTransition] = useTransition();
-    const { fetchPurchaseData } = useContext(ProductsContext);
+
+    const [open, setOpen] = useState(false);
 
     const form = useForm<NewListProps>({
         resolver: zodResolver(createListSchema)
@@ -30,9 +47,13 @@ const NewListForm = ({ children }: { children: React.ReactNode }) => {
         setPurchaseTransition(async () => {
             await sleep(2);
 
-            const { error } = await supabase.from("active_purchases").insert([{
-                list_name: listData.list_name,
-                list_max_value: listData.list_max_value,
+            const { error } = await supabase.from("purchases").insert([{
+                title: listData.list_name,
+                purchase_items: JSON.stringify([]),
+                items_count: 0,
+                purchase_date: new Date(),
+                total_price: "0,00",
+                max_value: parseFloat(listData.list_max_value.replace(',', '.')),
                 user_id: user?.id
             }]);
 
@@ -40,14 +61,29 @@ const NewListForm = ({ children }: { children: React.ReactNode }) => {
                 console.error(error);
             }
 
-            fetchPurchaseData();
+            // fetchPurchaseData();
+            sendToastMessage({
+                title: "Lista criada com sucesso!",
+                type: "success"
+            });
+            setOpen(false);
         })
     }
 
-    return (
-        <Dialog>
+    return ReactDOM.createPortal(
+        <Dialog open={open} onOpenChange={setOpen}>
             <DialogTrigger asChild>
-                {children}
+                <motion.div
+                    variants={addButtonVariants}
+                    initial="initial"
+                    animate="animate"
+                    transition={addButtonVariants.transition}
+                >
+                    <Button size="sm" className='fixed bottom-[80px] right-2.5 py-1.5 h-fit'>
+                        <Plus size={16} />
+                        <span>Nova lista</span>
+                    </Button>
+                </motion.div>
             </DialogTrigger>
             <DialogContent className="max-w-[400px]" onClick={(e) => e.stopPropagation()}>
                 <DialogHeader>
@@ -114,7 +150,7 @@ const NewListForm = ({ children }: { children: React.ReactNode }) => {
                     </form>
                 </Form>
             </DialogContent >
-        </Dialog >
+        </Dialog >, document.body
     )
 }
 
