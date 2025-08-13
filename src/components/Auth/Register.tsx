@@ -8,10 +8,8 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { RegisterProps } from '@/interfaces/user';
-import { supabase } from '@/lib/api';
 import { Check, Eye, EyeOff, LoaderCircle, X } from 'lucide-react';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import React, { useState } from 'react'
 import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
@@ -19,53 +17,33 @@ import { Input } from '../ui/input';
 import { Button } from '../ui/button';
 import { registerFormSchema } from '@/types/zodTypes';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { IRegisterUser } from '@/interfaces/user';
 
 export default function RegisterForm() {
 
   const [loading, setLoading] = useState<boolean>(false);
   const [isPasswordVisible, setIsPasswordVisible] = useState<boolean>(false);
   const [isConfirmPasswordVisible, setIsConfirmPasswordVisible] = useState<boolean>(false);
-  const swal = useMySwal();
+  const searchParams = useSearchParams();
 
-  const router = useRouter();
-  const form = useForm<RegisterProps>({
+  const form = useForm<IRegisterUser>({
     resolver: zodResolver(registerFormSchema)
   });
 
-  async function onSubmit(userCredentials: RegisterProps) {
+  async function onSubmit(userCredentials: IRegisterUser) {
 
     setLoading(true);
 
-    const { data, error: signUpError } = await supabase.auth.signUp({
-      email: userCredentials.email,
-      password: userCredentials.password,
+    const res = await fetch(`/api/auth/signup${searchParams.get('adminregister') ? '?admin=true' : ''}`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(userCredentials)
     });
 
-    const { error: profileError } = await supabase.from('profiles').insert({
-      email: userCredentials.email,
-      user_name: userCredentials.username,
-      profile_img: ''
-    });
-
-    if (signUpError) {
-      toast.error("Houve algum problema ao cadastrar o usuário", {
-        classNames: {
-          toast: '!bg-black !border-0',
-          title: '!text-snow'
-        },
-        position: 'top-center',
-        icon: <X className="text-red-500 text-lg" />
-      });
-    } else if (profileError) {
-      toast.error("O usuário foi cadastrado e você receberá um e-mail, porém houve algum problema ao criar o perfil. Contate o administrador.", {
-        classNames: {
-          toast: '!bg-black !border-0',
-          title: '!text-snow'
-        },
-        position: 'top-center',
-        icon: <X className="text-red-500 text-lg" />
-      });
-    } else {
+    // If success
+    if (res.status === 201) {
       toast.error("Cadastro realizado com sucesso. Voce receberá um e-mail para confirmar seu cadastro", {
         classNames: {
           toast: '!bg-black !border-0',
@@ -75,8 +53,38 @@ export default function RegisterForm() {
         icon: <Check className="text-emerald-500 text-lg" />
       });
       form.reset();
+      return;
+    } 
+    
+    // Error handling
+    if (res.statusText === "auth/email-already-in-use") {
+      toast.error("O E-mail informado já está em uso", {
+        classNames: {
+          toast: '!bg-black !border-0',
+          title: '!text-snow'
+        },
+        position: 'top-center',
+        icon: <X className="text-red-500 text-lg" />
+      });
+    } else if (res.statusText === "auth/invalid-email") {
+      toast.error("O E-mail informado é inválido", {
+        classNames: {
+          toast: '!bg-black !border-0',
+          title: '!text-snow'
+        },
+        position: 'top-center',
+        icon: <X className="text-red-500 text-lg" />
+      });
+    } else {
+      toast.error("Ocorreu um erro ao realizar o cadastro", {
+        classNames: {
+          toast: '!bg-black !border-0',
+          title: '!text-snow'
+        },
+        position: 'top-center',
+        icon: <X className="text-red-500 text-lg" />
+      });
     }
-
     setLoading(false);
 
   };
