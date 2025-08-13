@@ -1,5 +1,7 @@
+import { auth } from '@/lib/firebase';
 import { TSupabaseUserInfo } from '@/types/supabase';
 import { TUserStoreProps } from '@/types/userStore';
+import { onAuthStateChanged } from 'firebase/auth';
 import {create} from 'zustand';
 
 const useGeneralUserStore = create<TUserStoreProps>((set) => ({
@@ -14,5 +16,13 @@ const useGeneralUserStore = create<TUserStoreProps>((set) => ({
     // reset profile
     resetProfile: () => set({ userProfile: null, user: null })
 }));
+
+onAuthStateChanged(auth, (user) => {
+  if (user) {
+    console.log("Usuário logado:", user.uid);
+  } else {
+    console.log("Usuário não está logado");
+  }
+});
 
 export default useGeneralUserStore;
