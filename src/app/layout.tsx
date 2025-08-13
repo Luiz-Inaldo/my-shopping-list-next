@@ -1,5 +1,5 @@
 'use client'
-import { Itim, Quicksand } from "next/font/google";
+import { Inter, Itim, Quicksand } from "next/font/google";
 import "../styles/globals.css";
 import { ProductsProvider } from "@/context/ProductsContext";
 import { Toaster } from "@/components/ui/sonner";
@@ -11,7 +11,7 @@ import VerifyDevice from "@/components/VerifyDevice";
 import { PageOverlayProvider } from "@/context/PageOverlayContext";
 
 
-const quicksand = Quicksand({ weight: ['300', '400', '500', '700'], subsets: ["latin"] });
+const inter = Inter({ weight: ['300', '400', '500', '700'], subsets: ["latin"] });
 
 export default function RootLayout({
   children,
@@ -24,7 +24,7 @@ export default function RootLayout({
 
   return (
     <html lang="pt-br">
-      <body className={quicksand.className}>
+      <body className={inter.className}>
         <PageOverlayProvider>
           <div className="relative">
             {isPrivateRoute ? (

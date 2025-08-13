@@ -24,7 +24,7 @@ const LoggedLayout = ({ children }: { children: React.ReactNode }) => {
   }, [user]);
 
   return (
-    <div className="relative container bg-app-background">
+    <div className="relative bg-app-background">
       {children}
       <Footer />
     </div>

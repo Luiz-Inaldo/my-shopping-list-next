@@ -32,87 +32,84 @@ const Footer = () => {
     }, [data, currentPurchase])
 
     return (
-        <>
-            {(isAllowed || (data && data.length > 0)) && (
-                <footer
-                    style={{
-                        boxShadow: "0 0 4px rgb(0 0 0 / 0.1)"
-                    }}
-                    className='fixed bottom-0 left-0 z-[3] w-full bg-app-container rounded-tr-2xl rounded-tl-2xl py-2 px-4 flex items-center justify-center'>
-                    <ul className='w-full gap-2 grid grid-cols-5 justify-center'>
-                        <li>
-                            <Link
-                                href="#"
-                                className={`grid gap-1 p-2 place-items-center border-b ${pathname === "/" ? "text-default-green dark:text-title border-default-green dark:border-title" : "text-subtitle border-transparent"}`}
-                                onClick={(e) => {
-                                    e.preventDefault()
-                                    handleChangeRoute(APP_ROUTES.private.home.name)
-                                }}
-                            >
-                                <House size={16} />
-                                <span className='text-xs'>Início</span>
-                            </Link>
-                        </li>
-                        <li>
-                            <Link
-                                href="#"
-                                className={`grid gap-1 p-2 place-items-center border-b ${pathname === "/historic" ? "text-default-green dark:text-title border-default-green dark:border-title" : "text-subtitle border-transparent"}`}
-                                onClick={(e) => {
-                                    e.preventDefault()
-                                    handleChangeRoute(APP_ROUTES.private.historic.name)
-                                }}
-                            >
-                                <FileText size={16} />
-                                <span className='text-xs'>Histórico</span>
-                            </Link>
-                        </li>
-                        {pathname === "/" ? (
-                            <AddProductForm />
-                        ) : (
-                            <li>
-                                <Link
-                                    href="#"
-                                    className={`grid gap-1 p-2 place-items-center border-b ${pathname === "/settings" ? "text-default-green dark:text-title border-default-green dark:border-title" : "text-subtitle border-transparent"}`}
-                                    onClick={(e) => {
-                                        e.preventDefault()
-                                        handleChangeRoute(APP_ROUTES.private.settings.name)
-                                    }}
-                                >
-                                    <SlidersHorizontal size={16} />
-                                    <span className='text-xs'>Ajustes</span>
-                                </Link>
-                            </li>
-                        )}
-                        <li>
-                            <Link
-                                href="#"
-                                className={`grid gap-1 p-2 place-items-center border-b ${pathname === "/statistics" ? "text-default-green dark:text-title border-default-green dark:border-title" : "text-subtitle border-transparent"}`}
-                                onClick={(e) => {
-                                    e.preventDefault()
-                                    handleChangeRoute(APP_ROUTES.private.statistics.name)
-                                }}
-                            >
-                                <ChartSpline size={16} />
-                                <span className='text-xs'>Gráficos</span>
-                            </Link>
-                        </li>
-                        <li>
-                            <Link
-                                href="#"
-                                className={`grid gap-1 p-2 place-items-center border-b ${pathname === "/menu" ? "text-default-green dark:text-title border-default-green dark:border-title" : "text-subtitle border-transparent"}`}
-                                onClick={(e) => {
-                                    e.preventDefault()
-                                    handleChangeRoute(APP_ROUTES.private.menu.name)
-                                }}
-                            >
-                                <Menu size={16} />
-                                <span className='text-xs'>Mais</span>
-                            </Link>
-                        </li>
-                    </ul>
-                </footer>
-            )}
-        </>
+
+        <footer
+            style={{
+                boxShadow: "0 0 4px rgb(0 0 0 / 0.1)"
+            }}
+            className='fixed bottom-0 left-0 z-[3] w-full bg-app-container rounded-tr-2xl rounded-tl-2xl py-2 px-4 flex items-center justify-center'>
+            <ul className='w-full gap-2 grid grid-cols-5 justify-center'>
+                <li>
+                    <Link
+                        href="#"
+                        className={`grid gap-1 p-2 place-items-center border-b ${pathname === "/" ? "text-default-green dark:text-title border-default-green dark:border-title" : "text-subtitle border-transparent"}`}
+                        onClick={(e) => {
+                            e.preventDefault()
+                            handleChangeRoute(APP_ROUTES.private.home.name)
+                        }}
+                    >
+                        <House size={16} />
+                        <span className='text-xs'>Início</span>
+                    </Link>
+                </li>
+                <li>
+                    <Link
+                        href="#"
+                        className={`grid gap-1 p-2 place-items-center border-b ${pathname === "/historic" ? "text-default-green dark:text-title border-default-green dark:border-title" : "text-subtitle border-transparent"}`}
+                        onClick={(e) => {
+                            e.preventDefault()
+                            handleChangeRoute(APP_ROUTES.private.historic.name)
+                        }}
+                    >
+                        <FileText size={16} />
+                        <span className='text-xs'>Histórico</span>
+                    </Link>
+                </li>
+                {pathname === "/" ? (
+                    <AddProductForm />
+                ) : (
+                    <li>
+                        <Link
+                            href="#"
+                            className={`grid gap-1 p-2 place-items-center border-b ${pathname === "/settings" ? "text-default-green dark:text-title border-default-green dark:border-title" : "text-subtitle border-transparent"}`}
+                            onClick={(e) => {
+                                e.preventDefault()
+                                handleChangeRoute(APP_ROUTES.private.settings.name)
+                            }}
+                        >
+                            <SlidersHorizontal size={16} />
+                            <span className='text-xs'>Ajustes</span>
+                        </Link>
+                    </li>
+                )}
+                <li>
+                    <Link
+                        href="#"
+                        className={`grid gap-1 p-2 place-items-center border-b ${pathname === "/statistics" ? "text-default-green dark:text-title border-default-green dark:border-title" : "text-subtitle border-transparent"}`}
+                        onClick={(e) => {
+                            e.preventDefault()
+                            handleChangeRoute(APP_ROUTES.private.statistics.name)
+                        }}
+                    >
+                        <ChartSpline size={16} />
+                        <span className='text-xs'>Gráficos</span>
+                    </Link>
+                </li>
+                <li>
+                    <Link
+                        href="#"
+                        className={`grid gap-1 p-2 place-items-center border-b ${pathname === "/menu" ? "text-default-green dark:text-title border-default-green dark:border-title" : "text-subtitle border-transparent"}`}
+                        onClick={(e) => {
+                            e.preventDefault()
+                            handleChangeRoute(APP_ROUTES.private.menu.name)
+                        }}
+                    >
+                        <Menu size={16} />
+                        <span className='text-xs'>Mais</span>
+                    </Link>
+                </li>
+            </ul>
+        </footer>
     )
 }
 

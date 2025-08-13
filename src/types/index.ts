@@ -56,6 +56,9 @@ export interface IProductProps {
 export interface IPurchaseProps {
     id?: string;
     title: string;
+    is_active: boolean;
+    max_value: string;
+    items_count: number;
     purchase_date: any;
     purchase_items: string;
     total_price: string;
