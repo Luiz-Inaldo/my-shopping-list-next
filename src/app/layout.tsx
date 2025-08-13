@@ -30,11 +30,9 @@ export default function RootLayout({
             {isPrivateRoute ? (
               <VerifyDevice>
                 <ProductsProvider>
-                  <SessionVerifier>
                     <PurchasesProvider>
                       {children}
                     </PurchasesProvider>
-                  </SessionVerifier>
                 </ProductsProvider>
               </VerifyDevice>
             ) : (

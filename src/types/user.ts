@@ -1,6 +1,14 @@
-import z from "zod";
-import { loginFormSchema, registerFormSchema } from "./zodTypes";
-
-export type User = z.infer<typeof loginFormSchema>;
-
-export type RegisterProps = z.infer<typeof registerFormSchema>;
+/**
+ * ========================
+ * # types from firebase
+ * ========================
+ */
+export type UserProfileProps = {
+  uid: string;
+  email: string;
+  name: string;
+  role: string;
+  created_at: string;
+  updated_at: string;
+  profile_img: string;
+};
