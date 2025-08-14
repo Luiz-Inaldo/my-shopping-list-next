@@ -14,7 +14,7 @@ export function ActivePurchsesList({data}: {data: IPurchaseProps[] | null}) {
                     {data.map((item: any, index) => (
                         <motion.div 
                         key={`compra-${item?.title}`} 
-                        initial={{ opacity: 0, y: 20 }} 
+                        initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }} 
                         transition={{ duration: 0.2, delay: index * 0.1 }}
                         className="w-full bg-app-container rounded-lg shadow-md flex flex-col gap-3 p-3"
@@ -26,7 +26,7 @@ export function ActivePurchsesList({data}: {data: IPurchaseProps[] | null}) {
                                 </div>
                                 <p className='text-sm text-paragraph'>{item.items_count} {item.items_count === 1 ? 'item' : 'itens'}</p>
                             </div>
-                            <p className='text-sm text-subtitle'>Iniciada em: {formatDate(item.purchase_date)}</p>
+                            <p className='text-sm text-subtitle'>Iniciada em: {formatDate(item.start_date)}</p>
                         </motion.div>
                     ))}
                 </>

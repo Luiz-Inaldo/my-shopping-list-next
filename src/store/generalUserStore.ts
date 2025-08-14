@@ -1,27 +1,31 @@
-import { auth } from '@/lib/firebase';
-import { TSupabaseUserInfo } from '@/types/supabase';
-import { TUserStoreProps } from '@/types/userStore';
-import { onAuthStateChanged } from 'firebase/auth';
-import {create} from 'zustand';
+import { auth, db } from "@/lib/firebase";
+import { TUserProfileProps } from "@/types/user";
+import { TUserStoreProps } from "@/types/userStore";
+import { onAuthStateChanged } from "firebase/auth";
+import { doc, getDoc } from "firebase/firestore";
+import { create } from "zustand";
 
 const useGeneralUserStore = create<TUserStoreProps>((set) => ({
-    // user auth supabase
-    user: null,
-    setUser: (user: TSupabaseUserInfo) => set({ user }),
+  userProfile: null,
+  setUserProfile: (userProfile: TUserProfileProps) => set({ userProfile }),
 
-    // profile supabase
-    userProfile: null,
-    setUserProfile: (userProfile: any) => set({ userProfile }),
-
-    // reset profile
-    resetProfile: () => set({ userProfile: null, user: null })
+  // reset profile
+  resetProfile: () => set({ userProfile: null }),
 }));
 
 onAuthStateChanged(auth, (user) => {
-  if (user) {
-    console.log("Usuário logado:", user.uid);
+  const hasUserProfile = useGeneralUserStore.getState().userProfile;
+
+  if (user && !hasUserProfile) {
+    const userRef = doc(db, "users", user.uid);
+    getDoc(userRef).then((snapshot) => {
+      if (snapshot.exists()) {
+        const userData = snapshot.data() as TUserProfileProps;
+        useGeneralUserStore.getState().setUserProfile(userData);
+      }
+    });
   } else {
-    console.log("Usuário não está logado");
+    console.error("Não existe sessão de usuário.");
   }
 });
 

@@ -54,12 +54,13 @@ export interface IProductProps {
 }
 
 export interface IPurchaseProps {
-    id?: string;
+    id?: string; //TODO: Supabase case use. remove later
     title: string;
     is_active: boolean;
     max_value: string;
     items_count: number;
-    purchase_date: any;
+    start_date: any;
+    end_date: any;
     purchase_items: string;
     total_price: string;
     user_id: string | undefined;
