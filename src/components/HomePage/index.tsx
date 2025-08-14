@@ -1,28 +1,9 @@
 "use client";
-import React, { useEffect, useState } from 'react'
 import { MainHeader } from '../Header/MainHeader'
-import { supabase } from '@/lib/api';
-import useGeneralUserStore from '@/store/generalUserStore';
 import NewListForm from '../Forms/NewListForm';
-import { IPurchaseProps } from '@/types';
 import { ActivePurchsesList } from '../ActivePurchases/List';
-import { getPurchaseList } from '@/services/productsListServices';
 
 export const HomePage = () => {
-
-    const userProfile = useGeneralUserStore(store => store.userProfile);
-
-    const [data, setData] = useState<IPurchaseProps[] | null>(null);
-
-    useEffect(() => {
-        async function getData() {
-            if (userProfile === null) return;
-            const res = await getPurchaseList(userProfile.uid);
-            setData(res.data as unknown as IPurchaseProps[]);
-        }
-
-        getData();
-    }, [userProfile]);
 
     return (
         <>
@@ -36,7 +17,9 @@ export const HomePage = () => {
 
                 <h2 className="text-subtitle mt-[60px] font-medium">Suas listas ativas</h2>
 
-                <ActivePurchsesList data={data} />
+                <div className="flex flex-col gap-3 items-center">
+                    <ActivePurchsesList />
+                </div>
                 <NewListForm />
             </div>
         </>

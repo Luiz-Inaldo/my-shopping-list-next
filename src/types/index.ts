@@ -1,3 +1,5 @@
+import { TUiStates } from "./uiStates";
+
 export type ModalStateProps = "OPEN" | "CLOSED";
 export type ModalTypeProps = null | 'LIMIT_VALUE' | 'DELETE_PRODUCT' | 'EDIT_PRODUCT' | 'CHECK_PRODUCT' | 'DELETE_PURCHASE'
 export interface IProductsContextProps {
@@ -34,10 +36,15 @@ export interface IProductsContextProps {
 }
 
 export interface IPuchasesContextProps {
+    // states
     purchasesList: IPurchaseProps[];
+    uiStates: TUiStates;
+
+    // functions
     setPurchasesList: React.Dispatch<React.SetStateAction<IPurchaseProps[]>>;
-    purchasesLoading: boolean;
     filterPurchases: (filter: IFilterProps) => void;
+    deletePurchase:(purchaseId: string) => Promise<void>;
+    refetchPurchases: () => void
 }
 
 export interface IFormItem extends Omit<IProductProps, 'id'> {}
@@ -57,12 +64,12 @@ export interface IPurchaseProps {
     id?: string; //TODO: Supabase case use. remove later
     title: string;
     is_active: boolean;
-    max_value: string;
+    max_value: number;
     items_count: number;
     start_date: any;
     end_date: any;
-    purchase_items: string;
-    total_price: string;
+    purchase_items: never[] | IProductProps[];
+    total_price: number;
     user_id: string | undefined;
 }
 

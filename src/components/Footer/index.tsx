@@ -1,5 +1,5 @@
 "use client"
-import { ChartSpline, FileText, House, Menu, SlidersHorizontal } from 'lucide-react';
+import { ChartSpline, Cog, FileText, House, Menu, SlidersHorizontal } from 'lucide-react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import React, { useContext, useEffect, useState } from 'react'
@@ -65,23 +65,6 @@ const Footer = () => {
                         <span className='text-xs'>Histórico</span>
                     </Link>
                 </li>
-                {pathname === "/" ? (
-                    <AddProductForm />
-                ) : (
-                    <li>
-                        <Link
-                            href="#"
-                            className={`grid gap-1 p-2 place-items-center border-b ${pathname === "/settings" ? "text-default-green dark:text-title border-default-green dark:border-title" : "text-subtitle border-transparent"}`}
-                            onClick={(e) => {
-                                e.preventDefault()
-                                handleChangeRoute(APP_ROUTES.private.settings.name)
-                            }}
-                        >
-                            <SlidersHorizontal size={16} />
-                            <span className='text-xs'>Ajustes</span>
-                        </Link>
-                    </li>
-                )}
                 <li>
                     <Link
                         href="#"
@@ -93,6 +76,19 @@ const Footer = () => {
                     >
                         <ChartSpline size={16} />
                         <span className='text-xs'>Gráficos</span>
+                    </Link>
+                </li>
+                <li>
+                    <Link
+                        href="#"
+                        className={`grid gap-1 p-2 place-items-center border-b ${pathname === "/settings" ? "text-default-green dark:text-title border-default-green dark:border-title" : "text-subtitle border-transparent"}`}
+                        onClick={(e) => {
+                            e.preventDefault()
+                            handleChangeRoute(APP_ROUTES.private.settings.name)
+                        }}
+                    >
+                        <Cog size={16} />
+                        <span className='text-xs'>Ajustes</span>
                     </Link>
                 </li>
                 <li>
