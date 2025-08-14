@@ -2,6 +2,7 @@ import React from 'react'
 import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar'
 import Image from 'next/image'
 import useGeneralUserStore from '@/store/generalUserStore';
+import { MainHeaderSkeleton } from '../Skeletons/MainHeaderSkeleton';
 
 export const MainHeader = () => {
 
@@ -10,8 +11,10 @@ export const MainHeader = () => {
     // =============
     const userProfile = useGeneralUserStore(store => store.userProfile);
 
+    if (!userProfile) return <MainHeaderSkeleton />
+
     return (
-        <div className="w-full p-4 flex items-center gap-3">
+        <div className="relative z-[1] w-full p-4 flex items-center gap-3">
             <Avatar className='border-2 border-app-container'>
                 <AvatarImage src={userProfile?.profile_img} />
                 <AvatarFallback>

@@ -13,7 +13,8 @@ import {
 export async function getPurchaseList(userId: string) {
   const searchParams = query(
     collection(db, "purchases"),
-    where("user_id", "==", userId)
+    where("user_id", "==", userId),
+    where("is_active", "==", true)
   );
 
   const result = await getDocs(searchParams);

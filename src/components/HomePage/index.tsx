@@ -2,26 +2,27 @@
 import { MainHeader } from '../Header/MainHeader'
 import NewListForm from '../Forms/NewListForm';
 import { ActivePurchsesList } from '../ActivePurchases/List';
+import { MonthlyStatistics } from '../MonthlyStatistics';
 
 export const HomePage = () => {
 
     return (
-        <>
-            <div className="w-full h-36 bg-gradient-to-r from-[#011c01] to-[#165518]">
-                <MainHeader />
+        <div className='relative'>
+            <div className="absolute top-0 w-full h-36 bg-gradient-to-r from-[#011c01] to-[#165518]">
             </div>
-            <div className="container">
-                <div className='absolute w-[calc(100%-32px)] -top-[60px] min-h-[100px] flex items-center justify-center p-4 bg-blue-100 rounded-lg shadow-sm'>
-                    <p className="text-sm text-subtitle">Não há conteudo disponível para exibir</p>
-                </div>
+            <MainHeader />
+            <div className="z-[1]">
+                <div className="container">
+                    <MonthlyStatistics />
 
-                <h2 className="text-subtitle mt-[60px] font-medium">Suas listas ativas</h2>
+                    <h2 className="text-subtitle font-medium">Suas listas ativas</h2>
 
-                <div className="flex flex-col gap-3 items-center">
-                    <ActivePurchsesList />
+                    <div className="flex flex-col gap-3 items-center">
+                        <ActivePurchsesList />
+                    </div>
+                    <NewListForm />
                 </div>
-                <NewListForm />
             </div>
-        </>
+        </div>
     )
 }
