@@ -3,6 +3,7 @@ import LoggedLayout from "@/components/layout/MainLayout";
 import Main from "@/components/Main";
 import { Metadata } from "next";
 import { HomePage } from "@/components/HomePage";
+import { PurchasesProvider } from "@/context/PurchasesContext";
 
 export const metadata: Metadata = {
   title: "EzShop | Lista",
@@ -18,7 +19,9 @@ export default function Home() {
   return (
     <>
       <LoggedLayout>
-        <HomePage />
+        <PurchasesProvider>
+          <HomePage />
+        </PurchasesProvider>
       </LoggedLayout>
     </>
   );

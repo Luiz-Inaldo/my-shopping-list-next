@@ -29,11 +29,7 @@ export default function RootLayout({
           <div className="relative">
             {isPrivateRoute ? (
               <VerifyDevice>
-                <ProductsProvider>
-                    <PurchasesProvider>
-                      {children}
-                    </PurchasesProvider>
-                </ProductsProvider>
+                {children}
               </VerifyDevice>
             ) : (
               <>

@@ -1,15 +1,13 @@
 "use client";
 import ReactDOM from 'react-dom';
 import { Dialog } from '@radix-ui/react-dialog'
-import React, { useContext, useState, useTransition } from 'react'
+import React, { useState, useTransition } from 'react'
 import { DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '../ui/dialog'
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from '../ui/form'
 import { useForm } from 'react-hook-form'
 import { NewListProps } from '@/types/purchaseList'
 import { sleep } from '@/functions/sleep'
-import { supabase } from '@/lib/api'
 import useGeneralUserStore from '@/store/generalUserStore'
-import { ProductsContext } from '@/context/ProductsContext'
 import { Button } from '../ui/button';
 import { Input } from '../ui/input';
 import { Check, LoaderCircle, Plus } from 'lucide-react';
@@ -17,6 +15,11 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { createListSchema } from '@/types/zodTypes';
 import { sendToastMessage } from '@/functions/sendToastMessage';
 import { motion } from 'motion/react';
+import { addDoc, collection } from 'firebase/firestore';
+import { db } from '@/lib/firebase';
+import { IPurchaseProps } from '@/types';
+import { usePurchasesContext } from '@/context/PurchasesContext';
+import { addPurchaseToDb } from '@/services/productsListServices';
 
 const addButtonVariants = {
     initial: {
@@ -33,7 +36,8 @@ const addButtonVariants = {
 
 const NewListForm = () => {
 
-    const user = useGeneralUserStore(store => store.user);
+    const userProfile = useGeneralUserStore(store => store.userProfile);
+    const { refetchPurchases } = usePurchasesContext();
     const [isSettingPurchase, setPurchaseTransition] = useTransition();
 
     const [open, setOpen] = useState(false);
@@ -44,28 +48,37 @@ const NewListForm = () => {
 
 
     const onSubmit = async (listData: NewListProps) => {
+
+        const newList: IPurchaseProps = {
+            title: listData.list_name,
+            purchase_items: [],
+            items_count: 0,
+            is_active: true,
+            start_date: new Date(),
+            end_date: null,
+            total_price: 0,
+            max_value: parseFloat(listData.list_max_value.replace(',', '.')),
+            user_id: userProfile?.uid
+        }
+
         setPurchaseTransition(async () => {
             await sleep(2);
 
-            const { error } = await supabase.from("purchases").insert([{
-                title: listData.list_name,
-                purchase_items: JSON.stringify([]),
-                items_count: 0,
-                purchase_date: new Date(),
-                total_price: "0,00",
-                max_value: parseFloat(listData.list_max_value.replace(',', '.')),
-                user_id: user?.id
-            }]);
+            const res = await addPurchaseToDb(newList);
 
-            if (error) {
-                console.error(error);
+            if (res.status === "success") {
+                sendToastMessage({
+                    title: "Lista criada com sucesso!",
+                    type: "success"
+                });
+                refetchPurchases();
+            } else {
+                sendToastMessage({
+                    title: "Erro ao criar compra! Tente novamente.",
+                    type: "error"
+                })
             }
 
-            // fetchPurchaseData();
-            sendToastMessage({
-                title: "Lista criada com sucesso!",
-                type: "success"
-            });
             setOpen(false);
         })
     }
