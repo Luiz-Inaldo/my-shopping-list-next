@@ -6,22 +6,23 @@ import useGeneralUserStore from '@/store/generalUserStore';
 import NewListForm from '../Forms/NewListForm';
 import { IPurchaseProps } from '@/types';
 import { ActivePurchsesList } from '../ActivePurchases/List';
+import { getPurchaseList } from '@/services/productsListServices';
 
 export const HomePage = () => {
 
-    const user = useGeneralUserStore(store => store.user);
+    const userProfile = useGeneralUserStore(store => store.userProfile);
 
     const [data, setData] = useState<IPurchaseProps[] | null>(null);
 
     useEffect(() => {
         async function getData() {
-            if (user === null) return;
-            const { data, error } = await supabase.from('purchases').select('title, items_count, purchase_date').eq('user_id', user?.id).eq('is_active', true);
-            setData(data as unknown as IPurchaseProps[]);
+            if (userProfile === null) return;
+            const res = await getPurchaseList(userProfile.uid);
+            setData(res.data as unknown as IPurchaseProps[]);
         }
+
         getData();
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []);
+    }, [userProfile]);
 
     return (
         <>

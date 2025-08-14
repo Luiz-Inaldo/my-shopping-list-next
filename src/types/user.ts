@@ -3,7 +3,7 @@
  * # types from firebase
  * ========================
  */
-export type UserProfileProps = {
+export type TUserProfileProps = {
   uid: string;
   email: string;
   name: string;

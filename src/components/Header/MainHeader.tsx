@@ -25,7 +25,7 @@ export const MainHeader = () => {
             </Avatar>
             <div className='flex flex-col'>
                 <p className="text-[#d9d9d9] text-lg font-medium leading-none">
-                    Olá {userProfile?.user_name || 'Usuário sem nome.'}
+                    Olá {userProfile?.name || 'Usuário sem nome.'}
                 </p>
                 <p className='text-[#909090] text-sm'>Bem-vindo de volta!</p>
             </div>

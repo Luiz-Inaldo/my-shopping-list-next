@@ -1,13 +1,9 @@
-import { TSupabaseProfileInfo, TSupabaseUserInfo } from "./supabase"
+import { TSupabaseUserInfo } from "./supabase"
+import { TUserProfileProps } from "./user";
 
 export type TUserStoreProps = {
-    // supabase auth user
-    user: TSupabaseUserInfo | null;
-    setUser: (user: TSupabaseUserInfo) => void;
-
-    // profile supabase
-    userProfile: TSupabaseProfileInfo | null;
-    setUserProfile: (userProfile: TSupabaseProfileInfo) => void;
+    userProfile: TUserProfileProps | null;
+    setUserProfile: (userProfile: TUserProfileProps) => void;
 
     // reset profile
     resetProfile: () => void;
