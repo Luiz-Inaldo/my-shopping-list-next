@@ -1,49 +1,19 @@
 "use client";
 import { IProductsContextProps, ISupabasePurchaseProps } from "@/types";
-import { createContext, use, useEffect, useState } from "react";
+import { createContext,  useEffect, useState } from "react";
 import { supabase } from "@/lib/api";
 import { IProductProps } from "@/types";
 import { IEditItemProps } from "@/types";
-import { ToastAction } from "@/components/ui/toast";
 import useGeneralUserStore from "@/store/generalUserStore";
 import { sendToastMessage } from "@/functions/sendToastMessage";
 
-export const ProductsContext = createContext<IProductsContextProps>({
-    // user: {},
-    // setUser: () => { },
-    data: [],
-    setData: () => { },
-    loadingProducts: true,
+export const ShoplistContext = createContext<IProductsContextProps | undefined>(undefined);
 
-    modal: {
-        state: 'CLOSED',
-        type: null
-    },
-    setModal: () => { },
-    optionMenu: null,
-    setOptionMenu: () => { },
-    totalValue: '0',
-    setTotalValue: () => { },
-    situation: 'good',
-    setSituation: () => { },
-    currentPurchase: null,
-    setCurrentPurchase: () => { },
-
-    fetchData: async () => { },
-    fetchPurchaseData: async () => { },
-    deleteCurrentPurchase: async () => { },
-    deleteAllItems: async () => { },
-    handleUpdateItem: async () => { },
-    handleDeleteItem: async () => { },
-    handleCheckItem: async () => { },
-    handleDismarkItem: async () => { }
-});
-
-export const ProductsProvider = ({ children }: { children: React.ReactNode }) => {
+export const ShoplistProvider = ({ children }: { children: React.ReactNode }) => {
     /**
      * =======>> store <<========
      */
-    const user = useGeneralUserStore(store => store.user);
+    const userProfile = useGeneralUserStore(store => store.userProfile);
 
     /* ====> states <==== */
     const [data, setData] = useState<IProductProps[] | null>(null);

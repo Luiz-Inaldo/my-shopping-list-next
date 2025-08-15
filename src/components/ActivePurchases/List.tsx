@@ -3,9 +3,9 @@ import { IPurchaseProps } from '@/types'
 import React from 'react'
 import { motion } from 'motion/react';
 import { usePurchasesContext } from '@/context/PurchasesContext';
-import { Trash2 } from 'lucide-react';
 import { HomePagePurchaseSkeleton } from '../Skeletons/PurchaseListSkeletons';
 import { DeletePurchase } from '../Forms/DeletePurchase';
+import { APP_ROUTES } from '@/routes/app-routes';
 
 export function ActivePurchsesList() {
 
@@ -18,8 +18,9 @@ export function ActivePurchsesList() {
             {purchasesList.length > 0 ? (
                 <>
                     {purchasesList.map((item: IPurchaseProps, index: number) => (
-                        <motion.div
+                        <motion.a
                             key={`compra-${item?.title}`}
+                            href={APP_ROUTES.private.shoppingList.name(item.title)}
                             initial={{ opacity: 0, y: 20 }}
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ duration: 0.2, delay: index * 0.1 }}
@@ -36,7 +37,7 @@ export function ActivePurchsesList() {
                                 <p className='text-subtitle'>Iniciada em: {formatDate(item.start_date)}</p>
                                 <p className='text-paragraph'>{item.items_count} {item.items_count === 1 ? 'item' : 'itens'}</p>
                             </div>
-                        </motion.div>
+                        </motion.a>
                     ))}
                 </>
             ) : (

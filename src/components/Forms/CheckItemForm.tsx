@@ -1,4 +1,4 @@
-import { ProductsContext } from "@/context/ProductsContext";
+import { ProductsContext } from "@/context/ShoplistContext";
 import { IEditItemProps } from "@/types";
 import { IProductProps } from "@/types";
 import { Dialog } from "@radix-ui/react-dialog";

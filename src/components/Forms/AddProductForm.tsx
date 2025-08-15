@@ -15,7 +15,7 @@ import { ShadSelect } from "../Select";
 import { SelectItem } from "../ui/select";
 import { CATEGORIES } from "@/constants/categories";
 import { supabase } from "@/lib/api";
-import { ProductsContext } from "@/context/ProductsContext";
+import { ProductsContext } from "@/context/ShoplistContext";
 import { IFormItem } from "@/types";
 import useGeneralUserStore from "@/store/generalUserStore";
 import { Button } from "../ui/button";

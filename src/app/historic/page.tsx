@@ -6,7 +6,7 @@ import { Modal } from '@/components/Modal';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { MONTHS } from '@/constants/months';
 import { YEARS } from '@/constants/years';
-import { ProductsContext } from '@/context/ProductsContext';
+import { ProductsContext } from '@/context/ShoplistContext';
 import { PurchasesContext } from '@/context/PurchasesContext';
 import { formatCurrency } from '@/functions/formatCurrency';
 import { APP_ROUTES } from '@/routes/app-routes';

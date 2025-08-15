@@ -5,7 +5,6 @@ import { usePathname } from 'next/navigation';
 import React, { useContext, useEffect, useState } from 'react'
 import { AddProductForm } from '../Forms/AddProductForm';
 import { APP_ROUTES } from '@/routes/app-routes';
-import { ProductsContext } from '@/context/ProductsContext';
 import { usePageOverlay } from '@/context/PageOverlayContext';
 
 const allowedRoutes = ["/", "/settings", "/historic", "/menu", '/statistics']
@@ -13,23 +12,8 @@ const allowedRoutes = ["/", "/settings", "/historic", "/menu", '/statistics']
 const Footer = () => {
 
     const pathname = usePathname();
-    const { data, currentPurchase } = useContext(ProductsContext);
-    const [isAllowed, setIsAllowed] = useState<boolean>(false);
 
     const { handleChangeRoute } = usePageOverlay();
-
-    useEffect(() => {
-        if (pathname === "/") {
-            setIsAllowed(((data && data.length > 0) || currentPurchase) ? true : false);
-        } else {
-            if (allowedRoutes.includes(pathname)) {
-                setIsAllowed(true);
-            } else {
-                setIsAllowed(false);
-            }
-        }
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [data, currentPurchase])
 
     return (
 

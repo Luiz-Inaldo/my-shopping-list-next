@@ -46,6 +46,7 @@
     --app-background: #efefef;
     --app-primary: #4CAF50;
     --app-container: white;
+    --app-border: #e8e8e8;
     --title: #212529;
     --subtitle: #343a40;
     --paragraph: #838587;
@@ -111,11 +112,14 @@
   flex-direction: column;
   gap: 20px;
   /* justify-content: space-between; */
-  min-width: 325px;
-  max-width: 430px;
+  width: 100%;
   /* min-height: 100dvh; */
   margin: 0 auto;
   padding: 16px 16px 92px 16px;
+}
+
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
 }
 
 /* independent styles */

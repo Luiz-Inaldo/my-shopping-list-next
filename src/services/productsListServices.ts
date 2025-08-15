@@ -10,7 +10,7 @@ import {
   addDoc,
 } from "firebase/firestore";
 
-export async function getPurchaseList(userId: string) {
+export async function getActivePurchaseList(userId: string) {
   const searchParams = query(
     collection(db, "purchases"),
     where("user_id", "==", userId),

@@ -27,10 +27,10 @@ export const MainHeader = () => {
                 </AvatarFallback>
             </Avatar>
             <div className='flex flex-col'>
-                <p className="text-[#d9d9d9] text-lg font-medium leading-none">
+                <p className="text-[#d9d9d9] font-medium leading-none">
                     Olá {userProfile?.name || 'Usuário sem nome.'}
                 </p>
-                <p className='text-[#909090] text-sm'>Bem-vindo de volta!</p>
+                <p className='text-[#909090] text-xs'>Bem-vindo de volta!</p>
             </div>
         </div>
     )

@@ -2,7 +2,7 @@
 import { IFilterProps, IPuchasesContextProps, IPurchaseProps } from "@/types";
 import React, { createContext, useContext, useEffect, useState, useTransition } from "react";
 import useGeneralUserStore from "@/store/generalUserStore";
-import { deletePurchaseFromDb, getPurchaseList } from "@/services/productsListServices";
+import { deletePurchaseFromDb, getActivePurchaseList } from "@/services/productsListServices";
 import { TUiStates } from "@/types/uiStates";
 import { sendToastMessage } from "@/functions/sendToastMessage";
 
@@ -26,7 +26,7 @@ export const PurchasesProvider = ({ children }: { children: React.ReactNode }) =
         if (userProfile === null) return;
         setUiStates(prev => ({ ...prev, isLoading: true }));
         try {
-            const res = await getPurchaseList(userProfile.uid);
+            const res = await getActivePurchaseList(userProfile.uid);
             setPurchasesList(res.data as unknown as IPurchaseProps[]);
             setAuxData(res.data as unknown as IPurchaseProps[]);
         } catch (error) {

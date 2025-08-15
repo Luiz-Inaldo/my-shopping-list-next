@@ -3,6 +3,9 @@ export const APP_ROUTES = {
         home: {
             name: "/"
         },
+        shoppingList: {
+            name: (name: string) => `/list?name=${name}`
+        },
         settings: {
             name: "/settings"
         },

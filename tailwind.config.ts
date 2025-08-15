@@ -74,6 +74,7 @@ const config = {
         "app-background": "var(--app-background)",
         "app-primary": "var(--app-primary)",
         "app-container": "var(--app-container)",
+        "app-border": "var(--app-border)",
         "primary-dark": "#212529",
         "secondary-dark": "#343a40",
         "dark-button-color": "#0466c8",

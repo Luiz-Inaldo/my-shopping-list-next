@@ -1,4 +1,4 @@
-import { ProductsContext } from "@/context/ProductsContext";
+import { ProductsContext } from "@/context/ShoplistContext";
 import { IProductProps } from "@/types";
 import React, { useContext, useState } from "react";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "../ui/dialog";

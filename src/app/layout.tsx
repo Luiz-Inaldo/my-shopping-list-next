@@ -1,7 +1,7 @@
 'use client'
 import { Inter, Itim, Quicksand } from "next/font/google";
 import "../styles/globals.css";
-import { ProductsProvider } from "@/context/ProductsContext";
+import { ProductsProvider } from "@/context/ShoplistContext";
 import { Toaster } from "@/components/ui/sonner";
 import SessionVerifier from "@/components/SessionVerifier";
 import useCheckRoute from "@/hooks/useCheckRoute";
