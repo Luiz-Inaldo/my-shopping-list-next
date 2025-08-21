@@ -20,7 +20,7 @@ export function ProductsSearch() {
       }
 
       if (categoriesToLowerCase.includes(value)) {
-        const filteredList = auxData?.purchase_items?.filter(product => product.category.toLocaleLowerCase() === value) ?? [];
+        const filteredList = auxData?.purchase_items?.filter(product => product.category.toLowerCase() === value) ?? [];
         setProductsList(oldList => ({
           ...oldList!,
           purchase_items: filteredList

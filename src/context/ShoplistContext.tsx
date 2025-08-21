@@ -81,7 +81,7 @@ export const ShoplistProvider = ({ children }: { children: React.ReactNode }) =>
 
     }
 
-    function caculateTotalValue() {
+    function calculateTotalValue() {
 
         const checkedItems = auxData?.purchase_items?.filter(product => product.checked === true) || [];
         const total = checkedItems.reduce((acc, item) => (
@@ -244,7 +244,7 @@ export const ShoplistProvider = ({ children }: { children: React.ReactNode }) =>
 
     useEffect(() => {
         if (productsList?.purchase_items && productsList.purchase_items.length > 0) {
-            caculateTotalValue();
+            calculateTotalValue();
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [productsList?.purchase_items]);

@@ -10,7 +10,7 @@ export const Checkbox = ({
   ...props
 }: {
   checked?: boolean;
-  onChange?: (item: IProductProps) => void;
+  onChange?: (event: React.ChangeEvent<HTMLInputElement>) => void;
   register?: any;
   props?: any;
 }) => {
@@ -20,7 +20,7 @@ export const Checkbox = ({
         type="checkbox"
         id="cbx-43"
         checked={checked}
-        onChange={onChange ? onChange : () => {}}
+        onChange={onChange}
         {...register}
         {...props}
         />

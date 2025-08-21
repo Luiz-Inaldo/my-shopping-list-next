@@ -10,15 +10,15 @@ export function Product({ item, ...props }: { item: IProductProps }) {
 
     const { handleCheckItem, handleDismarkItem } = useShoplistContext();
 
-    const handleItemCheckbox = (item: IProductProps) => {
+    const handleItemCheckbox = (product: IProductProps) => {
 
-        // console.log("item para ser alterado", item);
+        // console.log("item para ser alterado", product);
         // return;
 
-        if (!item.checked && item.value !== 0) {
-            handleCheckItem(item);
-        } else if (item.checked) {
-            handleDismarkItem(item);
+        if (!product.checked && product.value !== 0) {
+            handleCheckItem(product);
+        } else if (product.checked) {
+            handleDismarkItem(product);
         }
     };
 
