@@ -37,3 +37,11 @@ export const createListSchema = z.object({
   list_max_value: z.string({message: "Campo obrigatório."}).regex(/^[0-9,]+$/, 'Somente números e vírgulas são permitidos')
 });
 
+export const createProductListItemSchema = z.object({
+  name: z.string({ message: "Campo obrigatório." }).min(6, { message: "O campo nome deve conter no mínimo 6 caracteres." }).max(30, { message: "O campo nome deve conter no máximo 40 caracteres." }),
+  category: z.string({message: "Campo obrigatório"}),
+  quantity: z.number({message: "Campo obrigatório"}),
+  value: z.number(),
+  checked: z.boolean(),
+  unit_type: z.string({message: "Campo obrigatório"})
+})

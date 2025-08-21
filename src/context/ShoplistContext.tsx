@@ -1,13 +1,15 @@
 "use client";
-import { IProductsContextProps, ISupabasePurchaseProps } from "@/types";
-import { createContext,  useEffect, useState } from "react";
-import { supabase } from "@/lib/api";
+import { IPurchaseProps, IShoplistContextProps, ISupabasePurchaseProps } from "@/types";
+import { createContext, useContext, useEffect, useRef, useState } from "react";
 import { IProductProps } from "@/types";
 import { IEditItemProps } from "@/types";
 import useGeneralUserStore from "@/store/generalUserStore";
 import { sendToastMessage } from "@/functions/sendToastMessage";
+import { useSearchParams } from "next/navigation";
+import { TUiStates } from "@/types/uiStates";
+import { checkPurchaseItem, deletePurchaseItem, getProductsList, getProductsListItems, updatePurchaseItem } from "@/services/productsListServices";
 
-export const ShoplistContext = createContext<IProductsContextProps | undefined>(undefined);
+const ShoplistContext = createContext<IShoplistContextProps | undefined>(undefined);
 
 export const ShoplistProvider = ({ children }: { children: React.ReactNode }) => {
     /**
@@ -15,126 +17,142 @@ export const ShoplistProvider = ({ children }: { children: React.ReactNode }) =>
      */
     const userProfile = useGeneralUserStore(store => store.userProfile);
 
+    const searchParams = useSearchParams();
+    const listName = searchParams.get("name") || "";
+
     /* ====> states <==== */
-    const [data, setData] = useState<IProductProps[] | null>(null);
-    const [loadingProducts, setLoadingProducts] = useState<boolean>(true);
-    // const [user, setUser] = useState<any>(null);
-    const [modal, setModal] = useState<any>({
-        state: 'CLOSED',
-        type: null
-    })
-    const [optionMenu, setOptionMenu] = useState<string | null>(null);
-    const [totalValue, setTotalValue] = useState<string>('0');
-    const [situation, setSituation] = useState<string>('good');
+    const [auxData, setAuxData] = useState<IPurchaseProps | null>(null);
+    const [productsList, setProductsList] = useState<IPurchaseProps | null>(null);
+    const [uiStates, setUiStates] = useState<TUiStates>({ isLoading: true, hasError: false });
+    const [filterValue, setFilterValue] = useState<string | null>(null);
+    const [totalValue, setTotalValue] = useState<number>(0);
     const [currentPurchase, setCurrentPurchase] = useState<ISupabasePurchaseProps | null>(null);
+
+    /**
+     * ========>> refs <<========
+     */
+    const isFirstLoad = useRef<boolean>(true);
 
     /* ====> functions <==== */
     async function fetchData() {
-        setLoadingProducts(true);
-        if (user !== null) {
-            const { data, error } = await supabase.from('products').select('*').eq('user_id', user.id);
-            if (error) {
-                console.error(error);
-                return;
-            }
-            setLoadingProducts(false);
-            return setData(data as IProductProps[]);
+        if (!userProfile) return;
+        setUiStates(prev => ({ ...prev, isLoading: true }));
+
+        try {
+            const res = await getProductsList(userProfile.uid, listName);
+            const productsList = {
+                purchase_items: [],
+                ...res.data[0],
+            };
+
+            setProductsList(productsList as unknown as IPurchaseProps);
+            setAuxData(productsList as unknown as IPurchaseProps);
+
+        } catch (error) {
+            console.error(error);
+            setUiStates(prev => ({ ...prev, hasError: true }));
+        } finally {
+            setUiStates(prev => ({ ...prev, isLoading: false }));
         }
     }
 
-    async function fetchPurchaseData() {
-        if (user === null) return;
-        const { data, error } = await supabase.from('active_purchases').select('*').eq("user_id", user.id);
-        if (error) {
-            console.error(error)
-            return;
+    async function fetchListItemsData() {
+        if (!productsList) return;
+
+        try {
+            const res = await getProductsListItems(productsList.id!);
+
+            setProductsList((prevList) => ({
+                ...prevList!,
+                purchase_items: res.data as unknown as IProductProps[],
+            }));
+
+            setAuxData((prevList) => ({
+                ...prevList!,
+                purchase_items: res.data as unknown as IProductProps[],
+            }))
+            if (isFirstLoad.current) isFirstLoad.current = false;
+        } catch (error) {
+            console.error(error);
+            setUiStates(prev => ({ ...prev, hasError: true }));
+        } finally {
+            setUiStates(prev => ({ ...prev, isLoading: false }));
         }
-        setCurrentPurchase(data.length > 0 ? data[0] : null);
+
     }
 
     function caculateTotalValue() {
 
-        let total: number = 0;
-        const checkedItems = data?.filter(product => product.checked === true) || [];
-        checkedItems.forEach(item => {
-            const parsedTotal = (parseFloat((item.value || '0').replace(',', '.')) * (item?.quantity ?? 0));
-            total += parsedTotal;
-        })
-        setTotalValue(total.toFixed(2).replace('.', ','))
+        const checkedItems = auxData?.purchase_items?.filter(product => product.checked === true) || [];
+        const total = checkedItems.reduce((acc, item) => (
+            acc += Number(item.value) * Number(item.quantity)
+        ), 0);
 
-    }
-
-    async function deleteAllItems() {
-
-        try {
-
-            const { error } = await supabase.from('products').delete().eq('user_id', user?.id);
-
-            if (error) {
-                console.log(error);
-                return
-            }
-
-        } catch (error) {
-            console.log(error)
-        }
-
-        fetchData();
-
-    }
-
-    async function deleteCurrentPurchase() {
-        const { error } = await supabase.from('active_purchases').delete().eq('user_id', user?.id);
-
-        if (error) {
-            console.log(error);
-            return;
-        }
-
-        fetchPurchaseData();
+        setTotalValue(total)
 
     }
 
     async function handleUpdateItem(object: IEditItemProps, itemID: string) {
-        const { data, error } = await supabase.from('products').update(object).eq('id', itemID);
 
-        if (error) {
-            console.log(error);
-        } else {
+        try {
+            await updatePurchaseItem(productsList?.id as string, itemID, object);
             sendToastMessage({ title: "Produto atualizado com sucesso.", type: 'success' });
-            setData((oldData) => {
-                return oldData!.map(product => {
-                    if (product.id === itemID) {
-                        return { ...product, name: object.name, quantity: object.quantity, value: object.value };
-                    }
-                    return product;
-                });
-            })
-            setTimeout(() => {
-                setModal({
-                    state: 'CLOSED',
-                    type: null
-                });
-            }, 1000)
+            setProductsList((oldData) => {
+                return {
+                    ...oldData!,
+                    purchase_items: oldData!.purchase_items!.map(product => {
+                        if (product.id === itemID) {
+                            return { 
+                                ...product, 
+                                name: object.name, 
+                                quantity: object.quantity, 
+                                value: object.value,
+                                unit_type: object.unit_type,
+                            };
+                        }
+                        return product;
+                    })
+                };
+            });
+            setAuxData((oldData) => {
+                return {
+                    ...oldData!,
+                    purchase_items: oldData!.purchase_items!.map(product => {
+                        if (product.id === itemID) {
+                            return { 
+                                ...product, 
+                                name: object.name, 
+                                quantity: object.quantity, 
+                                value: object.value,
+                                unit_type: object.unit_type,
+                            };
+                        }
+                        return product;
+                    })
+                };
+            });
+        } catch (error) {
+            console.error(error);
+            sendToastMessage({ title: "Houve um erro ao atualizar o produto.", type: 'error' });
         }
+
     }
 
     async function handleDeleteItem(itemID: string) {
-        const { data, error } = await supabase.from('products').delete().eq('id', itemID);
-        if (error) {
-            console.log(error);
-        } else {
+        try {
+            await deletePurchaseItem(productsList?.id as string, itemID);
             sendToastMessage({ title: "Produto removido com sucesso.", type: 'success' });
-            setData((oldData) => {
-                return oldData!.filter(item => item.id !== itemID);
-            })
-            setOptionMenu(null);
-            setTimeout(() => {
-                setModal({
-                    state: 'CLOSED',
-                    type: null
-                });
-            }, 1000)
+            setProductsList(oldData => ({
+                ...oldData!,
+                purchase_items: oldData!.purchase_items!.filter(product => product.id !== itemID)
+            }));
+            setAuxData(oldData => ({
+                ...oldData!,
+                purchase_items: oldData!.purchase_items!.filter(product => product.id !== itemID)
+            }));
+        } catch (error) {
+            console.error(error);
+            sendToastMessage({ title: "Houve um erro ao remover o produto.", type: 'error' });
         }
     }
 
@@ -142,31 +160,35 @@ export const ShoplistProvider = ({ children }: { children: React.ReactNode }) =>
 
         const editedItem = {
             ...item,
-            value: object?.value ? object.value : item.value,
+            value: object?.value ?? item.value,
             checked: !item.checked
         }
 
-        const { data, error } = await supabase.from('products').update(editedItem).eq('id', item.id);
-        if (error) {
-            console.log(error);
-        } else {
+        try {
+
+            await checkPurchaseItem(productsList?.id as string, item?.id as string, !item.checked);
+
             sendToastMessage({ title: `${item.name} marcado como adquirido.`, type: 'success' });
-            setData((oldData) => {
-                return oldData!.map(product => {
+            setProductsList((oldList) => ({
+                ...oldList!,
+                purchase_items: oldList!.purchase_items?.map(product => {
                     if (product.id === item.id) {
-                        return {
-                            ...product,
-                            value: object?.value ? object.value : item.value,
-                            checked: !item.checked
-                        };
+                        return editedItem;
                     }
                     return product;
-                });
-            })
-            setModal({
-                state: 'CLOSED',
-                type: null
-            });
+                })
+            }))
+            setAuxData((oldList) => ({
+                ...oldList!,
+                purchase_items: oldList!.purchase_items?.map(product => {
+                    if (product.id === item.id) {
+                        return editedItem;
+                    }
+                    return product;
+                })
+            }))
+        } catch (error) {
+            sendToastMessage({ title: "Houve um erro ao marcar o item.", type: 'error' });
         }
     }
 
@@ -177,19 +199,32 @@ export const ShoplistProvider = ({ children }: { children: React.ReactNode }) =>
             checked: !item.checked
         }
 
-        const { data, error } = await supabase.from('products').update(editedItem).eq('id', item.id);
+        try {
 
-        if (error) {
-            console.log(error);
-        } else {
-            setData((oldData) => {
-                return oldData!.map(product => {
+            await checkPurchaseItem(productsList?.id as string, item?.id as string, !item.checked);
+
+            sendToastMessage({ title: `${item.name} desmarcado.`, type: 'success' });
+            setProductsList((oldList) => ({
+                ...oldList!,
+                purchase_items: oldList!.purchase_items?.map(product => {
                     if (product.id === item.id) {
-                        return { ...product, checked: !item.checked };
+                        return editedItem;
                     }
                     return product;
-                });
-            })
+                })
+            }))
+            setAuxData((oldList) => ({
+                ...oldList!,
+                purchase_items: oldList!.purchase_items?.map(product => {
+                    if (product.id === item.id) {
+                        return editedItem;
+                    }
+                    return product;
+                })
+            }))
+        } catch (error) {
+            console.error(error)
+            sendToastMessage({ title: "Houve um erro ao desmarcar o item.", type: 'error' });
         }
 
     }
@@ -197,62 +232,79 @@ export const ShoplistProvider = ({ children }: { children: React.ReactNode }) =>
     /* ====> effects <==== */
     useEffect(() => {
         fetchData();
-        fetchPurchaseData();
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [user]);
+    }, [userProfile]);
 
     useEffect(() => {
-        caculateTotalValue();
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [data]);
-
-    useEffect(() => {
-
-        if (currentPurchase) {
-            const parsedTotal = parseFloat(totalValue.replace(',', '.'));
-            const parsedMaxValue = parseFloat(currentPurchase?.list_max_value.replace(',', '.'));
-            
-            if (parsedTotal < (parsedMaxValue * 0.8)) {
-                setSituation('good');
-            }
-            
-            if (parsedTotal >= (parsedMaxValue * 0.8) && parsedTotal < parsedMaxValue) {
-                setSituation('normal');
-            }
-            
-            if (parsedTotal >= parsedMaxValue) {
-                setSituation('bad');
-            }
+        if (productsList && isFirstLoad.current) {
+            fetchListItemsData();
         }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [productsList]);
 
-    }, [totalValue, currentPurchase]);
+    useEffect(() => {
+        if (productsList?.purchase_items && productsList.purchase_items.length > 0) {
+            caculateTotalValue();
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [productsList?.purchase_items]);
+
+    // useEffect(() => {
+    //     caculateTotalValue();
+    //     // eslint-disable-next-line react-hooks/exhaustive-deps
+    // }, [productsList]);
+
+    // useEffect(() => {
+
+    //     if (currentPurchase) {
+    //         const parsedTotal = parseFloat(totalValue.replace(',', '.'));
+    //         const parsedMaxValue = parseFloat(currentPurchase?.list_max_value.replace(',', '.'));
+
+    //         if (parsedTotal < (parsedMaxValue * 0.8)) {
+    //             setSituation('good');
+    //         }
+
+    //         if (parsedTotal >= (parsedMaxValue * 0.8) && parsedTotal < parsedMaxValue) {
+    //             setSituation('normal');
+    //         }
+
+    //         if (parsedTotal >= parsedMaxValue) {
+    //             setSituation('bad');
+    //         }
+    //     }
+
+    // }, [totalValue, currentPurchase]);
 
     return (
-        <ProductsContext.Provider value={{
-            data,
-            setData,
-            loadingProducts,
-            modal,
-            setModal,
-            optionMenu,
-            setOptionMenu,
+        <ShoplistContext.Provider value={{
+            listName,
+            auxData,
+            productsList,
+            setProductsList,
+            uiStates,
+            filterValue,
+            setFilterValue,
             totalValue,
             setTotalValue,
             currentPurchase,
             setCurrentPurchase,
-            situation,
-            setSituation,
 
             fetchData,
-            fetchPurchaseData,
-            deleteCurrentPurchase,
-            deleteAllItems,
+            fetchListItemsData,
             handleUpdateItem,
             handleDeleteItem,
             handleCheckItem,
             handleDismarkItem
         }}>
             {children}
-        </ProductsContext.Provider>
+        </ShoplistContext.Provider>
     )
+}
+
+export function useShoplistContext() {
+    const context = useContext(ShoplistContext);
+    if (context === undefined) {
+        throw new Error('useShoplistContext must be used within a ShoplistProvider');
+    }
+    return context as IShoplistContextProps;
 }

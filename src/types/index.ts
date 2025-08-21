@@ -2,33 +2,21 @@ import { TUiStates } from "./uiStates";
 
 export type ModalStateProps = "OPEN" | "CLOSED";
 export type ModalTypeProps = null | 'LIMIT_VALUE' | 'DELETE_PRODUCT' | 'EDIT_PRODUCT' | 'CHECK_PRODUCT' | 'DELETE_PURCHASE'
-export interface IProductsContextProps {
-    // user: any,
-    // setUser: React.Dispatch<React.SetStateAction<any>>;
-    data: IProductProps[] | null;
-    setData: React.Dispatch<React.SetStateAction<IProductProps[] | null>>;
-    loadingProducts: boolean;
-    modal: {
-        state: ModalStateProps,
-        type: ModalTypeProps
-    }
-    setModal: React.Dispatch<React.SetStateAction<{
-        state: ModalStateProps;
-        type: ModalTypeProps;
-    }>>;
-    optionMenu: string | null;
-    setOptionMenu: React.Dispatch<React.SetStateAction<string | null>>;
-    totalValue: string;
-    setTotalValue: React.Dispatch<React.SetStateAction<string>>;
-    situation: string;
-    setSituation: React.Dispatch<React.SetStateAction<string>>;
+export interface IShoplistContextProps {
+    listName: string;
+    auxData: IPurchaseProps | null;
+    productsList: IPurchaseProps | null;
+    setProductsList: React.Dispatch<React.SetStateAction<IPurchaseProps | null>>;
+    uiStates: TUiStates;
+    filterValue: string | null;
+    setFilterValue: React.Dispatch<React.SetStateAction<string | null>>;
+    totalValue: number;
+    setTotalValue: React.Dispatch<React.SetStateAction<number>>;
     currentPurchase: ISupabasePurchaseProps | null;
     setCurrentPurchase: React.Dispatch<React.SetStateAction<ISupabasePurchaseProps | null>>;
 
     fetchData: () => Promise<void>;
-    fetchPurchaseData: () => Promise<void>;
-    deleteCurrentPurchase: () => Promise<void>;
-    deleteAllItems: () => Promise<void>;
+    fetchListItemsData: () => Promise<void>;
     handleUpdateItem: (object: IEditItemProps, itemID: string) => Promise<void>;
     handleDeleteItem: (itemID: string) => Promise<void>;
     handleCheckItem:(item: IProductProps, object?: IEditItemProps) => Promise<void>;
@@ -51,13 +39,16 @@ export interface IFormItem extends Omit<IProductProps, 'id'> {}
 
 export interface IEditItemProps extends Omit<IProductProps, 'category' | 'checked'> {}
 
+type TProductsUnitTypes = 'und' | 'kg' | 'lt' | 'cx' | 'fd' | 'pct';
+
 export interface IProductProps {
-    id: string;
+    id?: string;
     name: string;
     category: string;
-    quantity: number;
-    value: string;
+    quantity: number | string;
+    value: number | string;
     checked: boolean;
+    unit_type: TProductsUnitTypes;
 }
 
 export interface IPurchaseProps {
@@ -68,7 +59,7 @@ export interface IPurchaseProps {
     items_count: number;
     start_date: any;
     end_date: any;
-    purchase_items: never[] | IProductProps[];
+    purchase_items?: never[] | IProductProps[];
     total_price: number;
     user_id: string | undefined;
 }

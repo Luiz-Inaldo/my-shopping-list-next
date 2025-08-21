@@ -2,7 +2,7 @@
 import { IFilterProps, IPuchasesContextProps, IPurchaseProps } from "@/types";
 import React, { createContext, useContext, useEffect, useState, useTransition } from "react";
 import useGeneralUserStore from "@/store/generalUserStore";
-import { deletePurchaseFromDb, getActivePurchaseList } from "@/services/productsListServices";
+import { deletePurchaseFromDb, getActivePurchaseList } from "@/services/purchasesListServices";
 import { TUiStates } from "@/types/uiStates";
 import { sendToastMessage } from "@/functions/sendToastMessage";
 
@@ -38,11 +38,12 @@ export const PurchasesProvider = ({ children }: { children: React.ReactNode }) =
     }
 
     const deletePurchase = async (purchaseId: string) => {
-        const res = await deletePurchaseFromDb(purchaseId);
-        if (res.status === "success") {
+        try {
+            await deletePurchaseFromDb(purchaseId);
             sendToastMessage({ title: "Compra deletada com sucesso!", type: "success" });
             refetchPurchases();
-        } else {
+        } catch (error) {
+            console.error(error);
             sendToastMessage({ title: "Erro ao deletar compra!", type: "error" });
         }
     }

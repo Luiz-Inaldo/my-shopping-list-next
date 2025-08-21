@@ -1,9 +1,8 @@
-import { ProductsContext } from "@/context/ShoplistContext";
 import { IEditItemProps } from "@/types";
 import { IProductProps } from "@/types";
 import { Dialog } from "@radix-ui/react-dialog";
-import React, { useContext, useEffect, useState } from "react";
-import { Controller, useForm } from "react-hook-form";
+import React, { useState } from "react";
+import { useForm } from "react-hook-form";
 import {
   DialogContent,
   DialogDescription,
@@ -11,6 +10,9 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "../ui/dialog";
+import { Button } from "../ui/button";
+import { Input } from "../ui/input";
+import { useShoplistContext } from "@/context/ShoplistContext";
 
 export const CheckItemForm = ({
   item,
@@ -24,10 +26,11 @@ export const CheckItemForm = ({
     handleSubmit,
   } = useForm<IEditItemProps>();
 
-  const { handleCheckItem } = useContext(ProductsContext);
+  const { handleCheckItem } = useShoplistContext()
   const [open, setOpen] = useState(false);
 
   async function onSubmit(data: IEditItemProps) {
+    data.value = Number(String(data.value).replace(",", "."));
     handleCheckItem(item!, data);
   }
 
@@ -53,28 +56,38 @@ export const CheckItemForm = ({
         <DialogDescription hidden />
         <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-3 p-5">
           <label htmlFor="value" className="flex flex-col">
-            <input
+            <span className="text-subtitle text-sm font-semibold">Digite o valor:</span>
+            <Input
               defaultValue={item?.value}
               type="text"
               {...register("value", { required: true })}
               placeholder="R$: 0,00"
-              className="w-full text-subtitle rounded border border-border px-3 py-2 h-8 text-ellipsis overflow-hidden whitespace-nowrap"
+              autoFocus={false}
             />
+            {/* <input
+              defaultValue={item?.value}
+              type="text"
+              {...register("value", { required: true })}
+              placeholder="R$: 0,00"
+              autoFocus={false}
+              className="w-full text-subtitle rounded border border-border px-3 py-2 h-8 text-ellipsis overflow-hidden whitespace-nowrap"
+            /> */}
           </label>
           <div className="grid grid-cols-2 gap-2 mt-5">
-            <button
+            <Button
               type="submit"
-              className="col-span-1 flex items-center justify-center w-full bg-secondary-blue py-2 px-3 rounded text-snow"
+              className="col-span-1"
             >
               Marcar Produto
-            </button>
-            <button
+            </Button>
+            <Button
               type="button"
               onClick={() => setOpen(false)}
-              className="col-span-1 flex items-center justify-center w-full border border-subtitle py-2 px-3 rounded text-subtitle"
+              variant="outline"
+              className="col-span-1"
             >
               Cancelar
-            </button>
+            </Button>
           </div>
         </form>
       </DialogContent>

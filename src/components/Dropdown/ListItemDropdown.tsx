@@ -12,20 +12,23 @@ import { DeleteProduct } from "../Forms/DeleteProduct";
 import { IProductProps } from "@/types";
 
 export const ListItemDropdown = ({ item }: { item: IProductProps }) => {
+
+  const [open, setOpen] = React.useState(false);
+
   return (
-    <DropdownMenu>
+    <DropdownMenu open={open} onOpenChange={setOpen}>
       <DropdownMenuTrigger asChild>
-        <div className="mr-2 w-6 h-6 rounded-full flex items-center justify-center cursor-pointer">
+        <div className="w-6 h-6 rounded-full flex items-center justify-center cursor-pointer">
           <EllipsisVertical size={16} />
         </div>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">
         <DropdownMenuItem asChild>
-          <EditProductForm item={item} />
+          <EditProductForm closeDropdown={() => setOpen(false)} item={item} />
         </DropdownMenuItem>
         <DropdownMenuSeparator />
         <DropdownMenuItem asChild>
-          <DeleteProduct item={item} />
+          <DeleteProduct closeDropdown={() => setOpen(false)} item={item} />
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>

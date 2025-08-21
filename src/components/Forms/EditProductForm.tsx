@@ -1,8 +1,8 @@
 "use client";
-import { ProductsContext } from "@/context/ShoplistContext";
+import { useShoplistContext } from "@/context/ShoplistContext";
 import { IEditItemProps } from "@/types";
 import { IProductProps } from "@/types";
-import React, { useContext, useState } from "react";
+import React, { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import {
   Dialog,
@@ -13,24 +13,31 @@ import {
   DialogTrigger,
 } from "../ui/dialog";
 import { Button } from "../ui/button";
+import { ShadSelect } from "../Select";
+import { SelectItem } from "../ui/select";
+import { UNIT_TYPES } from "@/data/unitTypes";
 
 export const EditProductForm = ({
   item,
+  closeDropdown
 }: {
   item: IProductProps | undefined;
+  closeDropdown: () => void;
 }) => {
   const {
     control,
-    formState: { errors },
     handleSubmit,
   } = useForm<IEditItemProps>();
 
-  const { handleUpdateItem } = useContext(ProductsContext);
+  const { handleUpdateItem } = useShoplistContext();
   const [open, setOpen] = useState(false);
 
   async function onSubmit(data: IEditItemProps) {
-    await handleUpdateItem(data, item!.id);
+    if (!item || !item.id) return;
+    data.value = Number(String(data.value).replace(",", "."));
+    await handleUpdateItem(data, item.id);
     setOpen(false);
+    closeDropdown();
   }
 
   return (
@@ -59,10 +66,23 @@ export const EditProductForm = ({
                 <input
                   type="text"
                   {...field}
-                  className="w-full text-paragraph text-sm rounded-full border px-3 py-2 h-8 text-ellipsis overflow-hidden whitespace-nowrap"
+                  className="w-full text-subtitle bg-app-background text-sm rounded-full border px-3 py-2 h-8 text-ellipsis overflow-hidden whitespace-nowrap"
                 />
               )}
             />
+          </label>
+          <label htmlFor="unit_type" className="flex flex-col mt-3">
+            <span className="text-subtitle text-sm font-semibold">Tipo de unidade:</span>
+            <ShadSelect
+              control={control}
+              label='Selecione o tipo de unidade'
+              name="unit_type"
+              defaultValue={item?.unit_type}
+            >
+              {UNIT_TYPES.map(type => (
+                <SelectItem key={type} value={type}>{type}</SelectItem>
+              ))}
+            </ShadSelect>
           </label>
           <div className="grid grid-cols-2 gap-3">
             <label htmlFor="value" className="flex flex-col col-span-1">
@@ -70,12 +90,12 @@ export const EditProductForm = ({
               <Controller
                 control={control}
                 name="value"
-                defaultValue={item?.value || "0,00"}
+                defaultValue={String(item?.value).replace(".", ",") || "0"}
                 render={({ field }) => (
                   <input
                     type="text"
                     {...field}
-                    className="w-full text-paragraph text-sm rounded-full border px-3 py-2 h-8"
+                    className="w-full text-subtitle bg-app-background text-sm rounded-full border px-3 py-2 h-8"
                   />
                 )}
               />
@@ -90,7 +110,7 @@ export const EditProductForm = ({
                   <input
                     type="number"
                     {...field}
-                    className="w-full text-paragraph text-sm rounded-full border px-3 py-2 h-8"
+                    className="w-full text-subtitle bg-app-background text-sm rounded-full border px-3 py-2 h-8"
                   />
                 )}
               />
@@ -115,12 +135,5 @@ export const EditProductForm = ({
         </form>
       </DialogContent>
     </Dialog>
-    // <React.Fragment>
-    //     {isVisible && (
-    //         <div className={`${isFading ? 'opacity-100 visible' : 'opacity-0 invisible'} w-[350px] rounded bg-app-container border transition-all duration-500`}>
-
-    //         </div>
-    //     )}
-    // </React.Fragment>
   );
 };
