@@ -1,5 +1,5 @@
 "use client";
-import React, { useContext } from "react";
+import React, { useContext, useState, useTransition } from "react";
 import {
   Drawer,
   DrawerContent,
@@ -9,22 +9,24 @@ import {
   DrawerTitle,
   DrawerTrigger,
 } from "@/components/ui/drawer";
-import { Plus } from "lucide-react";
+import { LoaderCircle, Plus } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { ShadSelect } from "../Select";
 import { SelectItem } from "../ui/select";
 import { CATEGORIES } from "@/constants/categories";
-import { supabase } from "@/lib/api";
-import { ProductsContext } from "@/context/ProductsContext";
 import { IFormItem } from "@/types";
-import useGeneralUserStore from "@/store/generalUserStore";
 import { Button } from "../ui/button";
 import { sendToastMessage } from "@/functions/sendToastMessage";
+import { useShoplistContext } from "@/context/ShoplistContext";
+import { addPurchaseItem } from "@/services/productsListServices";
+import { UNIT_TYPES } from "@/data/unitTypes";
+
 
 export const AddProductForm = () => {
-  const user = useGeneralUserStore((store) => store.user);
 
-  const { setData } = useContext(ProductsContext);
+  const [isLoading, startAddProductTransition] = useTransition();
+
+  const { productsList, fetchListItemsData } = useShoplistContext();
   const {
     register,
     control,
@@ -34,55 +36,67 @@ export const AddProductForm = () => {
   } = useForm<IFormItem>();
 
   // funções
-  async function onSubmit(data: IFormItem) {
-    const item = {
-      id: crypto.randomUUID(),
-      ...data,
-      user_id: user?.id,
-    };
+  function onSubmit(data: IFormItem) {
+    startAddProductTransition(async () => {
+      const item = {
+        ...data
+      };
 
-    if (item.value === "") {
-      item.value = "0,00";
-    }
+      if (!item.value) {
+        item.value = 0;
+      }
 
-    if (!item.quantity) {
-      item.quantity = 0;
-    }
+      if (typeof item.value === "string") {
+        item.value = Number(String(item.value).replace(",", "."));
+      } else {
+        item.value = Number(item.value);
+      }
 
-    try {
-      const response = await supabase.from("products").insert([item]).select();
+      if (!item.quantity) {
+        item.quantity = 0;
+      } else if (typeof item.quantity === "string") {
+        item.quantity = Number(String(item.quantity).replace(",", "."));
+      }
 
-      if (response.status === 201) {
+      // console.log(item)
+      // return;
+
+      try {
+        await addPurchaseItem(productsList?.id as string, item);
+
         sendToastMessage({
           title: "Produto adicionado com sucesso!",
           type: "success"
         });
 
-        // atualiza estado de produtos após atualizar banco
-        setData(previous => [...previous!, item]);
-        // fetchData();
-      }
+        fetchListItemsData();
 
-      reset()
-    } catch (error) {
-      sendToastMessage({
-        title: "Erro ao adicionar produto",
-        type: "error"
-      });
-      console.error("Error adding product:", error);
-    }
+        // setProductsList(previous => ({
+        //   ...previous!,
+        //   purchase_items: [...previous!.purchase_items!, item]
+        // }));
+
+        reset();
+      } catch (error) {
+        sendToastMessage({
+          title: "Erro ao adicionar produto",
+          type: "error"
+        });
+        console.error("Error adding product:", error);
+      }
+    })
   }
 
   return (
     <Drawer>
-      <DrawerTrigger className="relative flex items-center justify-center">
-        {/* <span className='absolute w-8 h-8 top-1.5 animate-ping z-[-1] bg-primary-blue rounded-full'></span> */}
+      <DrawerTrigger asChild>
         <Button
           onClick={() => { }}
-          size="icon"
-          className="rounded-full cursor-pointer shadow-md p-0 text-2xl"
+          size="sm"
+          className="fixed rounded-full bottom-5 right-5 h-fit px-2 py-1"
         >
-          <Plus className="svg-shadow" size={24} />
+          <Plus size={24} />
+          <p>Adicionar Produto</p>
         </Button>
       </DrawerTrigger>
       <DrawerContent className="bg-app-container rounded-lg">
@@ -120,14 +134,26 @@ export const AddProductForm = () => {
               </span>}
             </label>
 
+            <label htmlFor="unit_type" className='relative flex flex-col col-span-1'>
+              <span className='text-subtitle text-sm font-semibold mb-1 leading-none'>Tipo de unidade:</span>
+              <ShadSelect control={control} label='Selecione o tipo de unidade' name="unit_type">
+                {UNIT_TYPES.map(type => (
+                  <SelectItem key={type} value={type}>{type}</SelectItem>
+                ))}
+              </ShadSelect>
+              {errors.category && <span className='text-xs text-red-500'>
+                Campo obrigatório
+              </span>}
+            </label>
+
             <div className='grid grid-cols-2 gap-2'>
               <label htmlFor="quantity" className='relative flex flex-col col-span-1'>
                 <span className='text-subtitle text-sm font-semibold mb-1 leading-none'>Quantidade:</span>
                 <input
-                  type="number"
+                  type="text"
                   placeholder="0"
                   className='w-full flex h-8 rounded-full border text-subtitle border-gray-300 bg-app-background px-3 py-2 text-sm'
-                  {...register('quantity', { required: true })}
+                  {...register('quantity')}
                 />
                 {errors.quantity && <span className='text-xs text-red-500'>
                   Campo obrigatório
@@ -159,7 +185,14 @@ export const AddProductForm = () => {
           </div>
           <DrawerFooter>
             <Button type='submit'>
-              Adicionar
+              {isLoading ? (
+                <>
+                  <LoaderCircle className="animate-spin" size={16} />
+                  Adicionando produto...
+                </>
+              ) : (
+                "Adicionar produto"
+              )}
             </Button>
           </DrawerFooter>
         </form>

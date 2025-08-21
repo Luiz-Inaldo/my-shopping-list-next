@@ -25,7 +25,7 @@ export function MonthlyStatistics() {
                 <div className="space-y-1 col-span-2 border text-purple-600 dark:text-purple-400 bg-purple-50 dark:bg-purple-950/60 p-2 rounded-lg border-purple-100 dark:border-purple-900">
                     <div className="flex items-center gap-2">
                         <Goal size={14} />
-                        <span className="text-xs font-medium">Items</span>
+                        <span className="text-xs font-medium">Itens</span>
                     </div>
                     <p className='font-semibold text-purple-800 dark:text-purple-600'>240</p>
                     <p className="text-xs">94% concluídos</p>

@@ -15,11 +15,9 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { createListSchema } from '@/types/zodTypes';
 import { sendToastMessage } from '@/functions/sendToastMessage';
 import { motion } from 'motion/react';
-import { addDoc, collection } from 'firebase/firestore';
-import { db } from '@/lib/firebase';
 import { IPurchaseProps } from '@/types';
 import { usePurchasesContext } from '@/context/PurchasesContext';
-import { addPurchaseToDb } from '@/services/productsListServices';
+import { addPurchaseToDb } from '@/services/purchasesListServices';
 
 const addButtonVariants = {
     initial: {
@@ -51,7 +49,6 @@ const NewListForm = () => {
 
         const newList: IPurchaseProps = {
             title: listData.list_name,
-            purchase_items: [],
             items_count: 0,
             is_active: true,
             start_date: new Date(),
@@ -64,15 +61,15 @@ const NewListForm = () => {
         setPurchaseTransition(async () => {
             await sleep(2);
 
-            const res = await addPurchaseToDb(newList);
-
-            if (res.status === "success") {
+            try {
+                await addPurchaseToDb(newList);
                 sendToastMessage({
                     title: "Lista criada com sucesso!",
                     type: "success"
                 });
                 refetchPurchases();
-            } else {
+            } catch (error) {
+                console.error(error)
                 sendToastMessage({
                     title: "Erro ao criar compra! Tente novamente.",
                     type: "error"

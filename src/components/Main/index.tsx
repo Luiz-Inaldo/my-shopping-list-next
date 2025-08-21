@@ -4,7 +4,7 @@ import React, {
   useEffect,
   useState,
 } from "react";
-import { ProductsContext } from "@/context/ProductsContext";
+import { ProductsContext } from "@/context/ShoplistContext";
 import NonPurchaseList from "../NonPurchaseList";
 import ShoppingList from "../ShoppingList";
 import Header from "../Header";

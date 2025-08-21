@@ -1,10 +1,6 @@
-export function formatCurrency(value: string): string {
-
-    let newNumber = value.replace(".", "").replace(",", ".");
-    const parsedNumber = parseFloat(newNumber);
-
+export function formatCurrency(value: number): string {
     return new Intl.NumberFormat("pt-BR", {
         style: 'currency',
         currency: 'BRL'
-    }).format(parsedNumber);
+    }).format(value);
 }

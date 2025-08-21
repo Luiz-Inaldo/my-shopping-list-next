@@ -58,7 +58,8 @@ export default function LogInForm({
         );
 
         const token = await firebaseLoginResponse.user.getIdToken();
-        document.cookie = `authToken=${token}; path=/; sameSite=lax; secure;`;
+        // TODO: Colocar HTTPONLY no cookie
+        document.cookie = `authToken=${token}; path=/; sameSite=lax; secure=${process.env.NODE_ENV === "production"};`;
 
         sendToastMessage({
           title: "Login realizado com sucesso.",
