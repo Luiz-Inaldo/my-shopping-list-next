@@ -8,6 +8,7 @@ import {
   deleteDoc,
   doc,
   addDoc,
+  updateDoc,
 } from "firebase/firestore";
 
 export async function getActivePurchaseList(userId: string) {
@@ -37,3 +38,10 @@ export async function addPurchaseToDb(purchase: IPurchaseProps) {
 export async function deletePurchaseFromDb(purchaseId: string) {
   await deleteDoc(doc(db, "purchases", purchaseId));
 };
+
+export async function saveCurrentPurchase(purchase: IPurchaseProps) {
+  const docRef = doc(db, "purchases", purchase.id as string);
+  await updateDoc(docRef, {
+    is_active: false
+  });
+}

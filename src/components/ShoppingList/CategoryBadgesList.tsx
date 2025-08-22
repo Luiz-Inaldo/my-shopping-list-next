@@ -1,6 +1,5 @@
 import { CATEGORIES } from '@/constants/categories'
 import { useShoplistContext } from '@/context/ShoplistContext';
-import { useState } from 'react';
 
 export function CategoryBadgesList() {
 
@@ -18,7 +17,7 @@ export function CategoryBadgesList() {
     if (!auxData) return null;
 
     return (
-        <div className="flex items-center gap-3 overflow-x-scroll scrollbar-hide">
+        <div className="flex items-center gap-3 pb-2 overflow-x-scroll scrollbar-hide">
             <>
                 {CATEGORIES.map((category) => {
                     const totalItemsOnCurrentCategory = auxData.purchase_items?.filter(item => item.category === category.name).length;

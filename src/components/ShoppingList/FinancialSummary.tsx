@@ -5,8 +5,16 @@ import { useShoplistContext } from "@/context/ShoplistContext";
 import { formatCurrency } from "@/functions/formatCurrency";
 import { useCallback, useEffect } from "react";
 import { AnimatedCircularProgressBar } from "../magicui/animated-circular-progress-bar";
+import FinalizePurchaseModal from "../Modal/FinalizePurchaseModal";
+import { sleep } from "@/functions/sleep";
+import { saveCurrentPurchase } from "@/services/purchasesListServices";
+import { IPurchaseProps } from "@/types";
+import { sendToastMessage } from "@/functions/sendToastMessage";
 
-export function FinancialSummary() {
+export function FinancialSummary({ setSavingModalOpen, setIsSaved }: {
+    setSavingModalOpen: React.Dispatch<React.SetStateAction<boolean>>;
+    setIsSaved: React.Dispatch<React.SetStateAction<boolean>>;
+}) {
 
     const { auxData, totalValue } = useShoplistContext();
 
@@ -25,11 +33,34 @@ export function FinancialSummary() {
 
     }, [auxData, totalValue]);
 
+    async function handleFinalizePurchase() {
+        await sleep(0.5);
+        setSavingModalOpen(true);
+        try {
+
+            // estilo sendo inferido dessa forma pois o modal aberto não usa nenhuma lib
+            // e a página principal pode conter overflow scroll por conta da quantidade
+            // de produtos
+            document.body.style.overflow = 'hidden';
+
+            await saveCurrentPurchase(auxData as IPurchaseProps);
+            setIsSaved(true);
+        } catch (error) {
+            console.error("Error saving purchase:", error);
+            sendToastMessage({
+                title: "Erro ao salvar compra",
+                type: "error"
+            })
+        } finally {
+            document.body.style.overflow = 'auto';
+            setSavingModalOpen(false);
+        }
+    }
     return (
         <div className="bg-app-container rounded-lg p-3 space-y-4 shadow border border-app-border">
             <div className="flex items-center gap-3">
                 <TrendingUp size={20} className="text-green-600 dark:text-green-400" />
-                <h3 className="text-sm text-subtitle">Resumo financeiro</h3>
+                <h3 className="text-subtitle">Resumo financeiro</h3>
             </div>
             <div className="flex items-center py-3 gap-8 border-b border-app-border">
                 <div className="flex items-center justify-center pl-4">
@@ -63,10 +94,17 @@ export function FinancialSummary() {
                 </div>
                 <Progress value={calculateTotalProgress()} />
             </div> */}
-            <Button className="w-full">
-                <ShoppingCart />
-                <p>Finalizar Compra</p>
-            </Button>
+            <FinalizePurchaseModal
+                onFinalize={handleFinalizePurchase}
+                trigger={
+                    <Button
+                        disabled={totalValue <= 0}
+                        className="w-full">
+                        <ShoppingCart />
+                        <p>Finalizar Compra</p>
+                    </Button>
+                }
+            />
         </div>
     )
 }

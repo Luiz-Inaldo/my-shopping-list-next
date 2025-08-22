@@ -12,9 +12,6 @@ export function Product({ item, ...props }: { item: IProductProps }) {
 
     const handleItemCheckbox = (product: IProductProps) => {
 
-        // console.log("item para ser alterado", product);
-        // return;
-
         if (!product.checked && product.value !== 0) {
             handleCheckItem(product);
         } else if (product.checked) {

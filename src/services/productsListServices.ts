@@ -6,6 +6,7 @@ import {
   deleteDoc,
   doc,
   getDocs,
+  increment,
   query,
   updateDoc,
   where,
@@ -68,7 +69,11 @@ export async function addPurchaseItem(
   purchaseId: string,
   newItem: IProductProps
 ) {
+  const purchaseRef = doc(db, "purchases", purchaseId);
   await addDoc(collection(db, "purchases", purchaseId, "purchase_items"), newItem);
+  await updateDoc(purchaseRef, {
+    items_count: increment(1)
+  })
 }
 
 /**
@@ -105,7 +110,11 @@ export async function updatePurchaseItem(purchaseId: string, productId: string, 
  * @param {string} productId - The ID of the product
  */
 export async function deletePurchaseItem(purchaseId: string, productId: string) {
+  const purchaseRef = doc(db, "purchases", purchaseId);
   const itemDocRef = doc(db, "purchases", purchaseId, "purchase_items", productId);
 
   await deleteDoc(itemDocRef);
+  await updateDoc(purchaseRef, {
+    items_count: increment(-1)
+  });
 }
