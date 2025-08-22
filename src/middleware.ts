@@ -15,5 +15,5 @@ export async function middleware(req: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/", "/historic/:path*", "/settings/:path*", "/statistics/:path*", "/menu/:path*"], // rotas privadas
+  matcher: ["/", "/historic/:path*", "/settings/:path*", "/statistics/:path*", "/menu/:path*", "/list/:path*"], // rotas privadas
 };

@@ -14,8 +14,12 @@ import { useState } from 'react';
 import { LoadingActionModal } from '../Modal/LoadingActionModal';
 import PurchaseSaved from './PurchaseSaved';
 import { ShoppingListSkeleton } from '../Skeletons/ShoppingListSkeleton';
+import useGeneralUserStore from '@/store/generalUserStore';
+import { PurchaseBlocked } from '../Errors/PurchaseBlocked';
 
 export default function ShoppingList() {
+
+  const userProfile = useGeneralUserStore(store => store.userProfile)
 
   const [isSaved, setIsSaved] = useState(false);
   const [savingModalOpen, setSavingModalOpen] = useState(false);
@@ -27,6 +31,10 @@ export default function ShoppingList() {
 
   if (!productsList) {
     return <ShoppingListSkeleton />;
+  }
+
+  if (!productsList?.is_active || userProfile?.uid !== productsList?.user_id) {
+    return <PurchaseBlocked />;
   }
 
   return (
