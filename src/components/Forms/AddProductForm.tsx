@@ -84,11 +84,6 @@ export const AddProductForm = () => {
 
         fetchListItemsData();
 
-        // setProductsList(previous => ({
-        //   ...previous!,
-        //   purchase_items: [...previous!.purchase_items!, item]
-        // }));
-
         // Reset do formulário e fechamento do drawer
         reset({
           name: "",

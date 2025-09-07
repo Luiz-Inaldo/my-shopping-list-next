@@ -4,10 +4,17 @@ import { Search } from 'lucide-react'
 import { debounce } from '@/functions/debounce'
 import { useShoplistContext } from '@/context/ShoplistContext'
 import { CATEGORIES } from '@/constants/categories'
+import { useQueryClient } from '@tanstack/react-query'
+import { QUERY_KEYS } from '@/constants/queryKeys'
+import useGeneralUserStore from '@/store/generalUserStore'
+import { IPurchaseProps } from '@/types'
 
 export function ProductsSearch() {
 
-  const { auxData, setProductsList } = useShoplistContext();
+  const userId = useGeneralUserStore(store => store.userProfile?.uid);
+  const { auxData, listName, filterValue } = useShoplistContext();
+
+  const queryClient = useQueryClient();
 
   const debouncedQuery = useMemo(() => {
     return debounce((value: string) => {
@@ -15,13 +22,13 @@ export function ProductsSearch() {
       const categoriesToLowerCase = CATEGORIES.map(category => category.name.toLowerCase());
 
       if (!value) {
-        setProductsList(auxData);
+        queryClient.setQueryData([QUERY_KEYS.productsList, userId, listName], auxData);
         return;
       }
 
       if (categoriesToLowerCase.includes(value)) {
         const filteredList = auxData?.purchase_items?.filter(product => product.category.toLowerCase() === value) ?? [];
-        setProductsList(oldList => ({
+        queryClient.setQueryData([QUERY_KEYS.productsList, userId, listName], (oldList: IPurchaseProps | undefined) => ({
           ...oldList!,
           purchase_items: filteredList
         }));
@@ -29,7 +36,7 @@ export function ProductsSearch() {
       }
 
       const filteredList = auxData?.purchase_items?.filter(product => product.name.toLowerCase().includes(value)) ?? [];
-      setProductsList(oldList => ({
+      queryClient.setQueryData([QUERY_KEYS.productsList, userId, listName], (oldList: IPurchaseProps | undefined) => ({
         ...oldList!,
         purchase_items: filteredList
       }));

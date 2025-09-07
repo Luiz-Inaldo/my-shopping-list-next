@@ -1,35 +1,41 @@
 import { formatDate } from '@/functions/formatDate';
 import { IPurchaseProps } from '@/types'
 import React from 'react'
-import { motion } from 'motion/react';
+import { AnimatePresence, motion } from 'motion/react';
 import { usePurchasesContext } from '@/context/PurchasesContext';
 import { HomePagePurchaseSkeleton } from '../Skeletons/PurchaseListSkeletons';
 import { DeletePurchase } from '../Forms/DeletePurchase';
 import { APP_ROUTES } from '@/routes/app-routes';
 import Link from 'next/link';
-import { ChevronRight } from 'lucide-react';
-import { useQuery, useQueryClient } from '@tanstack/react-query';
-import useGeneralUserStore from '@/store/generalUserStore';
-import { getActivePurchaseList } from '@/services/purchasesListServices';
+import { ChevronRight, Loader } from 'lucide-react';
 import ErrorFetchData from '../Errors/ErrorFetchData';
 
 export function ActivePurchsesList() {
 
-    const userId = useGeneralUserStore(store => store.userProfile?.uid);
-
     const { purchasesList, loadingPurchasesList, fetchingPurchasesList, pendingPurchasesList, errorFetchingPurchases } = usePurchasesContext();
 
-    // if (uiStates.isLoading) return <HomePagePurchaseSkeleton />;
-
     if (loadingPurchasesList || pendingPurchasesList) return <HomePagePurchaseSkeleton />;
-
-    if (fetchingPurchasesList) return <p className="text-sm text-paragraph">Atualizando lista...</p>
 
     if (errorFetchingPurchases) return <ErrorFetchData />;
 
     return (
         <>
-            <h2 className="text-subtitle font-medium">Suas listas ativas</h2>
+            <div className="flex justify-between">
+                <h2 className="text-subtitle font-medium">Suas listas ativas</h2>
+                {fetchingPurchasesList && (
+                    <AnimatePresence>
+                        <motion.div
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            exit={{ opacity: 0 }}
+                            transition={{ duration: 0.2 }}
+                            className="flex items-center gap-2">
+                            <Loader size={14} className='animate-spin' />
+                            <p className="text-xs text-paragraph">Atualizando...</p>
+                        </motion.div>
+                    </AnimatePresence>
+                )}
+            </div>
 
             <div className="flex flex-col gap-3 items-center">
                 {purchasesList && purchasesList?.length > 0 ? (

@@ -6,6 +6,7 @@ import { deletePurchaseFromDb, getActivePurchaseList } from "@/services/purchase
 import { TUiStates } from "@/types/uiStates";
 import { sendToastMessage } from "@/functions/sendToastMessage";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { QUERY_KEYS } from "@/constants/queryKeys";
 
 const PurchasesContext = createContext<IPuchasesContextProps | undefined>(undefined);
 
@@ -19,8 +20,6 @@ export const PurchasesProvider = ({ children }: { children: React.ReactNode }) =
     // ===============
     // # States
     // ===============
-    // const [purchasesList, setPurchasesList] = useState<IPurchaseProps[]>([]);
-    const [uiStates, setUiStates] = useState<TUiStates>({ isLoading: true, hasError: false });
     const [auxData, setAuxData] = useState<IPurchaseProps[]>([]);
 
     // ===============
@@ -33,32 +32,17 @@ export const PurchasesProvider = ({ children }: { children: React.ReactNode }) =
         isPending: pendingPurchasesList,
         error: errorFetchingPurchases,
     } = useQuery<IPurchaseProps[]>({
-        queryKey: ['activePurchases', userProfile?.uid],
+        queryKey: [QUERY_KEYS.activePurchases, userProfile?.uid],
         queryFn: async () => {
             const res = await getActivePurchaseList(userProfile?.uid as string);
             setAuxData(res.data as unknown as IPurchaseProps[]);
             return res.data as unknown as IPurchaseProps[];
         },
         refetchOnWindowFocus: false,
+        refetchInterval: 60_000,
         enabled: !!userProfile?.uid
     });
     const queryClient = useQueryClient();
-
-    // const getPurchases = async () => {
-    //     if (userProfile === null) return;
-    //     setUiStates(prev => ({ ...prev, isLoading: true }));
-    //     try {
-    //         const res = await getActivePurchaseList(userProfile.uid);
-    //         // setPurchasesList(res.data as unknown as IPurchaseProps[]);
-    //         setAuxData(res.data as unknown as IPurchaseProps[]);
-    //         return res.data as unknown as IPurchaseProps[];
-    //     } catch (error) {
-    //         console.error(error);
-    //         setUiStates(prev => ({ ...prev, hasError: true }));
-    //     } finally {
-    //         setUiStates(prev => ({ ...prev, isLoading: false }));
-    //     }
-    // }
 
     const deletePurchase = async (purchaseId: string) => {
         try {

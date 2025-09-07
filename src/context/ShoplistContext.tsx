@@ -6,8 +6,9 @@ import { IEditItemProps } from "@/types";
 import useGeneralUserStore from "@/store/generalUserStore";
 import { sendToastMessage } from "@/functions/sendToastMessage";
 import { useSearchParams } from "next/navigation";
-import { TUiStates } from "@/types/uiStates";
 import { checkPurchaseItem, deletePurchaseItem, getProductsList, getProductsListItems, updatePurchaseItem } from "@/services/productsListServices";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { QUERY_KEYS } from "@/constants/queryKeys";
 
 const ShoplistContext = createContext<IShoplistContextProps | undefined>(undefined);
 
@@ -22,11 +23,28 @@ export const ShoplistProvider = ({ children }: { children: React.ReactNode }) =>
 
     /* ====> states <==== */
     const [auxData, setAuxData] = useState<IPurchaseProps | null>(null);
-    const [productsList, setProductsList] = useState<IPurchaseProps | null>(null);
-    const [uiStates, setUiStates] = useState<TUiStates>({ isLoading: true, hasError: false });
+    // const [productsList, setProductsList] = useState<IPurchaseProps | null>(null);
     const [filterValue, setFilterValue] = useState<string | null>(null);
     const [totalValue, setTotalValue] = useState<number>(0);
     const [currentPurchase, setCurrentPurchase] = useState<ISupabasePurchaseProps | null>(null);
+
+    // ===============
+    // # ReactQuery
+    // ===============
+    const {
+        data: productsList,
+        isLoading: loadingProductsList,
+        isFetching: fetchingProductsList,
+        isPending: pendingProductsList,
+        error: errorFetchingProducts,
+        refetch: refetchProductsList,
+    } = useQuery<IPurchaseProps | undefined>({
+        queryKey: [QUERY_KEYS.productsList, userProfile?.uid, listName],
+        queryFn: fetchData,
+        refetchOnWindowFocus: false,
+        enabled: !!userProfile?.uid
+    });
+    const queryClient = useQueryClient();
 
     /**
      * ========>> refs <<========
@@ -36,36 +54,31 @@ export const ShoplistProvider = ({ children }: { children: React.ReactNode }) =>
     /* ====> functions <==== */
     async function fetchData() {
         if (!userProfile) return;
-        setUiStates(prev => ({ ...prev, isLoading: true }));
 
-        try {
-            const res = await getProductsList(userProfile.uid, listName);
-            const productsList = {
-                purchase_items: [],
-                ...res.data[0],
-            };
+        const res = await getProductsList(userProfile.uid, listName);
+        const productsList = {
+            purchase_items: [],
+            ...res.data[0],
+        };
 
-            setProductsList(productsList as unknown as IPurchaseProps);
-            setAuxData(productsList as unknown as IPurchaseProps);
+        setAuxData(productsList as unknown as IPurchaseProps);
+        return productsList as unknown as IPurchaseProps;
 
-        } catch (error) {
-            console.error(error);
-            setUiStates(prev => ({ ...prev, hasError: true }));
-        } finally {
-            setUiStates(prev => ({ ...prev, isLoading: false }));
-        }
     }
 
     async function fetchListItemsData() {
-        if (!productsList) return;
+        if (!productsList?.id) return;
 
         try {
-            const res = await getProductsListItems(productsList.id!);
+            const res = await getProductsListItems(productsList.id);
 
-            setProductsList((prevList) => ({
-                ...prevList!,
-                purchase_items: res.data as unknown as IProductProps[],
-            }));
+            queryClient.setQueryData(['productsList', userProfile?.uid, listName], (oldData: IPurchaseProps | undefined) => {
+                if (!oldData) return oldData;
+                return {
+                    ...oldData,
+                    purchase_items: res.data as unknown as IProductProps[],
+                };
+            });
 
             setAuxData((prevList) => ({
                 ...prevList!,
@@ -74,9 +87,7 @@ export const ShoplistProvider = ({ children }: { children: React.ReactNode }) =>
             if (isFirstLoad.current) isFirstLoad.current = false;
         } catch (error) {
             console.error(error);
-            setUiStates(prev => ({ ...prev, hasError: true }));
-        } finally {
-            setUiStates(prev => ({ ...prev, isLoading: false }));
+            sendToastMessage({ title: "Houve um erro ao buscar os produtos.", type: 'error' });
         }
 
     }
@@ -97,15 +108,16 @@ export const ShoplistProvider = ({ children }: { children: React.ReactNode }) =>
         try {
             await updatePurchaseItem(productsList?.id as string, itemID, object);
             sendToastMessage({ title: "Produto atualizado com sucesso.", type: 'success' });
-            setProductsList((oldData) => {
+            queryClient.setQueryData(['productsList', userProfile?.uid, listName], (oldData: IPurchaseProps | undefined) => {
+                if (!oldData) return oldData;
                 return {
-                    ...oldData!,
-                    purchase_items: oldData!.purchase_items!.map(product => {
+                    ...oldData,
+                    purchase_items: oldData.purchase_items!.map(product => {
                         if (product.id === itemID) {
-                            return { 
-                                ...product, 
-                                name: object.name, 
-                                quantity: object.quantity, 
+                            return {
+                                ...product,
+                                name: object.name,
+                                quantity: object.quantity,
                                 value: object.value,
                                 unit_type: object.unit_type,
                             };
@@ -119,10 +131,10 @@ export const ShoplistProvider = ({ children }: { children: React.ReactNode }) =>
                     ...oldData!,
                     purchase_items: oldData!.purchase_items!.map(product => {
                         if (product.id === itemID) {
-                            return { 
-                                ...product, 
-                                name: object.name, 
-                                quantity: object.quantity, 
+                            return {
+                                ...product,
+                                name: object.name,
+                                quantity: object.quantity,
                                 value: object.value,
                                 unit_type: object.unit_type,
                             };
@@ -141,15 +153,18 @@ export const ShoplistProvider = ({ children }: { children: React.ReactNode }) =>
     async function handleDeleteItem(itemID: string) {
         try {
             if (productsList?.purchase_items?.length === 1) {
-                setProductsList(auxData);
+                queryClient.setQueryData(['productsList', userProfile?.uid, listName], auxData);
                 setFilterValue(null);
             }
             await deletePurchaseItem(productsList?.id as string, itemID);
             sendToastMessage({ title: "Produto removido com sucesso.", type: 'success' });
-            setProductsList(oldData => ({
-                ...oldData!,
-                purchase_items: oldData!.purchase_items!.filter(product => product.id !== itemID)
-            }));
+            queryClient.setQueryData(['productsList', userProfile?.uid, listName], (oldData: IPurchaseProps | undefined) => {
+                if (!oldData) return oldData;
+                return {
+                    ...oldData,
+                    purchase_items: oldData.purchase_items!.filter(product => product.id !== itemID)
+                };
+            });
             setAuxData(oldData => ({
                 ...oldData!,
                 purchase_items: oldData!.purchase_items!.filter(product => product.id !== itemID)
@@ -173,14 +188,18 @@ export const ShoplistProvider = ({ children }: { children: React.ReactNode }) =>
             await checkPurchaseItem(productsList?.id as string, item?.id as string, !item.checked);
 
             sendToastMessage({ title: `${item.name} marcado como adquirido.`, type: 'success' });
-            setProductsList((oldList) => ({
-                ...oldList!,
-                purchase_items: oldList!.purchase_items?.map(product => {
-                    if (product.id === item.id) {
-                        return editedItem;
-                    }
-                    return product;
-                })
+            queryClient.setQueryData(['productsList', userProfile?.uid, listName], ((oldList: IPurchaseProps | undefined) => {
+                if (!oldList) return;
+
+                return {
+                    ...oldList!,
+                    purchase_items: oldList!.purchase_items?.map(product => {
+                        if (product.id === item.id) {
+                            return editedItem;
+                        }
+                        return product;
+                    })
+                }
             }))
             setAuxData((oldList) => ({
                 ...oldList!,
@@ -208,15 +227,19 @@ export const ShoplistProvider = ({ children }: { children: React.ReactNode }) =>
             await checkPurchaseItem(productsList?.id as string, item?.id as string, !item.checked);
 
             sendToastMessage({ title: `${item.name} desmarcado.`, type: 'success' });
-            setProductsList((oldList) => ({
-                ...oldList!,
-                purchase_items: oldList!.purchase_items?.map(product => {
-                    if (product.id === item.id) {
-                        return editedItem;
-                    }
-                    return product;
-                })
-            }))
+            queryClient.setQueryData(['productsList', userProfile?.uid, listName], (oldList: IPurchaseProps | undefined) => {
+                if (!oldList) return;
+
+                return {
+                    ...oldList!,
+                    purchase_items: oldList!.purchase_items?.map(product => {
+                        if (product.id === item.id) {
+                            return editedItem;
+                        }
+                        return product;
+                    })
+                }
+            })
             setAuxData((oldList) => ({
                 ...oldList!,
                 purchase_items: oldList!.purchase_items?.map(product => {
@@ -233,59 +256,33 @@ export const ShoplistProvider = ({ children }: { children: React.ReactNode }) =>
 
     }
 
-    /* ====> effects <==== */
-    useEffect(() => {
-        fetchData();
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [userProfile]);
-
     useEffect(() => {
         if (productsList && isFirstLoad.current) {
             fetchListItemsData();
+        }
+
+        if (productsList && !auxData) {
+            setAuxData(productsList);
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [productsList]);
 
     useEffect(() => {
-        if (productsList?.purchase_items && productsList.purchase_items.length > 0) {
+        if (productsList?.purchase_items && productsList.purchase_items.length > 0 && auxData) {
             calculateTotalValue();
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [productsList?.purchase_items]);
-
-    // useEffect(() => {
-    //     caculateTotalValue();
-    //     // eslint-disable-next-line react-hooks/exhaustive-deps
-    // }, [productsList]);
-
-    // useEffect(() => {
-
-    //     if (currentPurchase) {
-    //         const parsedTotal = parseFloat(totalValue.replace(',', '.'));
-    //         const parsedMaxValue = parseFloat(currentPurchase?.list_max_value.replace(',', '.'));
-
-    //         if (parsedTotal < (parsedMaxValue * 0.8)) {
-    //             setSituation('good');
-    //         }
-
-    //         if (parsedTotal >= (parsedMaxValue * 0.8) && parsedTotal < parsedMaxValue) {
-    //             setSituation('normal');
-    //         }
-
-    //         if (parsedTotal >= parsedMaxValue) {
-    //             setSituation('bad');
-    //         }
-    //     }
-
-    // }, [totalValue, currentPurchase]);
+    }, [productsList?.purchase_items, auxData]);
 
     return (
         <ShoplistContext.Provider value={{
             listName,
             auxData,
             productsList,
-            setProductsList,
-            uiStates,
+            loadingProductsList,
+            fetchingProductsList,
+            pendingProductsList,
+            errorFetchingProducts,
             filterValue,
             setFilterValue,
             totalValue,
@@ -293,7 +290,7 @@ export const ShoplistProvider = ({ children }: { children: React.ReactNode }) =>
             currentPurchase,
             setCurrentPurchase,
 
-            fetchData,
+            refetchProductsList,
             fetchListItemsData,
             handleUpdateItem,
             handleDeleteItem,

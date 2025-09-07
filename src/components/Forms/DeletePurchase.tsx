@@ -1,8 +1,5 @@
 import { IPurchaseProps } from '@/types';
 import React, { useState } from 'react'
-import { toast } from '../ui/use-toast';
-import { ToastAction } from '@radix-ui/react-toast';
-import { supabase } from '@/lib/api';
 import { usePurchasesContext } from '@/context/PurchasesContext';
 import { Button } from '../ui/button';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "../ui/dialog";
@@ -12,6 +9,11 @@ export const DeletePurchase = ({ purchase }: { purchase: IPurchaseProps }) => {
 
     const { deletePurchase } = usePurchasesContext();
     const [open, setOpen] = useState(false);
+
+    async function handleDeletePurchase() {
+        await deletePurchase(purchase.id as string);
+        setOpen(false);
+    }
 
     return (
         <Dialog open={open} onOpenChange={setOpen}>
@@ -33,7 +35,7 @@ export const DeletePurchase = ({ purchase }: { purchase: IPurchaseProps }) => {
                 <div className='flex gap-2 mt-5'>
                     <Button
                         type='button'
-                        onClick={() => deletePurchase(purchase.id as string)}
+                        onClick={handleDeletePurchase}
                         className='col-span-1 w-full rounded-full'>
                         Sim
                     </Button>
