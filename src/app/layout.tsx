@@ -1,15 +1,13 @@
 'use client'
 import { Inter, Itim, Quicksand } from "next/font/google";
 import "../styles/globals.css";
-import { ProductsProvider } from "@/context/ShoplistContext";
 import { Toaster } from "@/components/ui/sonner";
-import SessionVerifier from "@/components/SessionVerifier";
 import useCheckRoute from "@/hooks/useCheckRoute";
 import { usePathname } from "next/navigation";
-import { PurchasesProvider } from "@/context/PurchasesContext";
 import VerifyDevice from "@/components/VerifyDevice";
 import { PageOverlayProvider } from "@/context/PageOverlayContext";
-
+import { QueryClientProvider } from '@tanstack/react-query'
+import { queryClient } from "@/utils/queryClient";
 
 const inter = Inter({ weight: ['300', '400', '500', '700'], subsets: ["latin"] });
 
@@ -25,21 +23,23 @@ export default function RootLayout({
   return (
     <html lang="pt-br">
       <body className={inter.className}>
-        <PageOverlayProvider>
-          <div className="relative">
-            {isPrivateRoute ? (
-              <VerifyDevice>
-                {children}
-              </VerifyDevice>
-            ) : (
-              <>
-                {children}
-              </>
-            )}
+        <QueryClientProvider client={queryClient}>
+          <PageOverlayProvider>
+            <div className="relative">
+              {isPrivateRoute ? (
+                <VerifyDevice>
+                  {children}
+                </VerifyDevice>
+              ) : (
+                <>
+                  {children}
+                </>
+              )}
 
-          </div>
-        </PageOverlayProvider>
-        <Toaster />
+            </div>
+          </PageOverlayProvider>
+          <Toaster />
+        </QueryClientProvider>
       </body>
     </html>
   );

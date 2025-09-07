@@ -5,17 +5,23 @@ import Image from 'next/image';
 import { IProductProps } from '@/types';
 import { useShoplistContext } from '@/context/ShoplistContext';
 import { AnimatePresence, motion } from 'motion/react';
+import { useQueryClient } from '@tanstack/react-query';
+import { QUERY_KEYS } from '@/constants/queryKeys';
+import useGeneralUserStore from '@/store/generalUserStore';
 
 export function ProductsList({ list }: { list: IProductProps[] | null | undefined }) {
 
-  const { auxData, setProductsList, setFilterValue } = useShoplistContext();
+  const userId = useGeneralUserStore(store => store.userProfile?.uid)
+  const { auxData, listName, setFilterValue } = useShoplistContext();
+
+  const queryClient = useQueryClient();
 
   const totalCheckedItems = list?.filter(product => product.checked === true).length;
   const totalListItems = list?.length ?? 0;
 
   function handleRemoveFilter() {
     setFilterValue(null);
-    setProductsList(auxData)
+    queryClient.setQueryData([QUERY_KEYS.productsList, userId, listName], auxData)
   }
 
   if (!list || totalListItems === 0) return <EmptyProducsList />

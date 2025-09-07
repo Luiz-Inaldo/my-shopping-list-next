@@ -1,15 +1,20 @@
 import { CATEGORIES } from '@/constants/categories'
+import { QUERY_KEYS } from '@/constants/queryKeys';
 import { useShoplistContext } from '@/context/ShoplistContext';
-import { useState } from 'react';
+import useGeneralUserStore from '@/store/generalUserStore';
+import { IPurchaseProps } from '@/types';
+import { useQueryClient } from '@tanstack/react-query';
 
 export function CategoryBadgesList() {
 
-    const { auxData, setProductsList, filterValue, setFilterValue } = useShoplistContext();
+    const userId = useGeneralUserStore(store => store.userProfile?.uid)
+    const { auxData, listName, filterValue, setFilterValue } = useShoplistContext();
+    const queryClient = useQueryClient();
 
     function handleFilterByCategory(category: string) {
         const filteredItems = auxData?.purchase_items?.filter(item => item.category === category) ?? [];
         setFilterValue(category);
-        setProductsList(oldList => ({
+        queryClient.setQueryData([QUERY_KEYS.productsList, userId, listName], (oldList: IPurchaseProps | undefined) => ({
             ...oldList!,
             purchase_items: filteredItems
         }));
@@ -18,7 +23,7 @@ export function CategoryBadgesList() {
     if (!auxData) return null;
 
     return (
-        <div className="flex items-center gap-3 overflow-x-scroll scrollbar-hide">
+        <div className="flex items-center gap-3 pb-2 overflow-x-scroll scrollbar-hide">
             <>
                 {CATEGORIES.map((category) => {
                     const totalItemsOnCurrentCategory = auxData.purchase_items?.filter(item => item.category === category.name).length;
@@ -29,7 +34,7 @@ export function CategoryBadgesList() {
                         <div
                             onClick={() => handleFilterByCategory(category.name)}
                             key={category.name}
-                            className={`flex items-center gap-3 px-3 py-2 border rounded-lg ${filterValue === category.name ? 'bg-default-green border-green-500 text-snow' : 'border-app-border bg-app-container'}`}
+                            className={`flex items-center gap-3 px-3 py-2 border rounded-lg shadow ${filterValue === category.name ? 'bg-default-green border-green-500 text-snow' : 'border-app-border bg-app-container'}`}
                         >
                             <span
                                 style={{ backgroundColor: category.backgroundColor }}

@@ -18,6 +18,7 @@ import { motion } from 'motion/react';
 import { IPurchaseProps } from '@/types';
 import { usePurchasesContext } from '@/context/PurchasesContext';
 import { addPurchaseToDb } from '@/services/purchasesListServices';
+import { useQueryClient } from '@tanstack/react-query';
 
 const addButtonVariants = {
     initial: {
@@ -34,8 +35,8 @@ const addButtonVariants = {
 
 const NewListForm = () => {
 
+    const queryClient = useQueryClient();
     const userProfile = useGeneralUserStore(store => store.userProfile);
-    const { refetchPurchases } = usePurchasesContext();
     const [isSettingPurchase, setPurchaseTransition] = useTransition();
 
     const [open, setOpen] = useState(false);
@@ -67,7 +68,12 @@ const NewListForm = () => {
                     title: "Lista criada com sucesso!",
                     type: "success"
                 });
-                refetchPurchases();
+                if (userProfile) {
+                    queryClient.invalidateQueries({
+                        queryKey: ['activePurchases', userProfile?.uid]
+                    });
+                }
+                // refetchPurchases();
             } catch (error) {
                 console.error(error)
                 sendToastMessage({
