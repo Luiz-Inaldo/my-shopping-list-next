@@ -21,7 +21,7 @@ export default function PurchaseSaved() {
     function handleGoToHome(e: React.MouseEvent<HTMLAnchorElement, MouseEvent>) {
         e.preventDefault();
         handleChangeRoute(APP_ROUTES.private.home.name);
-        queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.productsList, userId, listName] })
+        queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.activePurchases, userId, listName] })
     }
 
     return (
