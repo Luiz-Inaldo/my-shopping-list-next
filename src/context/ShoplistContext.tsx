@@ -140,6 +140,10 @@ export const ShoplistProvider = ({ children }: { children: React.ReactNode }) =>
 
     async function handleDeleteItem(itemID: string) {
         try {
+            if (productsList?.purchase_items?.length === 1) {
+                setProductsList(auxData);
+                setFilterValue(null);
+            }
             await deletePurchaseItem(productsList?.id as string, itemID);
             sendToastMessage({ title: "Produto removido com sucesso.", type: 'success' });
             setProductsList(oldData => ({

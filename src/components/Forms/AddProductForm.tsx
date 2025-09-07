@@ -23,7 +23,7 @@ import { UNIT_TYPES } from "@/data/unitTypes";
 
 
 export const AddProductForm = () => {
-
+  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [isLoading, startAddProductTransition] = useTransition();
 
   const { productsList, fetchListItemsData } = useShoplistContext();
@@ -36,6 +36,19 @@ export const AddProductForm = () => {
   } = useForm<IFormItem>();
 
   // funções
+  function handleOpenDrawer() {
+    setIsDrawerOpen(true);
+    // Garantir que o formulário esteja limpo quando abrir
+    reset({
+      name: "",
+      category: "",
+      unit_type: undefined,
+      quantity: "",
+      value: "",
+      checked: false
+    });
+  }
+
   function onSubmit(data: IFormItem) {
     startAddProductTransition(async () => {
       const item = {
@@ -76,7 +89,16 @@ export const AddProductForm = () => {
         //   purchase_items: [...previous!.purchase_items!, item]
         // }));
 
-        reset();
+        // Reset do formulário e fechamento do drawer
+        reset({
+          name: "",
+          category: "",
+          unit_type: undefined,
+          quantity: "",
+          value: "",
+          checked: false
+        });
+        setIsDrawerOpen(false);
       } catch (error) {
         sendToastMessage({
           title: "Erro ao adicionar produto",
@@ -88,10 +110,10 @@ export const AddProductForm = () => {
   }
 
   return (
-    <Drawer>
+    <Drawer open={isDrawerOpen} onOpenChange={setIsDrawerOpen}>
       <DrawerTrigger asChild>
         <Button
-          onClick={() => { }}
+          onClick={handleOpenDrawer}
           size="sm"
           className="fixed rounded-full bottom-5 right-5 h-fit px-2 py-1"
         >
@@ -141,7 +163,7 @@ export const AddProductForm = () => {
                   <SelectItem key={type} value={type}>{type}</SelectItem>
                 ))}
               </ShadSelect>
-              {errors.category && <span className='text-xs text-red-500'>
+              {errors.unit_type && <span className='text-xs text-red-500'>
                 Campo obrigatório
               </span>}
             </label>

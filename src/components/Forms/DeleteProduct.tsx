@@ -24,7 +24,7 @@ export const DeleteProduct = ({
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <span className="px-3 text-sm text-subtitle">Excluir</span>
+        <button className="px-3 text-sm text-subtitle">Excluir</button>
       </DialogTrigger>
       <DialogContent className="max-w-[400px]" onClick={(e) => e.stopPropagation()}>
         <DialogHeader>

@@ -43,7 +43,7 @@ export const EditProductForm = ({
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <span className="px-3 text-sm text-subtitle">Editar</span>
+        <button className="px-3 text-sm text-subtitle">Editar</button>
       </DialogTrigger>
       <DialogContent className="p-5 max-w-[400px]" onClick={(e) => e.stopPropagation()}>
         <DialogHeader>
