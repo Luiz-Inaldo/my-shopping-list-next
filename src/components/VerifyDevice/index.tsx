@@ -1,20 +1,44 @@
 "use client";
-import React from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import GlobalLoader from '../GlobalLoader';
 import DeviceErrorComponent from '../DeviceError';
 
 const VerifyDevice = ({ children }: { children: React.ReactNode }) => {
 
-    const [isMobile, setIsMobile] = React.useState<boolean | null>(null);
+    const [isMobile, setIsMobile] = useState<boolean | null>(null);
 
-    React.useEffect(() => {
-        const deviceWidth = window.innerWidth;
-        if (deviceWidth <= 640) {
-            setIsMobile(true);
-        } else {
-            setIsMobile(false);
-        }
+    const checkDeviceWidth = useCallback(() => {
+        
+        // Verifica se é mobile usando múltiplas estratégias
+        const isMobileByUserAgent = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+        const isMobileByMediaQuery = window.matchMedia('(max-width: 640px)').matches;
+        
+        // Usa media query como método principal (mais confiável)
+        const isMobileDevice = isMobileByMediaQuery || isMobileByUserAgent;
+        
+        setIsMobile(isMobileDevice);
     }, []);
+
+    useEffect(() => {
+        // Verificação inicial
+        checkDeviceWidth();
+        
+        // Media query listener (mais preciso que resize)
+        const mediaQuery = window.matchMedia('(max-width: 640px)');
+        const handleMediaQueryChange = () => {
+            checkDeviceWidth();
+        };
+        
+        // Adiciona listeners
+        mediaQuery.addEventListener('change', handleMediaQueryChange);
+        window.addEventListener('resize', checkDeviceWidth);
+        
+        // Cleanup
+        return () => {
+            mediaQuery.removeEventListener('change', handleMediaQueryChange);
+            window.removeEventListener('resize', checkDeviceWidth);
+        };
+    }, [checkDeviceWidth]);
 
     if (isMobile === null) {
         return (

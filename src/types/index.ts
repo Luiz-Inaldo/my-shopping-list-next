@@ -25,14 +25,18 @@ export interface IShoplistContextProps {
 
 export interface IPuchasesContextProps {
     // states
-    purchasesList: IPurchaseProps[];
-    uiStates: TUiStates;
+    purchasesList: IPurchaseProps[] | undefined;
+    loadingPurchasesList?: boolean;
+    fetchingPurchasesList?: boolean;
+    pendingPurchasesList?: boolean;
+    errorFetchingPurchases?: unknown;
+    // uiStates: TUiStates;
 
     // functions
-    setPurchasesList: React.Dispatch<React.SetStateAction<IPurchaseProps[]>>;
-    filterPurchases: (filter: IFilterProps) => void;
+    // setPurchasesList: React.Dispatch<React.SetStateAction<IPurchaseProps[]>>;
+    // filterPurchases: (filter: IFilterProps) => void;
     deletePurchase:(purchaseId: string) => Promise<void>;
-    refetchPurchases: () => void
+    // refetchPurchases: () => void
 }
 
 export interface IFormItem extends Omit<IProductProps, 'id'> {}

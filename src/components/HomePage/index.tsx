@@ -14,12 +14,7 @@ export const HomePage = () => {
             <div className="z-[1]">
                 <div className="container">
                     <MonthlyStatistics />
-
-                    <h2 className="text-subtitle font-medium">Suas listas ativas</h2>
-
-                    <div className="flex flex-col gap-3 items-center">
-                        <ActivePurchsesList />
-                    </div>
+                    <ActivePurchsesList />
                     <NewListForm />
                 </div>
             </div>
