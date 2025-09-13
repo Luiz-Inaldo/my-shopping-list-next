@@ -11,7 +11,6 @@ import useGeneralUserStore from '@/store/generalUserStore';
 
 export function ProductsList({ list }: { list: IProductProps[] | null | undefined }) {
 
-  const userId = useGeneralUserStore(store => store.userProfile?.uid)
   const { auxData, listName, setFilterValue } = useShoplistContext();
 
   const queryClient = useQueryClient();
@@ -21,7 +20,7 @@ export function ProductsList({ list }: { list: IProductProps[] | null | undefine
 
   function handleRemoveFilter() {
     setFilterValue(null);
-    queryClient.setQueryData([QUERY_KEYS.productsList, userId, listName], auxData)
+    queryClient.setQueryData([QUERY_KEYS.productsList, listName], auxData)
   }
 
   if (!list || totalListItems === 0) return <EmptyProducsList />

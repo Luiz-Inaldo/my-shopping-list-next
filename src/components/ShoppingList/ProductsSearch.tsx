@@ -22,13 +22,13 @@ export function ProductsSearch() {
       const categoriesToLowerCase = CATEGORIES.map(category => category.name.toLowerCase());
 
       if (!value) {
-        queryClient.setQueryData([QUERY_KEYS.productsList, userId, listName], auxData);
+        queryClient.setQueryData([QUERY_KEYS.productsList, listName], auxData);
         return;
       }
 
       if (categoriesToLowerCase.includes(value)) {
         const filteredList = auxData?.purchase_items?.filter(product => product.category.toLowerCase() === value) ?? [];
-        queryClient.setQueryData([QUERY_KEYS.productsList, userId, listName], (oldList: IPurchaseProps | undefined) => ({
+        queryClient.setQueryData([QUERY_KEYS.productsList, listName], (oldList: IPurchaseProps | undefined) => ({
           ...oldList!,
           purchase_items: filteredList
         }));
@@ -36,7 +36,7 @@ export function ProductsSearch() {
       }
 
       const filteredList = auxData?.purchase_items?.filter(product => product.name.toLowerCase().includes(value)) ?? [];
-      queryClient.setQueryData([QUERY_KEYS.productsList, userId, listName], (oldList: IPurchaseProps | undefined) => ({
+      queryClient.setQueryData([QUERY_KEYS.productsList, listName], (oldList: IPurchaseProps | undefined) => ({
         ...oldList!,
         purchase_items: filteredList
       }));
