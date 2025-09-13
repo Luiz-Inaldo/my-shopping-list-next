@@ -7,14 +7,13 @@ import { useQueryClient } from '@tanstack/react-query';
 
 export function CategoryBadgesList() {
 
-    const userId = useGeneralUserStore(store => store.userProfile?.uid)
     const { auxData, listName, filterValue, setFilterValue } = useShoplistContext();
     const queryClient = useQueryClient();
 
     function handleFilterByCategory(category: string) {
         const filteredItems = auxData?.purchase_items?.filter(item => item.category === category) ?? [];
         setFilterValue(category);
-        queryClient.setQueryData([QUERY_KEYS.productsList, userId, listName], (oldList: IPurchaseProps | undefined) => ({
+        queryClient.setQueryData([QUERY_KEYS.productsList, listName], (oldList: IPurchaseProps | undefined) => ({
             ...oldList!,
             purchase_items: filteredItems
         }));

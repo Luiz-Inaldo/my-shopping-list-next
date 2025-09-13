@@ -13,7 +13,6 @@ import { QUERY_KEYS } from "@/constants/queryKeys";
 export default function PurchaseSaved() {
 
     const userId = useGeneralUserStore(s => s.userProfile?.uid)
-    const { listName } = useShoplistContext();
     const { handleChangeRoute } = usePageOverlay();
 
     const queryClient = useQueryClient();
@@ -21,7 +20,7 @@ export default function PurchaseSaved() {
     function handleGoToHome(e: React.MouseEvent<HTMLAnchorElement, MouseEvent>) {
         e.preventDefault();
         handleChangeRoute(APP_ROUTES.private.home.name);
-        queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.activePurchases, userId, listName] })
+        queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.activePurchases, userId] })
     }
 
     return (

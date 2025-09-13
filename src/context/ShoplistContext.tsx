@@ -39,7 +39,7 @@ export const ShoplistProvider = ({ children }: { children: React.ReactNode }) =>
         error: errorFetchingProducts,
         refetch: refetchProductsList,
     } = useQuery<IPurchaseProps | undefined>({
-        queryKey: [QUERY_KEYS.productsList, userProfile?.uid, listName],
+        queryKey: [QUERY_KEYS.productsList, listName],
         queryFn: fetchData,
         refetchOnWindowFocus: false,
         enabled: !!userProfile?.uid
