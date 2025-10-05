@@ -1,5 +1,4 @@
 import { ShoppingCart, TrendingUp } from "lucide-react";
-import { Progress } from "../ui/progress";
 import { Button } from "../ui/button";
 import { useShoplistContext } from "@/context/ShoplistContext";
 import { formatCurrency } from "@/functions/formatCurrency";
@@ -42,8 +41,14 @@ export function FinancialSummary({ setSavingModalOpen, setIsSaved }: {
             // e a página principal pode conter overflow scroll por conta da quantidade
             // de produtos
             document.body.style.overflow = 'hidden';
+            
+            const endDate = new Date().toISOString();
+            const purchase = {
+                ...auxData,
+                end_date: endDate
+            } as IPurchaseProps;
 
-            await saveCurrentPurchase(auxData as IPurchaseProps);
+            await saveCurrentPurchase(purchase);
             setIsSaved(true);
         } catch (error) {
             console.error("Error saving purchase:", error);

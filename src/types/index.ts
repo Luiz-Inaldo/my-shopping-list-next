@@ -77,8 +77,8 @@ export interface IPurchaseProps {
   is_active: boolean;
   max_value: number;
   items_count: number;
-  start_date: any;
-  end_date: any;
+  start_date: string | null;
+  end_date: string | null;
   purchase_items?: never[] | IProductProps[];
   total_price: number;
   user_id: string | undefined;

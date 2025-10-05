@@ -1,10 +1,11 @@
 "use client";
+import { cn } from '@/lib/utils';
 import React from 'react'
 
-const Header = ({ children, ...props }: { children: React.ReactNode }) => {
+const Header = ({ children, className, ...props }: { children: React.ReactNode, className?: string }) => {
 
     return (
-        <header {...props} className="flex items-center gap-4 p-4 text-subtitle">
+        <header {...props} className={cn("flex items-center gap-4 p-4 text-subtitle", className)}>
             {children}
         </header>
     )
