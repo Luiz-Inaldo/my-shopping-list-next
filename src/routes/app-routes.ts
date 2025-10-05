@@ -4,7 +4,7 @@ export const APP_ROUTES = {
             name: "/"
         },
         shoppingList: {
-            name: (name: string) => `/list?name=${name}`
+            name: (title: string) => `/list/${title}`
         },
         settings: {
             name: "/settings"
@@ -12,13 +12,9 @@ export const APP_ROUTES = {
         historic: {
             name: "/historic",
             details: {
-                name: (title: string) => `/historic/${title}`,
-                children: (title: string) => `/historic/${title}/details`
+                name: (title: string) => `/historic/${title}`
             },
 
-        },
-        purchase_saved: {
-            name: (title: string) => `/purchase-saved/${title}`
         },
         menu: {
             name: "/menu"

@@ -3,6 +3,8 @@ import { formatCurrency } from "@/functions/formatCurrency";
 import { formatDate } from "@/functions/formatDate";
 import { List, Trash2 } from "lucide-react";
 import { DeletePurchase } from "@/components/Forms/DeletePurchase";
+import { APP_ROUTES } from "@/routes/app-routes";
+import Link from "next/link";
 
 interface PurchaseItemProps {
   purchase: IPurchaseProps;
@@ -10,7 +12,7 @@ interface PurchaseItemProps {
 
 export function HistoricPurchaseItem({ purchase }: PurchaseItemProps) {
   return (
-    <div className="bg-app-container rounded-lg shadow-sm border border-app-border p-4 flex items-center justify-between hover:shadow-md transition-shadow duration-200">
+    <div className="bg-app-container rounded-lg shadow-sm border border-app-border p-4 flex items-center justify-between">
       {/* Left Section - Content */}
       <div className="flex items-center gap-3">
         {/* Top Line - Title with Orange Dot */}
@@ -37,12 +39,13 @@ export function HistoricPurchaseItem({ purchase }: PurchaseItemProps) {
 
       {/* Right Section - Action Icons */}
       <div className="flex items-center gap-3 ml-4">
-        <button
+        <Link
+          href={APP_ROUTES.private.historic.details.name(purchase.title)}
           className="text-default-green"
           aria-label="Ver detalhes da compra"
         >
           <List size={20} />
-        </button>
+        </Link>
         <DeletePurchase
           purchase={purchase}
           trigger={

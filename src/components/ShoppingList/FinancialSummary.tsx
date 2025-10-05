@@ -45,7 +45,8 @@ export function FinancialSummary({ setSavingModalOpen, setIsSaved }: {
             const endDate = new Date().toISOString();
             const purchase = {
                 ...auxData,
-                end_date: endDate
+                end_date: endDate,
+                total_price: totalValue
             } as IPurchaseProps;
 
             await saveCurrentPurchase(purchase);

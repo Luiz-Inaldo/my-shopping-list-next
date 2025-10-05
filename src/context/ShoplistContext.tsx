@@ -5,7 +5,7 @@ import { IProductProps } from "@/types";
 import { IEditItemProps } from "@/types";
 import useGeneralUserStore from "@/store/generalUserStore";
 import { sendToastMessage } from "@/functions/sendToastMessage";
-import { useSearchParams } from "next/navigation";
+import { usePathname, useSearchParams } from "next/navigation";
 import { checkPurchaseItem, deletePurchaseItem, getProductsList, getProductsListItems, updatePurchaseItem } from "@/services/productsListServices";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { QUERY_KEYS } from "@/constants/queryKeys";
@@ -17,13 +17,14 @@ export const ShoplistProvider = ({ children }: { children: React.ReactNode }) =>
      * =======>> store <<========
      */
     const userProfile = useGeneralUserStore(store => store.userProfile);
+    const pathname = usePathname();
 
-    const searchParams = useSearchParams();
-    const listName = searchParams.get("name") || "";
+    const encodedListName = pathname.split("/")[2] || "";
+    const listName = decodeURIComponent(encodedListName);
+
 
     /* ====> states <==== */
     const [auxData, setAuxData] = useState<IPurchaseProps | null>(null);
-    // const [productsList, setProductsList] = useState<IPurchaseProps | null>(null);
     const [filterValue, setFilterValue] = useState<string | null>(null);
     const [totalValue, setTotalValue] = useState<number>(0);
     const [currentPurchase, setCurrentPurchase] = useState<ISupabasePurchaseProps | null>(null);
@@ -72,7 +73,7 @@ export const ShoplistProvider = ({ children }: { children: React.ReactNode }) =>
         try {
             const res = await getProductsListItems(productsList.id);
 
-            queryClient.setQueryData(['productsList', userProfile?.uid, listName], (oldData: IPurchaseProps | undefined) => {
+            queryClient.setQueryData([QUERY_KEYS.productsList, userProfile?.uid, listName], (oldData: IPurchaseProps | undefined) => {
                 if (!oldData) return oldData;
                 return {
                     ...oldData,
