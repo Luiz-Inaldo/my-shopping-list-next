@@ -8,6 +8,7 @@ import VerifyDevice from "@/components/VerifyDevice";
 import { PageOverlayProvider } from "@/context/PageOverlayContext";
 import { QueryClientProvider } from '@tanstack/react-query'
 import { queryClient } from "@/utils/queryClient";
+import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
 
 const inter = Inter({ weight: ['300', '400', '500', '700'], subsets: ["latin"] });
 
@@ -39,6 +40,7 @@ export default function RootLayout({
             </div>
           </PageOverlayProvider>
           <Toaster />
+          <ReactQueryDevtools initialIsOpen={false} />
         </QueryClientProvider>
       </body>
     </html>
