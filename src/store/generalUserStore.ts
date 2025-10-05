@@ -24,8 +24,6 @@ onAuthStateChanged(auth, (user) => {
         useGeneralUserStore.getState().setUserProfile(userData);
       }
     });
-  } else {
-    console.error("Não existe sessão de usuário.");
   }
 });
 

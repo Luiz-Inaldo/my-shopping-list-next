@@ -1,36 +1,55 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# EzShop - Lista de Compras Inteligente
 
-## Getting Started
+Uma aplicação web moderna para gerenciamento de listas de compras, desenvolvida com Next.js 14 e TypeScript. O EzShop oferece uma experiência completa para organizar suas compras, controlar gastos e acompanhar estatísticas de consumo.
 
-First, run the development server:
+## 🎯 Missão
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+Simplificar o processo de planejamento e execução de compras, oferecendo uma ferramenta intuitiva que permite aos usuários:
+- Organizar produtos por categorias
+- Controlar orçamento e gastos
+- Acompanhar histórico de compras
+- Visualizar estatísticas de consumo
+- Exportar relatórios detalhados
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## 🚀 Funcionalidades
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+- **📝 Gerenciamento de Listas**: Crie e gerencie múltiplas listas de compras
+- **🏷️ Categorização Inteligente**: Organize produtos em 10 categorias (Mercearia, Limpeza, Frios, Carnes, Padaria, Higiene, Bebidas, Congelados, Hortifruti, Outros)
+- **💰 Controle Financeiro**: Defina limites de gastos e acompanhe o total em tempo real
+- **✅ Sistema de Check**: Marque produtos como adquiridos com atualização instantânea
+- **📊 Estatísticas**: Visualize gráficos de gastos mensais e anuais
+- **📋 Histórico**: Acesse compras anteriores com filtros por data
+- **📄 Exportação PDF**: Gere relatórios detalhados das suas compras
+- **🌙 Temas**: Interface adaptável com modo claro e escuro
+- **🔍 Busca Avançada**: Encontre produtos rapidamente com filtros por categoria
+- **📱 Responsivo**: Funciona perfeitamente em desktop e mobile
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+## 🛠️ Stack Tecnológica
 
-## Learn More
+### Frontend
+- **Next.js 14.2.5** - Framework React com App Router
+- **React 18** - Biblioteca de interface
+- **TypeScript 5** - Tipagem estática
+- **Tailwind CSS 3.4.1** - Framework CSS utilitário
 
-To learn more about Next.js, take a look at the following resources:
+### UI/UX
+- **Shadcn UI** - Sistema de componentes
+- **Radix UI** - Componentes primitivos acessíveis
+- **Lucide React** - Biblioteca de ícones
+- **Lottie React** - Animações interativas
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+### Estado e Dados
+- **TanStack React Query 5.87.1** - Gerenciamento de estado servidor
+- **Zustand 5.0.5** - Estado global da aplicação
+- **React Hook Form 7.60.0** - Gerenciamento de formulários
+- **Zod 3.25.76** - Validação de schemas
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+### Backend e Autenticação
+- **Firebase 12.1.0** - Autenticação e banco de dados Firestore
 
-## Deploy on Vercel
+### Utilitários
+- **Sonner 2.0.6** - Sistema de notificações
+- **Recharts 2.15.1** - Gráficos e visualizações
+- **next-themes 0.4.6** - Gerenciamento de temas
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.

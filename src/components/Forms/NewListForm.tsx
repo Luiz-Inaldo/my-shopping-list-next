@@ -1,8 +1,7 @@
 "use client";
 import ReactDOM from 'react-dom';
-import { Dialog } from '@radix-ui/react-dialog'
 import React, { useState, useTransition } from 'react'
-import { DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '../ui/dialog'
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '../ui/dialog'
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from '../ui/form'
 import { useForm } from 'react-hook-form'
 import { NewListProps } from '@/types/purchaseList'
@@ -16,9 +15,9 @@ import { createListSchema } from '@/types/zodTypes';
 import { sendToastMessage } from '@/functions/sendToastMessage';
 import { motion } from 'motion/react';
 import { IPurchaseProps } from '@/types';
-import { usePurchasesContext } from '@/context/PurchasesContext';
 import { addPurchaseToDb } from '@/services/purchasesListServices';
 import { useQueryClient } from '@tanstack/react-query';
+import { invalidateAllQueries } from '@/functions/invalidadeQueries';
 
 const addButtonVariants = {
     initial: {
@@ -52,7 +51,7 @@ const NewListForm = () => {
             title: listData.list_name,
             items_count: 0,
             is_active: true,
-            start_date: new Date(),
+            start_date: new Date().toISOString(),
             end_date: null,
             total_price: 0,
             max_value: parseFloat(listData.list_max_value.replace(',', '.')),
@@ -69,9 +68,7 @@ const NewListForm = () => {
                     type: "success"
                 });
                 if (userProfile) {
-                    queryClient.invalidateQueries({
-                        queryKey: ['activePurchases', userProfile?.uid]
-                    });
+                    invalidateAllQueries([['activePurchases', userProfile?.uid]]);
                 }
                 // refetchPurchases();
             } catch (error) {
