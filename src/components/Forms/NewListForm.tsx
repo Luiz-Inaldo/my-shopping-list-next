@@ -18,6 +18,7 @@ import { IPurchaseProps } from '@/types';
 import { addPurchaseToDb } from '@/services/purchasesListServices';
 import { useQueryClient } from '@tanstack/react-query';
 import { invalidateAllQueries } from '@/functions/invalidadeQueries';
+import { QUERY_KEYS } from '@/constants/queryKeys';
 
 const addButtonVariants = {
     initial: {
@@ -68,7 +69,7 @@ const NewListForm = () => {
                     type: "success"
                 });
                 if (userProfile) {
-                    invalidateAllQueries([['activePurchases', userProfile?.uid]]);
+                    invalidateAllQueries([[QUERY_KEYS.activePurchases, userProfile?.uid]]);
                 }
                 // refetchPurchases();
             } catch (error) {

@@ -10,7 +10,7 @@ import useGeneralUserStore from '@/store/generalUserStore';
 import { IFilterProps, IPurchaseProps } from '@/types';
 import { queryClient } from '@/utils/queryClient';
 import { useQuery } from '@tanstack/react-query';
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { HistoricList } from './_components/HistoricList';
 
 
@@ -40,6 +40,11 @@ export default function Historic() {
   })
 
   // ===================
+  // # Refs
+  // ===================
+  const isFirstLoad = useRef<boolean>(true);
+
+  // ===================
   // # Handlers
   // ===================
   async function handleFetchHistoricData(): Promise<IPurchaseProps[]> {
@@ -66,8 +71,6 @@ export default function Historic() {
         purchase.end_date?.split("T")[0].split("-")[0] === year.toString() &&
         purchase.end_date?.split("T")[0].split("-")[1] === String(month + 1).padStart(2, '0')
       );
-
-      console.log(filteredData);
 
       queryClient.setQueryData([QUERY_KEYS.historic, userProfile?.uid], filteredData);
 
@@ -107,11 +110,18 @@ export default function Historic() {
   };
 
   useEffect(() => {
-    if (historicData) {
+    if (historicData && auxData.length > 0) {
       filterPurchases(filterStates);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [filterStates]);
+
+  useEffect(() => {
+    if (isFirstLoad.current && historicData) {
+      setAuxData(historicData);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [historicData]);
 
   return (
     <LoggedLayout>
@@ -159,7 +169,7 @@ export default function Historic() {
           <HistoricList
             isLoading={isLoading}
             hasError={isError}
-            data={historicData || []}
+            data={historicData}
             retryFn={refetch} 
             isFetching={isFetching}
           />

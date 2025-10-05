@@ -8,7 +8,7 @@ import ErrorFetchData from "@/components/Errors/ErrorFetchData";
 interface THistoricListProps {
     isLoading: boolean;
     hasError: boolean;
-    data: IPurchaseProps[];
+    data: IPurchaseProps[] | undefined;
     retryFn: () => void;
     isFetching: boolean;
 }
@@ -17,11 +17,11 @@ export function HistoricList({ isLoading, hasError, data, retryFn, isFetching }:
 
     if (isLoading || !data) {
         return (
-            <>
+            <div className="space-y-3">
                 {Array.from({ length: 3 }).map((_, index) => (
                     <HistoricPurchaseItemSkeleton key={index} />
                 ))}
-            </>
+            </div>
         )
     }
 
