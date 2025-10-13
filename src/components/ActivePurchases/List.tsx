@@ -65,7 +65,7 @@ export function ActivePurchsesList() {
                                 >
                                     <DeletePurchase purchase={item} />
                                     <Link
-                                        href={APP_ROUTES.private.shoppingList.name(item.title)}
+                                        href={APP_ROUTES.private.shoppingList.name(item.id as string)}
                                         className="flex items-center justify-center size-8 rounded-full bg-default-green text-snow">
                                         <ChevronRight size={18} className='mx-auto' />
                                     </Link>

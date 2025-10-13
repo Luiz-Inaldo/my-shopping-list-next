@@ -26,7 +26,7 @@ export default function ShoppingList() {
   const [savingModalOpen, setSavingModalOpen] = useState(false);
 
   const { theme } = useTheme();
-  const { listName, productsList, loadingProductsList, pendingProductsList, errorFetchingProducts } = useShoplistContext();
+  const { productsList, loadingProductsList, pendingProductsList, errorFetchingProducts } = useShoplistContext();
 
   const { handleChangeRoute } = usePageOverlay();
 
@@ -48,7 +48,7 @@ export default function ShoppingList() {
         <>
           <Header>
             <ChevronLeft size={20} onClick={() => handleChangeRoute(APP_ROUTES.private.home.name)} />
-            <h2 className="font-medium">{listName}</h2>
+            <h2 className="font-medium">{productsList?.title}</h2>
           </Header>
           <div className="p-4 w-full flex flex-col gap-5">
             <FinancialSummary

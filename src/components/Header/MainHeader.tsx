@@ -16,7 +16,8 @@ export const MainHeader = () => {
     return (
         <div className="relative z-[1] w-full p-4 flex items-center gap-3">
             <Avatar className='border-2 border-app-container'>
-                <AvatarImage src={userProfile?.profile_img} />
+                {/* <AvatarImage src={userProfile?.profile_img} /> */}
+                <AvatarImage src={`https://api.dicebear.com/9.x/micah/svg?seed=${userProfile?.uid}`} />
                 <AvatarFallback>
                     <Image
                         src='/images/avatars/default-avatar.svg'

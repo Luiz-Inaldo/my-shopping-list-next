@@ -1,41 +1,38 @@
 import { db } from "@/lib/firebase";
-import { IEditItemProps, IProductProps } from "@/types";
+import { IEditItemProps, IProductProps, IPurchaseProps } from "@/types";
 import {
   addDoc,
   collection,
   deleteDoc,
   doc,
+  getDoc,
   getDocs,
   increment,
-  query,
   updateDoc,
-  where,
 } from "firebase/firestore";
 
-/*************  ✨ Windsurf Command ⭐  *************/
 /**
- * @description Gets a purchase list with all its props
- * @param {string} userId - The ID of the user who owns the purchase list
- * @param {string} listName - The title of the purchase list
- * @returns {Promise<{data: IPurchaseProps[]}>}
+ * @description Gets a specific purchase by its ID
+ * @param {string} purchaseId - The ID of the purchase document
+ * @returns {Promise<{data: IPurchaseProps | null}>}
  */
-export async function getProductsList(userId: string, listName: string) {
-  const searchParams = query(
-    collection(db, "purchases"),
-    where("user_id", "==", userId),
-    where("title", "==", listName)
-  );
+export async function getProductsList(purchaseId: string): Promise<{data: IPurchaseProps | null}> {
+  const purchaseRef = doc(db, "purchases", purchaseId);
+  const purchaseSnap = await getDoc(purchaseRef);
 
-  const result = await getDocs(searchParams);
-  const purchaseData = result.docs.map((doc) => {
+  if (purchaseSnap.exists()) {
+    const purchaseData = {
+      id: purchaseSnap.id,
+      ...purchaseSnap.data(),
+    } as IPurchaseProps;
+
     return {
-      id: doc.id,
-      ...doc.data(),
+      data: purchaseData,
     };
-  });
+  }
 
   return {
-    data: purchaseData,
+    data: null,
   };
 }
 

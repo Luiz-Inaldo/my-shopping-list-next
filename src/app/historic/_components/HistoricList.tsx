@@ -50,9 +50,11 @@ export function HistoricList({ isLoading, hasError, data, retryFn, isFetching }:
             <p className="text-paragraph text-sm">
                 Exibindo {data.length} {data.length === 1 ? 'resultado' : 'resultados'}
             </p>
-            {data.map((purchase) => (
-                <HistoricPurchaseItem key={purchase.id} purchase={purchase} />
-            ))}
+            <div className="space-y-3">
+                {data.map((purchase) => (
+                    <HistoricPurchaseItem key={purchase.id} purchase={purchase} />
+                ))}
+            </div>
         </div>
     )
 }

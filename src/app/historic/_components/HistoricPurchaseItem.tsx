@@ -40,7 +40,7 @@ export function HistoricPurchaseItem({ purchase }: PurchaseItemProps) {
       {/* Right Section - Action Icons */}
       <div className="flex items-center gap-3 ml-4">
         <Link
-          href={APP_ROUTES.private.historic.details.name(purchase.title)}
+          href={APP_ROUTES.private.historic.details.name(purchase.id as string)}
           className="text-default-green"
           aria-label="Ver detalhes da compra"
         >
