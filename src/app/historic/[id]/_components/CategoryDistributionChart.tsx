@@ -17,7 +17,7 @@ import { CATEGORIES } from "@/constants/categories";
 import { useEffect, useState } from "react";
 import { IProductProps } from "@/types";
 import { calculatePercentage } from "@/functions/categoryPercentage";
-import { CategoryDistributionChartSkeleton } from "./CategoryDistributionChartSkeleton";
+import { CategoryDistributionChartSkeleton } from "../../../../components/Skeletons/CategoryDistributionChartSkeleton";
 
 const chartColors = CATEGORIES.map((category) => {
   return {

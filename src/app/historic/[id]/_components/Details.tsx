@@ -6,7 +6,7 @@ import Header from "../../../../components/Header";
 import { ChevronLeft } from "lucide-react";
 import { DetailsCoupon } from "./DetailsCoupon";
 import { CategoryDistributionChart } from "./CategoryDistributionChart";
-import { CategoryDistributionChartSkeleton } from "./CategoryDistributionChartSkeleton";
+import { CategoryDistributionChartSkeleton } from "../../../../components/Skeletons/CategoryDistributionChartSkeleton";
 
 export function HistoricListDetails() {
     // ==================
@@ -18,6 +18,7 @@ export function HistoricListDetails() {
     } = useShoplistContext();
 
     const { handleChangeRoute } = usePageOverlay();
+    
     return (
         <>
             <Header>

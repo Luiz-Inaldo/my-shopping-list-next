@@ -40,7 +40,7 @@ export default function RootLayout({
             </div>
           </PageOverlayProvider>
           <Toaster />
-          <ReactQueryDevtools initialIsOpen={false} />
+          <ReactQueryDevtools initialIsOpen={false} buttonPosition="top-right" />
         </QueryClientProvider>
       </body>
     </html>

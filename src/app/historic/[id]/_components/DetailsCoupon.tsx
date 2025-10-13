@@ -7,6 +7,7 @@ import { formatCurrency } from "@/functions/formatCurrency";
 import { useRef } from "react";
 import { useReactToPrint } from "react-to-print";
 import { PrintPDF } from "./ListPrintPDF";
+import { DetailsCouponSkeleton } from "@/components/Skeletons/DetailsCouponSkeleton";
 
 interface PurchaseItem {
   id: string;
@@ -19,7 +20,7 @@ interface PurchaseItem {
 }
 
 export function DetailsCoupon() {
-  const { productsList } = useShoplistContext();
+  const { productsList, loadingProductsList } = useShoplistContext();
 
   const couponRef = useRef<HTMLDivElement>(null);
 
@@ -88,6 +89,10 @@ export function DetailsCoupon() {
   const formattedDate = endDate.toLocaleDateString('pt-BR');
   const formattedTime = endDate.toLocaleTimeString('pt-BR');
 
+  if (loadingProductsList) {
+    return <DetailsCouponSkeleton />;
+  }
+
   return (
     <div>
       {/* Title with 12px spacing */}
@@ -96,13 +101,13 @@ export function DetailsCoupon() {
       </h2>
 
       {/* Receipt Box */}
-      <div className="bg-white rounded-lg shadow-md p-6 mb-6">
+      <div className="bg-app-container rounded-lg shadow-md p-6 mb-6">
         {/* Store Information */}
         <div className="text-center mb-4">
-          <h3 className="font-bold text-black text-lg">
+          <h3 className="font-bold text-title text-lg">
             {productsList?.title}
           </h3>
-          <p className="text-black text-sm mt-1">
+          <p className="text-subtitle text-sm mt-1">
             Data: {formattedDate} - {formattedTime}
           </p>
         </div>
