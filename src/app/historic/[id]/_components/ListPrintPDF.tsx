@@ -113,14 +113,14 @@ export function PrintPDF({ list }: PrintPDFProps) {
                 <h3 className="mb-6 font-semibold uppercase tracking-wider text-text-[#212529]">
                     Gastos por Categoria
                 </h3>
-                <div className="grid grid-cols-2 gap-6">
+                <div className="space-y-5">
                     {sortedCategories.map(([category, total]) => {
                         const percentage = (total / totalAmount) * 100
                         return (
                             <div key={category} className="flex items-baseline justify-between">
                                 <span className="font-medium text-gray-700">{category}</span>
                                 <div className="space-x-2">
-                                    <span className="font-semibold text-gray-600">
+                                    <span className="font-semibold text-lg text-gray-600">
                                         {formatCurrency(total)}
                                     </span>
                                     <span className="text-sm text-gray-500">
