@@ -1,82 +1,92 @@
 "use client";
 import { Button } from "@/components/ui/button";
 import { FileText } from "lucide-react";
+import { useShoplistContext } from "@/context/ShoplistContext";
+import { IProductProps, IPurchaseProps } from "@/types";
+import { formatCurrency } from "@/functions/formatCurrency";
+import { useRef } from "react";
+import { useReactToPrint } from "react-to-print";
+import { PrintPDF } from "./ListPrintPDF";
 
 interface PurchaseItem {
-  id: number;
+  id: string;
   description: string;
   quantity: number;
   unitValue: number;
   totalValue: number;
-}
-
-interface PurchaseData {
-  storeName: string;
-  date: string;
-  time: string;
-  items: PurchaseItem[];
-  total: number;
-}
-
-const mockPurchaseData: PurchaseData = {
-  storeName: "ASSAÍ ATACADISTA - BOA VIAGEM",
-  date: "20/10/2024",
-  time: "19:52:52",
-  items: [
-    {
-      id: 1,
-      description: "ABSORVENTE AWAYS 8UN",
-      quantity: 3,
-      unitValue: 1.89,
-      totalValue: 5.67
-    },
-    {
-      id: 2,
-      description: "MACARRÃO ESPAGUETE VITARELL A 400G",
-      quantity: 15,
-      unitValue: 2.00,
-      totalValue: 30.00
-    },
-    {
-      id: 3,
-      description: "BISCOITO TRELOSO CHOCOLATE 180G",
-      quantity: 5,
-      unitValue: 1.75,
-      totalValue: 8.75
-    },
-    {
-      id: 4,
-      description: "PEITO DE FRANGO AURORA BDJ 1KG",
-      quantity: 4,
-      unitValue: 22.00,
-      totalValue: 88.00
-    },
-    {
-      id: 5,
-      description: "QUEIJO PARM RALADO PAMPULH A 50G",
-      quantity: 2,
-      unitValue: 3.49,
-      totalValue: 6.98
-    },
-    {
-      id: 6,
-      description: "SALGADINHO CHEETOS REQUEIJÃO 28G",
-      quantity: 10,
-      unitValue: 0.99,
-      totalValue: 9.90
-    }
-  ],
-  total: 125.98
-};
-
-function formatCurrency(value: number): string {
-  return value.toFixed(2).replace('.', ',');
+  category: string;
+  unitType: string;
 }
 
 export function DetailsCoupon() {
-  const handleGeneratePDF = () => {
-    // TODO: Implement PDF generation
-  };
+  const { listName, productsList } = useShoplistContext();
+
+  const couponRef = useRef<HTMLDivElement>(null);
+
+  const handlePrintPDF = useReactToPrint({
+    contentRef: couponRef,
+    pageStyle: `
+      @media print {
+        @page {
+          size: A4;
+          margin: 20mm 15mm;
+          padding: 0;
+        }
+        
+        body {
+          font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+          line-height: 1.4;
+        }
+        
+        .page-break {
+          page-break-before: always;
+        }
+        
+        .avoid-break {
+          page-break-inside: avoid;
+        }
+        
+        .print-container {
+          padding: 20px;
+          background: white;
+        }
+        
+        /* Melhorar quebra de páginas para tabelas */
+        table, thead, tbody, tr {
+          page-break-inside: avoid;
+        }
+        
+        /* Garantir que cabeçalhos não fiquem sozinhos */
+        h1, h2, h3 {
+          page-break-after: avoid;
+        }
+        
+        /* Espaçamento entre seções */
+        .section-break {
+          margin-bottom: 30px;
+        }
+      }
+    `
+  });
+
+  // Transformar os produtos da lista em formato de cupom
+  const purchaseItems: PurchaseItem[] = productsList?.purchase_items?.map((product: IProductProps, index: number) => ({
+    id: product.id || `item-${index}`,
+    description: product.name,
+    quantity: Number(product.quantity),
+    unitValue: Number(product.value),
+    totalValue: Number(product.quantity) * Number(product.value),
+    category: product.category,
+    unitType: product.unit_type
+  })) || [];
+
+  // Calcular total da compra
+  const totalValue = purchaseItems.reduce((acc, item) => acc + item.totalValue, 0);
+
+  // Obter data da lista de compras
+  const endDate = productsList?.end_date ? new Date(productsList.end_date) : new Date();
+  const formattedDate = endDate.toLocaleDateString('pt-BR');
+  const formattedTime = endDate.toLocaleTimeString('pt-BR');
 
   return (
     <div>
@@ -84,16 +94,16 @@ export function DetailsCoupon() {
       <h2 className="font-medium text-subtitle mb-3">
         Detalhes da compra
       </h2>
-      
+
       {/* Receipt Box */}
       <div className="bg-white rounded-lg shadow-md p-6 mb-6">
         {/* Store Information */}
         <div className="text-center mb-4">
           <h3 className="font-bold text-black text-lg">
-            {mockPurchaseData.storeName}
+            {listName}
           </h3>
           <p className="text-black text-sm mt-1">
-            Data: {mockPurchaseData.date} - {mockPurchaseData.time}
+            Data: {formattedDate} - {formattedTime}
           </p>
         </div>
 
@@ -107,31 +117,39 @@ export function DetailsCoupon() {
 
         {/* Items List */}
         <div className="space-y-2 mb-4">
-          {mockPurchaseData.items.map((item) => (
-            <div key={item.id} className="flex gap-1 text-xs">
-              <div className="flex-1 text-left text-subtitle max-w-[186px] whitespace-break-spaces">
-                {item.id} - {item.description}
+          {purchaseItems.length > 0 ? (
+            purchaseItems.map((item, index) => (
+              <div key={item.id} className="flex gap-1 text-xs">
+                <div className="flex-1 text-left text-subtitle max-w-[186px] whitespace-break-spaces">
+                  {index + 1} - {item.description}
+                </div>
+                <div className="text-right w-[34px] text-subtitle">
+                  {item.quantity}
+                </div>
+                <div className="text-right w-[47px] text-subtitle">
+                  {formatCurrency(item.unitValue).replace("R$", "")}
+                </div>
+                <div className="text-right w-[56px] text-subtitle">
+                  {formatCurrency(item.totalValue).replace("R$", "")}
+                </div>
               </div>
-              <div className="text-right w-[34px] text-subtitle">
-                {item.quantity}
-              </div>
-              <div className="text-right w-[47px] text-subtitle">
-                {formatCurrency(item.unitValue)}
-              </div>
-              <div className="text-right w-[56px] text-subtitle">
-                {formatCurrency(item.totalValue)}
-              </div>
+            ))
+          ) : (
+            <div className="text-center text-paragraph text-sm py-4">
+              Nenhum item na lista de compras
             </div>
-          ))}
+          )}
         </div>
 
         {/* Total Section */}
-        <div className="flex justify-between items-center mb-2 py-4 border-t border-b border-slate-400 dark:border-app-border border-dotted">
-          <span className="font-bold text-subtitle">TOTAL</span>
-          <span className="font-bold text-subtitle text-lg">
-            {formatCurrency(mockPurchaseData.total)}
-          </span>
-        </div>
+        {purchaseItems.length > 0 && (
+          <div className="flex justify-between items-center mb-2 py-4 border-t border-b border-slate-400 dark:border-app-border border-dotted">
+            <span className="font-bold text-subtitle">TOTAL</span>
+            <span className="font-bold text-subtitle text-lg">
+              {formatCurrency(totalValue)}
+            </span>
+          </div>
+        )}
 
         {/* Disclaimer */}
         <div className="text-center">
@@ -141,10 +159,18 @@ export function DetailsCoupon() {
         </div>
       </div>
 
+      {/* Print PDF Component - Hidden but accessible for printing */}
+      {productsList && purchaseItems.length > 0 && (
+        <div ref={couponRef} className="hidden print:block">
+          <PrintPDF list={productsList as IPurchaseProps} />
+        </div>
+      )}
+
       {/* Generate PDF Button */}
       <Button
-        onClick={handleGeneratePDF}
+        onClick={handlePrintPDF}
         className="w-full"
+        disabled={purchaseItems.length === 0}
       >
         <FileText size={20} />
         Gerar PDF da compra

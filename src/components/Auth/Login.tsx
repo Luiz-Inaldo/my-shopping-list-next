@@ -52,7 +52,7 @@ export default function LogInForm({
 
         const token = await firebaseLoginResponse.user.getIdToken();
         // TODO: Colocar HTTPONLY no cookie
-        document.cookie = `authToken=${token}; path=/; max-age=3600; secure; samesite=strict;`;
+        document.cookie = `authToken=${token}; path=/; max-age=86400; secure; samesite=strict;`;
 
         sendToastMessage({
           title: "Login realizado com sucesso.",

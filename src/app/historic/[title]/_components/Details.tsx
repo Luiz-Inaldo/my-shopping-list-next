@@ -5,6 +5,8 @@ import { APP_ROUTES } from "@/routes/app-routes";
 import Header from "../../../../components/Header";
 import { ChevronLeft } from "lucide-react";
 import { DetailsCoupon } from "./DetailsCoupon";
+import { CategoryDistributionChart } from "./CategoryDistributionChart";
+import { CategoryDistributionChartSkeleton } from "./CategoryDistributionChartSkeleton";
 
 export function HistoricListDetails() {
     // ==================
@@ -12,23 +14,23 @@ export function HistoricListDetails() {
     // ==================
     const {
         listName,
-        productsList
+        productsList,
+        loadingProductsList
     } = useShoplistContext();
 
     const { handleChangeRoute } = usePageOverlay();
     return (
         <>
             <Header>
-                <ChevronLeft size={20} onClick={() => handleChangeRoute(APP_ROUTES.private.home.name)} />
+                <ChevronLeft size={20} onClick={() => handleChangeRoute(APP_ROUTES.private.historic.name)} />
                 <h2 className="font-medium">{listName}</h2>
             </Header>
             <div className="space-y-10 w-full px-5 py-6">
-                <div className="bg-app-container p-4 rounded-lg shadow">
-                    <p className="text-paragraph text-sm">
-                        Nessa área, ficará os gráficos
-                        de gastos referentes a compra
-                    </p>
-                </div>
+                <CategoryDistributionChart
+                    loading={loadingProductsList}
+                    productsList={productsList?.purchase_items || []}
+                    title="Distribuição por Categoria"
+                />
                 <DetailsCoupon />
             </div>
         </>

@@ -73,7 +73,7 @@ export const ShoplistProvider = ({ children }: { children: React.ReactNode }) =>
         try {
             const res = await getProductsListItems(productsList.id);
 
-            queryClient.setQueryData([QUERY_KEYS.productsList, userProfile?.uid, listName], (oldData: IPurchaseProps | undefined) => {
+            queryClient.setQueryData([QUERY_KEYS.productsList, listName], (oldData: IPurchaseProps | undefined) => {
                 if (!oldData) return oldData;
                 return {
                     ...oldData,
