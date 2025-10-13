@@ -42,6 +42,8 @@ export async function deletePurchaseFromDb(purchaseId: string) {
 export async function saveCurrentPurchase(purchase: IPurchaseProps) {
   const docRef = doc(db, "purchases", purchase.id as string);
   await updateDoc(docRef, {
-    is_active: false
+    is_active: false,
+    end_date: purchase.end_date,
+    total_price: purchase.total_price
   });
 }

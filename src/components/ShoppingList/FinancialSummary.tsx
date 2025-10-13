@@ -48,7 +48,7 @@ export function FinancialSummary({ setSavingModalOpen, setIsSaved }: {
                 end_date: endDate,
                 total_price: totalValue
             } as IPurchaseProps;
-
+            
             await saveCurrentPurchase(purchase);
             setIsSaved(true);
         } catch (error) {
