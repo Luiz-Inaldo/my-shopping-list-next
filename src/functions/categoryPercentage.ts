@@ -13,6 +13,6 @@ export const calculatePercentage = (array: any, category: string): string | unde
         (item: any) => item.category.toLowerCase() === category.toLocaleLowerCase()
     ).length;
     const totalPercentage = (totalCategoryLength / totalItemsLength) * 100;
-    return `${totalPercentage.toFixed(2)}%`
+    return `${totalPercentage.toFixed(2)}`
 
 };

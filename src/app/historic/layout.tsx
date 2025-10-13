@@ -1,10 +1,10 @@
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Histórico | Minha Lista",
+  title: "EzShop | Histórico",
   description: "Navegue entre suas atividades passadas.",
   openGraph: {
-    title: "Histórico | Minha Lista",
+    title: "EzShop | Histórico",
     description: "Navegue entre suas atividades passadas.",
   }
 };
