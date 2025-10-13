@@ -19,7 +19,7 @@ interface PurchaseItem {
 }
 
 export function DetailsCoupon() {
-  const { listName, productsList } = useShoplistContext();
+  const { productsList } = useShoplistContext();
 
   const couponRef = useRef<HTMLDivElement>(null);
 
@@ -100,7 +100,7 @@ export function DetailsCoupon() {
         {/* Store Information */}
         <div className="text-center mb-4">
           <h3 className="font-bold text-black text-lg">
-            {listName}
+            {productsList?.title}
           </h3>
           <p className="text-black text-sm mt-1">
             Data: {formattedDate} - {formattedTime}

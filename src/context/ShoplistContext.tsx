@@ -19,8 +19,7 @@ export const ShoplistProvider = ({ children }: { children: React.ReactNode }) =>
     const userProfile = useGeneralUserStore(store => store.userProfile);
     const pathname = usePathname();
 
-    const encodedListName = pathname.split("/")[2] || "";
-    const listName = decodeURIComponent(encodedListName);
+    const listId = pathname.split("/")[2] || "";
 
 
     /* ====> states <==== */
@@ -40,7 +39,7 @@ export const ShoplistProvider = ({ children }: { children: React.ReactNode }) =>
         error: errorFetchingProducts,
         refetch: refetchProductsList,
     } = useQuery<IPurchaseProps | undefined>({
-        queryKey: [QUERY_KEYS.productsList, listName],
+        queryKey: [QUERY_KEYS.productsList, listId],
         queryFn: fetchData,
         refetchOnWindowFocus: false,
         enabled: !!userProfile?.uid
@@ -56,10 +55,11 @@ export const ShoplistProvider = ({ children }: { children: React.ReactNode }) =>
     async function fetchData() {
         if (!userProfile) return;
 
-        const res = await getProductsList(userProfile.uid, listName);
+        const res = await getProductsList(listId);
+
         const productsList = {
             purchase_items: [],
-            ...res.data[0],
+            ...res?.data,
         };
 
         setAuxData(productsList as unknown as IPurchaseProps);
@@ -73,7 +73,7 @@ export const ShoplistProvider = ({ children }: { children: React.ReactNode }) =>
         try {
             const res = await getProductsListItems(productsList.id);
 
-            queryClient.setQueryData([QUERY_KEYS.productsList, listName], (oldData: IPurchaseProps | undefined) => {
+            queryClient.setQueryData([QUERY_KEYS.productsList, listId], (oldData: IPurchaseProps | undefined) => {
                 if (!oldData) return oldData;
                 return {
                     ...oldData,
@@ -109,7 +109,7 @@ export const ShoplistProvider = ({ children }: { children: React.ReactNode }) =>
         try {
             await updatePurchaseItem(productsList?.id as string, itemID, object);
             sendToastMessage({ title: "Produto atualizado com sucesso.", type: 'success' });
-            queryClient.setQueryData(['productsList', userProfile?.uid, listName], (oldData: IPurchaseProps | undefined) => {
+            queryClient.setQueryData(['productsList', userProfile?.uid, listId], (oldData: IPurchaseProps | undefined) => {
                 if (!oldData) return oldData;
                 return {
                     ...oldData,
@@ -154,12 +154,12 @@ export const ShoplistProvider = ({ children }: { children: React.ReactNode }) =>
     async function handleDeleteItem(itemID: string) {
         try {
             if (productsList?.purchase_items?.length === 1) {
-                queryClient.setQueryData(['productsList', userProfile?.uid, listName], auxData);
+                queryClient.setQueryData(['productsList', userProfile?.uid, listId], auxData);
                 setFilterValue(null);
             }
             await deletePurchaseItem(productsList?.id as string, itemID);
             sendToastMessage({ title: "Produto removido com sucesso.", type: 'success' });
-            queryClient.setQueryData(['productsList', userProfile?.uid, listName], (oldData: IPurchaseProps | undefined) => {
+            queryClient.setQueryData(['productsList', userProfile?.uid, listId], (oldData: IPurchaseProps | undefined) => {
                 if (!oldData) return oldData;
                 return {
                     ...oldData,
@@ -189,7 +189,7 @@ export const ShoplistProvider = ({ children }: { children: React.ReactNode }) =>
             await checkPurchaseItem(productsList?.id as string, item?.id as string, !item.checked);
 
             sendToastMessage({ title: `${item.name} marcado como adquirido.`, type: 'success' });
-            queryClient.setQueryData(['productsList', userProfile?.uid, listName], ((oldList: IPurchaseProps | undefined) => {
+            queryClient.setQueryData(['productsList', userProfile?.uid, listId], ((oldList: IPurchaseProps | undefined) => {
                 if (!oldList) return;
 
                 return {
@@ -228,7 +228,7 @@ export const ShoplistProvider = ({ children }: { children: React.ReactNode }) =>
             await checkPurchaseItem(productsList?.id as string, item?.id as string, !item.checked);
 
             sendToastMessage({ title: `${item.name} desmarcado.`, type: 'success' });
-            queryClient.setQueryData(['productsList', userProfile?.uid, listName], (oldList: IPurchaseProps | undefined) => {
+            queryClient.setQueryData(['productsList', userProfile?.uid, listId], (oldList: IPurchaseProps | undefined) => {
                 if (!oldList) return;
 
                 return {
@@ -277,7 +277,6 @@ export const ShoplistProvider = ({ children }: { children: React.ReactNode }) =>
 
     return (
         <ShoplistContext.Provider value={{
-            listName,
             auxData,
             productsList,
             loadingProductsList,

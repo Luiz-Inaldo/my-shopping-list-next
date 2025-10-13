@@ -10,7 +10,6 @@ export type ModalTypeProps =
   | "CHECK_PRODUCT"
   | "DELETE_PURCHASE";
 export interface IShoplistContextProps {
-  listName: string;
   auxData: IPurchaseProps | null;
   productsList: IPurchaseProps | undefined;
   filterValue: string | null;

@@ -13,7 +13,6 @@ export function HistoricListDetails() {
     // # Context
     // ==================
     const {
-        listName,
         productsList,
         loadingProductsList
     } = useShoplistContext();
@@ -23,7 +22,7 @@ export function HistoricListDetails() {
         <>
             <Header>
                 <ChevronLeft size={20} onClick={() => handleChangeRoute(APP_ROUTES.private.historic.name)} />
-                <h2 className="font-medium">{listName}</h2>
+                <h2 className="font-medium">{productsList?.title}</h2>
             </Header>
             <div className="space-y-10 w-full px-5 py-6">
                 <CategoryDistributionChart
