@@ -19,8 +19,8 @@ export const APP_ROUTES = {
         menu: {
             name: "/menu"
         },
-        statistics: {
-            name: "/statistics"
+        estatisticas: {
+            name: "/estatisticas"
         }
     },
     public: {

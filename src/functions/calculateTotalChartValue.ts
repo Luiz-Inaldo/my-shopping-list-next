@@ -7,7 +7,7 @@ export function calculateTotalChartValue(purchases: IPurchaseProps[], dataType: 
     let items: IProductProps[] = [];
 
     for (const purchase of purchases) {
-        items = [... items, ...JSON.parse(purchase.purchase_items) ];
+        items = [... items, ...purchase.purchase_items as IProductProps[] ];
     }
 
     if (dataType === 'percentual') {
@@ -18,7 +18,7 @@ export function calculateTotalChartValue(purchases: IPurchaseProps[], dataType: 
         let totalValue: number = 0;
         totalValue = items.reduce((acc, item) => {
             if (item.category.toLowerCase() === categoryName.toLowerCase()) {
-                return acc + (item.quantity * parseFloat(item.value.replace(',', '.')));
+                return acc + (item.quantity * item.value);
             } else {
                 return acc;
             }

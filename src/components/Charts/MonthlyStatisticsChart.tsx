@@ -75,7 +75,7 @@ export function MonthlyStatisticsChart({
   data,
 }: StatisticsChartProps) {
   const [chartData, setChartData] = useState<any[]>([]);
-
+  console.log(data);
   useEffect(() => {
     if (data && data.length > 0) {
       const chartData = CATEGORIES.map((category, index) => {
@@ -109,7 +109,7 @@ export function MonthlyStatisticsChart({
               {data
                 .reduce(
                   (total, purchase) =>
-                    total + Number(purchase.total_price.replace(",", ".")),
+                    total + Number(purchase.total_price),
                   0
                 )
                 .toFixed(2)}

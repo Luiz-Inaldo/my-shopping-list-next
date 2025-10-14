@@ -64,8 +64,8 @@ export interface IProductProps {
   id?: string;
   name: string;
   category: string;
-  quantity: number | string;
-  value: number | string;
+  quantity: number;
+  value: number;
   checked: boolean;
   unit_type: TProductsUnitTypes;
 }

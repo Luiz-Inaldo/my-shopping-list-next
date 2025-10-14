@@ -7,7 +7,7 @@ import { AddProductForm } from '../Forms/AddProductForm';
 import { APP_ROUTES } from '@/routes/app-routes';
 import { usePageOverlay } from '@/context/PageOverlayContext';
 
-const allowedRoutes = ["/", "/settings", "/historic", "/menu", '/statistics']
+const allowedRoutes = ["/", "/settings", "/historic", "/menu", '/estatisticas']
 
 const Footer = () => {
 
@@ -55,7 +55,7 @@ const Footer = () => {
                         className={`grid gap-1 p-2 place-items-center border-b ${pathname === "/statistics" ? "text-default-green dark:text-title border-default-green dark:border-title" : "text-subtitle border-transparent"}`}
                         onClick={(e) => {
                             e.preventDefault()
-                            handleChangeRoute(APP_ROUTES.private.statistics.name)
+                            handleChangeRoute(APP_ROUTES.private.estatisticas.name)
                         }}
                     >
                         <ChartSpline size={16} />
