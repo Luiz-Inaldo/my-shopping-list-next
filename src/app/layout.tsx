@@ -1,17 +1,16 @@
 'use client'
-import { Itim, Quicksand } from "next/font/google";
+import { Inter, Itim, Quicksand } from "next/font/google";
 import "../styles/globals.css";
-import { ProductsProvider } from "@/context/ProductsContext";
 import { Toaster } from "@/components/ui/sonner";
-import SessionVerifier from "@/components/SessionVerifier";
 import useCheckRoute from "@/hooks/useCheckRoute";
 import { usePathname } from "next/navigation";
-import { PurchasesProvider } from "@/context/PurchasesContext";
 import VerifyDevice from "@/components/VerifyDevice";
 import { PageOverlayProvider } from "@/context/PageOverlayContext";
+import { QueryClientProvider } from '@tanstack/react-query'
+import { queryClient } from "@/utils/queryClient";
+import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
 
-
-const quicksand = Quicksand({ weight: ['300', '400', '500', '700'], subsets: ["latin"] });
+const inter = Inter({ weight: ['300', '400', '500', '700'], subsets: ["latin"] });
 
 export default function RootLayout({
   children,
@@ -24,28 +23,25 @@ export default function RootLayout({
 
   return (
     <html lang="pt-br">
-      <body className={quicksand.className}>
-        <PageOverlayProvider>
-          <div className="relative">
-            {isPrivateRoute ? (
-              <VerifyDevice>
-                <ProductsProvider>
-                  <SessionVerifier>
-                    <PurchasesProvider>
-                      {children}
-                    </PurchasesProvider>
-                  </SessionVerifier>
-                </ProductsProvider>
-              </VerifyDevice>
-            ) : (
-              <>
-                {children}
-              </>
-            )}
+      <body className={inter.className}>
+        <QueryClientProvider client={queryClient}>
+          <PageOverlayProvider>
+            <div className="relative">
+              {isPrivateRoute ? (
+                <VerifyDevice>
+                  {children}
+                </VerifyDevice>
+              ) : (
+                <>
+                  {children}
+                </>
+              )}
 
-          </div>
-        </PageOverlayProvider>
-        <Toaster />
+            </div>
+          </PageOverlayProvider>
+          <Toaster />
+          <ReactQueryDevtools initialIsOpen={false} buttonPosition="top-right" />
+        </QueryClientProvider>
       </body>
     </html>
   );

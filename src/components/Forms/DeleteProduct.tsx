@@ -1,21 +1,30 @@
-import { ProductsContext } from "@/context/ProductsContext";
+import { useShoplistContext } from "@/context/ShoplistContext";
 import { IProductProps } from "@/types";
-import React, { useContext, useState } from "react";
+import React, { useState } from "react";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "../ui/dialog";
 import { Button } from "../ui/button";
 
 export const DeleteProduct = ({
   item,
+  closeDropdown
 }: {
   item: IProductProps | undefined;
+  closeDropdown: () => void;
 }) => {
-  const { handleDeleteItem } = useContext(ProductsContext);
+  const { handleDeleteItem } = useShoplistContext();
   const [open, setOpen] = useState(false);
+
+  function saveAndCloseModal() {
+    if (!item || !item.id) return;
+    handleDeleteItem(item.id);
+    setOpen(false);
+    closeDropdown();
+  }
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <span className="px-3 text-sm text-subtitle">Excluir</span>
+        <button className="px-3 text-sm text-subtitle">Excluir</button>
       </DialogTrigger>
       <DialogContent className="max-w-[400px]" onClick={(e) => e.stopPropagation()}>
         <DialogHeader>
@@ -27,7 +36,7 @@ export const DeleteProduct = ({
         <div className="flex gap-2 mt-5">
           <Button
             type="button"
-            onClick={() => handleDeleteItem(item!.id)}
+            onClick={() => saveAndCloseModal()}
             className="col-span-1 w-full rounded-full"
           >
             Sim

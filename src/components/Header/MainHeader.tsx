@@ -1,0 +1,38 @@
+import React from 'react'
+import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar'
+import Image from 'next/image'
+import useGeneralUserStore from '@/store/generalUserStore';
+import { MainHeaderSkeleton } from '../Skeletons/MainHeaderSkeleton';
+
+export const MainHeader = () => {
+
+    // =============
+    // # STORE
+    // =============
+    const userProfile = useGeneralUserStore(store => store.userProfile);
+
+    if (!userProfile) return <MainHeaderSkeleton />
+
+    return (
+        <div className="relative z-[1] w-full p-4 flex items-center gap-3">
+            <Avatar className='border-2 border-app-container'>
+                {/* <AvatarImage src={userProfile?.profile_img} /> */}
+                <AvatarImage src={`https://api.dicebear.com/9.x/micah/svg?seed=${userProfile?.uid}`} />
+                <AvatarFallback>
+                    <Image
+                        src='/images/avatars/default-avatar.svg'
+                        alt='no-profile-img'
+                        width={40}
+                        height={40}
+                    />
+                </AvatarFallback>
+            </Avatar>
+            <div className='flex flex-col'>
+                <p className="text-[#d9d9d9] font-medium leading-none">
+                    Olá {userProfile?.name || 'Usuário sem nome.'}
+                </p>
+                <p className='text-[#909090] text-xs'>Bem-vindo de volta!</p>
+            </div>
+        </div>
+    )
+}

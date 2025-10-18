@@ -1,6 +1,7 @@
 import React from "react";
 
 import "./checkbox.css";
+import { IProductProps } from "@/types";
 
 export const Checkbox = ({
   checked,
@@ -9,7 +10,7 @@ export const Checkbox = ({
   ...props
 }: {
   checked?: boolean;
-  onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  onChange?: (event: React.ChangeEvent<HTMLInputElement>) => void;
   register?: any;
   props?: any;
 }) => {
@@ -19,7 +20,7 @@ export const Checkbox = ({
         type="checkbox"
         id="cbx-43"
         checked={checked}
-        onChange={onChange ? onChange : () => {}}
+        onChange={onChange}
         {...register}
         {...props}
         />

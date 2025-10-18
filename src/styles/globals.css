@@ -43,9 +43,10 @@
     --category-9: #a7f3d0;
     --category-10: #d1d5db;
     --header-height: 68px;
-    --app-background: #fafafa;
+    --app-background: #efefef;
     --app-primary: #4CAF50;
     --app-container: white;
+    --app-border: #e8e8e8;
     --title: #212529;
     --subtitle: #343a40;
     --paragraph: #838587;
@@ -98,7 +99,7 @@
     @apply border-border;
   }
   body {
-    @apply bg-app-background font-medium;
+    @apply bg-app-background;
   }
   .logo {
     @apply font-cherryBomb;
@@ -106,15 +107,19 @@
 }
 
 .container {
+  position: relative;
   display: flex;
   flex-direction: column;
-  gap: 2.5rem;
-  justify-content: space-between;
-  min-width: 375px;
-  max-width: 430px;
-  min-height: 100dvh;
+  gap: 20px;
+  /* justify-content: space-between; */
+  width: 100%;
+  /* min-height: 100dvh; */
   margin: 0 auto;
-  padding: 0;
+  padding: 16px 16px 92px 16px;
+}
+
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
 }
 
 /* independent styles */

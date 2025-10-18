@@ -3,19 +3,18 @@ export const APP_ROUTES = {
         home: {
             name: "/"
         },
+        shoppingList: {
+            name: (title: string) => `/list/${title}`
+        },
         settings: {
             name: "/settings"
         },
         historic: {
             name: "/historic",
             details: {
-                name: (title: string) => `/historic/${title}`,
-                children: (title: string) => `/historic/${title}/details`
+                name: (title: string) => `/historic/${title}`
             },
 
-        },
-        purchase_saved: {
-            name: (title: string) => `/purchase-saved/${title}`
         },
         menu: {
             name: "/menu"

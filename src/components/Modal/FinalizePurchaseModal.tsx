@@ -11,16 +11,16 @@ import {
 import { Button } from "../ui/button";
 
 const FinalizePurchaseModal = ({
-  finalizePurchase,
+  onFinalize,
   trigger,
 }: {
-  finalizePurchase: () => void;
+  onFinalize: () => void;
   trigger: React.ReactNode;
 }) => {
   const [open, setOpen] = useState(false);
 
   function handleFinalize() {
-    finalizePurchase();
+    onFinalize();
     setOpen(false);
   }
 

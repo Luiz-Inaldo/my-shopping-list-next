@@ -56,19 +56,19 @@ export function LastSixMonthsChart({ data }: { data: IPurchaseProps[] }) {
     // effects
     useEffect(() => {
         if (data && data.length > 0) {
-            const allMonths = data.map((purchase) => {
-                return purchase.purchase_date.split("T")[0].split("-")[1]
-            });
+            // const allMonths = data.map((purchase) => {
+            //     return purchase.purchase_date.split("T")[0].split("-")[1]
+            // });
 
-            const uniqueMonths: string[] = Array.from(new Set(allMonths));
+            // const uniqueMonths: string[] = Array.from(new Set(allMonths));
 
-            const chartData = uniqueMonths.map((month) => {
-                return {
-                    month: MONTHS[Number(month) - 1],
-                    value: calculateTotalMonthValue(data, month)
-                }
-            });
-            setChartData(chartData)
+            // const chartData = uniqueMonths.map((month) => {
+            //     return {
+            //         month: MONTHS[Number(month) - 1],
+            //         value: calculateTotalMonthValue(data, month)
+            //     }
+            // });
+            // setChartData(chartData)
         }
     }, [data]);
 
@@ -134,31 +134,32 @@ export function LastSixMonthsChart({ data }: { data: IPurchaseProps[] }) {
           </ChartContainer>
         </CardContent>
         {data && data.length > 0 && (
-          <CardFooter>
-            <p className="text-paragraph text-sm">
-              {"Período de: "}
-              <b>
-                {MONTHS[
-                  Number(data[0].purchase_date.split("T")[0].split("-")[1] - 1)
-                ].slice(0, 3)}
-                -{data[0].purchase_date.split("T")[0].split("-")[0]}
-                {" a "}
-                {MONTHS[
-                  Number(
-                    data[data.length - 1].purchase_date
-                      .split("T")[0]
-                      .split("-")[1] - 1
-                  )
-                ].slice(0, 3)}
-                -
-                {
-                  data[data.length - 1].purchase_date
-                    .split("T")[0]
-                    .split("-")[0]
-                }
-              </b>
-            </p>
-          </CardFooter>
+          <></>
+          // <CardFooter>
+          //   <p className="text-paragraph text-sm">
+          //     {"Período de: "}
+          //     <b>
+          //       {MONTHS[
+          //         Number(data[0].purchase_date.split("T")[0].split("-")[1] - 1)
+          //       ].slice(0, 3)}
+          //       -{data[0].purchase_date.split("T")[0].split("-")[0]}
+          //       {" a "}
+          //       {MONTHS[
+          //         Number(
+          //           data[data.length - 1].purchase_date
+          //             .split("T")[0]
+          //             .split("-")[1] - 1
+          //         )
+          //       ].slice(0, 3)}
+          //       -
+          //       {
+          //         data[data.length - 1].purchase_date
+          //           .split("T")[0]
+          //           .split("-")[0]
+          //       }
+          //     </b>
+          //   </p>
+          // </CardFooter>
         )}
       </Card>
     );

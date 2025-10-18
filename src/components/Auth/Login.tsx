@@ -1,6 +1,4 @@
 "use client";
-import { User } from "@/interfaces/user";
-import { supabase } from "@/lib/api";
 import { APP_ROUTES } from "@/routes/app-routes";
 import { Check, Eye, EyeOff, LoaderCircle, LogInIcon, X } from "lucide-react";
 import React, { useState, useTransition } from "react";
@@ -19,6 +17,11 @@ import { toast } from "sonner";
 import { loginFormSchema } from "@/types/zodTypes";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { usePageOverlay } from "@/context/PageOverlayContext";
+import { ILoginUser } from "@/interfaces/user";
+import { signInWithEmailAndPassword } from "firebase/auth";
+import { auth } from "@/lib/firebase";
+import { FirebaseError } from "firebase/app";
+import { sendToastMessage } from "@/functions/sendToastMessage";
 
 export default function LogInForm({
   setCurrentForm,
@@ -30,52 +33,136 @@ export default function LogInForm({
 
   const { handleChangeRoute } = usePageOverlay();
 
-  const form = useForm<User>({
+  const form = useForm<ILoginUser>({
     resolver: zodResolver(loginFormSchema)
   });
 
-  async function onSubmit(userCredentials: User) {
+  async function onSubmit(userCredentials: ILoginUser) {
     loadingTransition(async () => {
-      const { data, error } = await supabase.auth.signInWithPassword(
-        userCredentials
-      );
 
-      if (error) {
-        if (error.code === "invalid_credentials") {
-          toast.error("Credenciais de login inválidas.", {
-            classNames: {
-              toast: '!bg-black !border-0',
-              title: '!text-snow'
-            },
-            position: 'top-center',
-            icon: <X className="text-red-500 text-lg" />
-          });
-        } else {
-          toast.error("Houve um erro ao logar.", {
-            classNames: {
-              toast: '!bg-black !border-0',
-              title: '!text-snow'
-            },
-            position: 'top-center',
-            icon: <X className="text-red-500 text-lg" />
-          });
-        }
-      } else {
-        toast.success("Login realizado com sucesso.", {
-          classNames: {
-            toast: '!bg-black !border-0',
-            title: '!text-snow'
-          },
-          position: 'top-center',
-          icon: <Check className="text-emerald-500 text-lg" />
-        });
+      const { email, password } = userCredentials;
+
+
+      try {
+        const firebaseLoginResponse = await signInWithEmailAndPassword(
+          auth,
+          email,
+          password
+        );
+
+        const token = await firebaseLoginResponse.user.getIdToken();
+        // TODO: Colocar HTTPONLY no cookie
+        document.cookie = `authToken=${token}; path=/; max-age=86400; secure; samesite=strict;`;
+
+        sendToastMessage({
+          title: "Login realizado com sucesso.",
+          type: "success"
+        })
         setTimeout(() => {
           toast.dismiss();
           handleChangeRoute(APP_ROUTES.private.home.name);
         }, 2000);
-      }
-    })
+      } catch (error) {
+        if (error instanceof FirebaseError) {
+          console.error(error.code);
+          switch (error.code) {
+            case "auth/invalid-credential":
+              sendToastMessage({
+                title: "Credenciais incorretas. Tente novamente.",
+                type: "error"
+              })
+              break;
 
+            default:
+              sendToastMessage({
+                title: "Erro ao fazer login. Tente novamente.",
+                type: "error"
+              })
+              break;
+          }
+        }
+      }
+
+      //   if (res.status === 200) {
+      //     toast.success("Login realizado com sucesso.", {
+      //       classNames: {
+      //         toast: '!bg-black !border-0',
+      //         title: '!text-snow'
+      //       },
+      //       position: 'top-center',
+      //       icon: <Check className="text-emerald-500 text-lg" />
+      //     });
+      //     setTimeout(() => {
+      //       toast.dismiss();
+      //       handleChangeRoute(APP_ROUTES.private.home.name);
+      //     }, 2000);
+      //   } else {
+      //     switch (res.statusText) {
+      //       case "auth/invalid-credential":
+      //         toast.error("Credenciais incorretas. Tente novamente.", {
+      //           classNames: {
+      //             toast: '!bg-black !border-0',
+      //             title: '!text-snow'
+      //           },
+      //           position: 'top-center',
+      //           icon: <X className="text-red-500 text-lg" />
+      //         });
+      //         break;
+
+      //       default:
+      //         toast.error("Houve um erro ao logar.", {
+      //           classNames: {
+      //             toast: '!bg-black !border-0',
+      //             title: '!text-snow'
+      //           },
+      //           position: 'top-center',
+      //           icon: <X className="text-red-500 text-lg" />
+      //         });
+      //         break;
+      //     }
+      //   }
+      // });
+
+      // const { data, error } = await supabase.auth.signInWithPassword(
+      //   userCredentials
+      // );
+
+      // if (error) {
+      //   if (error.code === "invalid_credentials") {
+      //     toast.error("Credenciais de login inválidas.", {
+      //       classNames: {
+      //         toast: '!bg-black !border-0',
+      //         title: '!text-snow'
+      //       },
+      //       position: 'top-center',
+      //       icon: <X className="text-red-500 text-lg" />
+      //     });
+      //   } else {
+      //     toast.error("Houve um erro ao logar.", {
+      //       classNames: {
+      //         toast: '!bg-black !border-0',
+      //         title: '!text-snow'
+      //       },
+      //       position: 'top-center',
+      //       icon: <X className="text-red-500 text-lg" />
+      //     });
+      //   }
+      // } else {
+      //   toast.success("Login realizado com sucesso.", {
+      //     classNames: {
+      //       toast: '!bg-black !border-0',
+      //       title: '!text-snow'
+      //     },
+      //     position: 'top-center',
+      //     icon: <Check className="text-emerald-500 text-lg" />
+      //   });
+      //   setTimeout(() => {
+      //     toast.dismiss();
+      //     handleChangeRoute(APP_ROUTES.private.home.name);
+      //   }, 2000);
+      // }
+
+    })
   }
 
   return (

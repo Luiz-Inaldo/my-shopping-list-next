@@ -1,14 +1,14 @@
 import { AnnualStatisticsChart } from '@/components/Charts/AnnualStatisticsChart';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { YEARS } from '@/constants/years';
-import { PurchasesContext } from '@/context/PurchasesContext';
+import { usePurchasesContext } from '@/context/PurchasesContext';
 import { IPurchaseProps } from '@/types';
 import { AnnualFilterProps } from '@/types/charts';
 import React, { useCallback, useContext, useEffect, useRef, useState } from 'react'
 
 const AnnualResumeSection = () => {
 
-    const { purchasesList } = useContext(PurchasesContext);
+    const { purchasesList } = usePurchasesContext();
     
     const [data, setData] = useState<IPurchaseProps[]>([]);
     const [filterStates, setFilterStates] = useState<AnnualFilterProps>({
@@ -23,11 +23,11 @@ const AnnualResumeSection = () => {
 
         const year = Number(filter.year);
 
-        const filteredData = purchasesList.filter(purchase =>
-            purchase.purchase_date.split("T")[0].split("-")[0] === year.toString()
-        );
+        // const filteredData = purchasesList.filter(purchase =>
+        //     purchase.purchase_date.split("T")[0].split("-")[0] === year.toString()
+        // );
 
-        setData(filteredData);
+        // setData(filteredData);
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [filterStates.year, purchasesList])
 
@@ -39,9 +39,9 @@ const AnnualResumeSection = () => {
     }, [filterStates, filterLock]);
 
     useEffect(() => {
-        if (purchasesList.length > 0 && filterLock) {
-            setFilterLock(false);
-        }
+        // if (purchasesList.length > 0 && filterLock) {
+        //     setFilterLock(false);
+        // }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [purchasesList]);
 

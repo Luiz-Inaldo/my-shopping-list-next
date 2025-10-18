@@ -104,7 +104,7 @@ export function MonthlyStatisticsChart({
           </p>
           <p>
             Total de gastos:{" "}
-            <strong>
+            {/* <strong>
               R${" "}
               {data
                 .reduce(
@@ -113,7 +113,7 @@ export function MonthlyStatisticsChart({
                   0
                 )
                 .toFixed(2)}
-            </strong>
+            </strong> */}
           </p>
         </CardDescription>
       </CardHeader>

@@ -1,11 +1,11 @@
 import { LastSixMonthsChart } from '@/components/Charts/LastSixMonthsChart';
-import { PurchasesContext } from '@/context/PurchasesContext';
+import { usePurchasesContext } from '@/context/PurchasesContext';
 import { IPurchaseProps } from '@/types';
-import React, { useCallback, useContext, useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 
 export const LastSixMonthsSection = () => {
 
-    const { purchasesList } = useContext(PurchasesContext);
+    const { purchasesList } = usePurchasesContext();
 
     const [data, setData] = useState<IPurchaseProps[]>([]);
 
@@ -27,12 +27,12 @@ export const LastSixMonthsSection = () => {
             numberOfMonths -= 1;
         }
 
-        const filteredData = purchasesList.filter(purchase => 
-            purchase.purchase_date.split("T")[0] >= `${year}-${String(lastMonth).padStart(2, '0')}-01` &&
-            purchase.purchase_date.split("T")[0] <= `${String(new Date().getFullYear())}-${String(startMonth).padStart(2, '0')}-31` 
-        ).sort((a, b) => new Date(a.purchase_date).getTime() - new Date(b.purchase_date).getTime())
+        // const filteredData = purchasesList.filter(purchase => 
+        //     purchase.purchase_date.split("T")[0] >= `${year}-${String(lastMonth).padStart(2, '0')}-01` &&
+        //     purchase.purchase_date.split("T")[0] <= `${String(new Date().getFullYear())}-${String(startMonth).padStart(2, '0')}-31` 
+        // ).sort((a, b) => new Date(a.purchase_date).getTime() - new Date(b.purchase_date).getTime())
 
-        setData(filteredData);
+        // setData(filteredData);
 
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [purchasesList])
@@ -45,9 +45,9 @@ export const LastSixMonthsSection = () => {
     }, [filterLock]);
 
     useEffect(() => {
-        if (purchasesList.length > 0 && filterLock) {
-            setFilterLock(false);
-        }
+        // if (purchasesList.length > 0 && filterLock) {
+        //     setFilterLock(false);
+        // }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [purchasesList]);
 

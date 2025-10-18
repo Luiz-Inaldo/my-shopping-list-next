@@ -1,96 +1,127 @@
-import { supabase } from "@/lib/api";
+"use client";
 import { IFilterProps, IPuchasesContextProps, IPurchaseProps } from "@/types";
-import React, { createContext, useEffect, useState } from "react";
+import React, { createContext, useContext, useEffect, useState, useTransition } from "react";
 import useGeneralUserStore from "@/store/generalUserStore";
+import { deletePurchaseFromDb, getActivePurchaseList } from "@/services/purchasesListServices";
+import { TUiStates } from "@/types/uiStates";
+import { sendToastMessage } from "@/functions/sendToastMessage";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { QUERY_KEYS } from "@/constants/queryKeys";
 
-export const PurchasesContext = createContext<IPuchasesContextProps>({
-    purchasesList: [],
-    setPurchasesList: () => { },
-    purchasesLoading: false,
-    filterPurchases: async () => { }
-});
+const PurchasesContext = createContext<IPuchasesContextProps | undefined>(undefined);
 
 export const PurchasesProvider = ({ children }: { children: React.ReactNode }) => {
 
-    /**
-     * ==========>> store <<===========
-     */
-    const user = useGeneralUserStore(store => store.user);
+    // ===============
+    // # Store
+    // ===============
+    const userProfile = useGeneralUserStore(store => store.userProfile);
 
-    /**
-     * ==========>> states <<===========
-     */
-    const [purchasesList, setPurchasesList] = useState<IPurchaseProps[]>([]);
-    const [purchasesLoading, setPurchasesLoading] = useState<boolean>(false);
+    // ===============
+    // # States
+    // ===============
     const [auxData, setAuxData] = useState<IPurchaseProps[]>([]);
 
-    const getPurchases = async () => {
-        setPurchasesLoading(true);
-        const { data, error } = await supabase.from("purchases").select("*").eq("user_id", user?.id)
+    // ===============
+    // # ReactQuery
+    // ===============
+    const {
+        data: purchasesList,
+        isLoading: loadingPurchasesList,
+        isFetching: fetchingPurchasesList,
+        isPending: pendingPurchasesList,
+        error: errorFetchingPurchases,
+    } = useQuery<IPurchaseProps[]>({
+        queryKey: [QUERY_KEYS.activePurchases, userProfile?.uid],
+        queryFn: async () => {
+            const res = await getActivePurchaseList(userProfile?.uid as string);
+            setAuxData(res.data as unknown as IPurchaseProps[]);
+            return res.data as unknown as IPurchaseProps[];
+        },
+        refetchOnWindowFocus: false,
+        refetchInterval: 60_000,
+        enabled: !!userProfile?.uid
+    });
+    const queryClient = useQueryClient();
 
-        if (error) {
+    const deletePurchase = async (purchaseId: string) => {
+        try {
+            await deletePurchaseFromDb(purchaseId);
+            sendToastMessage({ title: "Compra deletada com sucesso!", type: "success" });
+            queryClient.invalidateQueries({
+                queryKey: ['activePurchases', userProfile?.uid]
+            });
+            // refetchPurchases();
+        } catch (error) {
             console.error(error);
-        } else {
-            setPurchasesList(data as IPurchaseProps[]);
-            setAuxData(data as IPurchaseProps[]);
-            setPurchasesLoading(false);
-            return data as IPurchaseProps[];
-        }
-
-    }
-
-    const filterPurchases = async (filter: IFilterProps) => {
-
-        // if (purchasesList.length === 0) filterPurchases(filter);
-
-        const month = filter.month;
-        const year = filter.year;
-
-        // primeiro caso: os dois parâmetros são string
-        if (typeof month === "string" && typeof year === "string") {
-            setPurchasesList(auxData);
-        }
-        // segundo caso: ambos parâmetros number
-        else if (typeof month === 'number' && typeof year === 'number') {
-
-            const filteredData = auxData.filter(purchase =>
-                purchase.purchase_date.split("T")[0].split("-")[0] === year.toString() &&
-                purchase.purchase_date.split("T")[0].split("-")[1] === String(month + 1).padStart(2, '0')
-            );
-
-            setPurchasesList(filteredData);
-
-        }
-        // terceiro caso: mês string e ano number
-        else if (typeof month === 'string' && typeof year === 'number') {
-
-            const filteredData = auxData.filter(purchase =>
-                purchase.purchase_date.split("T")[0].split("-")[0] === year.toString()
-            );
-
-            setPurchasesList(filteredData);
-
-        }
-        // quarto caso: mês number e ano string
-        else if (typeof month === 'number' && typeof year === 'string') {
-
-            const filteredData = auxData.filter(purchase =>
-                purchase.purchase_date.split("T")[0].split("-")[1] === String(month + 1).padStart(2, '0')
-            );
-
-            setPurchasesList(filteredData);
-
+            sendToastMessage({ title: "Erro ao deletar compra!", type: "error" });
         }
     }
 
-    useEffect(() => {
-        getPurchases();
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [])
+    // const filterPurchases = async (filter: IFilterProps) => {
+
+    //     // if (purchasesList.length === 0) filterPurchases(filter);
+
+    //     const month = filter.month;
+    //     const year = filter.year;
+
+    //     // primeiro caso: os dois parâmetros são string
+    //     if (typeof month === "string" && typeof year === "string") {
+    //         setPurchasesList(auxData);
+    //     }
+    //     // segundo caso: ambos parâmetros number
+    //     else if (typeof month === 'number' && typeof year === 'number') {
+
+    //         const filteredData = auxData.filter(purchase =>
+    //             purchase.end_date.split("T")[0].split("-")[0] === year.toString() &&
+    //             purchase.end_date.split("T")[0].split("-")[1] === String(month + 1).padStart(2, '0')
+    //         );
+
+    //         setPurchasesList(filteredData);
+
+    //     }
+    //     // terceiro caso: mês string e ano number
+    //     else if (typeof month === 'string' && typeof year === 'number') {
+
+    //         const filteredData = auxData.filter(purchase =>
+    //             purchase.end_date.split("T")[0].split("-")[0] === year.toString()
+    //         );
+
+    //         setPurchasesList(filteredData);
+
+    //     }
+    //     // quarto caso: mês number e ano string
+    //     else if (typeof month === 'number' && typeof year === 'string') {
+
+    //         const filteredData = auxData.filter(purchase =>
+    //             purchase.end_date.split("T")[0].split("-")[1] === String(month + 1).padStart(2, '0')
+    //         );
+
+    //         setPurchasesList(filteredData);
+
+    //     }
+    // };
+
+    // function refetchPurchases() {
+    //     getPurchases();
+    // }
+
+    // useEffect(() => {
+    //     getPurchases();
+    //     // eslint-disable-next-line react-hooks/exhaustive-deps
+    // }, [userProfile]);
 
     return (
-        <PurchasesContext.Provider value={{ purchasesList, setPurchasesList, purchasesLoading, filterPurchases }}>
+        <PurchasesContext.Provider value={{ purchasesList, loadingPurchasesList, fetchingPurchasesList, pendingPurchasesList, errorFetchingPurchases, deletePurchase }}>
             {children}
         </PurchasesContext.Provider>
     )
+};
+
+export function usePurchasesContext() {
+    const context = useContext(PurchasesContext);
+    if (context === undefined) {
+        throw new Error("usePurchasesContext must be used within a PurchasesProvider");
+    }
+    return context as IPuchasesContextProps;
 }

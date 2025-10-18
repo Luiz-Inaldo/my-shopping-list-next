@@ -1,75 +1,94 @@
-export type ModalStateProps = "OPEN" | "CLOSED";
-export type ModalTypeProps = null | 'LIMIT_VALUE' | 'DELETE_PRODUCT' | 'EDIT_PRODUCT' | 'CHECK_PRODUCT' | 'DELETE_PURCHASE'
-export interface IProductsContextProps {
-    // user: any,
-    // setUser: React.Dispatch<React.SetStateAction<any>>;
-    data: IProductProps[] | null;
-    setData: React.Dispatch<React.SetStateAction<IProductProps[] | null>>;
-    loadingProducts: boolean;
-    modal: {
-        state: ModalStateProps,
-        type: ModalTypeProps
-    }
-    setModal: React.Dispatch<React.SetStateAction<{
-        state: ModalStateProps;
-        type: ModalTypeProps;
-    }>>;
-    optionMenu: string | null;
-    setOptionMenu: React.Dispatch<React.SetStateAction<string | null>>;
-    totalValue: string;
-    setTotalValue: React.Dispatch<React.SetStateAction<string>>;
-    situation: string;
-    setSituation: React.Dispatch<React.SetStateAction<string>>;
-    currentPurchase: ISupabasePurchaseProps | null;
-    setCurrentPurchase: React.Dispatch<React.SetStateAction<ISupabasePurchaseProps | null>>;
+import { QueryObserverResult, RefetchOptions } from "@tanstack/react-query";
+import { TUiStates } from "./uiStates";
 
-    fetchData: () => Promise<void>;
-    fetchPurchaseData: () => Promise<void>;
-    deleteCurrentPurchase: () => Promise<void>;
-    deleteAllItems: () => Promise<void>;
-    handleUpdateItem: (object: IEditItemProps, itemID: string) => Promise<void>;
-    handleDeleteItem: (itemID: string) => Promise<void>;
-    handleCheckItem:(item: IProductProps, object?: IEditItemProps) => Promise<void>;
-    handleDismarkItem: (item: IProductProps) => Promise<void>;
+export type ModalStateProps = "OPEN" | "CLOSED";
+export type ModalTypeProps =
+  | null
+  | "LIMIT_VALUE"
+  | "DELETE_PRODUCT"
+  | "EDIT_PRODUCT"
+  | "CHECK_PRODUCT"
+  | "DELETE_PURCHASE";
+export interface IShoplistContextProps {
+  auxData: IPurchaseProps | null;
+  productsList: IPurchaseProps | undefined;
+  filterValue: string | null;
+  setFilterValue: React.Dispatch<React.SetStateAction<string | null>>;
+  totalValue: number;
+  setTotalValue: React.Dispatch<React.SetStateAction<number>>;
+  currentPurchase: ISupabasePurchaseProps | null;
+  setCurrentPurchase: React.Dispatch<
+    React.SetStateAction<ISupabasePurchaseProps | null>
+  >;
+
+  loadingProductsList: boolean;
+  fetchingProductsList: boolean;
+  pendingProductsList: boolean;
+  errorFetchingProducts: unknown;
+
+  refetchProductsList: (options?: RefetchOptions | undefined) => Promise<QueryObserverResult<IPurchaseProps | undefined, Error>>;
+  handleUpdateItem: (object: IEditItemProps, itemID: string) => Promise<void>;
+  handleDeleteItem: (itemID: string) => Promise<void>;
+  handleCheckItem: (
+    item: IProductProps,
+    object?: IEditItemProps
+  ) => Promise<void>;
+  handleDismarkItem: (item: IProductProps) => Promise<void>;
 }
 
 export interface IPuchasesContextProps {
-    purchasesList: IPurchaseProps[];
-    setPurchasesList: React.Dispatch<React.SetStateAction<IPurchaseProps[]>>;
-    purchasesLoading: boolean;
-    filterPurchases: (filter: IFilterProps) => void;
+  // states
+  purchasesList: IPurchaseProps[] | undefined;
+  loadingPurchasesList?: boolean;
+  fetchingPurchasesList?: boolean;
+  pendingPurchasesList?: boolean;
+  errorFetchingPurchases?: unknown;
+  // uiStates: TUiStates;
+
+  // functions
+  // setPurchasesList: React.Dispatch<React.SetStateAction<IPurchaseProps[]>>;
+  // filterPurchases: (filter: IFilterProps) => void;
+  deletePurchase: (purchaseId: string) => Promise<void>;
+  // refetchPurchases: () => void
 }
 
-export interface IFormItem extends Omit<IProductProps, 'id'> {}
+export interface IFormItem extends Omit<IProductProps, "id"> {}
 
-export interface IEditItemProps extends Omit<IProductProps, 'category' | 'checked'> {}
+export interface IEditItemProps
+  extends Omit<IProductProps, "category" | "checked"> {}
+
+type TProductsUnitTypes = "und" | "kg" | "lt" | "cx" | "fd" | "pct";
 
 export interface IProductProps {
-    id: string;
-    name: string;
-    category: string;
-    quantity: number;
-    value: string;
-    checked: boolean;
+  id?: string;
+  name: string;
+  category: string;
+  quantity: number | string;
+  value: number | string;
+  checked: boolean;
+  unit_type: TProductsUnitTypes;
 }
 
 export interface IPurchaseProps {
-    id?: string;
-    title: string;
-    purchase_date: any;
-    purchase_items: string;
-    total_price: string;
-    user_id: string | undefined;
+  id?: string; //TODO: Supabase case use. remove later
+  title: string;
+  is_active: boolean;
+  max_value: number;
+  start_date: string | null;
+  end_date: string | null;
+  purchase_items?: never[] | IProductProps[];
+  total_price: number;
+  user_id: string | undefined;
 }
 
 export interface ISupabasePurchaseProps {
-    id: string;
-    list_name: string;
-    list_max_value: string;
-    user_id: string;
+  id: string;
+  list_name: string;
+  list_max_value: string;
+  user_id: string;
 }
 
 export interface IFilterProps {
-    month: string | number;
-    year: string | number;
+  month: string | number;
+  year: string | number;
 }

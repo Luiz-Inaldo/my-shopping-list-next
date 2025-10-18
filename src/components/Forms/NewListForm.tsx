@@ -1,25 +1,45 @@
 "use client";
-import { Dialog } from '@radix-ui/react-dialog'
-import React, { useContext, useTransition } from 'react'
-import { DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '../ui/dialog'
+import ReactDOM from 'react-dom';
+import React, { useState, useTransition } from 'react'
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '../ui/dialog'
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from '../ui/form'
 import { useForm } from 'react-hook-form'
 import { NewListProps } from '@/types/purchaseList'
 import { sleep } from '@/functions/sleep'
-import { supabase } from '@/lib/api'
 import useGeneralUserStore from '@/store/generalUserStore'
-import { ProductsContext } from '@/context/ProductsContext'
 import { Button } from '../ui/button';
 import { Input } from '../ui/input';
-import { Check, LoaderCircle } from 'lucide-react';
+import { Check, LoaderCircle, Plus } from 'lucide-react';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { createListSchema } from '@/types/zodTypes';
+import { sendToastMessage } from '@/functions/sendToastMessage';
+import { motion } from 'motion/react';
+import { IPurchaseProps } from '@/types';
+import { addPurchaseToDb } from '@/services/purchasesListServices';
+import { useQueryClient } from '@tanstack/react-query';
+import { invalidateAllQueries } from '@/functions/invalidadeQueries';
+import { QUERY_KEYS } from '@/constants/queryKeys';
 
-const NewListForm = ({ children }: { children: React.ReactNode }) => {
+const addButtonVariants = {
+    initial: {
+        opacity: 0
+    },
+    animate: {
+        opacity: 1
+    },
+    transition: {
+        duration: 0.5,
+        delay: 1
+    }
+} as const;
 
-    const user = useGeneralUserStore(store => store.user);
+const NewListForm = () => {
+
+    const queryClient = useQueryClient();
+    const userProfile = useGeneralUserStore(store => store.userProfile);
     const [isSettingPurchase, setPurchaseTransition] = useTransition();
-    const { fetchPurchaseData } = useContext(ProductsContext);
+
+    const [open, setOpen] = useState(false);
 
     const form = useForm<NewListProps>({
         resolver: zodResolver(createListSchema)
@@ -27,27 +47,57 @@ const NewListForm = ({ children }: { children: React.ReactNode }) => {
 
 
     const onSubmit = async (listData: NewListProps) => {
+
+        const newList: IPurchaseProps = {
+            title: listData.list_name,
+            is_active: true,
+            start_date: new Date().toISOString(),
+            end_date: null,
+            total_price: 0,
+            purchase_items: [],
+            max_value: parseFloat(listData.list_max_value.replace(',', '.')),
+            user_id: userProfile?.uid
+        }
+
         setPurchaseTransition(async () => {
             await sleep(2);
 
-            const { error } = await supabase.from("active_purchases").insert([{
-                list_name: listData.list_name,
-                list_max_value: listData.list_max_value,
-                user_id: user?.id
-            }]);
-
-            if (error) {
-                console.error(error);
+            try {
+                await addPurchaseToDb(newList);
+                sendToastMessage({
+                    title: "Lista criada com sucesso!",
+                    type: "success"
+                });
+                if (userProfile) {
+                    invalidateAllQueries([[QUERY_KEYS.activePurchases, userProfile?.uid]]);
+                }
+                // refetchPurchases();
+            } catch (error) {
+                console.error(error)
+                sendToastMessage({
+                    title: "Erro ao criar compra! Tente novamente.",
+                    type: "error"
+                })
             }
 
-            fetchPurchaseData();
+            setOpen(false);
         })
     }
 
-    return (
-        <Dialog>
+    return ReactDOM.createPortal(
+        <Dialog open={open} onOpenChange={setOpen}>
             <DialogTrigger asChild>
-                {children}
+                <motion.div
+                    variants={addButtonVariants}
+                    initial="initial"
+                    animate="animate"
+                    transition={addButtonVariants.transition}
+                >
+                    <Button size="sm" className='fixed bottom-[80px] right-2.5 py-1.5 h-fit'>
+                        <Plus size={16} />
+                        <span>Nova lista</span>
+                    </Button>
+                </motion.div>
             </DialogTrigger>
             <DialogContent className="max-w-[400px]" onClick={(e) => e.stopPropagation()}>
                 <DialogHeader>
@@ -114,7 +164,7 @@ const NewListForm = ({ children }: { children: React.ReactNode }) => {
                     </form>
                 </Form>
             </DialogContent >
-        </Dialog >
+        </Dialog >, document.body
     )
 }
 
