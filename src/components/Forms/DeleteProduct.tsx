@@ -14,9 +14,9 @@ export const DeleteProduct = ({
   const { handleDeleteItem } = useShoplistContext();
   const [open, setOpen] = useState(false);
 
-  function saveAndCloseModal() {
+  async function saveAndCloseModal() {
     if (!item || !item.id) return;
-    handleDeleteItem(item.id);
+    await handleDeleteItem(item.id);
     setOpen(false);
     closeDropdown();
   }
