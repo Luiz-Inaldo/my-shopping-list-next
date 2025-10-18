@@ -31,7 +31,8 @@ export const CheckItemForm = ({
 
   async function onSubmit(data: IEditItemProps) {
     data.value = Number(String(data.value).replace(",", "."));
-    handleCheckItem(item!, data);
+    await handleCheckItem(item!, data);
+    setOpen(false);
   }
 
   return (

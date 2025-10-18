@@ -37,6 +37,8 @@ export function DetailsCoupon() {
         body {
           font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
           line-height: 1.4;
+          -webkit-print-color-adjust: exact;
+          print-color-adjust: exact;
         }
         
         .page-break {
