@@ -117,6 +117,7 @@ export function HistoricPage() {
     useEffect(() => {
         if (isFirstLoad.current && historicData) {
             setAuxData(historicData);
+            isFirstLoad.current = false;
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [historicData]);

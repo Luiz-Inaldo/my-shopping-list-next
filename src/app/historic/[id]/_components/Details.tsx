@@ -6,7 +6,6 @@ import Header from "../../../../components/Header";
 import { ChevronLeft } from "lucide-react";
 import { DetailsCoupon } from "./DetailsCoupon";
 import { CategoryDistributionChart } from "./CategoryDistributionChart";
-import { CategoryDistributionChartSkeleton } from "../../../../components/Skeletons/CategoryDistributionChartSkeleton";
 
 export function HistoricListDetails() {
     // ==================
