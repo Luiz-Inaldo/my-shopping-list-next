@@ -1,6 +1,5 @@
 import React from "react";
 import LoggedLayout from "@/components/layout/MainLayout";
-import Main from "@/components/Main";
 import { Metadata } from "next";
 import { HomePage } from "@/components/HomePage";
 import { PurchasesProvider } from "@/context/PurchasesContext";

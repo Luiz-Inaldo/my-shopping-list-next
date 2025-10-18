@@ -38,7 +38,7 @@ export default function Menu() {
 
   return (
     <LoggedLayout>
-      <Header
+      {/* <Header
         content={(_) => (
           <div className="flex items-center gap-3 cursor-pointer overflow-hidden">
             <Avatar className="border-2 border-app-container">
@@ -65,7 +65,7 @@ export default function Menu() {
             </div>
           </div>
         )}
-      />
+      /> */}
 
       <div className="main-container py-28 px-5 flex flex-col gap-10">
         <h1 className="text-subtitle text-xl font-bold">Menu</h1>

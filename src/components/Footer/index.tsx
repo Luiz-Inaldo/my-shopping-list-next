@@ -52,7 +52,7 @@ const Footer = () => {
                 <li>
                     <Link
                         href="#"
-                        className={`grid gap-1 p-2 place-items-center border-b ${pathname === "/statistics" ? "text-default-green dark:text-title border-default-green dark:border-title" : "text-subtitle border-transparent"}`}
+                        className={`pointer-events-none grid gap-1 p-2 place-items-center border-b ${pathname === "/statistics" ? "text-default-green dark:text-title border-default-green dark:border-title" : "text-subtitle border-transparent"}`}
                         onClick={(e) => {
                             e.preventDefault()
                             handleChangeRoute(APP_ROUTES.private.statistics.name)
@@ -65,7 +65,7 @@ const Footer = () => {
                 <li>
                     <Link
                         href="#"
-                        className={`grid gap-1 p-2 place-items-center border-b ${pathname === "/settings" ? "text-default-green dark:text-title border-default-green dark:border-title" : "text-subtitle border-transparent"}`}
+                        className={`pointer-events-none grid gap-1 p-2 place-items-center border-b ${pathname === "/settings" ? "text-default-green dark:text-title border-default-green dark:border-title" : "text-subtitle border-transparent"}`}
                         onClick={(e) => {
                             e.preventDefault()
                             handleChangeRoute(APP_ROUTES.private.settings.name)
@@ -78,7 +78,7 @@ const Footer = () => {
                 <li>
                     <Link
                         href="#"
-                        className={`grid gap-1 p-2 place-items-center border-b ${pathname === "/menu" ? "text-default-green dark:text-title border-default-green dark:border-title" : "text-subtitle border-transparent"}`}
+                        className={`pointer-events-none grid gap-1 p-2 place-items-center border-b ${pathname === "/menu" ? "text-default-green dark:text-title border-default-green dark:border-title" : "text-subtitle border-transparent"}`}
                         onClick={(e) => {
                             e.preventDefault()
                             handleChangeRoute(APP_ROUTES.private.menu.name)

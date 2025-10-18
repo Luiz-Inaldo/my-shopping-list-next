@@ -20,42 +20,43 @@ import { EllipsisVertical, Lock, Palette, Pencil } from "lucide-react";
 import Image from "next/image";
 
 export default function Settings() {
-  const user = useGeneralUserStore((store) => store.user);
+  // const user = useGeneralUserStore((store) => store.user);
   const userProfile = useGeneralUserStore((store) => store.userProfile);
   const setUserProfile = useGeneralUserStore((store) => store.setUserProfile);
 
   const { theme, toggleTheme } = useTheme();
 
-  async function removeAvatar() {
-    try {
-      const { data, error } = await supabase
-        .from("profiles")
-        .update({ profile_img: "" })
-        .eq("email", user?.email);
-      fetchProfile();
-      toast({
-        title: "Avatar removido com sucesso!",
-        action: <ToastAction altText="Ok">Ok</ToastAction>,
-      });
-    } catch (error) {
-      console.error(error);
-      toast({
-        title: "Erro ao remover avatar",
-        description: "Tente novamente mais tarde",
-        variant: "destructive",
-        action: <ToastAction altText="Ok">Ok</ToastAction>,
-      });
-    }
-  }
+  // async function removeAvatar() {
+  //   try {
+  //     const { data, error } = await supabase
+  //       .from("profiles")
+  //       .update({ profile_img: "" })
+  //       .eq("email", user?.email);
+  //     fetchProfile();
+  //     toast({
+  //       title: "Avatar removido com sucesso!",
+  //       action: <ToastAction altText="Ok">Ok</ToastAction>,
+  //     });
+  //   } catch (error) {
+  //     console.error(error);
+  //     toast({
+  //       title: "Erro ao remover avatar",
+  //       description: "Tente novamente mais tarde",
+  //       variant: "destructive",
+  //       action: <ToastAction altText="Ok">Ok</ToastAction>,
+  //     });
+  //   }
+  // }
 
-  async function fetchProfile() {
-    const profileData = await getProfile(user?.email);
-    setUserProfile(profileData);
-  }
+  // async function fetchProfile() {
+  //   const profileData = await getProfile(user?.email);
+  //   setUserProfile(profileData);
+  // }
 
   return (
     <LoggedLayout>
-      <Header
+      <></>
+      {/* <Header
         content={(_) => <h2 className="text-title text-lg">Ajustes</h2>}
       />
       <main className="main-container py-28 px-5 flex flex-col gap-8">
@@ -123,7 +124,7 @@ export default function Settings() {
             </div>
           </div>
         </div>
-      </main>
+      </main> */}
     </LoggedLayout>
   );
 }

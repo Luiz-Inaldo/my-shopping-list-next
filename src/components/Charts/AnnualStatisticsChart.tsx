@@ -105,7 +105,7 @@ export function AnnualStatisticsChart({
           </p>
           <p>
             Total de gastos:{" "}
-            <strong>
+            {/* <strong>
               R${" "}
               {data
                 .reduce(
@@ -115,7 +115,7 @@ export function AnnualStatisticsChart({
                 )
                 .toFixed(2)
                 .replace(".", ",")}
-            </strong>
+            </strong> */}
           </p>
         </CardDescription>
       </CardHeader>

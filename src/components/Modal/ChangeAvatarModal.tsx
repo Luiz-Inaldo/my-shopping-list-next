@@ -24,7 +24,7 @@ const ChangeAvatarModal = ({ children, currentAvatarUrl, refetch }: {
     refetch?: () => void
 }) => {
 
-    const user = useGeneralUserStore(store => store.user)
+    const user = useGeneralUserStore(store => store.userProfile)
 
     const [selectedAvatar, setSelectedAvatar] = useState<string>(currentAvatarUrl ?? '');
     const [isLoading, setIsLoading] = useState<boolean>(false);
