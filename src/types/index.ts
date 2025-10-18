@@ -27,7 +27,6 @@ export interface IShoplistContextProps {
   errorFetchingProducts: unknown;
 
   refetchProductsList: (options?: RefetchOptions | undefined) => Promise<QueryObserverResult<IPurchaseProps | undefined, Error>>;
-  fetchListItemsData: () => Promise<void>;
   handleUpdateItem: (object: IEditItemProps, itemID: string) => Promise<void>;
   handleDeleteItem: (itemID: string) => Promise<void>;
   handleCheckItem: (
@@ -75,7 +74,6 @@ export interface IPurchaseProps {
   title: string;
   is_active: boolean;
   max_value: number;
-  items_count: number;
   start_date: string | null;
   end_date: string | null;
   purchase_items?: never[] | IProductProps[];

@@ -50,11 +50,11 @@ const NewListForm = () => {
 
         const newList: IPurchaseProps = {
             title: listData.list_name,
-            items_count: 0,
             is_active: true,
             start_date: new Date().toISOString(),
             end_date: null,
             total_price: 0,
+            purchase_items: [],
             max_value: parseFloat(listData.list_max_value.replace(',', '.')),
             user_id: userProfile?.uid
         }

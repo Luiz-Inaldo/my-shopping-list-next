@@ -1,7 +1,7 @@
 import { db } from "@/lib/firebase";
 import { IEditItemProps, IProductProps, IPurchaseProps } from "@/types";
 import {
-  addDoc,
+  arrayUnion,
   collection,
   deleteDoc,
   doc,
@@ -60,58 +60,58 @@ export async function getProductsListItems(listId: string) {
 /**
  * @description Adds a new item to a purchase in the database
  * @param {string} purchaseId - The ID of the purchase
- * @param {IProductProps} newItem - The data of the item to be added
+ * @param {IProductProps[]} purchaseItems - The data of the item to be added
  */
 export async function addPurchaseItem(
   purchaseId: string,
-  newItem: IProductProps
+  purchaseItem: IProductProps
 ) {
   const purchaseRef = doc(db, "purchases", purchaseId);
-  await addDoc(collection(db, "purchases", purchaseId, "purchase_items"), newItem);
   await updateDoc(purchaseRef, {
-    items_count: increment(1)
+    purchase_items: arrayUnion(purchaseItem)
   })
 }
 
-/**
- * @description Marks a purchase item as checked or unchecked in the database
- * @param {string} purchaseId - The ID of the purchase
- * @param {string} productId - The ID of the product
- * @param {boolean} value - Whether the item should be marked as checked or not
- */
-export async function checkPurchaseItem(purchaseId: string, productId: string, value: boolean) {
+// /**
+//  * @description Marks a purchase item as checked or unchecked in the database
+//  * @param {string} purchaseId - The ID of the purchase
+//  * @param {string} productId - The ID of the product
+//  * @param {boolean} value - Whether the item should be marked as checked or not
+//  */
+// export async function checkPurchaseItem(purchaseId: string, productId: string, value: boolean) {
 
-  const itemDocRef = doc(db, "purchases", purchaseId, "purchase_items", productId);
+//   const itemDocRef = doc(db, "purchases", purchaseId, "purchase_items", productId);
 
-  await updateDoc(itemDocRef, {
-    checked: value,
-  });
-}
+//   await updateDoc(itemDocRef, {
+//     checked: value,
+//   });
+// }
 
 
 /**
  * @description Updates a purchase item in the database
  * @param {string} purchaseId - The ID of the purchase
- * @param {string} productId - The ID of the product
- * @param {IEditItemProps} updatedData - The updated data of the item
+ * @param {IProductProps[]} updatedData - The updated data of the items
  */
-export async function updatePurchaseItem(purchaseId: string, productId: string, updatedData: IEditItemProps) {
-  const itemDocRef = doc(db, "purchases", purchaseId, "purchase_items", productId);
-
-  await updateDoc(itemDocRef, updatedData);
-}
-
-/**
- * @description Deletes a purchase item in the database
- * @param {string} purchaseId - The ID of the purchase
- * @param {string} productId - The ID of the product
- */
-export async function deletePurchaseItem(purchaseId: string, productId: string) {
+export async function updatePurchase(purchaseId: string, updatedData: IProductProps[]) {
   const purchaseRef = doc(db, "purchases", purchaseId);
-  const itemDocRef = doc(db, "purchases", purchaseId, "purchase_items", productId);
 
-  await deleteDoc(itemDocRef);
   await updateDoc(purchaseRef, {
-    items_count: increment(-1)
+    purchase_items: updatedData
   });
 }
+
+// /**
+//  * @description Deletes a purchase item in the database
+//  * @param {string} purchaseId - The ID of the purchase
+//  * @param {string} productId - The ID of the product
+//  */
+// export async function deletePurchaseItem(purchaseId: string, productId: string) {
+//   const purchaseRef = doc(db, "purchases", purchaseId);
+//   const itemDocRef = doc(db, "purchases", purchaseId, "purchase_items", productId);
+
+//   await deleteDoc(itemDocRef);
+//   await updateDoc(purchaseRef, {
+//     items_count: increment(-1)
+//   });
+// }

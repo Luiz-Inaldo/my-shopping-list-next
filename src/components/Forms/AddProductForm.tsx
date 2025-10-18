@@ -20,13 +20,15 @@ import { sendToastMessage } from "@/functions/sendToastMessage";
 import { useShoplistContext } from "@/context/ShoplistContext";
 import { addPurchaseItem } from "@/services/productsListServices";
 import { UNIT_TYPES } from "@/data/unitTypes";
+import { queryClient } from "@/utils/queryClient";
+import { QUERY_KEYS } from "@/constants/queryKeys";
 
 
 export const AddProductForm = () => {
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [isLoading, startAddProductTransition] = useTransition();
 
-  const { productsList, fetchListItemsData } = useShoplistContext();
+  const { productsList } = useShoplistContext();
   const {
     register,
     control,
@@ -52,6 +54,7 @@ export const AddProductForm = () => {
   function onSubmit(data: IFormItem) {
     startAddProductTransition(async () => {
       const item = {
+        id: crypto.randomUUID() as string,
         ...data
       };
 
@@ -75,14 +78,15 @@ export const AddProductForm = () => {
       // return;
 
       try {
-        await addPurchaseItem(productsList?.id as string, item);
 
+        await addPurchaseItem(productsList?.id as string, item);
+        
         sendToastMessage({
           title: "Produto adicionado com sucesso!",
           type: "success"
         });
 
-        fetchListItemsData();
+        queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.productsList, productsList?.id] });
 
         // Reset do formulário e fechamento do drawer
         reset({
@@ -110,7 +114,7 @@ export const AddProductForm = () => {
         <Button
           onClick={handleOpenDrawer}
           size="sm"
-          className="fixed rounded-full bottom-5 right-5 h-fit px-2 py-1"
+          className="fixed rounded-full bottom-5 right-5 h-fit px-4 py-2"
         >
           <Plus size={24} />
           <p>Adicionar Produto</p>

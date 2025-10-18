@@ -5,8 +5,8 @@ import { IProductProps } from "@/types";
 import { IEditItemProps } from "@/types";
 import useGeneralUserStore from "@/store/generalUserStore";
 import { sendToastMessage } from "@/functions/sendToastMessage";
-import { usePathname, useSearchParams } from "next/navigation";
-import { checkPurchaseItem, deletePurchaseItem, getProductsList, getProductsListItems, updatePurchaseItem } from "@/services/productsListServices";
+import { usePathname } from "next/navigation";
+import { getProductsList, updatePurchase } from "@/services/productsListServices";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { QUERY_KEYS } from "@/constants/queryKeys";
 
@@ -20,7 +20,6 @@ export const ShoplistProvider = ({ children }: { children: React.ReactNode }) =>
     const pathname = usePathname();
 
     const listId = pathname.split("/")[2] || "";
-
 
     /* ====> states <==== */
     const [auxData, setAuxData] = useState<IPurchaseProps | null>(null);
@@ -46,50 +45,14 @@ export const ShoplistProvider = ({ children }: { children: React.ReactNode }) =>
     });
     const queryClient = useQueryClient();
 
-    /**
-     * ========>> refs <<========
-     */
-    const isFirstLoad = useRef<boolean>(true);
-
     /* ====> functions <==== */
     async function fetchData() {
         if (!userProfile) return;
 
         const res = await getProductsList(listId);
 
-        const productsList = {
-            purchase_items: [],
-            ...res?.data,
-        };
-
-        setAuxData(productsList as unknown as IPurchaseProps);
-        return productsList as unknown as IPurchaseProps;
-
-    }
-
-    async function fetchListItemsData() {
-        if (!productsList?.id) return;
-
-        try {
-            const res = await getProductsListItems(productsList.id);
-
-            queryClient.setQueryData([QUERY_KEYS.productsList, listId], (oldData: IPurchaseProps | undefined) => {
-                if (!oldData) return oldData;
-                return {
-                    ...oldData,
-                    purchase_items: res.data as unknown as IProductProps[],
-                };
-            });
-
-            setAuxData((prevList) => ({
-                ...prevList!,
-                purchase_items: res.data as unknown as IProductProps[],
-            }))
-            if (isFirstLoad.current) isFirstLoad.current = false;
-        } catch (error) {
-            console.error(error);
-            sendToastMessage({ title: "Houve um erro ao buscar os produtos.", type: 'error' });
-        }
+        setAuxData(res?.data as unknown as IPurchaseProps);
+        return res?.data as unknown as IPurchaseProps;
 
     }
 
@@ -106,10 +69,20 @@ export const ShoplistProvider = ({ children }: { children: React.ReactNode }) =>
 
     async function handleUpdateItem(object: IEditItemProps, itemID: string) {
 
+        const updatedProducts = productsList?.purchase_items?.map(product => {
+            if (product.id === itemID) {
+                return {
+                    ...product,
+                    ...object
+                };
+            }
+            return product;
+        }) as IProductProps[];
+
         try {
-            await updatePurchaseItem(productsList?.id as string, itemID, object);
+            await updatePurchase(productsList?.id as string, updatedProducts);
             sendToastMessage({ title: "Produto atualizado com sucesso.", type: 'success' });
-            queryClient.setQueryData(['productsList', userProfile?.uid, listId], (oldData: IPurchaseProps | undefined) => {
+            queryClient.setQueryData([QUERY_KEYS.productsList, productsList?.id], (oldData: IPurchaseProps | undefined) => {
                 if (!oldData) return oldData;
                 return {
                     ...oldData,
@@ -152,14 +125,17 @@ export const ShoplistProvider = ({ children }: { children: React.ReactNode }) =>
     }
 
     async function handleDeleteItem(itemID: string) {
+
+        const updatedProducts = productsList?.purchase_items?.filter(product => product.id !== itemID) as IProductProps[];
+
         try {
             if (productsList?.purchase_items?.length === 1) {
-                queryClient.setQueryData(['productsList', userProfile?.uid, listId], auxData);
+                queryClient.setQueryData([QUERY_KEYS.productsList, listId], auxData);
                 setFilterValue(null);
             }
-            await deletePurchaseItem(productsList?.id as string, itemID);
+            await updatePurchase(productsList?.id as string, updatedProducts);
             sendToastMessage({ title: "Produto removido com sucesso.", type: 'success' });
-            queryClient.setQueryData(['productsList', userProfile?.uid, listId], (oldData: IPurchaseProps | undefined) => {
+            queryClient.setQueryData([QUERY_KEYS.productsList, listId], (oldData: IPurchaseProps | undefined) => {
                 if (!oldData) return oldData;
                 return {
                     ...oldData,
@@ -184,12 +160,19 @@ export const ShoplistProvider = ({ children }: { children: React.ReactNode }) =>
             checked: !item.checked
         }
 
+        const updatedProducts = productsList?.purchase_items?.map(product => {
+            if (product.id === item.id) {
+                return editedItem;
+            }
+            return product;
+        }) as IProductProps[];
+
         try {
 
-            await checkPurchaseItem(productsList?.id as string, item?.id as string, !item.checked);
+            await updatePurchase(productsList?.id as string, updatedProducts);
 
             sendToastMessage({ title: `${item.name} marcado como adquirido.`, type: 'success' });
-            queryClient.setQueryData(['productsList', userProfile?.uid, listId], ((oldList: IPurchaseProps | undefined) => {
+            queryClient.setQueryData([QUERY_KEYS.productsList, listId], ((oldList: IPurchaseProps | undefined) => {
                 if (!oldList) return;
 
                 return {
@@ -223,12 +206,19 @@ export const ShoplistProvider = ({ children }: { children: React.ReactNode }) =>
             checked: !item.checked
         }
 
+        const updatedProducts = productsList?.purchase_items?.map(product => {
+            if (product.id === item.id) {
+                return editedItem;
+            }
+            return product;
+        }) as IProductProps[];
+
         try {
 
-            await checkPurchaseItem(productsList?.id as string, item?.id as string, !item.checked);
+            await updatePurchase(productsList?.id as string, updatedProducts);
 
             sendToastMessage({ title: `${item.name} desmarcado.`, type: 'success' });
-            queryClient.setQueryData(['productsList', userProfile?.uid, listId], (oldList: IPurchaseProps | undefined) => {
+            queryClient.setQueryData([QUERY_KEYS.productsList, listId], (oldList: IPurchaseProps | undefined) => {
                 if (!oldList) return;
 
                 return {
@@ -258,10 +248,6 @@ export const ShoplistProvider = ({ children }: { children: React.ReactNode }) =>
     }
 
     useEffect(() => {
-        if (productsList && isFirstLoad.current) {
-            fetchListItemsData();
-        }
-
         if (productsList && !auxData) {
             setAuxData(productsList);
         }
@@ -291,7 +277,6 @@ export const ShoplistProvider = ({ children }: { children: React.ReactNode }) =>
             setCurrentPurchase,
 
             refetchProductsList,
-            fetchListItemsData,
             handleUpdateItem,
             handleDeleteItem,
             handleCheckItem,
