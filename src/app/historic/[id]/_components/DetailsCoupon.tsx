@@ -96,74 +96,86 @@ export function DetailsCoupon() {
   }
 
   return (
-    <div>
-      {/* Title with 12px spacing */}
-      <h2 className="font-medium text-subtitle mb-3">
-        Detalhes da compra
-      </h2>
+    <>
+      <div>
+        {/* Title with 12px spacing */}
+        <h2 className="font-medium text-subtitle mb-3">
+          Detalhes da compra
+        </h2>
 
-      {/* Receipt Box */}
-      <div className="bg-app-container rounded-lg shadow-md p-6 mb-6">
-        {/* Store Information */}
-        <div className="text-center mb-4">
-          <h3 className="font-bold text-title text-lg">
-            {productsList?.title}
-          </h3>
-          <p className="text-subtitle text-sm mt-1">
-            Data: {formattedDate} - {formattedTime}
-          </p>
-        </div>
+        {/* Receipt Box */}
+        <div className="bg-app-container rounded-lg shadow-md p-6 mb-6">
+          {/* Store Information */}
+          <div className="text-center mb-4">
+            <h3 className="font-bold text-title text-lg">
+              {productsList?.title}
+            </h3>
+            <p className="text-subtitle text-sm mt-1">
+              Data: {formattedDate} - {formattedTime}
+            </p>
+          </div>
 
-        {/* Table Headers */}
-        <div className="flex gap-1 mb-2 text-xs font-medium text-subtitle py-4 border-t border-b border-slate-400 dark:border-app-border border-dotted">
-          <div className="flex-1 text-left"># DESCRIÇÃO</div>
-          <div className="text-right">QNTD</div>
-          <div className="text-right">VL UNIT</div>
-          <div className="text-right">VL TOTAL</div>
-        </div>
+          {/* Table Headers */}
+          <div className="flex gap-1 mb-2 text-xs font-medium text-subtitle py-4 border-t border-b border-slate-400 dark:border-app-border border-dotted">
+            <div className="flex-1 text-left"># DESCRIÇÃO</div>
+            <div className="text-right">QNTD</div>
+            <div className="text-right">VL UNIT</div>
+            <div className="text-right">VL TOTAL</div>
+          </div>
 
-        {/* Items List */}
-        <div className="space-y-2 mb-4">
-          {purchaseItems.length > 0 ? (
-            purchaseItems.map((item, index) => (
-              <div key={item.id} className="flex gap-1 text-xs">
-                <div className="flex-1 text-left text-subtitle max-w-[186px] whitespace-break-spaces">
-                  {index + 1} - {item.description}
+          {/* Items List */}
+          <div className="space-y-2 mb-4">
+            {purchaseItems.length > 0 ? (
+              purchaseItems.map((item, index) => (
+                <div key={item.id} className="flex gap-1 text-xs">
+                  <div className="flex-1 text-left text-subtitle max-w-[186px] whitespace-break-spaces">
+                    {index + 1} - {item.description}
+                  </div>
+                  <div className="text-right w-[34px] text-subtitle">
+                    {item.quantity}
+                  </div>
+                  <div className="text-right w-[47px] text-subtitle">
+                    {formatCurrency(item.unitValue).replace("R$", "")}
+                  </div>
+                  <div className="text-right w-[56px] text-subtitle">
+                    {formatCurrency(item.totalValue).replace("R$", "")}
+                  </div>
                 </div>
-                <div className="text-right w-[34px] text-subtitle">
-                  {item.quantity}
-                </div>
-                <div className="text-right w-[47px] text-subtitle">
-                  {formatCurrency(item.unitValue).replace("R$", "")}
-                </div>
-                <div className="text-right w-[56px] text-subtitle">
-                  {formatCurrency(item.totalValue).replace("R$", "")}
-                </div>
+              ))
+            ) : (
+              <div className="text-center text-paragraph text-sm py-4">
+                Nenhum item na lista de compras
               </div>
-            ))
-          ) : (
-            <div className="text-center text-paragraph text-sm py-4">
-              Nenhum item na lista de compras
+            )}
+          </div>
+
+          {/* Total Section */}
+          {purchaseItems.length > 0 && (
+            <div className="flex justify-between items-center mb-2 py-4 border-t border-b border-slate-400 dark:border-app-border border-dotted">
+              <span className="font-bold text-subtitle">TOTAL</span>
+              <span className="font-bold text-subtitle text-lg">
+                {formatCurrency(totalValue)}
+              </span>
             </div>
           )}
-        </div>
 
-        {/* Total Section */}
-        {purchaseItems.length > 0 && (
-          <div className="flex justify-between items-center mb-2 py-4 border-t border-b border-slate-400 dark:border-app-border border-dotted">
-            <span className="font-bold text-subtitle">TOTAL</span>
-            <span className="font-bold text-subtitle text-lg">
-              {formatCurrency(totalValue)}
-            </span>
+          {/* Disclaimer */}
+          <div className="text-center">
+            <p className="text-xs text-paragraph">
+              ESSE CUPOM NÃO TEM VALOR FISCAL
+            </p>
           </div>
-        )}
-
-        {/* Disclaimer */}
-        <div className="text-center">
-          <p className="text-xs text-paragraph">
-            ESSE CUPOM NÃO TEM VALOR FISCAL
-          </p>
         </div>
+
+        {/* Generate PDF Button */}
+        <Button
+          onClick={handlePrintPDF}
+          className="w-full"
+          disabled={purchaseItems.length === 0}
+        >
+          <FileText size={20} />
+          Gerar PDF da compra
+        </Button>
       </div>
 
       {/* Print PDF Component - Hidden but accessible for printing */}
@@ -172,16 +184,6 @@ export function DetailsCoupon() {
           <PrintPDF list={productsList as IPurchaseProps} />
         </div>
       )}
-
-      {/* Generate PDF Button */}
-      <Button
-        onClick={handlePrintPDF}
-        className="w-full"
-        disabled={purchaseItems.length === 0}
-      >
-        <FileText size={20} />
-        Gerar PDF da compra
-      </Button>
-    </div>
+    </>
   );
 }
