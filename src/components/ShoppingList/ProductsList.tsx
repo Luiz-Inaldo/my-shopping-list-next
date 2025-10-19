@@ -5,15 +5,12 @@ import Image from 'next/image';
 import { IProductProps } from '@/types';
 import { useShoplistContext } from '@/context/ShoplistContext';
 import { AnimatePresence, motion } from 'motion/react';
-import { useQueryClient } from '@tanstack/react-query';
 import { QUERY_KEYS } from '@/constants/queryKeys';
-import useGeneralUserStore from '@/store/generalUserStore';
+import { queryClient } from '@/utils/queryClient';
 
 export function ProductsList({ list }: { list: IProductProps[] | null | undefined }) {
 
   const { auxData, productsList, setFilterValue } = useShoplistContext();
-
-  const queryClient = useQueryClient();
 
   const totalCheckedItems = list?.filter(product => product.checked === true).length;
   const totalListItems = list?.length ?? 0;
