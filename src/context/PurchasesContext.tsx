@@ -1,12 +1,13 @@
 "use client";
-import { IFilterProps, IPuchasesContextProps, IPurchaseProps } from "@/types";
+import { IPuchasesContextProps, IPurchaseProps } from "@/types";
 import React, { createContext, useContext, useEffect, useState, useTransition } from "react";
 import useGeneralUserStore from "@/store/generalUserStore";
 import { deletePurchaseFromDb, getActivePurchaseList } from "@/services/purchasesListServices";
-import { TUiStates } from "@/types/uiStates";
 import { sendToastMessage } from "@/functions/sendToastMessage";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { QUERY_KEYS } from "@/constants/queryKeys";
+import { db } from "@/lib/firebase";
+import { collection, onSnapshot } from "firebase/firestore";
 
 const PurchasesContext = createContext<IPuchasesContextProps | undefined>(undefined);
 
@@ -64,12 +65,14 @@ export const PurchasesProvider = ({ children }: { children: React.ReactNode }) =
     // # Effects
     // ===============
     useEffect(() => {
-        // Refetch quando o componente for montado (página aberta)
-        if (purchasesList && purchasesList?.length > 0) {
-            refetchPurchases();
-        }
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []);
+        const purchasesRef = collection(db, 'purchases');
+        const unsubscribe = onSnapshot(purchasesRef, (snapshot) => {
+            queryClient.invalidateQueries({
+                queryKey: [QUERY_KEYS.activePurchases, userProfile?.uid]
+            });
+        });
+        return () => unsubscribe();
+    }, [userProfile?.uid, queryClient]);
 
     return (
         <PurchasesContext.Provider value={{ purchasesList, loadingPurchasesList, fetchingPurchasesList, pendingPurchasesList, errorFetchingPurchases, deletePurchase }}>

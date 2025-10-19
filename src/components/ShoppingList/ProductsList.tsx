@@ -10,7 +10,7 @@ import { queryClient } from '@/utils/queryClient';
 
 export function ProductsList({ list }: { list: IProductProps[] | null | undefined }) {
 
-  const { auxData, productsList, setFilterValue } = useShoplistContext();
+  const { auxData, productsList, setFilterValue, filterValue } = useShoplistContext();
 
   const totalCheckedItems = list?.filter(product => product.checked === true).length;
   const totalListItems = list?.length ?? 0;
@@ -38,7 +38,7 @@ export function ProductsList({ list }: { list: IProductProps[] | null | undefine
       </div>
 
       <AnimatePresence>
-        {totalListItems < (auxData?.purchase_items?.length ?? 0) && (
+        {filterValue && (
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
