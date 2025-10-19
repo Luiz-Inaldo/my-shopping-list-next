@@ -24,8 +24,22 @@ function isTokenValid(token: string): boolean {
 
 export async function middleware(req: NextRequest) {
   const token = req.cookies.get("authToken")?.value;
+  const url = req.nextUrl.pathname;
 
-  // Verifica se o token existe
+  // Define rotas públicas que não precisam de autenticação
+  const publicRoutes = ['/inicio', '/auth'];
+  const isPublicRoute = publicRoutes.some(route => url.startsWith(route));
+
+  // Se for uma rota pública, permite acesso sem verificação de token
+  if (isPublicRoute) {
+    // Se o usuário já está autenticado e tenta acessar rota pública, redireciona para home
+    if (token && isTokenValid(token)) {
+      return NextResponse.redirect(new URL(APP_ROUTES.private.home.name, req.url));
+    }
+    return NextResponse.next();
+  }
+
+  // Para rotas privadas, verifica se o token existe
   if (!token) {
     return NextResponse.redirect(new URL(APP_ROUTES.public.inicio.name, req.url));
   }
@@ -42,5 +56,15 @@ export async function middleware(req: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/", "/historic/:path*", "/settings/:path*", "/statistics/:path*", "/menu/:path*", "/list/:path*"], // rotas privadas
+  matcher: [
+    /*
+     * Match all request paths except for the ones starting with:
+     * - api (API routes)
+     * - _next/static (static files)
+     * - _next/image (image optimization files)
+     * - favicon.ico (favicon file)
+     * - public folder files
+     */
+    '/((?!api|_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)',
+  ],
 };

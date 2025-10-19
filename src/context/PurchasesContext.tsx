@@ -1,12 +1,13 @@
 "use client";
-import { IFilterProps, IPuchasesContextProps, IPurchaseProps } from "@/types";
+import { IPuchasesContextProps, IPurchaseProps } from "@/types";
 import React, { createContext, useContext, useEffect, useState, useTransition } from "react";
 import useGeneralUserStore from "@/store/generalUserStore";
 import { deletePurchaseFromDb, getActivePurchaseList } from "@/services/purchasesListServices";
-import { TUiStates } from "@/types/uiStates";
 import { sendToastMessage } from "@/functions/sendToastMessage";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { QUERY_KEYS } from "@/constants/queryKeys";
+import { db } from "@/lib/firebase";
+import { collection, onSnapshot } from "firebase/firestore";
 
 const PurchasesContext = createContext<IPuchasesContextProps | undefined>(undefined);
 
@@ -31,6 +32,7 @@ export const PurchasesProvider = ({ children }: { children: React.ReactNode }) =
         isFetching: fetchingPurchasesList,
         isPending: pendingPurchasesList,
         error: errorFetchingPurchases,
+        refetch: refetchPurchases,
     } = useQuery<IPurchaseProps[]>({
         queryKey: [QUERY_KEYS.activePurchases, userProfile?.uid],
         queryFn: async () => {
@@ -38,7 +40,8 @@ export const PurchasesProvider = ({ children }: { children: React.ReactNode }) =
             setAuxData(res.data as unknown as IPurchaseProps[]);
             return res.data as unknown as IPurchaseProps[];
         },
-        refetchOnWindowFocus: false,
+        refetchOnWindowFocus: true,
+        refetchOnMount: true,
         refetchInterval: 60_000,
         enabled: !!userProfile?.uid
     });
@@ -58,58 +61,18 @@ export const PurchasesProvider = ({ children }: { children: React.ReactNode }) =
         }
     }
 
-    // const filterPurchases = async (filter: IFilterProps) => {
-
-    //     // if (purchasesList.length === 0) filterPurchases(filter);
-
-    //     const month = filter.month;
-    //     const year = filter.year;
-
-    //     // primeiro caso: os dois parâmetros são string
-    //     if (typeof month === "string" && typeof year === "string") {
-    //         setPurchasesList(auxData);
-    //     }
-    //     // segundo caso: ambos parâmetros number
-    //     else if (typeof month === 'number' && typeof year === 'number') {
-
-    //         const filteredData = auxData.filter(purchase =>
-    //             purchase.end_date.split("T")[0].split("-")[0] === year.toString() &&
-    //             purchase.end_date.split("T")[0].split("-")[1] === String(month + 1).padStart(2, '0')
-    //         );
-
-    //         setPurchasesList(filteredData);
-
-    //     }
-    //     // terceiro caso: mês string e ano number
-    //     else if (typeof month === 'string' && typeof year === 'number') {
-
-    //         const filteredData = auxData.filter(purchase =>
-    //             purchase.end_date.split("T")[0].split("-")[0] === year.toString()
-    //         );
-
-    //         setPurchasesList(filteredData);
-
-    //     }
-    //     // quarto caso: mês number e ano string
-    //     else if (typeof month === 'number' && typeof year === 'string') {
-
-    //         const filteredData = auxData.filter(purchase =>
-    //             purchase.end_date.split("T")[0].split("-")[1] === String(month + 1).padStart(2, '0')
-    //         );
-
-    //         setPurchasesList(filteredData);
-
-    //     }
-    // };
-
-    // function refetchPurchases() {
-    //     getPurchases();
-    // }
-
-    // useEffect(() => {
-    //     getPurchases();
-    //     // eslint-disable-next-line react-hooks/exhaustive-deps
-    // }, [userProfile]);
+    // ===============
+    // # Effects
+    // ===============
+    useEffect(() => {
+        const purchasesRef = collection(db, 'purchases');
+        const unsubscribe = onSnapshot(purchasesRef, (snapshot) => {
+            queryClient.invalidateQueries({
+                queryKey: [QUERY_KEYS.activePurchases, userProfile?.uid]
+            });
+        });
+        return () => unsubscribe();
+    }, [userProfile?.uid, queryClient]);
 
     return (
         <PurchasesContext.Provider value={{ purchasesList, loadingPurchasesList, fetchingPurchasesList, pendingPurchasesList, errorFetchingPurchases, deletePurchase }}>

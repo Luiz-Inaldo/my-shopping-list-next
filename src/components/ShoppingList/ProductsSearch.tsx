@@ -6,28 +6,27 @@ import { useShoplistContext } from '@/context/ShoplistContext'
 import { CATEGORIES } from '@/constants/categories'
 import { useQueryClient } from '@tanstack/react-query'
 import { QUERY_KEYS } from '@/constants/queryKeys'
-import useGeneralUserStore from '@/store/generalUserStore'
 import { IPurchaseProps } from '@/types'
 
 export function ProductsSearch() {
 
-  const userId = useGeneralUserStore(store => store.userProfile?.uid);
-  const { auxData, productsList, filterValue } = useShoplistContext();
-
+  const { auxData, productsList } = useShoplistContext();
   const queryClient = useQueryClient();
 
   const debouncedQuery = useMemo(() => {
     return debounce((value: string) => {
 
+      const searchValue = value.toLowerCase();
+      
       const categoriesToLowerCase = CATEGORIES.map(category => category.name.toLowerCase());
 
-      if (!value) {
+      if (!searchValue) {
         queryClient.setQueryData([QUERY_KEYS.productsList, productsList?.id], auxData);
         return;
       }
 
-      if (categoriesToLowerCase.includes(value)) {
-        const filteredList = auxData?.purchase_items?.filter(product => product.category.toLowerCase() === value) ?? [];
+      if (categoriesToLowerCase.some(category => category.includes(searchValue))) {
+        const filteredList = auxData?.purchase_items?.filter(product => product.category.toLowerCase() === searchValue) ?? [];
         queryClient.setQueryData([QUERY_KEYS.productsList, productsList?.id], (oldList: IPurchaseProps | undefined) => ({
           ...oldList!,
           purchase_items: filteredList
@@ -35,7 +34,8 @@ export function ProductsSearch() {
         return;
       }
 
-      const filteredList = auxData?.purchase_items?.filter(product => product.name.toLowerCase().includes(value)) ?? [];
+      const filteredList = auxData?.purchase_items?.filter(product => product.name.toLowerCase().includes(searchValue)) ?? [];
+
       queryClient.setQueryData([QUERY_KEYS.productsList, productsList?.id], (oldList: IPurchaseProps | undefined) => ({
         ...oldList!,
         purchase_items: filteredList
