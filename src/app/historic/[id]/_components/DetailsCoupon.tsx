@@ -2,12 +2,11 @@
 import { Button } from "@/components/ui/button";
 import { FileText } from "lucide-react";
 import { useShoplistContext } from "@/context/ShoplistContext";
-import { IProductProps, IPurchaseProps } from "@/types";
+import { IProductProps } from "@/types";
 import { formatCurrency } from "@/functions/formatCurrency";
-import { useRef } from "react";
-import { useReactToPrint } from "react-to-print";
-import { PrintPDF } from "./ListPrintPDF";
 import { DetailsCouponSkeleton } from "@/components/Skeletons/DetailsCouponSkeleton";
+import { APP_ROUTES } from "@/routes/app-routes";
+import { useRouter } from "next/navigation";
 
 interface PurchaseItem {
   id: string;
@@ -20,57 +19,9 @@ interface PurchaseItem {
 }
 
 export function DetailsCoupon() {
+
   const { productsList, loadingProductsList } = useShoplistContext();
-
-  const couponRef = useRef<HTMLDivElement>(null);
-
-  const handlePrintPDF = useReactToPrint({
-    contentRef: couponRef,
-    pageStyle: `
-      @media print {
-        @page {
-          size: A4;
-          margin: 20mm 15mm;
-          padding: 0;
-        }
-        
-        body {
-          font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-          line-height: 1.4;
-          -webkit-print-color-adjust: exact;
-          print-color-adjust: exact;
-        }
-        
-        .page-break {
-          page-break-before: always;
-        }
-        
-        .avoid-break {
-          page-break-inside: avoid;
-        }
-        
-        .print-container {
-          padding: 20px;
-          background: white;
-        }
-        
-        /* Melhorar quebra de páginas para tabelas */
-        table, thead, tbody, tr {
-          page-break-inside: avoid;
-        }
-        
-        /* Garantir que cabeçalhos não fiquem sozinhos */
-        h1, h2, h3 {
-          page-break-after: avoid;
-        }
-        
-        /* Espaçamento entre seções */
-        .section-break {
-          margin-bottom: 30px;
-        }
-      }
-    `
-  });
+  const router = useRouter();
 
   // Transformar os produtos da lista em formato de cupom
   const purchaseItems: PurchaseItem[] = productsList?.purchase_items?.map((product: IProductProps, index: number) => ({
@@ -90,6 +41,10 @@ export function DetailsCoupon() {
   const endDate = productsList?.end_date ? new Date(productsList.end_date) : new Date();
   const formattedDate = endDate.toLocaleDateString('pt-BR');
   const formattedTime = endDate.toLocaleTimeString('pt-BR');
+
+  function handleGeneratePDF() {
+    router.push(APP_ROUTES.private.historic.pdf.name(productsList?.id || ""));
+  }
 
   if (loadingProductsList) {
     return <DetailsCouponSkeleton />;
@@ -169,7 +124,7 @@ export function DetailsCoupon() {
 
         {/* Generate PDF Button */}
         <Button
-          onClick={handlePrintPDF}
+          onClick={handleGeneratePDF}
           className="w-full"
           disabled={purchaseItems.length === 0}
         >
@@ -177,13 +132,6 @@ export function DetailsCoupon() {
           Gerar PDF da compra
         </Button>
       </div>
-
-      {/* Print PDF Component - Hidden but accessible for printing */}
-      {productsList && purchaseItems.length > 0 && (
-        <div ref={couponRef} className="hidden print:block">
-          <PrintPDF list={productsList as IPurchaseProps} />
-        </div>
-      )}
     </>
   );
 }
