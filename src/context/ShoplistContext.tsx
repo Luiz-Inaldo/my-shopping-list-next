@@ -10,6 +10,8 @@ import { getProductsList, updatePurchase } from "@/services/productsListServices
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { QUERY_KEYS } from "@/constants/queryKeys";
 import { queryClient } from "@/utils/queryClient";
+import { collection, doc, onSnapshot } from "firebase/firestore";
+import { db } from "@/lib/firebase";
 
 const ShoplistContext = createContext<IShoplistContextProps | undefined>(undefined);
 
@@ -45,9 +47,6 @@ export const ShoplistProvider = ({ children }: { children: React.ReactNode }) =>
         enabled: !!userProfile?.uid
     });
 
-    console.log('productsList', productsList)
-    console.log('auxData', auxData)
-
     /* ====> functions <==== */
     async function fetchData() {
         if (!userProfile) return;
@@ -55,6 +54,22 @@ export const ShoplistProvider = ({ children }: { children: React.ReactNode }) =>
         const res = await getProductsList(listId);
 
         setAuxData(res?.data as unknown as IPurchaseProps);
+
+        // verifica se há filtro ativo antes de popular os dados da lista
+        if (filterValue) {
+            const filteredList = res?.data?.purchase_items?.
+            filter(product => product.category.toLowerCase().includes(filterValue.toLowerCase()) || product.name.toLowerCase().includes(filterValue.toLowerCase())) ?? [];
+
+            if (filteredList.length === 0) {
+                setFilterValue(null);
+            }
+            
+            return {
+                ...res?.data!,
+                purchase_items: filteredList.length > 0 ? filteredList : res?.data?.purchase_items
+            } as unknown as IPurchaseProps;
+        }
+
         return res?.data as unknown as IPurchaseProps;
 
     }
@@ -85,13 +100,7 @@ export const ShoplistProvider = ({ children }: { children: React.ReactNode }) =>
         try {
             await updatePurchase(productsList?.id as string, updatedProducts);
             sendToastMessage({ title: "Produto atualizado com sucesso.", type: 'success' });
-            const updatedData = {
-                ...productsList!,
-                purchase_items: updatedProducts
-            };
             
-            queryClient.setQueryData([QUERY_KEYS.productsList, productsList?.id], updatedData);
-            setAuxData(updatedData);
         } catch (error) {
             console.error(error);
             sendToastMessage({ title: "Houve um erro ao atualizar o produto.", type: 'error' });
@@ -104,33 +113,10 @@ export const ShoplistProvider = ({ children }: { children: React.ReactNode }) =>
         const updatedGeneralProducts = auxData?.purchase_items?.filter(product => product.id !== itemID) as IProductProps[];
 
         try {
+
             await updatePurchase(productsList?.id as string, updatedGeneralProducts);
             sendToastMessage({ title: "Produto removido com sucesso.", type: 'success' });
             
-            // Atualiza auxData com a lista geral atualizada
-            const updatedAuxData = {
-                ...auxData!,
-                purchase_items: updatedGeneralProducts
-            };
-            setAuxData(updatedAuxData);
-            
-            if (filterValue) {
-
-                if (productsList?.purchase_items?.length === 1) {
-                    
-                    setFilterValue(null);
-                    queryClient.setQueryData([QUERY_KEYS.productsList, listId], updatedAuxData);
-                    
-                } else {
-                    queryClient.setQueryData([QUERY_KEYS.productsList, listId], {
-                        ...updatedAuxData,
-                        purchase_items: productsList?.purchase_items?.filter(product => product.id !== itemID) as IProductProps[]
-                    });
-
-                }
-            } else {
-                queryClient.setQueryData([QUERY_KEYS.productsList, listId], updatedAuxData);
-            }
         } catch (error) {
             console.error(error);
             sendToastMessage({ title: "Houve um erro ao remover o produto.", type: 'error' });
@@ -139,15 +125,13 @@ export const ShoplistProvider = ({ children }: { children: React.ReactNode }) =>
 
     async function handleCheckItem(item: IProductProps, object?: IEditItemProps) {
 
-        const editedItem = {
-            ...item,
-            value: object?.value ?? item.value,
-            checked: !item.checked
-        }
-
         const updatedProducts = productsList?.purchase_items?.map(product => {
             if (product.id === item.id) {
-                return editedItem;
+                return {
+                    ...item,
+                    value: object?.value ?? item.value,
+                    checked: !item.checked
+                };
             }
             return product;
         }) as IProductProps[];
@@ -157,28 +141,20 @@ export const ShoplistProvider = ({ children }: { children: React.ReactNode }) =>
             await updatePurchase(productsList?.id as string, updatedProducts);
 
             sendToastMessage({ title: `${item.name} marcado como adquirido.`, type: 'success' });
-            const updatedData = {
-                ...productsList!,
-                purchase_items: updatedProducts
-            };
             
-            queryClient.setQueryData([QUERY_KEYS.productsList, listId], updatedData);
-            setAuxData(updatedData);
         } catch (error) {
             sendToastMessage({ title: "Houve um erro ao marcar o item.", type: 'error' });
         }
     }
 
-    async function handleDismarkItem(item: IProductProps) {
-
-        const editedItem = {
-            ...item,
-            checked: !item.checked
-        }
+    async function handleDismarkItem(item: IProductProps) { 
 
         const updatedProducts = productsList?.purchase_items?.map(product => {
             if (product.id === item.id) {
-                return editedItem;
+                return {
+                    ...item,
+                    checked: !item.checked
+                };
             }
             return product;
         }) as IProductProps[];
@@ -188,19 +164,22 @@ export const ShoplistProvider = ({ children }: { children: React.ReactNode }) =>
             await updatePurchase(productsList?.id as string, updatedProducts);
 
             sendToastMessage({ title: `${item.name} desmarcado.`, type: 'success' });
-            const updatedData = {
-                ...productsList!,
-                purchase_items: updatedProducts
-            };
-            
-            queryClient.setQueryData([QUERY_KEYS.productsList, listId], updatedData);
-            setAuxData(updatedData);
         } catch (error) {
             console.error(error)
             sendToastMessage({ title: "Houve um erro ao desmarcar o item.", type: 'error' });
         }
 
     }
+
+    useEffect(() => {
+        const productsListRef = doc(db, 'purchases', listId);
+        const unsubscribe = onSnapshot(productsListRef, (snapshot) => {
+            queryClient.invalidateQueries({
+                queryKey: [QUERY_KEYS.productsList, listId]
+            });
+        });
+        return () => unsubscribe();
+    }, [listId]);
 
     useEffect(() => {
         if (productsList && !auxData) {
