@@ -9,6 +9,7 @@ import { usePathname } from "next/navigation";
 import { getProductsList, updatePurchase } from "@/services/productsListServices";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { QUERY_KEYS } from "@/constants/queryKeys";
+import { queryClient } from "@/utils/queryClient";
 
 const ShoplistContext = createContext<IShoplistContextProps | undefined>(undefined);
 
@@ -43,7 +44,9 @@ export const ShoplistProvider = ({ children }: { children: React.ReactNode }) =>
         refetchOnWindowFocus: false,
         enabled: !!userProfile?.uid
     });
-    const queryClient = useQueryClient();
+
+    console.log('productsList', productsList)
+    console.log('auxData', auxData)
 
     /* ====> functions <==== */
     async function fetchData() {
@@ -98,22 +101,36 @@ export const ShoplistProvider = ({ children }: { children: React.ReactNode }) =>
 
     async function handleDeleteItem(itemID: string) {
 
-        const updatedProducts = productsList?.purchase_items?.filter(product => product.id !== itemID) as IProductProps[];
+        const updatedGeneralProducts = auxData?.purchase_items?.filter(product => product.id !== itemID) as IProductProps[];
 
         try {
-            if (productsList?.purchase_items?.length === 1) {
-                queryClient.setQueryData([QUERY_KEYS.productsList, listId], auxData);
-                setFilterValue(null);
-            }
-            await updatePurchase(productsList?.id as string, updatedProducts);
+            await updatePurchase(productsList?.id as string, updatedGeneralProducts);
             sendToastMessage({ title: "Produto removido com sucesso.", type: 'success' });
-            const updatedData = {
-                ...productsList!,
-                purchase_items: updatedProducts
-            };
             
-            queryClient.setQueryData([QUERY_KEYS.productsList, listId], updatedData);
-            setAuxData(updatedData);
+            // Atualiza auxData com a lista geral atualizada
+            const updatedAuxData = {
+                ...auxData!,
+                purchase_items: updatedGeneralProducts
+            };
+            setAuxData(updatedAuxData);
+            
+            if (filterValue) {
+
+                if (productsList?.purchase_items?.length === 1) {
+                    
+                    setFilterValue(null);
+                    queryClient.setQueryData([QUERY_KEYS.productsList, listId], updatedAuxData);
+                    
+                } else {
+                    queryClient.setQueryData([QUERY_KEYS.productsList, listId], {
+                        ...updatedAuxData,
+                        purchase_items: productsList?.purchase_items?.filter(product => product.id !== itemID) as IProductProps[]
+                    });
+
+                }
+            } else {
+                queryClient.setQueryData([QUERY_KEYS.productsList, listId], updatedAuxData);
+            }
         } catch (error) {
             console.error(error);
             sendToastMessage({ title: "Houve um erro ao remover o produto.", type: 'error' });

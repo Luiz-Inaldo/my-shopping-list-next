@@ -11,7 +11,6 @@ import { IPurchaseProps } from '@/types'
 export function ProductsSearch() {
 
   const { auxData, productsList } = useShoplistContext();
-  console.log(auxData)
   const queryClient = useQueryClient();
 
   const debouncedQuery = useMemo(() => {
