@@ -87,7 +87,7 @@ export const ShoplistProvider = ({ children }: { children: React.ReactNode }) =>
 
     async function handleUpdateItem(object: IEditItemProps, itemID: string) {
 
-        const updatedProducts = productsList?.purchase_items?.map(product => {
+        const updatedProducts = auxData?.purchase_items?.map(product => {
             if (product.id === itemID) {
                 return {
                     ...product,
