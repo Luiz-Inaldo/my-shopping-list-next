@@ -1,5 +1,6 @@
 import { QueryObserverResult, RefetchOptions } from "@tanstack/react-query";
 import { TUiStates } from "./uiStates";
+import { Timestamp } from "firebase/firestore";
 
 export type ModalStateProps = "OPEN" | "CLOSED";
 export type ModalTypeProps =
@@ -74,8 +75,8 @@ export interface IPurchaseProps {
   title: string;
   is_active: boolean;
   max_value: number;
-  start_date: string | null;
-  end_date: string | null;
+  start_date: Timestamp | null;
+  end_date: Timestamp | null;
   purchase_items?: never[] | IProductProps[];
   total_price: number;
   user_id: string | undefined;
