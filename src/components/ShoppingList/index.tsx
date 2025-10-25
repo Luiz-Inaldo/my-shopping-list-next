@@ -38,32 +38,30 @@ export default function ShoppingList() {
     return <ErrorFetchData />;
   }
 
+  if (isSaved) {
+    return <PurchaseSaved />;
+  }
+
   if (!productsList?.is_active || userId !== productsList?.user_id) {
     return <PurchaseBlocked />;
   }
 
   return (
     <div className="relative space-y-0 min-h-screen">
-      {!isSaved ? (
-        <>
-          <Header>
-            <ChevronLeft size={20} onClick={() => handleChangeRoute(APP_ROUTES.private.home.name)} />
-            <h2 className="font-medium">{productsList?.title}</h2>
-          </Header>
-          <div className="p-4 w-full flex flex-col gap-5">
-            <FinancialSummary
-              setSavingModalOpen={setSavingModalOpen}
-              setIsSaved={setIsSaved}
-            />
-            <ProductsSearch />
-            <CategoryBadgesList />
-            <ProductsList list={productsList?.purchase_items} />
-          </div>
-          <AddProductForm />
-        </>
-      ) : (
-        <PurchaseSaved />
-      )}
+      <Header>
+        <ChevronLeft size={20} onClick={() => handleChangeRoute(APP_ROUTES.private.home.name)} />
+        <h2 className="font-medium">{productsList?.title}</h2>
+      </Header>
+      <div className="p-4 w-full flex flex-col gap-5">
+        <FinancialSummary
+          setSavingModalOpen={setSavingModalOpen}
+          setIsSaved={setIsSaved}
+        />
+        <ProductsSearch />
+        <CategoryBadgesList />
+        <ProductsList list={productsList?.purchase_items} />
+      </div>
+      <AddProductForm />
       {savingModalOpen && (
         <LoadingActionModal
           text="Finalizando sua compra..."

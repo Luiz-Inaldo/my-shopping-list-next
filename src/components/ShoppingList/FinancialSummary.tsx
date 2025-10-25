@@ -9,6 +9,7 @@ import { sleep } from "@/functions/sleep";
 import { saveCurrentPurchase } from "@/services/purchasesListServices";
 import { IPurchaseProps } from "@/types";
 import { sendToastMessage } from "@/functions/sendToastMessage";
+import { Timestamp } from "firebase/firestore";
 
 export function FinancialSummary({ setSavingModalOpen, setIsSaved }: {
     setSavingModalOpen: React.Dispatch<React.SetStateAction<boolean>>;
@@ -42,10 +43,9 @@ export function FinancialSummary({ setSavingModalOpen, setIsSaved }: {
             // de produtos
             document.body.style.overflow = 'hidden';
             
-            const endDate = new Date().toISOString();
             const purchase = {
                 ...auxData,
-                end_date: endDate,
+                end_date: Timestamp.fromDate(new Date()),
                 total_price: totalValue
             } as IPurchaseProps;
             

@@ -7,6 +7,7 @@ import { formatCurrency } from "@/functions/formatCurrency";
 import { DetailsCouponSkeleton } from "@/components/Skeletons/DetailsCouponSkeleton";
 import { APP_ROUTES } from "@/routes/app-routes";
 import { useRouter } from "next/navigation";
+import { formatDate } from "@/functions/formatDate";
 
 interface PurchaseItem {
   id: string;
@@ -38,7 +39,8 @@ export function DetailsCoupon() {
   const totalValue = purchaseItems.reduce((acc, item) => acc + item.totalValue, 0);
 
   // Obter data da lista de compras
-  const endDate = productsList?.end_date ? new Date(productsList.end_date) : new Date();
+  const endDate = productsList?.end_date ? productsList.end_date.toDate() : new Date();
+
   const formattedDate = endDate.toLocaleDateString('pt-BR');
   const formattedTime = endDate.toLocaleTimeString('pt-BR');
 

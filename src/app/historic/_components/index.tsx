@@ -11,6 +11,8 @@ import { queryClient } from '@/utils/queryClient';
 import { useQuery } from '@tanstack/react-query';
 import { useEffect, useRef, useState } from 'react';
 import Header from '../../../components/Header';
+import { collection, onSnapshot } from 'firebase/firestore';
+import { db } from '@/lib/firebase';
 
 export function HistoricPage() {
 
@@ -66,8 +68,8 @@ export function HistoricPage() {
         else if (typeof month === 'number' && typeof year === 'number') {
 
             const filteredData = auxData.filter(purchase =>
-                purchase.end_date?.split("T")[0].split("-")[0] === year.toString() &&
-                purchase.end_date?.split("T")[0].split("-")[1] === String(month + 1).padStart(2, '0')
+                purchase.end_date?.toDate().getFullYear() === year &&
+                purchase.end_date?.toDate().getMonth() === month
             );
 
             queryClient.setQueryData([QUERY_KEYS.historic, userProfile?.uid], filteredData);
@@ -77,7 +79,7 @@ export function HistoricPage() {
         else if (typeof month === 'string' && typeof year === 'number') {
 
             const filteredData = auxData.filter(purchase =>
-                purchase.end_date?.split("T")[0].split("-")[0] === year.toString()
+                purchase.end_date?.toDate().getFullYear() === year
             );
 
             queryClient.setQueryData([QUERY_KEYS.historic, userProfile?.uid], filteredData);
@@ -87,7 +89,7 @@ export function HistoricPage() {
         else if (typeof month === 'number' && typeof year === 'string') {
 
             const filteredData = auxData.filter(purchase =>
-                purchase.end_date?.split("T")[0].split("-")[1] === String(month + 1).padStart(2, '0')
+                purchase.end_date?.toDate().getMonth() === month
             );
 
             queryClient.setQueryData([QUERY_KEYS.historic, userProfile?.uid], filteredData);
@@ -106,6 +108,19 @@ export function HistoricPage() {
             }));
         }
     };
+
+    // ===============
+    // # Effects
+    // ===============
+    useEffect(() => {
+        const purchasesRef = collection(db, 'purchases');
+        const unsubscribe = onSnapshot(purchasesRef, (snapshot) => {
+            queryClient.invalidateQueries({
+                queryKey: [QUERY_KEYS.historic, userProfile?.uid]
+            });
+        });
+        return () => unsubscribe();
+    }, [userProfile?.uid]);
 
     useEffect(() => {
         if (historicData && auxData.length > 0) {

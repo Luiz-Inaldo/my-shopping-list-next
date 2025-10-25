@@ -9,7 +9,7 @@ export function PrintPDF({ list }: PrintPDFProps) {
 
     const products = list.purchase_items || []
     const totalAmount = list.total_price || 0
-    const endDate = new Date(list.end_date as string);
+    const endDate = list.end_date ? list.end_date.toDate() : new Date();
 
     // Agrupar produtos por categoria e calcular totais
     const categoryTotals = products.reduce(
