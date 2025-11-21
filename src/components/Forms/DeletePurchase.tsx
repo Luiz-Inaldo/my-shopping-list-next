@@ -24,7 +24,7 @@ export const DeletePurchase = ({ purchase, trigger }: { purchase: IPurchaseProps
 
             const queryToInvalidate = pathName === APP_ROUTES.private.historic.name ?
                 [QUERY_KEYS.historic, userProfile?.uid] :
-                [QUERY_KEYS.activePurchases, userProfile?.uid];
+                [QUERY_KEYS.purchases, userProfile?.uid];
 
             invalidateAllQueries([queryToInvalidate]);
         } catch (error) {

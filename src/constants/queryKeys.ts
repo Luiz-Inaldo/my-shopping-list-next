@@ -1,5 +1,5 @@
 export const QUERY_KEYS = {
-    activePurchases: "active-purchases",
+    purchases: "purchases",
     productsList: "products-list",
     historic: "purchases-historic"
 }

@@ -23,6 +23,8 @@ onAuthStateChanged(auth, (user) => {
         const userData = snapshot.data() as TUserProfileProps;
         useGeneralUserStore.getState().setUserProfile(userData);
       }
+    }).catch((error) => {
+      console.error(error);
     });
   }
 });

@@ -19,6 +19,7 @@ import { addPurchaseToDb } from '@/services/purchasesListServices';
 import { useQueryClient } from '@tanstack/react-query';
 import { invalidateAllQueries } from '@/functions/invalidadeQueries';
 import { QUERY_KEYS } from '@/constants/queryKeys';
+import { Timestamp } from 'firebase/firestore';
 
 const addButtonVariants = {
     initial: {
@@ -51,7 +52,7 @@ const NewListForm = () => {
         const newList: IPurchaseProps = {
             title: listData.list_name,
             is_active: true,
-            start_date: new Date().toISOString(),
+            start_date: Timestamp.fromDate(new Date()),
             end_date: null,
             total_price: 0,
             purchase_items: [],
@@ -69,7 +70,7 @@ const NewListForm = () => {
                     type: "success"
                 });
                 if (userProfile) {
-                    invalidateAllQueries([[QUERY_KEYS.activePurchases, userProfile?.uid]]);
+                    invalidateAllQueries([[QUERY_KEYS.purchases, userProfile?.uid]]);
                 }
                 // refetchPurchases();
             } catch (error) {
