@@ -2,34 +2,47 @@
 
 import { TrendingDown, TrendingUp } from "lucide-react";
 import React from "react";
+import { TabType } from "./StatisticsTabs";
 
 interface ComparisonInfoProps {
   currentValue: number;
   previousValue: number;
-  period: "week" | "month";
+  period: TabType;
+}
+
+const getPeriodText = (period: TabType) => {
+
+  switch (period) {
+    case "day":
+      return "o dia";
+    case "week":
+      return "a semana";
+    case "month":
+      return "o mês";
+    default:
+      return "";
+  }
 }
 
 export function ComparisonInfo({ currentValue, previousValue, period }: ComparisonInfoProps) {
+
   const difference = currentValue - previousValue;
   const percentageChange = previousValue > 0 ? (difference / previousValue) * 100 : 0;
   const isIncrease = difference > 0;
   const isDecrease = difference < 0;
 
-  const periodText = period === "week" ? "semana" : "mês";
-  const periodTextCapitalized = period === "week" ? "Semana" : "Mês";
-
   if (previousValue === 0) {
     return (
-      <div className="mt-4 p-3 bg-gray-50 rounded-lg border">
-        <p className="text-sm text-paragraph">
-          Não há dados suficientes para comparação com a {periodText} anterior.
+      <div className="p-4">
+        <p className="text-sm text-paragraph text-center">
+          Não há dados suficientes para comparação com {getPeriodText(period)} anterior.
         </p>
       </div>
     );
   }
 
   return (
-    <div className="mt-4 p-3 bg-gray-50 rounded-lg border">
+    <div className="mt-4 p-3 rounded-lg">
       <div className="flex items-center gap-2">
         {isIncrease && <TrendingUp className="w-4 h-4 text-red-500" />}
         {isDecrease && <TrendingDown className="w-4 h-4 text-green-500" />}
@@ -37,7 +50,7 @@ export function ComparisonInfo({ currentValue, previousValue, period }: Comparis
         
         <div className="flex flex-col">
           <p className="text-sm text-paragraph">
-            Comparado com a {periodText} anterior:
+            Comparado com {getPeriodText(period)} anterior:
           </p>
           <div className="flex items-center gap-2">
             <span className={`text-sm font-semibold ${

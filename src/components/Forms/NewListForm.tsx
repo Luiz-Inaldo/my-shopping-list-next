@@ -70,7 +70,7 @@ const NewListForm = () => {
                     type: "success"
                 });
                 if (userProfile) {
-                    invalidateAllQueries([[QUERY_KEYS.activePurchases, userProfile?.uid]]);
+                    invalidateAllQueries([[QUERY_KEYS.purchases, userProfile?.uid]]);
                 }
                 // refetchPurchases();
             } catch (error) {

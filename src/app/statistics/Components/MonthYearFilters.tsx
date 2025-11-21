@@ -19,7 +19,7 @@ export function MonthYearFilters({
   onYearChange 
 }: MonthYearFiltersProps) {
   return (
-    <div className="flex gap-3 mt-4">
+    <div className="flex gap-3 pt-6 pb-1 px-4">
       <div className="flex-1">
         <Select value={selectedMonth.toString()} onValueChange={(value) => onMonthChange(Number(value))}>
           <SelectTrigger className="w-full">

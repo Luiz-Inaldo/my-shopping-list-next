@@ -1,5 +1,6 @@
 import { db } from "@/lib/firebase";
 import { IPurchaseProps } from "@/types";
+import { Filters } from "@/types/filters";
 import {
   collection,
   query,
@@ -9,21 +10,26 @@ import {
   doc,
   addDoc,
   updateDoc,
+  QueryConstraint,
 } from "firebase/firestore";
 
-export async function getActivePurchaseList(userId: string) {
-  const searchParams = query(
-    collection(db, "purchases"),
-    where("user_id", "==", userId),
-    where("is_active", "==", true)
-  );
+export async function getPurchasesList(userId: string, filters?: Filters[]) {
+  
+  const whereParams: QueryConstraint[] = [where("user_id", "==", userId)];
+
+  filters?.forEach(filter => {
+    whereParams.push(where(filter.id, filter.operator, filter.value));
+  });
+
+  const searchParams = query(collection(db, "purchases"), ...whereParams);
 
   const result = await getDocs(searchParams);
-  const purchaseData = result.docs.map((doc) => {
+
+  const purchaseData: IPurchaseProps[] = result.docs.map((doc) => {
     return {
       id: doc.id,
       ...doc.data(),
-    };
+    } as IPurchaseProps;
   });
 
   return {

@@ -71,7 +71,7 @@ export interface IProductProps {
 }
 
 export interface IPurchaseProps {
-  id?: string; //TODO: Supabase case use. remove later
+  id?: string;
   title: string;
   is_active: boolean;
   max_value: number;

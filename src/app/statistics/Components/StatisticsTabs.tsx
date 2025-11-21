@@ -1,15 +1,15 @@
 "use client";
 
-import React from "react";
+import { motion } from "motion/react";
 
-type TabType = "day" | "week" | "month";
+export type TabType = "day" | "week" | "month";
 
 interface StatisticsTabsProps {
   activeTab: TabType;
-  onTabChange: (tab: TabType) => void;
+  handleTabChange: (tab: TabType) => void;
 }
 
-export function StatisticsTabs({ activeTab, onTabChange }: StatisticsTabsProps) {
+export function StatisticsTabs({ activeTab, handleTabChange }: StatisticsTabsProps) {
   const tabs = [
     { key: "day" as TabType, label: "Dia" },
     { key: "week" as TabType, label: "Semana" },
@@ -17,22 +17,26 @@ export function StatisticsTabs({ activeTab, onTabChange }: StatisticsTabsProps) 
   ];
 
   return (
-    <div className="w-full bg-white rounded-full p-2 shadow-md">
-      <div className="relative flex">
+    <div className="w-full">
+      <ul className="relative flex">
         {tabs.map((tab) => (
-          <button
-            key={tab.key}
-            onClick={() => onTabChange(tab.key)}
-            className={`flex-1 relative text-center py-2 px-4 rounded-full transition-all duration-300 ${
-              activeTab === tab.key 
-                ? "text-white bg-default-green" 
-                : "text-gray-600 hover:text-gray-800"
-            }`}
-          >
-            <span className="relative z-10 font-medium">{tab.label}</span>
-          </button>
+          <motion.li
+          key={tab.key}
+          initial={false}
+          onClick={() => handleTabChange(tab.key)}
+          className={`relative w-1/2 text-center rounded-full px-5 py-2`}
+        >
+          <span className={`${activeTab === tab.key ? "!text-subtitle" : "text-paragraph"} relative z-[2] transition-colors delay-100`}>{tab.label}</span>
+          {activeTab === tab.key ? (
+            <motion.div
+              layoutId="background"
+              id="background"
+              className="absolute inset-0 z-[0] rounded-tl-lg rounded-tr-lg p-2 bg-app-container"
+            />
+          ) : null}
+        </motion.li>
         ))}
-      </div>
+      </ul>
     </div>
   );
 }
