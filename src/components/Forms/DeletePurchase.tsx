@@ -5,28 +5,16 @@ import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, Di
 import { Trash2 } from 'lucide-react';
 import { sendToastMessage } from '@/functions/sendToastMessage';
 import { deletePurchaseFromDb } from '@/services/purchasesListServices';
-import useGeneralUserStore from '@/store/generalUserStore';
-import { invalidateAllQueries } from '@/functions/invalidadeQueries';
-import { QUERY_KEYS } from '@/constants/queryKeys';
-import { usePathname } from 'next/navigation';
-import { APP_ROUTES } from '@/routes/app-routes';
 
 export const DeletePurchase = ({ purchase, trigger }: { purchase: IPurchaseProps, trigger?: React.ReactNode }) => {
 
-    const userProfile = useGeneralUserStore(store => store.userProfile);
     const [open, setOpen] = useState(false);
-    const pathName = usePathname();
 
     async function handleDeletePurchase(purchaseId: string) {
         try {
             await deletePurchaseFromDb(purchaseId);
             sendToastMessage({ title: "Compra deletada com sucesso!", type: "success" });
 
-            const queryToInvalidate = pathName === APP_ROUTES.private.historic.name ?
-                [QUERY_KEYS.historic, userProfile?.uid] :
-                [QUERY_KEYS.purchases, userProfile?.uid];
-
-            invalidateAllQueries([queryToInvalidate]);
         } catch (error) {
             console.error(error);
             sendToastMessage({ title: "Erro ao deletar compra!", type: "error" });

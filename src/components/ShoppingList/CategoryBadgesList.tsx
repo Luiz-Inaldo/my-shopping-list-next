@@ -1,7 +1,6 @@
 import { CATEGORIES } from '@/constants/categories'
 import { QUERY_KEYS } from '@/constants/queryKeys';
 import { useShoplistContext } from '@/context/ShoplistContext';
-import useGeneralUserStore from '@/store/generalUserStore';
 import { IPurchaseProps } from '@/types';
 import { useQueryClient } from '@tanstack/react-query';
 
