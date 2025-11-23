@@ -142,7 +142,7 @@ export function HistoricPage() {
             <Header className="text-lg font-medium">
                 Histórico
             </Header>
-            <div className="w-full px-5 py-6">
+            <div className="w-full px-5 pb-24 pt-6">
                 <div className="grid 2xsm:grid-cols-1 gap-10">
                     <div className="grid grid-cols-2 gap-x-5 gap-y-2">
                         <label className="relative flex-1 col-span-1">

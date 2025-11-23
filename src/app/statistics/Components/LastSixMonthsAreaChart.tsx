@@ -5,6 +5,7 @@ import { ChartConfig, ChartContainer, ChartTooltip, ChartTooltipContent } from "
 import { MONTHS } from "@/constants/months";
 import { Area, AreaChart, CartesianGrid, XAxis } from "recharts";
 import React from "react";
+import { formatCurrency } from "@/functions/formatCurrency";
 
 interface MonthlyData {
   month: string;
@@ -24,10 +25,10 @@ const chartConfig = {
 
 export function LastSixMonthsAreaChart({ data }: LastSixMonthsAreaChartProps) {
   return (
-    <Card className="bg-app-container border border-border shadow-md rounded-sm">
+    <Card className="bg-app-container border-none shadow-sm rounded-sm">
       <CardHeader>
         <CardTitle className="text-lg text-subtitle font-semibold">
-          Valor de compras por mês (últimos 6 meses)
+          Total de compras (últimos 6 meses)
         </CardTitle>
       </CardHeader>
       <CardContent>
@@ -65,7 +66,7 @@ export function LastSixMonthsAreaChart({ data }: LastSixMonthsAreaChartProps) {
                         <div className="flex items-center gap-10">
                           <span className="text-paragraph">Total: </span>
                           <span className="text-xs text-subtitle font-semibold">
-                            R$ {(item.value as number)?.toFixed(2)}
+                            {formatCurrency(item.value as number)}
                           </span>
                         </div>
                       </div>
