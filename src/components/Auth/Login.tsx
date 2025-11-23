@@ -52,7 +52,7 @@ export default function LogInForm({
 
         const token = await firebaseLoginResponse.user.getIdToken();
 
-        // Fazer requisição para a API route
+        //TODO: adicionar tratamento de encode com JWT
         const response = await fetch('/api/auth/token', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
