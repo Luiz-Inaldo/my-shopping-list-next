@@ -14,8 +14,8 @@ function isTokenValid(token: string): boolean {
     const payload = JSON.parse(atob(token.split('.')[1]));
     const currentTime = Math.floor(Date.now() / 1000);
     
-    // Verifica se o token não expirou (com margem de 5 minutos)
-    return payload.exp > (currentTime + 300);
+    // Verifica se o token não expirou (com margem de 50 minutos)
+    return payload.exp > (currentTime + 3000);
   } catch (error) {
     console.error('Erro ao verificar validade do token:', error);
     return false;
@@ -44,8 +44,8 @@ export async function middleware(req: NextRequest) {
     return NextResponse.redirect(new URL(APP_ROUTES.public.inicio.name, req.url));
   }
 
-  // Verifica se o token é válido e não expirado
-  if (!isTokenValid(token)) {
+  // Verifica se o token é válido e não expirado e se não é uma rota pública
+  if (!isPublicRoute && !isTokenValid(token)) {
     // Token inválido ou expirado, remove o cookie e redireciona
     const response = NextResponse.redirect(new URL(APP_ROUTES.public.inicio.name, req.url));
     response.cookies.delete("authToken");

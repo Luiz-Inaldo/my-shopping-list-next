@@ -51,8 +51,21 @@ export default function LogInForm({
         );
 
         const token = await firebaseLoginResponse.user.getIdToken();
-        // TODO: Colocar HTTPONLY no cookie
-        document.cookie = `authToken=${token}; path=/; max-age=86400; secure; samesite=strict;`;
+
+        // Fazer requisição para a API route
+        const response = await fetch('/api/auth/token', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ token })
+        });
+
+        if (!response.ok) {
+          sendToastMessage({
+            title: "Erro ao fazer login. Tente novamente.",
+            type: "error"
+          })
+          return;
+        }
 
         sendToastMessage({
           title: "Login realizado com sucesso.",
