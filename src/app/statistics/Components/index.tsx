@@ -18,9 +18,9 @@ export function Statistics() {
         setSelectedMonth,
         selectedYear,
         setSelectedYear,
+        areaChartData,
         chartCategoryData,
-        // categoryData,
-        // totalPurchases,
+        totalPurchases,
         totalValue,
         previousTotalValue,
     } = useStatisticsData();
@@ -69,7 +69,7 @@ export function Statistics() {
 
 
                         <SummaryInfo
-                            totalPurchases={chartCategoryData.length || 0}
+                            totalPurchases={totalPurchases}
                             totalValue={totalValue}
                         />
 
@@ -82,9 +82,8 @@ export function Statistics() {
                     </div>
                 </section>
 
-                {/* Last Six Months Area Chart */}
                 <section>
-                    {/* <LastSixMonthsAreaChart data={lastSixMonthsData} /> */}
+                    <LastSixMonthsAreaChart data={areaChartData} />
                 </section>
             </main>
             <Footer />

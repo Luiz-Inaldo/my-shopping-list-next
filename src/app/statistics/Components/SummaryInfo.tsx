@@ -1,5 +1,6 @@
 "use client";
 
+import { formatCurrency } from "@/functions/formatCurrency";
 import React from "react";
 
 interface SummaryInfoProps {
@@ -17,7 +18,7 @@ export function SummaryInfo({ totalPurchases, totalValue }: SummaryInfoProps) {
       <div className="p-3 bg-app-background rounded-lg text-center">
         <p className="text-sm text-paragraph">Valor Total</p>
         <p className="text-lg font-semibold text-subtitle">
-          R$ {totalValue.toFixed(2)}
+          {formatCurrency(totalValue)}
         </p>
       </div>
     </div>

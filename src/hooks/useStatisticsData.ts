@@ -1,6 +1,8 @@
 "use client";
 
+import { MONTHS } from "@/constants/months";
 import { QUERY_KEYS } from "@/constants/queryKeys";
+import { getLastSixMonthsDate } from "@/functions/charts/areaChartFilterDates";
 import {
   getCurrentRangeEndDate,
   getCurrentRangeStartDate,
@@ -43,7 +45,6 @@ const categoryColors: { [key: string]: string } = {
 };
 
 export function useStatisticsData() {
-
   // ===============
   // # States
   // ===============
@@ -69,12 +70,11 @@ export function useStatisticsData() {
         value: Timestamp.fromDate(
           getCurrentRangeEndDate(activeTab, selectedMonth, selectedYear)
         ),
-      }
+      },
     ];
   }, [activeTab, selectedMonth, selectedYear]);
 
   const previousDataFilters = useMemo<Filters[]>(() => {
-
     return [
       {
         id: "end_date",
@@ -89,26 +89,37 @@ export function useStatisticsData() {
         value: Timestamp.fromDate(
           getPreviousRangeEndDate(activeTab, selectedMonth, selectedYear)
         ),
-      }
+      },
     ];
-  }, [activeTab, selectedMonth, selectedYear])
+  }, [activeTab, selectedMonth, selectedYear]);
 
-  const [areaChartFilters, setAreaChartFilters] = useState<Filters[]>([
-    {
-      id: "is_active",
-      operator: "==",
-      value: false,
-    },
-  ]);
-
+  const areaChartFilters = useMemo<Filters[]>(() => {
+    return [
+      {
+        id: "end_date",
+        operator: ">=",
+        value: Timestamp.fromDate(getLastSixMonthsDate().date),
+      },
+      {
+        id: "end_date",
+        operator: "<=",
+        value: Timestamp.fromDate(
+          new Date(Date.UTC(selectedYear, selectedMonth + 1, 0, 3, 0, 0, 0))
+        ),
+      },
+    ];
+  }, [selectedMonth, selectedYear]);
+  
   // ===============
   // # React Query
   // ===============
-  const { data: donutChartPurchasesList } = usePurchasesQuery(currentDataFilters);
-  const { data: previousPurchasesData } = usePurchasesQuery(previousDataFilters, Boolean(donutChartPurchasesList));
-
-  console.log("dados do gráfico Donut:", donutChartPurchasesList);
-  console.log("dados anteriores:", previousPurchasesData);
+  const { data: donutChartPurchasesList } =
+    usePurchasesQuery(currentDataFilters);
+  const { data: previousPurchasesData } = usePurchasesQuery(
+    previousDataFilters,
+    Boolean(donutChartPurchasesList)
+  );
+  const { data: areaChartPurchasesList } = usePurchasesQuery(areaChartFilters);
 
   // Função para calcular dados das categorias
   const chartCategoryData = useMemo((): CategoryData[] => {
@@ -141,65 +152,29 @@ export function useStatisticsData() {
       value: value,
       color: categoryColors[category] || "var(--category-10)",
     }));
-
   }, [donutChartPurchasesList]);
+  
+  const areaChartData = useMemo<MonthlyData[]>(() => {
+    if (!areaChartPurchasesList || areaChartPurchasesList.length === 0) return [];
+    const uniqueMonths = getLastSixMonthsDate().range;
 
-  // Função para obter dados dos últimos 6 meses
-  // const getLastSixMonthsData = useCallback((): MonthlyData[] => {
-  //   if (!purchasesList || purchasesList.length === 0) return [];
+    return uniqueMonths.map(month => ({
+      month: MONTHS[Number(month?.split("-")[1]) - 1],
+      value: areaChartPurchasesList.filter(p => p.end_date?.toDate().toISOString().slice(0,7) === month).reduce((sum, p) => sum + p.total_price, 0)
+    })) as MonthlyData[];
+  }, [areaChartPurchasesList]);
 
-  //   const now = new Date();
-  //   const monthsData: MonthlyData[] = [];
-
-  //   for (let i = 5; i >= 0; i--) {
-  //     const targetDate = new Date(now.getFullYear(), now.getMonth() - i, 1);
-  //     const monthName = targetDate.toLocaleDateString("pt-BR", {
-  //       month: "long",
-  //     });
-
-  //     const monthPurchases = purchasesList.filter((purchase) => {
-  //       const purchaseDate = timestampToDate(purchase.end_date);
-  //       return (
-  //         purchaseDate.getMonth() === targetDate.getMonth() &&
-  //         purchaseDate.getFullYear() === targetDate.getFullYear()
-  //       );
-  //     });
-
-  //     const totalValue = monthPurchases.reduce(
-  //       (sum, purchase) => sum + purchase.total_price,
-  //       0
-  //     );
-
-  //     monthsData.push({
-  //       month: monthName.charAt(0).toUpperCase() + monthName.slice(1),
-  //       value: totalValue,
-  //     });
-  //   }
-
-  //   return monthsData;
-  // }, [purchasesList]);
-
-  // // Dados computados
-  // const filteredData = useMemo(() => getFilteredData(), [getFilteredData]);
-  // const previousPeriodData = useMemo(
-  //   () => getPreviousPeriodData(),
-  //   [getPreviousPeriodData]
-  // );
-  // const categoryData = useMemo(() => getCategoryData(), [getCategoryData]);
-  // const lastSixMonthsData = useMemo(
-  //   () => getLastSixMonthsData(),
-  //   [getLastSixMonthsData]
-  // );
-
-  // const totalPurchases = filteredData.length;
-  const totalValue = donutChartPurchasesList?.reduce(
-    (sum, purchase) => sum + purchase.total_price,
-    0
-  ) || 0;
-  const previousTotalValue = previousPurchasesData?.reduce(
-    (sum, purchase) => sum + purchase.total_price,
-    0
-  ) || 0;
+  const totalPurchases = donutChartPurchasesList?.length || 0;
+  const totalValue =
+    donutChartPurchasesList?.reduce(
+      (sum, purchase) => sum + purchase.total_price,
+      0
+    ) || 0;
+  const previousTotalValue =
+    previousPurchasesData?.reduce(
+      (sum, purchase) => sum + purchase.total_price,
+      0
+    ) || 0;
 
   return {
     activeTab,
@@ -209,10 +184,8 @@ export function useStatisticsData() {
     selectedYear,
     setSelectedYear,
     chartCategoryData,
-    // filteredData,
-    // categoryData,
-    // lastSixMonthsData,
-    // totalPurchases,
+    areaChartData,
+    totalPurchases,
     totalValue,
     previousTotalValue,
   };

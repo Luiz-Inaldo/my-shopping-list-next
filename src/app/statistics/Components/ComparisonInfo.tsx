@@ -3,6 +3,7 @@
 import { TrendingDown, TrendingUp } from "lucide-react";
 import React from "react";
 import { TabType } from "./StatisticsTabs";
+import { formatCurrency } from "@/functions/formatCurrency";
 
 interface ComparisonInfoProps {
   currentValue: number;
@@ -59,7 +60,7 @@ export function ComparisonInfo({ currentValue, previousValue, period }: Comparis
               {isIncrease ? "Aumento" : isDecrease ? "Economia" : "Sem alteração"}
             </span>
             <span className="text-sm text-subtitle font-medium">
-              de R$ {Math.abs(difference).toFixed(2)} ({Math.abs(percentageChange).toFixed(1)}%)
+              de {formatCurrency(Math.abs(difference))} ({Math.abs(percentageChange).toFixed(1).replace(".", ",")}%)
             </span>
           </div>
         </div>

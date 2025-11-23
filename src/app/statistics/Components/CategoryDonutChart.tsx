@@ -24,6 +24,7 @@ const chartConfig = {
 } satisfies ChartConfig;
 
 export function CategoryDonutChart({ data, totalValue }: CategoryDonutChartProps) {
+
   const chartData = data.map((item) => ({
     name: item.name,
     value: item.value,
