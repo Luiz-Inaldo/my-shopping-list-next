@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useMemo } from 'react'
 import { Product } from './Product'
 import { Check, Filter } from 'lucide-react';
 import Image from 'next/image';
@@ -19,6 +19,12 @@ export function ProductsList({ list }: { list: IProductProps[] | null | undefine
     setFilterValue(null);
     queryClient.setQueryData([QUERY_KEYS.productsList, productsList?.id], auxData)
   }
+
+  const sortedList = useMemo(() => {
+    return list?.sort((a, b) => {
+      return a.name.localeCompare(b.name);
+    });
+  }, [list]);
 
   if (!list || totalListItems === 0) return <EmptyProducsList />
 
@@ -60,7 +66,7 @@ export function ProductsList({ list }: { list: IProductProps[] | null | undefine
       </AnimatePresence>
 
       <div className="space-y-3">
-        {list?.map((product) => (
+        {sortedList?.map((product) => (
           <Product
             key={product.name}
             item={product} />
