@@ -174,9 +174,12 @@ export const ShoplistProvider = ({ children }: { children: React.ReactNode }) =>
     useEffect(() => {
         const productsListRef = doc(db, 'purchases', listId);
         const unsubscribe = onSnapshot(productsListRef, (snapshot) => {
-            queryClient.invalidateQueries({
-                queryKey: [QUERY_KEYS.productsList, listId]
-            });
+            const data = snapshot.data() as IPurchaseProps;
+            if (data.is_active) {
+                queryClient.invalidateQueries({
+                    queryKey: [QUERY_KEYS.productsList, listId]
+                });
+            }
         });
         return () => unsubscribe();
     }, [listId]);

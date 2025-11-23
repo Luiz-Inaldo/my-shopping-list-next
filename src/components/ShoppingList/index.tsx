@@ -42,7 +42,7 @@ export default function ShoppingList() {
     return <PurchaseSaved />;
   }
 
-  if (!productsList?.is_active || userId !== productsList?.user_id) {
+  if (!isSaved && (!productsList?.is_active || userId !== productsList?.user_id)) {
     return <PurchaseBlocked />;
   }
 
