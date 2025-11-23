@@ -29,11 +29,11 @@ export function HistoricPage() {
         month: "todos",
         year: "todos",
     });
-    const [filters, setFilters] = useState<Filters[]>([{
+    const filters: Filters[] = [{
         id: "is_active",
         operator: "==",
         value: false
-    }]);
+    }];
     const [auxData, setAuxData] = useState<IPurchaseProps[]>([]);
 
     // ===================
@@ -46,15 +46,6 @@ export function HistoricPage() {
     // ===================
     const isFirstLoad = useRef<boolean>(true);
 
-    // ===================
-    // # Handlers
-    // ===================
-    async function handleFetchHistoricData(): Promise<IPurchaseProps[]> {
-        const res = await getPurchasesList(userProfile?.uid!, filters);
-        setAuxData(res.data);
-        return res.data;
-    }
-
     const filterPurchases = async (filter: IFilterProps) => {
 
         // if (purchasesList.length === 0) filterPurchases(filter);
@@ -64,7 +55,7 @@ export function HistoricPage() {
 
         // primeiro caso: os dois parâmetros são string
         if (typeof month === "string" && typeof year === "string") {
-            queryClient.setQueryData([QUERY_KEYS.historic, userProfile?.uid], auxData);
+            queryClient.setQueryData([QUERY_KEYS.purchases, userProfile?.uid, filters], auxData);
         }
         // segundo caso: ambos parâmetros number
         else if (typeof month === 'number' && typeof year === 'number') {
@@ -74,7 +65,7 @@ export function HistoricPage() {
                 purchase.end_date?.toDate().getMonth() === month
             );
 
-            queryClient.setQueryData([QUERY_KEYS.historic, userProfile?.uid], filteredData);
+            queryClient.setQueryData([QUERY_KEYS.purchases, userProfile?.uid, filters], filteredData);
 
         }
         // terceiro caso: mês string e ano number
@@ -84,7 +75,7 @@ export function HistoricPage() {
                 purchase.end_date?.toDate().getFullYear() === year
             );
 
-            queryClient.setQueryData([QUERY_KEYS.historic, userProfile?.uid], filteredData);
+            queryClient.setQueryData([QUERY_KEYS.purchases, userProfile?.uid, filters], filteredData);
 
         }
         // quarto caso: mês number e ano string
@@ -94,7 +85,7 @@ export function HistoricPage() {
                 purchase.end_date?.toDate().getMonth() === month
             );
 
-            queryClient.setQueryData([QUERY_KEYS.historic, userProfile?.uid], filteredData);
+            queryClient.setQueryData([QUERY_KEYS.purchases, userProfile?.uid, filters], filteredData);
 
         }
     };
@@ -118,10 +109,17 @@ export function HistoricPage() {
         const purchasesRef = collection(db, 'purchases');
         const unsubscribe = onSnapshot(purchasesRef, (snapshot) => {
             queryClient.invalidateQueries({
-                queryKey: [QUERY_KEYS.historic, userProfile?.uid]
+                queryKey: [QUERY_KEYS.purchases, userProfile?.uid, filters]
             });
+            setAuxData(snapshot.docs.map(doc => {
+                return {
+                    id: doc.id,
+                    ...doc.data(),
+                  } as IPurchaseProps;
+            }));
         });
         return () => unsubscribe();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [userProfile?.uid]);
 
     useEffect(() => {

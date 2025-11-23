@@ -1,7 +1,7 @@
 import { IPurchaseProps } from "@/types";
 import { HistoricPurchaseItemSkeleton } from "./HistoricPurchaseItemSkeleton";
 import Image from "next/image";
-import React from "react";
+import React, { useMemo } from "react";
 import { HistoricPurchaseItem } from "./HistoricPurchaseItem";
 import ErrorFetchData from "@/components/Errors/ErrorFetchData";
 
@@ -15,7 +15,14 @@ interface THistoricListProps {
 
 export function HistoricList({ isLoading, hasError, data, retryFn, isFetching }: THistoricListProps) {
 
-    if (isLoading || !data) {
+    const sortedList = useMemo(() => {
+        if (!data) return [];
+        return data.sort((a, b) => {
+            return b.end_date!.toDate().getTime() - a.end_date!.toDate().getTime();
+        });
+    }, [data]);
+
+    if (isLoading || !sortedList) {
         return (
             <div className="space-y-3">
                 {Array.from({ length: 3 }).map((_, index) => (
@@ -29,7 +36,7 @@ export function HistoricList({ isLoading, hasError, data, retryFn, isFetching }:
         return <ErrorFetchData retryFn={retryFn} isRetrying={isFetching} />
     }
 
-    if (data.length === 0) {
+    if (sortedList.length === 0) {
         return (
             <div className="flex flex-col items-center gap-3 mt-10">
                 <Image
@@ -48,10 +55,10 @@ export function HistoricList({ isLoading, hasError, data, retryFn, isFetching }:
     return (
         <div className="space-y-5">
             <p className="text-paragraph text-sm">
-                Exibindo {data.length} {data.length === 1 ? 'resultado' : 'resultados'}
+                Exibindo {sortedList.length} {sortedList.length === 1 ? 'resultado' : 'resultados'}
             </p>
             <div className="space-y-3">
-                {data.map((purchase) => (
+                {sortedList.map((purchase) => (
                     <HistoricPurchaseItem key={purchase.id} purchase={purchase} />
                 ))}
             </div>
