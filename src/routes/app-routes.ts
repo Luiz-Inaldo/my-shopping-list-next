@@ -7,7 +7,7 @@ export const APP_ROUTES = {
             name: (id: string) => `/list/${id}`
         },
         settings: {
-            name: "/settings"
+            name: "/ajustes"
         },
         historic: {
             name: "/historic",
