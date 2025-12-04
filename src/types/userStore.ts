@@ -1,4 +1,3 @@
-import { TSupabaseUserInfo } from "./supabase"
 import { TUserProfileProps } from "./user";
 
 export type TUserStoreProps = {

@@ -7,7 +7,10 @@ export const APP_ROUTES = {
             name: (id: string) => `/list/${id}`
         },
         settings: {
-            name: "/ajustes"
+            name: "/ajustes",
+            perfil: {
+                name: "/ajustes/perfil"
+            }
         },
         historic: {
             name: "/historic",
