@@ -83,7 +83,7 @@ export function CategoryDistributionChart({ productsList, title = "Distribuiçã
       // Gerar dados do gráfico para cada categoria
       const chartData = CATEGORIES.map((category) => {
         // Calcular porcentagem usando a função utilitária
-        const percentage = parseFloat(calculatePercentage(productsList, category.name) || '0');
+        const percentage = parseFloat(calculatePercentage(productsList, category.name));
 
         return {
           category: category.name,
