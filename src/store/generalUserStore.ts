@@ -20,8 +20,12 @@ onAuthStateChanged(auth, (user) => {
     const userRef = doc(db, "users", user.uid);
     getDoc(userRef).then((snapshot) => {
       if (snapshot.exists()) {
-        const userData = snapshot.data() as TUserProfileProps;
-        useGeneralUserStore.getState().setUserProfile(userData);
+        const profileData = snapshot.data() as TUserProfileProps;
+        const authUserData = auth.currentUser;
+        useGeneralUserStore.getState().setUserProfile({
+          ...profileData,
+          email: authUserData?.email || ""
+        });
       }
     }).catch((error) => {
       console.error(error);
