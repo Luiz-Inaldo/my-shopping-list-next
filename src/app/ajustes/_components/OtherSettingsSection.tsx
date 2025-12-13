@@ -1,0 +1,26 @@
+import { ChevronRight, Info, Trash2 } from "lucide-react";
+
+export function OtherSettingsSection() {
+  return (
+    <section>
+      <h2 className="text-paragraph text-sm mb-3">Outras configurações</h2>
+      <div className="bg-app-container rounded-lg divide-y divide-border">
+        <button className="w-full flex items-center justify-between p-4">
+          <div className="flex items-center gap-3 text-subtitle">
+            <Info size={18} />
+            <span className="text-sm">Sobre o aplicativo</span>
+          </div>
+          <ChevronRight size={18} className="text-paragraph" />
+        </button>
+        <button className="w-full flex items-center justify-between p-4">
+          <div className="flex items-center gap-3 text-red-500">
+            <Trash2 size={18} />
+            <span className="text-sm">Deletar minha conta</span>
+          </div>
+          <ChevronRight size={18} className="text-red-500" />
+        </button>
+      </div>
+    </section>
+  );
+}
+
