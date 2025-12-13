@@ -1,6 +1,6 @@
 "use client";
-import LogInForm from "@/components/Auth/Login";
-import RegisterForm from "@/components/Auth/Register";
+import LogInForm from "@/app/auth/_components/Login";
+import RegisterForm from "@/app/auth/_components/Register";
 import { AnimatePresence, motion } from "framer-motion";
 import React, { useState } from "react";
 
@@ -12,6 +12,7 @@ export default function AuthPage() {
       <ul className="w-[240px] rounded-full flex items-center justify-between p-2 mt-4 shadow-md bg-white">
         <motion.li
           key="login"
+          data-testid="login-form-changer"
           initial={false}
           onClick={() => setCurrentForm("login")}
           className={`w-1/2 relative text-center rounded-full px-5 py-1`}
@@ -27,6 +28,7 @@ export default function AuthPage() {
         </motion.li>
         <motion.li
           key="register"
+          data-testid="register-form-changer"
           initial={false}
           onClick={() => setCurrentForm("register")}
           className={`relative w-1/2 text-center rounded-full px-5 py-1`}

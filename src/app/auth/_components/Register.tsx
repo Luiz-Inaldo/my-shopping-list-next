@@ -13,8 +13,8 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import React, { useState, useTransition } from 'react'
 import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
-import { Input } from '../ui/input';
-import { Button } from '../ui/button';
+import { Input } from '../../../components/ui/input';
+import { Button } from '../../../components/ui/button';
 import { registerFormSchema } from '@/types/zodTypes';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { IRegisterUser } from '@/interfaces/user';

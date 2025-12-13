@@ -14,7 +14,8 @@ import Image from 'next/image';
 import { avatarImgUrls } from '@/constants/avatarImgUrl';
 import { Check, LoaderCircle } from 'lucide-react';
 import { toast } from '../ui/use-toast';
-import { supabase } from '@/lib/api';
+import { db } from '@/lib/firebase';
+import { doc, updateDoc } from 'firebase/firestore';
 import useGeneralUserStore from '@/store/generalUserStore';
 import { Button } from '../ui/button';
 
@@ -32,9 +33,15 @@ const ChangeAvatarModal = ({ children, currentAvatarUrl, refetch }: {
     async function changeAvatar() {
         setIsLoading(true);
         try {
-            const {data, error} = await supabase.from('profiles')
-            .update({profile_img: selectedAvatar})
-            .eq('email', user?.email);
+            if (!user?.uid) {
+                throw new Error('User ID not found');
+            }
+
+            const userRef = doc(db, 'users', user.uid);
+            await updateDoc(userRef, {
+                profile_img: selectedAvatar,
+                updatedAt: new Date()
+            });
 
             refetch?.();
 

@@ -37,5 +37,5 @@
 
 .switcher-checkbox:checked ~ .switcher-trigger::before {
   transform: translateX(25px);
-  background: #0066CC;
+  background: var(--app-primary);
 }

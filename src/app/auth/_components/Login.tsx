@@ -11,8 +11,8 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { Input } from "../ui/input";
-import { Button } from "../ui/button";
+import { Input } from "../../../components/ui/input";
+import { Button } from "../../../components/ui/button";
 import { toast } from "sonner";
 import { loginFormSchema } from "@/types/zodTypes";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -34,7 +34,11 @@ export default function LogInForm({
   const { handleChangeRoute } = usePageOverlay();
 
   const form = useForm<ILoginUser>({
-    resolver: zodResolver(loginFormSchema)
+    resolver: zodResolver(loginFormSchema),
+    defaultValues: {
+      email: "",
+      password: ""
+    }
   });
 
   async function onSubmit(userCredentials: ILoginUser) {
@@ -95,85 +99,6 @@ export default function LogInForm({
           }
         }
       }
-
-      //   if (res.status === 200) {
-      //     toast.success("Login realizado com sucesso.", {
-      //       classNames: {
-      //         toast: '!bg-black !border-0',
-      //         title: '!text-snow'
-      //       },
-      //       position: 'top-center',
-      //       icon: <Check className="text-emerald-500 text-lg" />
-      //     });
-      //     setTimeout(() => {
-      //       toast.dismiss();
-      //       handleChangeRoute(APP_ROUTES.private.home.name);
-      //     }, 2000);
-      //   } else {
-      //     switch (res.statusText) {
-      //       case "auth/invalid-credential":
-      //         toast.error("Credenciais incorretas. Tente novamente.", {
-      //           classNames: {
-      //             toast: '!bg-black !border-0',
-      //             title: '!text-snow'
-      //           },
-      //           position: 'top-center',
-      //           icon: <X className="text-red-500 text-lg" />
-      //         });
-      //         break;
-
-      //       default:
-      //         toast.error("Houve um erro ao logar.", {
-      //           classNames: {
-      //             toast: '!bg-black !border-0',
-      //             title: '!text-snow'
-      //           },
-      //           position: 'top-center',
-      //           icon: <X className="text-red-500 text-lg" />
-      //         });
-      //         break;
-      //     }
-      //   }
-      // });
-
-      // const { data, error } = await supabase.auth.signInWithPassword(
-      //   userCredentials
-      // );
-
-      // if (error) {
-      //   if (error.code === "invalid_credentials") {
-      //     toast.error("Credenciais de login inválidas.", {
-      //       classNames: {
-      //         toast: '!bg-black !border-0',
-      //         title: '!text-snow'
-      //       },
-      //       position: 'top-center',
-      //       icon: <X className="text-red-500 text-lg" />
-      //     });
-      //   } else {
-      //     toast.error("Houve um erro ao logar.", {
-      //       classNames: {
-      //         toast: '!bg-black !border-0',
-      //         title: '!text-snow'
-      //       },
-      //       position: 'top-center',
-      //       icon: <X className="text-red-500 text-lg" />
-      //     });
-      //   }
-      // } else {
-      //   toast.success("Login realizado com sucesso.", {
-      //     classNames: {
-      //       toast: '!bg-black !border-0',
-      //       title: '!text-snow'
-      //     },
-      //     position: 'top-center',
-      //     icon: <Check className="text-emerald-500 text-lg" />
-      //   });
-      //   setTimeout(() => {
-      //     toast.dismiss();
-      //     handleChangeRoute(APP_ROUTES.private.home.name);
-      //   }, 2000);
-      // }
 
     })
   }
