@@ -14,13 +14,13 @@ export function ProfileSection() {
           </div>
           <ChevronRight size={18} className="text-paragraph" />
         </Link>
-        <button className="w-full flex items-center justify-between p-4">
+        <Link href={APP_ROUTES.private.settings.seguranca.name} className="w-full flex items-center justify-between p-4">
           <div className="flex items-center gap-3 text-subtitle">
             <ShieldCheck size={18} />
             <span className="text-sm">Segurança</span>
           </div>
           <ChevronRight size={18} className="text-paragraph" />
-        </button>
+        </Link>
       </div>
     </section>
   );
