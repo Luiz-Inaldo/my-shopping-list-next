@@ -6,7 +6,6 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { usePageOverlay } from "@/context/PageOverlayContext";
 import { sendToastMessage } from "@/functions/sendToastMessage";
 import useMySwal from "@/hooks/useMySwal";
-import { supabase } from "@/lib/api";
 import { APP_ROUTES } from "@/routes/app-routes";
 import useGeneralUserStore from "@/store/generalUserStore";
 import { Blocks, LogOut } from "lucide-react";
@@ -22,18 +21,18 @@ export default function Menu() {
   const {handleChangeRoute} = usePageOverlay();
 
   async function logout() {
-    const { error } = await supabase.auth.signOut();
+    // const { error } = await supabase.auth.signOut();
 
-    if (error) {
-      sendToastMessage({ title: "Erro ao fazer logout", type: "error" });
-    } else {
-      sendToastMessage({ title: "Logout realizado com sucesso", type: "success" });
-      resetProfile();
-      setTimeout(() => {
-        toast.dismiss();
-        handleChangeRoute(APP_ROUTES.public.auth.name);
-      }, 3000);
-    }
+    // if (error) {
+    //   sendToastMessage({ title: "Erro ao fazer logout", type: "error" });
+    // } else {
+    //   sendToastMessage({ title: "Logout realizado com sucesso", type: "success" });
+    //   resetProfile();
+    //   setTimeout(() => {
+    //     toast.dismiss();
+    //     handleChangeRoute(APP_ROUTES.public.auth.name);
+    //   }, 3000);
+    // }
   }
 
   return (
