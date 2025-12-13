@@ -21,18 +21,21 @@ export default function Menu() {
   const {handleChangeRoute} = usePageOverlay();
 
   async function logout() {
-    // const { error } = await supabase.auth.signOut();
-
-    // if (error) {
-    //   sendToastMessage({ title: "Erro ao fazer logout", type: "error" });
-    // } else {
-    //   sendToastMessage({ title: "Logout realizado com sucesso", type: "success" });
-    //   resetProfile();
-    //   setTimeout(() => {
-    //     toast.dismiss();
-    //     handleChangeRoute(APP_ROUTES.public.auth.name);
-    //   }, 3000);
-    // }
+    try {
+      const { signOut } = await import("firebase/auth");
+      const { auth } = await import("@/lib/firebase");
+      
+      await signOut(auth);
+      
+      sendToastMessage({ title: "Logout realizado com sucesso", type: "success" });
+      resetProfile();
+      setTimeout(() => {
+        toast.dismiss();
+        handleChangeRoute(APP_ROUTES.public.auth.name);
+      }, 3000);
+    } catch (error) {
+      sendToastMessage({ title: "Erro ao fazer logout", type: "error" });
+    }
   }
 
   return (
