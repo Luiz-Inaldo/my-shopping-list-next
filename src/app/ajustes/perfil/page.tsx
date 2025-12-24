@@ -49,8 +49,7 @@ export default function ProfilePage() {
   }
 
   function onSubmit(formData: ProfileFormData) {
-    // console.log('foi')
-    // return;
+    
     editingDataTransition(async () => {
 
       try {

@@ -5,6 +5,7 @@ import {
   EmailAuthProvider,
   sendEmailVerification,
   verifyBeforeUpdateEmail,
+  updatePassword,
 } from "firebase/auth";
 import { FirebaseError } from "firebase/app";
 
@@ -55,4 +56,30 @@ export async function updateUserEmail(
       throw error;
     }
   }
+}
+
+/**
+ * Altera o e-mail do usuário, exige revalidação, e envia e-mail de confirmação.
+ * @param {string} currentPassword - A senha atual do usuário.
+ * @param {string} newPassword - O novo e-mail a ser definido.
+ */
+export async function updateUserPassword(
+  currentPassword: string,
+  newPassword: string
+) {
+  const user = auth.currentUser;
+
+  if (!user) {
+    throw new Error("Usuário não encontrado");
+  }
+
+  const credential = EmailAuthProvider.credential(
+    user?.email || "",
+    currentPassword
+  );
+
+  await reauthenticateWithCredential(user, credential);
+  await updatePassword(user, newPassword);
+  
+  return true;
 }

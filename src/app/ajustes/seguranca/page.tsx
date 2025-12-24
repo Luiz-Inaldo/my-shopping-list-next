@@ -6,14 +6,19 @@ import { Input } from "@/components/ui/input";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { ChevronLeft, CircleCheck, Eye, EyeOff, LoaderCircle, Lock } from "lucide-react";
 import Link from "next/link";
-import { useState } from "react";
+import { useState, useTransition } from "react";
 import { useForm } from "react-hook-form";
 import { securitySchema, type SecurityFormData } from "./schema/securitySchema";
 import { APP_ROUTES } from "@/routes/app-routes";
+import { sendToastMessage } from "@/functions/sendToastMessage";
+import { updateUserPassword } from "@/services/settings";
+import { tryCatchRequest } from "@/functions/requests";
+import ReauthenticateModal from "@/components/Modal/ReauthenticateModal";
 
 export default function SecurityPage() {
   const [showNewPassword, setShowNewPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [isUpdatingPassword, updatingPasswordTransition] = useTransition();
 
   const form = useForm<SecurityFormData>({
     resolver: zodResolver(securitySchema),
@@ -27,8 +32,40 @@ export default function SecurityPage() {
   const hasChanges = form.formState.isDirty;
 
   function onSubmit(formData: SecurityFormData) {
-    // Lógica de submit será implementada posteriormente
-    console.log(formData);
+    updatingPasswordTransition(async () => {
+      const [response, error] = await tryCatchRequest<boolean>(() =>
+        updateUserPassword(formData.password ?? "", formData.newPassword)
+      );
+
+      if (response) {
+        sendToastMessage({
+          title: "Senha atualizada com sucesso. No próximo acesso, utilize a nova senha.",
+          type: "success"
+        });
+        form.reset({
+          newPassword: "",
+          confirmPassword: "",
+          password: "",
+        });
+        return;
+      }
+
+      if (error) {
+        if (error.code === "auth/invalid-credential") {
+          sendToastMessage({
+            title: "Senha atual inválida",
+            type: "error"
+          });
+          return;
+        } else {
+          sendToastMessage({
+            title: error.code || "Erro ao atualizar a senha",
+            type: "error"
+          });
+        }
+      }
+
+    });
   }
 
   return (
@@ -107,15 +144,20 @@ export default function SecurityPage() {
           </form>
         </section>
 
-        <Button
-          type="submit"
-          form="security-form"
-          disabled={!hasChanges}
-          className="w-full"
-        >
-          <Lock size={18} />
-          Alterar senha
-        </Button>
+        <ReauthenticateModal
+          trigger={
+            <Button
+              type="button"
+              form="profile-form"
+              disabled={!hasChanges || isUpdatingPassword}
+              className="w-full"
+            >
+              {isUpdatingPassword ? <LoaderCircle size={18} className='animate-spin' /> : <Lock size={18} />}
+              Salvar alterações
+            </Button>
+          } confirmButtonFn={() => form.handleSubmit(onSubmit)()}
+          form={form}
+        />
       </main>
     </>
   );
