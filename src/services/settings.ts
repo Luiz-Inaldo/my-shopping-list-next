@@ -1,5 +1,5 @@
 import { auth, db } from "@/lib/firebase";
-import { doc, updateDoc } from "firebase/firestore";
+import { doc, getDoc, updateDoc } from "firebase/firestore";
 import {
   reauthenticateWithCredential,
   EmailAuthProvider,
@@ -50,6 +50,10 @@ export async function updateUserEmail(
 
     await sendEmailVerification(user);
 
+    await updateDoc(doc(db, "users", user.uid), {
+      emailPendencies: true
+    })
+
   } catch (error) {
     if (error instanceof FirebaseError) {
       console.error("Erro ao trocar o e-mail:", error.code, error.message);
@@ -80,6 +84,6 @@ export async function updateUserPassword(
 
   await reauthenticateWithCredential(user, credential);
   await updatePassword(user, newPassword);
-  
+
   return true;
 }
