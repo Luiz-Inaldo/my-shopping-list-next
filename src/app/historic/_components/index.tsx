@@ -11,9 +11,9 @@ import { useEffect, useRef, useState } from 'react';
 import Header from '../../../components/Header';
 import { collection, onSnapshot } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
-import { getPurchasesList } from '@/services/purchasesListServices';
 import { Filters } from '@/types/filters';
 import { usePurchasesQuery } from '@/hooks/queries/purchases';
+import { AppAlert } from '@/components/Alerts';
 
 export function HistoricPage() {
 
@@ -143,6 +143,9 @@ export function HistoricPage() {
                 Histórico
             </Header>
             <div className="w-full px-5 pb-24 pt-6">
+                {userProfile?.emailPendencies && (
+                    <AppAlert type="email" className="mb-10" />
+                )}
                 <div className="grid 2xsm:grid-cols-1 gap-10">
                     <div className="grid grid-cols-2 gap-x-5 gap-y-2">
                         <label className="relative flex-1 col-span-1">

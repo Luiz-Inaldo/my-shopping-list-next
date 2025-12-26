@@ -16,7 +16,6 @@ import { sendToastMessage } from '@/functions/sendToastMessage';
 import { motion } from 'motion/react';
 import { IPurchaseProps } from '@/types';
 import { addPurchaseToDb } from '@/services/purchasesListServices';
-import { useQueryClient } from '@tanstack/react-query';
 import { invalidateAllQueries } from '@/functions/invalidadeQueries';
 import { QUERY_KEYS } from '@/constants/queryKeys';
 import { Timestamp } from 'firebase/firestore';
@@ -36,9 +35,9 @@ const addButtonVariants = {
 
 const NewListForm = () => {
 
-    const queryClient = useQueryClient();
     const userProfile = useGeneralUserStore(store => store.userProfile);
     const [isSettingPurchase, setPurchaseTransition] = useTransition();
+    const isLocked = userProfile?.emailPendencies;
 
     const [open, setOpen] = useState(false);
 
@@ -94,7 +93,7 @@ const NewListForm = () => {
                     animate="animate"
                     transition={addButtonVariants.transition}
                 >
-                    <Button size="sm" className='fixed bottom-[80px] right-2.5 py-1.5 h-fit'>
+                    <Button disabled={isLocked} size="sm" className='fixed bottom-[80px] right-2.5 py-1.5 h-fit'>
                         <Plus size={16} />
                         <span>Nova lista</span>
                     </Button>

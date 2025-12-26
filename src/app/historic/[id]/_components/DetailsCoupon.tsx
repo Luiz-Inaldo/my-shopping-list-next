@@ -8,6 +8,7 @@ import { DetailsCouponSkeleton } from "@/components/Skeletons/DetailsCouponSkele
 import { APP_ROUTES } from "@/routes/app-routes";
 import { useRouter } from "next/navigation";
 import { formatDate } from "@/functions/formatDate";
+import useGeneralUserStore from "@/store/generalUserStore";
 
 interface PurchaseItem {
   id: string;
@@ -21,6 +22,7 @@ interface PurchaseItem {
 
 export function DetailsCoupon() {
 
+  const userProfile = useGeneralUserStore(store => store.userProfile);
   const { productsList, loadingProductsList } = useShoplistContext();
   const router = useRouter();
 
@@ -128,7 +130,7 @@ export function DetailsCoupon() {
         <Button
           onClick={handleGeneratePDF}
           className="w-full"
-          disabled={purchaseItems.length === 0}
+          disabled={purchaseItems.length === 0 || userProfile?.emailPendencies}
         >
           <FileText size={20} />
           Gerar PDF da compra
