@@ -6,7 +6,6 @@ import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, For
 import { useForm } from 'react-hook-form'
 import { NewListProps } from '@/types/purchaseList'
 import { sleep } from '@/functions/sleep'
-import useGeneralUserStore from '@/store/generalUserStore'
 import { Button } from '../ui/button';
 import { Input } from '../ui/input';
 import { Check, LoaderCircle, Plus } from 'lucide-react';
@@ -19,6 +18,7 @@ import { addPurchaseToDb } from '@/services/purchasesListServices';
 import { invalidateAllQueries } from '@/functions/invalidadeQueries';
 import { QUERY_KEYS } from '@/constants/queryKeys';
 import { Timestamp } from 'firebase/firestore';
+import { auth } from '@/lib/firebase';
 
 const addButtonVariants = {
     initial: {
@@ -35,9 +35,10 @@ const addButtonVariants = {
 
 const NewListForm = () => {
 
-    const userProfile = useGeneralUserStore(store => store.userProfile);
+
+    const user = auth.currentUser;
     const [isSettingPurchase, setPurchaseTransition] = useTransition();
-    const isLocked = userProfile?.emailPendencies;
+    const isLocked = !user?.emailVerified;
 
     const [open, setOpen] = useState(false);
 
@@ -56,7 +57,7 @@ const NewListForm = () => {
             total_price: 0,
             purchase_items: [],
             max_value: parseFloat(listData.list_max_value.replace(',', '.')),
-            user_id: userProfile?.uid
+            user_id: user?.uid
         }
 
         setPurchaseTransition(async () => {
@@ -68,8 +69,8 @@ const NewListForm = () => {
                     title: "Lista criada com sucesso!",
                     type: "success"
                 });
-                if (userProfile) {
-                    invalidateAllQueries([[QUERY_KEYS.purchases, userProfile?.uid]]);
+                if (user) {
+                    invalidateAllQueries([[QUERY_KEYS.purchases, user?.uid]]);
                 }
                 // refetchPurchases();
             } catch (error) {

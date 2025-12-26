@@ -7,8 +7,8 @@ const alerts: Record<string, ReactNode> = {
     email: (
         <StaticAlert
             icon={<Mail />}
-            title="Mudança de e-mail pendente"
-            description="Por favor, verifique seu e-mail para confirmar a mudança e voltar a utilizar o aplicativo."
+            title="E-mail pendente"
+            description="Por favor, verifique seu e-mail para continuar utilizando o aplicativo."
             variant="warning"
         />
     )

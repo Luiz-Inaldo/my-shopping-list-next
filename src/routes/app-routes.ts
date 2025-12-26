@@ -38,6 +38,9 @@ export const APP_ROUTES = {
         },
         inicio: {
             name: "/inicio"
+        },
+        verificarEmail: {
+            name: "/verificar_email"
         }
     }
 }
