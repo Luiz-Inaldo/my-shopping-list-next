@@ -1,5 +1,7 @@
 "use client";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Button } from "@/components/ui/button";
+import { UserAvatar } from "@/components/UserAvatar";
 import useGeneralUserStore from "@/store/generalUserStore";
 import { Pencil } from "lucide-react";
 import Image from "next/image";
@@ -9,26 +11,18 @@ export function ProfileCard() {
   return (
     <section className="flex flex-col items-center gap-2">
       <div className="relative">
-        <Avatar className="border-4 border-app-container size-24">
-          <AvatarImage
-            src={`https://api.dicebear.com/9.x/micah/svg?seed=${userProfile?.uid}`}
-          />
-          <AvatarFallback>
-            <Image
-              src="/images/avatars/default-avatar.svg"
-              alt="no-profile-img"
-              width={96}
-              height={96}
-            />
-          </AvatarFallback>
-        </Avatar>
-        <button disabled className="absolute bottom-0 right-0 flex items-center justify-center w-7 h-7 rounded-full bg-default-green">
+        <UserAvatar
+          width={96}
+          height={96}
+          className='border-4 border-app-container'
+        />
+        <Button disabled className="absolute disabled:opacity-0 bottom-0 right-0 flex items-center justify-center w-7 h-7 rounded-full p-0">
           <Pencil size={14} className="text-white" />
-        </button>
+        </Button>
       </div>
-      <div className="flex flex-col items-center gap-0.5 mt-2">
-        <p className="text-subtitle font-semibold text-lg">Luiz Inaldo</p>
-        <p className="text-sm text-paragraph">luiz.inaldo970@gmail.com</p>
+      <div className="flex flex-col items-center mt-2">
+        <h2 className="text-subtitle font-semibold text-lg">{userProfile?.name}</h2>
+        <p className="text-sm text-paragraph">{userProfile?.email || "—"}</p>
       </div>
     </section>
   );

@@ -1,8 +1,13 @@
+import { cn } from "@/lib/utils";
+import useGeneralUserStore from "@/store/generalUserStore";
 import { ChevronRight, Info, Trash2 } from "lucide-react";
 
 export function OtherSettingsSection() {
+
+  const userProfile = useGeneralUserStore(store => store.userProfile);
+
   return (
-    <section>
+    <section className={cn(userProfile?.emailPendencies && "cursor-not-allowed pointer-events-none")}>
       <h2 className="text-paragraph text-sm mb-3">Outras configurações</h2>
       <div className="bg-app-container rounded-lg divide-y divide-border">
         <button className="w-full flex items-center justify-between p-4">

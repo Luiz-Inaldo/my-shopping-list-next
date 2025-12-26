@@ -10,6 +10,9 @@ export const APP_ROUTES = {
             name: "/ajustes",
             perfil: {
                 name: "/ajustes/perfil"
+            },
+            seguranca: {
+                name: "/ajustes/seguranca"
             }
         },
         historic: {

@@ -22,9 +22,12 @@ import { addPurchaseItem } from "@/services/productsListServices";
 import { UNIT_TYPES } from "@/data/unitTypes";
 import { queryClient } from "@/utils/queryClient";
 import { QUERY_KEYS } from "@/constants/queryKeys";
+import useGeneralUserStore from "@/store/generalUserStore";
 
 
 export const AddProductForm = () => {
+
+  const userProfile = useGeneralUserStore(store => store.userProfile);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [isLoading, startAddProductTransition] = useTransition();
 
@@ -112,6 +115,7 @@ export const AddProductForm = () => {
     <Drawer open={isDrawerOpen} onOpenChange={setIsDrawerOpen}>
       <DrawerTrigger asChild>
         <Button
+          disabled={userProfile?.emailPendencies}
           onClick={handleOpenDrawer}
           size="sm"
           className="fixed rounded-full bottom-5 right-5 h-fit px-4 py-2"

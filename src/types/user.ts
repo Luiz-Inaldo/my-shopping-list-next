@@ -4,6 +4,7 @@
  * ========================
  */
 export type TUserProfileProps = {
+  emailPendencies: boolean;
   uid: string;
   email: string;
   name: string;

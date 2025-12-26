@@ -63,6 +63,7 @@ export default function RegisterForm() {
             email,
             name: profileUsername,
             role: searchParams.get('adminregister') ? "admin" : "user",
+            premium: false,
             profile_img: "",
             createdAt: new Date(),
             updatedAt: new Date(),

@@ -45,12 +45,12 @@ export async function middleware(req: NextRequest) {
   }
 
   // Verifica se o token é válido e não expirado e se não é uma rota pública
-  if (!isPublicRoute && !isTokenValid(token)) {
-    // Token inválido ou expirado, remove o cookie e redireciona
-    const response = NextResponse.redirect(new URL(APP_ROUTES.public.inicio.name, req.url));
-    response.cookies.delete("authToken");
-    return response;
-  }
+  // if (!isPublicRoute && !isTokenValid(token)) {
+  //   // Token inválido ou expirado, remove o cookie e redireciona
+  //   const response = NextResponse.redirect(new URL(APP_ROUTES.public.inicio.name, req.url));
+  //   response.cookies.delete("authToken");
+  //   return response;
+  // }
 
   return NextResponse.next();
 }

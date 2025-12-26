@@ -1,3 +1,4 @@
+"use client";
 import { IPurchaseProps } from "@/types";
 import { formatCurrency } from "@/functions/formatCurrency";
 import { formatDate } from "@/functions/formatDate";
@@ -5,12 +6,14 @@ import { List, Trash2 } from "lucide-react";
 import { DeletePurchase } from "@/components/Forms/DeletePurchase";
 import { APP_ROUTES } from "@/routes/app-routes";
 import Link from "next/link";
+import useGeneralUserStore from "@/store/generalUserStore";
 
 interface PurchaseItemProps {
   purchase: IPurchaseProps;
 }
 
 export function HistoricPurchaseItem({ purchase }: PurchaseItemProps) {
+  const userProfile = useGeneralUserStore(store => store.userProfile);
   return (
     <div className="bg-app-container rounded-lg shadow-sm border border-app-border p-4 flex items-center justify-between">
       {/* Left Section - Content */}
@@ -50,7 +53,8 @@ export function HistoricPurchaseItem({ purchase }: PurchaseItemProps) {
           purchase={purchase}
           trigger={
             <button
-              className="text-red-500"
+              disabled={userProfile?.emailPendencies}
+              className="text-red-500 disabled:opacity-50 disabled:cursor-not-allowed"
               aria-label="Excluir compra"
             >
               <Trash2 size={20} />
