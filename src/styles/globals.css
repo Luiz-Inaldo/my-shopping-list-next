@@ -3,8 +3,8 @@
 @tailwind utilities;
 
 @font-face {
-  font-family: 'Cherry Bomb One';
-  src: url('/fonts/CherryBombOne-Regular.woff2') format('woff2');
+  font-family: "Cherry Bomb One";
+  src: url("/fonts/CherryBombOne-Regular.woff2") format("woff2");
   font-weight: 400;
   font-style: normal;
   font-display: swap;
@@ -44,14 +44,14 @@
     --category-10: #d1d5db;
     --header-height: 68px;
     --app-background: #efefef;
-    --app-primary: #4CAF50;
+    --app-primary: #4caf50;
     --app-container: white;
     --app-border: #e8e8e8;
     --title: #212529;
     --subtitle: #343a40;
     --paragraph: #838587;
     --link: #3fad42;
-    --action: #FF9800;
+    --action: #ff9800;
   }
 
   .dark {
@@ -85,7 +85,7 @@
     --category-9: #10b981;
     --category-10: #6b7280;
     --app-background: #1f2123;
-    --app-primary: #4CAF50;
+    --app-primary: #4caf50;
     --app-container: #353739;
     --title: #dfe1e4;
     --subtitle: #b8bcc0;
@@ -146,3 +146,42 @@
 .main-container {
   min-height: calc(100dvh - var(--header-height));
 }
+
+/* From Uiverse.io by satyamchaudharydev */
+.loader > svg {
+  width: 3.25em;
+  transform-origin: center;
+  animation: rotate4 2s linear infinite;
+}
+
+.loader > svg circle {
+  fill: none;
+ stroke: var(--app-primary);
+ stroke-width: 2;
+ stroke-dasharray: 1, 200;
+ stroke-dashoffset: 0;
+ stroke-linecap: round;
+ animation: dash4 1.5s ease-in-out infinite;
+}
+
+@keyframes rotate4 {
+  100% {
+   transform: rotate(360deg);
+  }
+ }
+ 
+ @keyframes dash4 {
+  0% {
+   stroke-dasharray: 1, 200;
+   stroke-dashoffset: 0;
+  }
+ 
+  50% {
+   stroke-dasharray: 90, 200;
+   stroke-dashoffset: -35px;
+  }
+ 
+  100% {
+   stroke-dashoffset: -125px;
+  }
+ }

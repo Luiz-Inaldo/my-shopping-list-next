@@ -1,11 +1,11 @@
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Minha Lista | Verificação de E-mail",
-  description: "Verifique seu e-mail para continuar.",
+  title: "Minha Lista | Validar E-mail",
+  description: "Valide seu e-mail para usar o aplicativo.",
   openGraph: {
-    title: "Minha Lista | Verificação de E-mail",
-    description: "Verifique seu e-mail para continuar.",
+    title: "Minha Lista | Validar E-mail",
+    description: "Valide seu e-mail para usar o aplicativo.",
   }
 };
 

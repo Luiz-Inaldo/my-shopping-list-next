@@ -27,7 +27,7 @@ export async function middleware(req: NextRequest) {
   const url = req.nextUrl.pathname;
 
   // Define rotas públicas que não precisam de autenticação
-  const publicRoutes = ['/inicio', '/auth'];
+  const publicRoutes = Object.values(APP_ROUTES.public).map(route => route.name);
   const isPublicRoute = publicRoutes.some(route => url.startsWith(route));
 
   // Se for uma rota pública, permite acesso sem verificação de token

@@ -1,7 +1,7 @@
 "use client";
 import React, { useCallback, useEffect, useState } from 'react'
-import GlobalLoader from '../GlobalLoader';
 import DeviceErrorComponent from '../DeviceError';
+import { AppLoader } from '../Loader/app-loader';
 
 const VerifyDevice = ({ children }: { children: React.ReactNode }) => {
 
@@ -42,7 +42,7 @@ const VerifyDevice = ({ children }: { children: React.ReactNode }) => {
 
     if (isMobile === null) {
         return (
-            <GlobalLoader />
+            <AppLoader />
         )
     }
 
