@@ -1,15 +1,7 @@
 'use client'
 
-import { APP_ROUTES } from '@/routes/app-routes'
-import { Button } from '@/components/ui/button'
-import { MailCheckIcon } from 'lucide-react'
-import { motion } from 'motion/react'
-import Image from 'next/image'
 import { useRouter, useSearchParams } from 'next/navigation'
 import React, { useState } from 'react'
-import { tryCatchRequest } from '@/functions/requests'
-import { verifyPasswordResetCode } from 'firebase/auth'
-import { auth } from '@/lib/firebase'
 import VerifyEmailPage from './VerifyEmail'
 import ResetPasswordPage from './ResetPassword'
 
