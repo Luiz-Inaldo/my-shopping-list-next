@@ -10,7 +10,7 @@ import { queryClient } from '@/utils/queryClient';
 import { useEffect, useRef, useState } from 'react';
 import Header from '../../../components/Header';
 import { collection, onSnapshot } from 'firebase/firestore';
-import { db } from '@/lib/firebase';
+import { auth, db } from '@/lib/firebase';
 import { Filters } from '@/types/filters';
 import { usePurchasesQuery } from '@/hooks/queries/purchases';
 import { AppAlert } from '@/components/Alerts';
@@ -20,7 +20,7 @@ export function HistoricPage() {
     // ===================
     // # Store
     // ===================
-    const userProfile = useGeneralUserStore(s => s.userProfile);
+    const user = auth.currentUser;
 
     // ===================
     // # States
@@ -55,7 +55,7 @@ export function HistoricPage() {
 
         // primeiro caso: os dois parâmetros são string
         if (typeof month === "string" && typeof year === "string") {
-            queryClient.setQueryData([QUERY_KEYS.purchases, userProfile?.uid, filters], auxData);
+            queryClient.setQueryData([QUERY_KEYS.purchases, user?.uid, filters], auxData);
         }
         // segundo caso: ambos parâmetros number
         else if (typeof month === 'number' && typeof year === 'number') {
@@ -65,7 +65,7 @@ export function HistoricPage() {
                 purchase.end_date?.toDate().getMonth() === month
             );
 
-            queryClient.setQueryData([QUERY_KEYS.purchases, userProfile?.uid, filters], filteredData);
+            queryClient.setQueryData([QUERY_KEYS.purchases, user?.uid, filters], filteredData);
 
         }
         // terceiro caso: mês string e ano number
@@ -75,7 +75,7 @@ export function HistoricPage() {
                 purchase.end_date?.toDate().getFullYear() === year
             );
 
-            queryClient.setQueryData([QUERY_KEYS.purchases, userProfile?.uid, filters], filteredData);
+            queryClient.setQueryData([QUERY_KEYS.purchases, user?.uid, filters], filteredData);
 
         }
         // quarto caso: mês number e ano string
@@ -85,7 +85,7 @@ export function HistoricPage() {
                 purchase.end_date?.toDate().getMonth() === month
             );
 
-            queryClient.setQueryData([QUERY_KEYS.purchases, userProfile?.uid, filters], filteredData);
+            queryClient.setQueryData([QUERY_KEYS.purchases, user?.uid, filters], filteredData);
 
         }
     };
@@ -109,7 +109,7 @@ export function HistoricPage() {
         const purchasesRef = collection(db, 'purchases');
         const unsubscribe = onSnapshot(purchasesRef, (snapshot) => {
             queryClient.invalidateQueries({
-                queryKey: [QUERY_KEYS.purchases, userProfile?.uid, filters]
+                queryKey: [QUERY_KEYS.purchases, user?.uid, filters]
             });
             setAuxData(snapshot.docs.map(doc => {
                 return {
@@ -120,7 +120,7 @@ export function HistoricPage() {
         });
         return () => unsubscribe();
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [userProfile?.uid]);
+        }, [user?.uid]);
 
     useEffect(() => {
         if (historicData && auxData.length > 0) {
@@ -143,7 +143,7 @@ export function HistoricPage() {
                 Histórico
             </Header>
             <div className="w-full px-5 pb-24 pt-6">
-                {userProfile?.emailPendencies && (
+                {!user?.emailVerified && (
                     <AppAlert type="email" className="mb-10" />
                 )}
                 <div className="grid 2xsm:grid-cols-1 gap-10">

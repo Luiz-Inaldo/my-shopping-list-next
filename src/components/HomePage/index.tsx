@@ -3,14 +3,13 @@ import { MainHeader } from '../Header/MainHeader'
 import NewListForm from '../Forms/NewListForm';
 import { ActivePurchsesList } from '../ActivePurchases/List';
 import { MonthlyStatistics } from '../MonthlyStatistics';
-import useGeneralUserStore from '@/store/generalUserStore';
-import { StaticAlert } from '../Alerts/StaticAlert';
-import { Mail } from 'lucide-react';
 import { AppAlert } from '../Alerts';
+import { auth } from '@/lib/firebase';
 
 export const HomePage = () => {
 
-    const userProfile = useGeneralUserStore(store => store.userProfile);
+    const user = auth.currentUser;
+    console.log(user)
 
     return (
         <div className='relative'>
@@ -19,7 +18,7 @@ export const HomePage = () => {
             <MainHeader />
             <div className="z-[1]">
                 <div className="container">
-                    {userProfile?.emailPendencies && (
+                    {!user?.emailVerified && (
                         <AppAlert type="email" />
                     )}
                     <MonthlyStatistics />

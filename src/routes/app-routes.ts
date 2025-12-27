@@ -38,6 +38,9 @@ export const APP_ROUTES = {
         },
         inicio: {
             name: "/inicio"
+        },
+        handler: {
+            name: "/handler"
         }
     }
 }
