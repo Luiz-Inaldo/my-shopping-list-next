@@ -13,6 +13,9 @@ export const APP_ROUTES = {
             },
             seguranca: {
                 name: "/ajustes/seguranca"
+            },
+            sobre: {
+                name: "/ajustes/sobre"
             }
         },
         historic: {
