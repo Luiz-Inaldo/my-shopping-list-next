@@ -5,12 +5,23 @@ import { OtherSettingsSection } from "./_components/OtherSettingsSection";
 import { PreferencesSection } from "./_components/PreferencesSection";
 import { ProfileCard } from "./_components/ProfileCard";
 import { ProfileSection } from "./_components/ProfileSection";
-import useGeneralUserStore from "@/store/generalUserStore";
 import { AppAlert } from "@/components/Alerts";
+import { auth } from "@/lib/firebase";
+import { useEffect } from "react";
+import { sendEmailVerification } from "firebase/auth";
 
 export default function Settings() {
 
-  const userProfile = useGeneralUserStore(store => store.userProfile);
+  const user = auth.currentUser;
+
+  // useEffect(() => {
+  //   async function generateEmail(){
+  //     if (user) {
+  //       await sendEmailVerification(user);
+  //     }
+  //   }
+  //   generateEmail();
+  // }, [])
 
   return (
     <>
@@ -18,7 +29,7 @@ export default function Settings() {
 
       <main className="px-5 pb-24 pt-6 flex flex-col gap-8">
         <ProfileCard />
-        {userProfile?.emailPendencies && (
+        {!user?.emailVerified && (
           <AppAlert type="email" />
         )}
         <ProfileSection />

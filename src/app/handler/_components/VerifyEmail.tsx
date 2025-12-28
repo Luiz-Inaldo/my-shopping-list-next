@@ -146,8 +146,8 @@ export default function VerifyEmailPage() {
     };
 
     return (
-        <div className="w-full min-h-screen-dvh flex flex-col items-center justify-center bg-app-background">
+        <>
             {renderContent(mode, status)}
-        </div>
+        </>
     )
 }

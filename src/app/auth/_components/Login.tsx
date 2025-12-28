@@ -1,6 +1,6 @@
 "use client";
 import { APP_ROUTES } from "@/routes/app-routes";
-import { Check, Eye, EyeOff, LoaderCircle, LogInIcon, X } from "lucide-react";
+import { Check, Eye, EyeOff, HelpCircle, LoaderCircle, LogInIcon, X } from "lucide-react";
 import React, { useState, useTransition } from "react";
 import { useForm } from "react-hook-form";
 import {
@@ -22,6 +22,7 @@ import { signInWithEmailAndPassword } from "firebase/auth";
 import { auth } from "@/lib/firebase";
 import { FirebaseError } from "firebase/app";
 import { sendToastMessage } from "@/functions/sendToastMessage";
+import ForgotPasswordModal from "@/components/Modal/ForgotPasswordModal";
 
 export default function LogInForm({
   setCurrentForm,
@@ -152,8 +153,16 @@ export default function LogInForm({
               )}
             />
           </div>
-          <div className="space-y-2">
-            <Button type="submit" className="w-full uppercase mt-5">
+          <ForgotPasswordModal
+            email={form.getValues('email')}
+            trigger={
+              <Button variant="link" className="p-0 w-fit ml-auto text-default-green">
+                <span>Esqueci minha senha</span>
+              </Button>
+            }
+          />
+          <div className="space-y-6">
+            <Button type="submit" className="w-full uppercase">
               {loading ? (
                 <>
                   <span>Autenticando...</span>
@@ -166,8 +175,8 @@ export default function LogInForm({
                 </>
               )}
             </Button>
-            <p className="text-sm text-center text-gray-500 mt-5">
-              Ainda não tem uma conta?{" "}
+            <p className="text-sm text-center text-gray-500">
+              Não possui uma conta?{" "}
               <span
                 onClick={() => setCurrentForm("register")}
                 className="text-default-green cursor-pointer"

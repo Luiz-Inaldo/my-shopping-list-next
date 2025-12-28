@@ -156,7 +156,6 @@
 
 .loader > svg circle {
   fill: none;
- stroke: var(--app-primary);
  stroke-width: 2;
  stroke-dasharray: 1, 200;
  stroke-dashoffset: 0;
