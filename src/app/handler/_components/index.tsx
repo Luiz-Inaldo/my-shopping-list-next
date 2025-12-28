@@ -24,7 +24,7 @@ export default function VerifierPage() {
     };
 
     return (
-        <div className="w-full min-h-screen-dvh flex flex-col items-center justify-center bg-app-background">
+        <div className="w-full min-h-screen-dvh flex flex-col items-center bg-app-background p-2 pt-6">
             {renderContent(mode)}
         </div>
     )
