@@ -60,13 +60,9 @@ export default function ProfilePage() {
         if (formData.email && dirtyFields.email) {
           await updateUserEmail(formData.password ?? "", formData.email);
           sendToastMessage({
-            title: "Um e-mail de verificação foi enviado para seu novo e-mail. Verifique sua caixa de entrada/spam e clique no link para confirmar a mudança de e-mail.",
+            title: "Um e-mail de verificação foi enviado para seu novo endereço. Verifique sua caixa de entrada/spam e clique no link para confirmar a mudança.",
             type: "success"
           })
-          setTimeout(async () => {
-            await LogOut();
-            router.push(APP_ROUTES.public.auth.name);
-          }, 2000);
           return;
         }
         sendToastMessage({
