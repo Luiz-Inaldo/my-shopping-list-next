@@ -16,6 +16,9 @@ export const APP_ROUTES = {
             },
             sobre: {
                 name: "/ajustes/sobre"
+            },
+            deletarConta: {
+                name: "/ajustes/deletar-conta"
             }
         },
         historic: {

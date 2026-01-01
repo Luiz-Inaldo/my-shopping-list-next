@@ -19,13 +19,13 @@ export function OtherSettingsSection() {
           </div>
           <ChevronRight size={18} className="text-paragraph" />
         </Link>
-        <button className="w-full flex items-center justify-between p-4">
+        <Link href={APP_ROUTES.private.settings.deletarConta.name} className="w-full flex items-center justify-between p-4">
           <div className="flex items-center gap-3 text-red-500">
             <Trash2 size={18} />
             <span className="text-sm">Deletar minha conta</span>
           </div>
           <ChevronRight size={18} className="text-red-500" />
-        </button>
+        </Link>
       </div>
     </section>
   );
