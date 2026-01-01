@@ -14,6 +14,7 @@ import { sendToastMessage } from "@/functions/sendToastMessage";
 import { updateUserPassword } from "@/services/settings";
 import { tryCatchRequest } from "@/functions/requests";
 import ReauthenticateModal from "@/components/Modal/ReauthenticateModal";
+import { AppLoader } from "@/components/Loader/app-loader";
 
 export default function SecurityPage() {
   const [showNewPassword, setShowNewPassword] = useState(false);
@@ -152,8 +153,13 @@ export default function SecurityPage() {
               disabled={!hasChanges || isUpdatingPassword}
               className="w-full"
             >
-              {isUpdatingPassword ? <LoaderCircle size={18} className='animate-spin' /> : <Lock size={18} />}
-              Salvar alterações
+              {isUpdatingPassword ? <>
+                <AppLoader size={18} strokeColor="#fff" />
+                Salvando...
+              </> : <>
+                <Lock size={18} />
+                Salvar alterações
+              </>}
             </Button>
           } confirmButtonFn={() => form.handleSubmit(onSubmit)()}
           form={form}

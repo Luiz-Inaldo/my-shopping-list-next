@@ -23,14 +23,14 @@ export default function AboutPage() {
             height={50}
             className="w-[218px] h-[50px]"
           />
-          <span className="text-gray-400 text-sm">Versão 1.0.0</span>
+          <span className="text-paragraph text-sm">Versão 1.0.0</span>
         </div>
 
         <div className="flex flex-col items-center gap-1 text-center">
           <p className="text-paragraph text-sm">
-            Desenvolvido com <span className="text-red-500">❤️</span> para facilitar suas compras
+            Desenvolvido com ❤️ para facilitar suas compras
           </p>
-          <p className="text-gray-400 text-xs">© 2025 EzShoplist</p>
+          <p className="text-paragraph text-xs">© 2025 EzShoplist</p>
         </div>
       </main>
     </>
