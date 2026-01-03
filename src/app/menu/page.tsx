@@ -1,89 +1,20 @@
-"use client";
-import Footer from "@/components/Footer";
-import Header from "@/components/Header";
-import LoggedLayout from "@/components/layout/MainLayout";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { usePageOverlay } from "@/context/PageOverlayContext";
-import { sendToastMessage } from "@/functions/sendToastMessage";
-import useMySwal from "@/hooks/useMySwal";
-import { APP_ROUTES } from "@/routes/app-routes";
-import useGeneralUserStore from "@/store/generalUserStore";
-import { Blocks, LogOut } from "lucide-react";
-import Image from "next/image";
-import Link from "next/link";
-import { toast } from "sonner";
+'use client';
+import Footer from '@/components/Footer';
+import Header from '@/components/Header';
+import { MenuOptionsSection } from './_components/MenuOptionsSection';
+import { ProfileCard } from './_components/ProfileCard';
 
 export default function Menu() {
-  
-  const userProfile = useGeneralUserStore((store) => store.userProfile);
-  const resetProfile = useGeneralUserStore((store) => store.resetProfile);
-
-  const {handleChangeRoute} = usePageOverlay();
-
-  async function logout() {
-    try {
-      const { signOut } = await import("firebase/auth");
-      const { auth } = await import("@/lib/firebase");
-      
-      await signOut(auth);
-      
-      sendToastMessage({ title: "Logout realizado com sucesso", type: "success" });
-      resetProfile();
-      setTimeout(() => {
-        toast.dismiss();
-        handleChangeRoute(APP_ROUTES.public.auth.name);
-      }, 3000);
-    } catch (error) {
-      sendToastMessage({ title: "Erro ao fazer logout", type: "error" });
-    }
-  }
-
   return (
-    <LoggedLayout>
-      {/* <Header
-        content={(_) => (
-          <div className="flex items-center gap-3 cursor-pointer overflow-hidden">
-            <Avatar className="border-2 border-app-container">
-              <AvatarImage src={userProfile?.profile_img} />
-              <AvatarFallback>
-                <Image
-                  src="/images/avatars/default-avatar.svg"
-                  alt="no-profile-img"
-                  width={28}
-                  height={28}
-                />
-              </AvatarFallback>
-            </Avatar>
-            <div className="flex flex-col gap-1">
-              <p className="text-title">
-                {userProfile?.user_name || "Usuário sem nome."}
-              </p>
-              <Link
-                href={APP_ROUTES.private.settings.name}
-                className="text-xs text-snow underline"
-              >
-                Acessar o perfil
-              </Link>
-            </div>
-          </div>
-        )}
-      /> */}
+    <>
+      <Header className="text-lg font-medium">Geral</Header>
 
-      <div className="main-container py-28 px-5 flex flex-col gap-10">
-        <h1 className="text-subtitle text-xl font-bold">Menu</h1>
-        <div className="flex flex-col gap-3 text-paragraph">
-          <Link href={"#"} className="flex gap-4">
-            <Blocks size={20} />
-            <span>Sobre o aplicativo</span>
-          </Link>
-          <button className="flex gap-4" onClick={logout}>
-            <LogOut size={20} />
-            <span>Sair</span>
-          </button>
-        </div>
-      </div>
+      <main className="px-5 pb-24 pt-6 flex flex-col gap-8">
+        <ProfileCard />
+        <MenuOptionsSection />
+      </main>
 
       <Footer />
-    </LoggedLayout>
+    </>
   );
 }

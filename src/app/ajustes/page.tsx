@@ -1,12 +1,11 @@
-"use client";
-import Footer from "@/components/Footer";
-import Header from "@/components/Header";
-import { OtherSettingsSection } from "./_components/OtherSettingsSection";
-import { PreferencesSection } from "./_components/PreferencesSection";
-import { ProfileCard } from "./_components/ProfileCard";
-import { ProfileSection } from "./_components/ProfileSection";
-import { AppAlert } from "@/components/Alerts";
-import useGeneralUserStore from "@/store/generalUserStore";
+'use client';
+import Footer from '@/components/Footer';
+import Header from '@/components/Header';
+import { PreferencesSection } from './_components/PreferencesSection';
+import { ProfileCard } from './_components/ProfileCard';
+import { ProfileSection } from './_components/ProfileSection';
+import { AppAlert } from '@/components/Alerts';
+import useGeneralUserStore from '@/store/generalUserStore';
 
 export default function Settings() {
 
@@ -14,7 +13,7 @@ export default function Settings() {
 
   return (
     <>
-      <Header className="text-lg font-medium">Ajustes do sistema</Header>
+      <Header className="text-lg font-medium">Ajustes</Header>
 
       <main className="px-5 pb-24 pt-6 flex flex-col gap-8">
         <ProfileCard />
@@ -23,7 +22,6 @@ export default function Settings() {
         )}
         <ProfileSection />
         <PreferencesSection />
-        <OtherSettingsSection />
       </main>
 
       <Footer />

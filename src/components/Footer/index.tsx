@@ -80,7 +80,7 @@ const Footer = () => {
                     <Link
                         prefetch
                         href="#"
-                        className={`pointer-events-none grid gap-1 p-2 place-items-center border-b ${pathname === "/menu" ? "text-default-green dark:text-title border-default-green dark:border-title" : "text-subtitle border-transparent"}`}
+                        className={`grid gap-1 p-2 place-items-center border-b ${pathname === "/menu" ? "text-default-green dark:text-title border-default-green dark:border-title" : "text-subtitle border-transparent"}`}
                         onClick={(e) => {
                             e.preventDefault()
                             handleChangeRoute(APP_ROUTES.private.menu.name)
