@@ -16,16 +16,18 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import z from "zod";
 import { AnimatePresence, motion } from "motion/react";
-import { sleep } from "@/functions/sleep";
 import { LottieAnimation } from "@/components/Lottie/LottieAnimation";
 import successAnimation from "@/animations/success.json";
 import { cn } from "@/lib/utils";
-import { deleteUserAccount } from "@/services/account";
+import { deleteUserAccount, reautenticateUser } from "@/services/account";
+import useGeneralUserStore from "@/store/generalUserStore";
+import { LogOut } from "@/functions/logout";
 
 type DeletingStatus = "idle" | "deleting" | "deleted"
 
 export default function DeleteAccountPage() {
 
+  const user = useGeneralUserStore(s => s.userProfile)
   const [deletingStatus, setDeletingStatus] = useState<DeletingStatus>("idle");
   const router = useRouter();
 
@@ -39,12 +41,40 @@ export default function DeleteAccountPage() {
   });
 
   async function handleDeleteAccount(formData: { password: string }) {
+
+    if (!user?.uid) return;
+
+    // =================
+    // Primero reautentica o usuário
+    // =================
+    
+    const [_, err] = await tryCatchRequest(() => reautenticateUser(formData.password));
+
+    if (err) {
+      console.error(err.code);
+      sendToastMessage({
+        title: err.code,
+        type: 'error'
+      });
+      return;
+    }
+
+    // ====================
+    // após autenticação, inicia processo de delete
+    // ====================
+
     setDeletingStatus("deleting");
-    const [response, error] = await tryCatchRequest(() => deleteUserAccount(formData.password));
+    const userObj = {
+      uid: user?.uid,
+      username: user?.name
+    }
+    const [response, error] = await tryCatchRequest(() => deleteUserAccount(userObj));
+
     if (response) {
       setDeletingStatus("deleted");
+    
       setTimeout(() => {
-        router.push(APP_ROUTES.public.auth.name);
+        LogOut();
       }, 3000);
     }
     if (error) {
@@ -85,7 +115,7 @@ export default function DeleteAccountPage() {
                   src="/images/headache.svg"
                   alt="EzShoplist"
                   width={250}
-                  height={218}
+                  height={250}
                 />
                 <div className="space-y-6">
                   <div className="space-y-2 text-center">
@@ -166,7 +196,7 @@ export default function DeleteAccountPage() {
                   exit={{ opacity: 0, y: 10 }}
                   transition={{ duration: 0.3, delay: 0.4 }}
                   className="text-paragraph text-center text-sm max-w-72">
-                  {deletingStatus === 'deleting' ? "Estamos limpando seus dados e removendo sua conta..." : "Você será redirecionado para a página de login em breve."}
+                  {deletingStatus === 'deleting' ? "Estamos limpando seus dados e removendo sua conta..." : "Você será redirecionado para a página de login em breve. Agradecemos por utilizar nosso app."}
                 </motion.p>
               </div>
             </div>

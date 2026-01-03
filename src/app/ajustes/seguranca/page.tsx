@@ -34,7 +34,7 @@ export default function SecurityPage() {
 
   function onSubmit(formData: SecurityFormData) {
     updatingPasswordTransition(async () => {
-      const [response, error] = await tryCatchRequest<boolean>(() =>
+      const [response, error] = await tryCatchRequest(() =>
         updateUserPassword(formData.password ?? "", formData.newPassword)
       );
 
