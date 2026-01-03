@@ -14,7 +14,6 @@ import { db } from '@/lib/firebase';
 import { Filters } from '@/types/filters';
 import { usePurchasesQuery } from '@/hooks/queries/purchases';
 import { AppAlert } from '@/components/Alerts';
-import useGeneralUserStore from '@/store/generalUserStore';
 
 export function HistoricPage() {
 
