@@ -78,7 +78,8 @@ export default function RegisterForm() {
         );
         const uid = user.user.uid;
 
-        if (user.user) {
+        if (!user.user.emailVerified) {
+          console.log("Enviando verificação de email...")
           await sendEmailVerification(user.user);
         }
 
@@ -99,6 +100,7 @@ export default function RegisterForm() {
               expires_at: null,
             },
             profile_img: "",
+            active: true,
             createdAt: new Date(),
             updatedAt: new Date(),
           });
