@@ -1,15 +1,15 @@
 import { cn } from "@/lib/utils";
-import useGeneralUserStore from "@/store/generalUserStore";
 import { ChevronRight, Info, Trash2 } from "lucide-react";
 import Link from "next/link";
 import { APP_ROUTES } from "@/routes/app-routes";
+import { auth } from "@/lib/firebase";
 
 export function OtherSettingsSection() {
 
-  const userProfile = useGeneralUserStore(store => store.userProfile);
+  const user = auth.currentUser;
 
   return (
-    <section className={cn(userProfile?.emailPendencies && "cursor-not-allowed pointer-events-none")}>
+    <section className={cn(user?.emailVerified && "cursor-not-allowed pointer-events-none")}>
       <h2 className="text-paragraph text-sm mb-3">Outras configurações</h2>
       <div className="bg-app-container rounded-lg divide-y divide-border">
         <Link href={APP_ROUTES.private.settings.sobre.name} className="w-full flex items-center justify-between p-4">
