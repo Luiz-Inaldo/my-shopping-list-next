@@ -7,15 +7,12 @@ import { DeletePurchase } from "@/components/Forms/DeletePurchase";
 import { APP_ROUTES } from "@/routes/app-routes";
 import Link from "next/link";
 import useGeneralUserStore from "@/store/generalUserStore";
-import { auth } from "@/lib/firebase";
 
 interface PurchaseItemProps {
   purchase: IPurchaseProps;
 }
 
 export function HistoricPurchaseItem({ purchase }: PurchaseItemProps) {
-
-  const user = auth.currentUser;
 
   return (
     <div className="bg-app-container rounded-lg shadow-sm border border-app-border p-4 flex items-center justify-between">
@@ -56,7 +53,6 @@ export function HistoricPurchaseItem({ purchase }: PurchaseItemProps) {
           purchase={purchase}
           trigger={
             <button
-              disabled={!user?.emailVerified}
               className="text-red-500 disabled:opacity-50 disabled:cursor-not-allowed"
               aria-label="Excluir compra"
             >

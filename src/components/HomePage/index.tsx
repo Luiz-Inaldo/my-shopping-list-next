@@ -4,12 +4,11 @@ import NewListForm from '../Forms/NewListForm';
 import { ActivePurchsesList } from '../ActivePurchases/List';
 import { MonthlyStatistics } from '../MonthlyStatistics';
 import { AppAlert } from '../Alerts';
-import { auth } from '@/lib/firebase';
+import useGeneralUserStore from '@/store/generalUserStore';
 
 export const HomePage = () => {
 
-    const user = auth.currentUser;
-    console.log(user)
+    const user = useGeneralUserStore(s => s.userProfile);
 
     return (
         <div className='relative'>
@@ -18,7 +17,7 @@ export const HomePage = () => {
             <MainHeader />
             <div className="z-[1]">
                 <div className="container">
-                    {!user?.emailVerified && (
+                    {user && !user?.emailVerified && (
                         <AppAlert type="email" />
                     )}
                     <MonthlyStatistics />

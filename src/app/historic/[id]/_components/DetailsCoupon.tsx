@@ -7,7 +7,7 @@ import { formatCurrency } from "@/functions/formatCurrency";
 import { DetailsCouponSkeleton } from "@/components/Skeletons/DetailsCouponSkeleton";
 import { APP_ROUTES } from "@/routes/app-routes";
 import { useRouter } from "next/navigation";
-import { auth } from "@/lib/firebase";
+import useGeneralUserStore from "@/store/generalUserStore";
 
 interface PurchaseItem {
   id: string;
@@ -21,7 +21,6 @@ interface PurchaseItem {
 
 export function DetailsCoupon() {
 
-  const user = auth.currentUser;
   const { productsList, loadingProductsList } = useShoplistContext();
   const router = useRouter();
 
@@ -129,7 +128,7 @@ export function DetailsCoupon() {
         <Button
           onClick={handleGeneratePDF}
           className="w-full"
-          disabled={purchaseItems.length === 0 || !user?.emailVerified}
+          disabled={purchaseItems.length === 0}
         >
           <FileText size={20} />
           Gerar PDF da compra

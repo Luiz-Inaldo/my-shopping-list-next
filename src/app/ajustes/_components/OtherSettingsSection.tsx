@@ -2,14 +2,14 @@ import { cn } from "@/lib/utils";
 import { ChevronRight, Info, Trash2 } from "lucide-react";
 import Link from "next/link";
 import { APP_ROUTES } from "@/routes/app-routes";
-import { auth } from "@/lib/firebase";
+import useGeneralUserStore from "@/store/generalUserStore";
 
 export function OtherSettingsSection() {
 
-  const user = auth.currentUser;
+  const user = useGeneralUserStore(s => s.userProfile);
 
   return (
-    <section className={cn(user?.emailVerified && "cursor-not-allowed pointer-events-none")}>
+    <section className={cn(user && !user?.emailVerified && "cursor-not-allowed pointer-events-none")}>
       <h2 className="text-paragraph text-sm mb-3">Outras configurações</h2>
       <div className="bg-app-container rounded-lg divide-y divide-border">
         <Link href={APP_ROUTES.private.settings.sobre.name} className="w-full flex items-center justify-between p-4">
@@ -19,7 +19,7 @@ export function OtherSettingsSection() {
           </div>
           <ChevronRight size={18} className="text-paragraph" />
         </Link>
-        <Link href={APP_ROUTES.private.settings.deletarConta.name} className="w-full flex items-center justify-between p-4">
+        <Link prefetch href={APP_ROUTES.private.settings.deletarConta.name} className="w-full flex items-center justify-between p-4">
           <div className="flex items-center gap-3 text-red-500">
             <Trash2 size={18} />
             <span className="text-sm">Deletar minha conta</span>
