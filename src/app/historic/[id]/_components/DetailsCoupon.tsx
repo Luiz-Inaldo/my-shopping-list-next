@@ -21,7 +21,6 @@ interface PurchaseItem {
 
 export function DetailsCoupon() {
 
-  const user = useGeneralUserStore(s => s.userProfile);
   const { productsList, loadingProductsList } = useShoplistContext();
   const router = useRouter();
 
@@ -129,7 +128,7 @@ export function DetailsCoupon() {
         <Button
           onClick={handleGeneratePDF}
           className="w-full"
-          disabled={purchaseItems.length === 0 || (user && !user?.emailVerified)}
+          disabled={purchaseItems.length === 0}
         >
           <FileText size={20} />
           Gerar PDF da compra

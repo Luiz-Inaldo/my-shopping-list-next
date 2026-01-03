@@ -11,7 +11,7 @@ export type TUserProfileProps = {
     expires_at: Timestamp | null;
   };
   uid: string;
-  emailVerified?: boolean;
+  emailVerified: boolean;
   email: string;
   name: string;
   role: string;

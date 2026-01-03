@@ -30,6 +30,7 @@ export const AddProductForm = () => {
   const user = useGeneralUserStore(s => s.userProfile);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [isLoading, startAddProductTransition] = useTransition();
+  const isButtonDisabled = user ? user.emailVerified : false;
 
   const { productsList } = useShoplistContext();
   const {
@@ -115,7 +116,7 @@ export const AddProductForm = () => {
     <Drawer open={isDrawerOpen} onOpenChange={setIsDrawerOpen}>
       <DrawerTrigger asChild>
         <Button
-          disabled={user && !user?.emailVerified}
+          disabled={isButtonDisabled}
           onClick={handleOpenDrawer}
           size="sm"
           className="fixed rounded-full bottom-5 right-5 h-fit px-4 py-2"

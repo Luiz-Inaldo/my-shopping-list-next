@@ -38,7 +38,7 @@ const NewListForm = () => {
 
     const user = useGeneralUserStore(s => s.userProfile);
     const [isSettingPurchase, setPurchaseTransition] = useTransition();
-    const isLocked = user && !user?.emailVerified;
+    const isLocked = user ? !user?.emailVerified : false;
 
     const [open, setOpen] = useState(false);
 
