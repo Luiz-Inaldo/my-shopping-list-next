@@ -1,5 +1,4 @@
-'use client'
-import useMySwal from '@/hooks/useMySwal';
+"use client";
 import {
   Form,
   FormControl,
@@ -8,43 +7,75 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { Check, Eye, EyeOff, LoaderCircle, X } from 'lucide-react';
-import { useRouter, useSearchParams } from 'next/navigation';
-import React, { useState, useTransition } from 'react'
-import { useForm } from 'react-hook-form';
-import { toast } from 'sonner';
-import { Input } from '../../../components/ui/input';
-import { Button } from '../../../components/ui/button';
-import { registerFormSchema } from '@/types/zodTypes';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { IRegisterUser } from '@/interfaces/user';
-import { createUserWithEmailAndPassword, sendEmailVerification } from 'firebase/auth';
-import { auth, db } from '@/lib/firebase';
-import { doc, setDoc } from 'firebase/firestore';
-import { profile } from 'console';
-import { FirebaseError } from 'firebase/app';
-import { sendToastMessage } from '@/functions/sendToastMessage';
+import { Eye, EyeOff, LoaderCircle, X } from "lucide-react";
+import { useSearchParams } from "next/navigation";
+import React, { useCallback, useEffect, useMemo, useState, useTransition } from "react";
+import { useForm } from "react-hook-form";
+import { Input } from "../../../components/ui/input";
+import { Button } from "../../../components/ui/button";
+import { registerFormSchema } from "@/types/zodTypes";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { IRegisterUser } from "@/interfaces/user";
+import {
+  createUserWithEmailAndPassword,
+  sendEmailVerification,
+} from "firebase/auth";
+import { auth, db } from "@/lib/firebase";
+import { doc, setDoc } from "firebase/firestore";
+import { FirebaseError } from "firebase/app";
+import { sendToastMessage } from "@/functions/sendToastMessage";
+import { useQuery } from "@tanstack/react-query";
+import { createUsernameQueryOptions } from "@/hooks/queries/usernames";
+import { debounce } from "@/functions/debounce";
 
 export default function RegisterForm() {
-
   const [loading, registerTransition] = useTransition();
   const [isPasswordVisible, setIsPasswordVisible] = useState<boolean>(false);
-  const [isConfirmPasswordVisible, setIsConfirmPasswordVisible] = useState<boolean>(false);
+  const [isConfirmPasswordVisible, setIsConfirmPasswordVisible] =
+    useState<boolean>(false);
+  const [isUsernameAvailable, setIsUsernameAvailable] = useState<boolean>(false);
   const searchParams = useSearchParams();
 
   const form = useForm<IRegisterUser>({
-    resolver: zodResolver(registerFormSchema)
+    resolver: zodResolver(registerFormSchema),
+    defaultValues: {
+      username: "",
+      email: "",
+      password: "",
+      confirm_password: "",
+    },
   });
 
-  async function onSubmit(userCredentials: IRegisterUser) {
+  // ===============
+  // # react query
+  // ===============
+  const { data: usernamesList } = useQuery(createUsernameQueryOptions());
 
+  // ===============
+  // # Constants & Variables
+  // ===============
+  const username = form.watch("username");
+  const verifyUsernameAvailability = useMemo(
+    () =>
+      debounce(() => {
+        if (username && usernamesList?.list) {
+          setIsUsernameAvailable(!usernamesList.list.includes(username));
+        }
+      }, 1_000),
+    [username, usernamesList]
+  );
+
+  async function onSubmit(userCredentials: IRegisterUser) {
     const { email, password, username: profileUsername } = userCredentials;
 
     registerTransition(async () => {
       try {
-
         // Create user account
-        const user = await createUserWithEmailAndPassword(auth, email, password);
+        const user = await createUserWithEmailAndPassword(
+          auth,
+          email,
+          password
+        );
         const uid = user.user.uid;
 
         if (user.user) {
@@ -53,7 +84,7 @@ export default function RegisterForm() {
 
         sendToastMessage({
           title: "Usuário criado com sucesso!",
-          type: "success"
+          type: "success",
         });
 
         try {
@@ -62,122 +93,95 @@ export default function RegisterForm() {
             uid,
             email,
             name: profileUsername,
-            role: searchParams.get('adminregister') ? "admin" : "user",
-            premium: false,
+            role: searchParams.get("adminregister") ? "admin" : "user",
+            premium: {
+              status: false,
+              expires_at: null,
+            },
             profile_img: "",
             createdAt: new Date(),
             updatedAt: new Date(),
           });
 
+          // Create document with unique username
+          await setDoc(doc(db, "usernames", profileUsername), {
+            uuid: uid,
+          });
         } catch (error) {
           if (error instanceof FirebaseError) {
             sendToastMessage({
               title: "Houve um erro ao criar o perfil.",
-              type: "error"
+              type: "error",
             });
           }
         }
-
       } catch (error) {
         if (error instanceof FirebaseError) {
           switch (error.code) {
             case "auth/email-already-in-use":
               sendToastMessage({
                 title: "Email ja cadastrado.",
-                type: "error"
-              })
+                type: "error",
+              });
               break;
 
             case "auth/invalid-email":
               sendToastMessage({
                 title: "Email inválido.",
-                type: "error"
-              })
+                type: "error",
+              });
               break;
 
             default:
               sendToastMessage({
                 title: "Houve um erro ao criar o usuário.",
-                type: "error"
-              })
+                type: "error",
+              });
               break;
           }
         }
       }
-
     });
+  }
 
-    // const res = await fetch(`/api/auth/signup${searchParams.get('adminregister') ? '?admin=true' : ''}`, {
-    //   method: 'POST',
-    //   headers: {
-    //     'Content-Type': 'application/json'
-    //   },
-    //   body: JSON.stringify(userCredentials)
-    // });
-
-    // // If success
-    // if (res.status === 201) {
-    //   toast.error("Cadastro realizado com sucesso. Voce receberá um e-mail para confirmar seu cadastro", {
-    //     classNames: {
-    //       toast: '!bg-black !border-0',
-    //       title: '!text-snow'
-    //     },
-    //     position: 'top-center',
-    //     icon: <Check className="text-emerald-500 text-lg" />
-    //   });
-    //   form.reset();
-    //   return;
-    // } 
-
-    // // Error handling
-    // if (res.statusText === "auth/email-already-in-use") {
-    //   toast.error("O E-mail informado já está em uso", {
-    //     classNames: {
-    //       toast: '!bg-black !border-0',
-    //       title: '!text-snow'
-    //     },
-    //     position: 'top-center',
-    //     icon: <X className="text-red-500 text-lg" />
-    //   });
-    // } else if (res.statusText === "auth/invalid-email") {
-    //   toast.error("O E-mail informado é inválido", {
-    //     classNames: {
-    //       toast: '!bg-black !border-0',
-    //       title: '!text-snow'
-    //     },
-    //     position: 'top-center',
-    //     icon: <X className="text-red-500 text-lg" />
-    //   });
-    // } else {
-    //   toast.error("Ocorreu um erro ao realizar o cadastro", {
-    //     classNames: {
-    //       toast: '!bg-black !border-0',
-    //       title: '!text-snow'
-    //     },
-    //     position: 'top-center',
-    //     icon: <X className="text-red-500 text-lg" />
-    //   });
-    // }
-
-  };
+  useEffect(() => {
+    if (username && usernamesList?.list) {
+      verifyUsernameAvailability();
+    }
+  }, [username, usernamesList, verifyUsernameAvailability]);
 
   return (
     <div className="w-full h-full rounded-tr-3xl rounded-tl-3xl border border-gray-200 bg-white p-5 shadow-md">
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-3">
-          <FormField
-            control={form.control}
-            name="username"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Usuário: </FormLabel>
-                <FormControl>
-                  <Input placeholder="Digite o nome de usuário" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
+          <div className="relative">
+            <FormField
+              control={form.control}
+              name="username"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Usuário: </FormLabel>
+                  <FormControl>
+                    <Input placeholder="Digite o nome de usuário" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            {username && (
+              <>
+                {isUsernameAvailable ? (
+                  <span className="absolute top-1.5 right-2 text-xs text-app-primary">
+                    Nome de usuário disponível
+                  </span>
+                ) : (
+                  <span className="absolute top-1.5 right-2 text-xs text-destructive">
+                    Nome de usuário já utilizado
+                  </span>
+                )}
+              </>
             )}
-          />
+          </div>
           {/* <label htmlFor="username" className="relative">
             <span className="text-[#212121] font-semibold text-sm">Usuário:</span>
             <input
@@ -248,7 +252,8 @@ export default function RegisterForm() {
                   <FormControl>
                     <Input
                       type={isPasswordVisible ? "text" : "password"}
-                      placeholder="Digite a sua senha" {...field}
+                      placeholder="Digite a sua senha"
+                      {...field}
                     />
                   </FormControl>
                   <FormMessage />
@@ -316,7 +321,8 @@ export default function RegisterForm() {
                   <FormControl>
                     <Input
                       type={isConfirmPasswordVisible ? "text" : "password"}
-                      placeholder="Digite a sua senha novamente" {...field}
+                      placeholder="Digite a sua senha novamente"
+                      {...field}
                     />
                   </FormControl>
                   <FormMessage />
@@ -371,10 +377,7 @@ export default function RegisterForm() {
               </span>
             )}
           </label> */}
-          <Button
-            type="submit"
-            className="w-full uppercase !mt-7"
-          >
+          <Button disabled={(username && !isUsernameAvailable) || loading} type="submit" className="w-full uppercase !mt-7">
             {loading ? (
               <>
                 <span>Cadastrando usuário...</span>

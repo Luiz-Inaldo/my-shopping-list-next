@@ -1,10 +1,15 @@
+import { Timestamp } from "firebase/firestore";
+
 /**
  * ========================
  * # types from firebase
  * ========================
  */
 export type TUserProfileProps = {
-  emailPendencies: boolean;
+  premium: {
+    status: boolean;
+    expires_at: Timestamp | null;
+  };
   uid: string;
   email: string;
   name: string;

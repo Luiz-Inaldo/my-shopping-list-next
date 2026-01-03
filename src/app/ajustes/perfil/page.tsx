@@ -11,14 +11,13 @@ import { useEffect, useState, useTransition } from "react";
 import { useForm } from "react-hook-form";
 import { profileSchema, type ProfileFormData } from "./schema/profileSchema";
 import { APP_ROUTES } from "@/routes/app-routes";
-import { updateUserEmail, updateUserName } from "@/services/settings";
+import { updateUserEmail, updateUserName } from "@/services/account";
 import ReauthenticateModal from "@/components/Modal/ReauthenticateModal";
 import { sendToastMessage } from "@/functions/sendToastMessage";
 import { doc, onSnapshot } from "firebase/firestore";
-import { auth, db } from "@/lib/firebase";
+import { db } from "@/lib/firebase";
 import { TUserProfileProps } from "@/types/user";
 import { useRouter } from "next/navigation";
-import { LogOut } from "@/functions/logout";
 
 export default function ProfilePage() {
   const { userProfile, setUserProfile } = useGeneralUserStore();

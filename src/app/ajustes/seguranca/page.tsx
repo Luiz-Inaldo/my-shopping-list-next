@@ -11,7 +11,7 @@ import { useForm } from "react-hook-form";
 import { securitySchema, type SecurityFormData } from "./schema/securitySchema";
 import { APP_ROUTES } from "@/routes/app-routes";
 import { sendToastMessage } from "@/functions/sendToastMessage";
-import { updateUserPassword } from "@/services/settings";
+import { updateUserPassword } from "@/services/account";
 import { tryCatchRequest } from "@/functions/requests";
 import ReauthenticateModal from "@/components/Modal/ReauthenticateModal";
 import { AppLoader } from "@/components/Loader/app-loader";

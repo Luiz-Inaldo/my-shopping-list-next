@@ -7,7 +7,6 @@ import { Button } from "@/components/ui/button";
 import { tryCatchRequest } from "@/functions/requests";
 import { sendToastMessage } from "@/functions/sendToastMessage";
 import { APP_ROUTES } from "@/routes/app-routes";
-import { deleteUserAccount } from "@/services/others";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { ChevronLeft, LoaderCircle, Trash2 } from "lucide-react";
 import Image from "next/image";
@@ -21,6 +20,7 @@ import { sleep } from "@/functions/sleep";
 import { LottieAnimation } from "@/components/Lottie/LottieAnimation";
 import successAnimation from "@/animations/success.json";
 import { cn } from "@/lib/utils";
+import { deleteUserAccount } from "@/services/account";
 
 type DeletingStatus = "idle" | "deleting" | "deleted"
 
@@ -55,15 +55,6 @@ export default function DeleteAccountPage() {
       setDeletingStatus("idle");
     }
   }
-
-  async function fakeDeleteAccount(formData: { password: string }) {
-    setDeletingStatus("deleting");
-    await sleep(3);
-    setDeletingStatus("deleted");
-    await sleep(3);
-    setDeletingStatus("idle");
-  }
-  console.log(deletingStatus);
 
   return (
     <>
@@ -112,7 +103,7 @@ export default function DeleteAccountPage() {
               </div>
 
               <ReauthenticateModal
-                confirmButtonFn={() => form.handleSubmit(fakeDeleteAccount)()}
+                confirmButtonFn={() => form.handleSubmit(handleDeleteAccount)()}
                 form={form}
                 trigger={
                   <Button

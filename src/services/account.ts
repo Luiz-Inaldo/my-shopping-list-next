@@ -6,6 +6,7 @@ import {
   sendEmailVerification,
   verifyBeforeUpdateEmail,
   updatePassword,
+  deleteUser,
 } from "firebase/auth";
 import { FirebaseError } from "firebase/app";
 
@@ -19,6 +20,7 @@ export async function updateUserName(userId: string, newName: string) {
 
   await updateDoc(userRef, {
     name: newName,
+    updated_at: new Date()
   });
 }
 
@@ -51,7 +53,7 @@ export async function updateUserEmail(
     await sendEmailVerification(user);
 
     await updateDoc(doc(db, "users", user.uid), {
-      emailPendencies: true
+      updated_at: new Date()
     })
 
   } catch (error) {
@@ -85,5 +87,25 @@ export async function updateUserPassword(
   await reauthenticateWithCredential(user, credential);
   await updatePassword(user, newPassword);
 
+  await updateDoc(doc(db, "users", user.uid), {
+    updated_at: new Date()
+  })
+
   return true;
+}
+
+/**
+ * Deleta a conta do usuário, e todas as suas compras e listas.
+ * @param {string} currentPassword - A senha atual do usuário.
+ */
+export async function deleteUserAccount(currentPassword: string) {
+  const user = auth.currentUser;
+  if (!user) return;
+  
+  const credential = EmailAuthProvider.credential(
+    user?.email || "",
+    currentPassword
+  );
+  await reauthenticateWithCredential(user, credential);
+  await deleteUser(user);
 }
