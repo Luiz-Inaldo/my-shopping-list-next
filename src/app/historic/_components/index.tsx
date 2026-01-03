@@ -10,17 +10,18 @@ import { queryClient } from '@/utils/queryClient';
 import { useEffect, useRef, useState } from 'react';
 import Header from '../../../components/Header';
 import { collection, onSnapshot } from 'firebase/firestore';
-import { auth, db } from '@/lib/firebase';
+import { db } from '@/lib/firebase';
 import { Filters } from '@/types/filters';
 import { usePurchasesQuery } from '@/hooks/queries/purchases';
 import { AppAlert } from '@/components/Alerts';
+import useGeneralUserStore from '@/store/generalUserStore';
 
 export function HistoricPage() {
 
     // ===================
     // # Store
     // ===================
-    const user = auth.currentUser;
+    const user = useGeneralUserStore(s => s.userProfile);
 
     // ===================
     // # States
@@ -143,7 +144,7 @@ export function HistoricPage() {
                 Histórico
             </Header>
             <div className="w-full px-5 pb-24 pt-6">
-                {!user?.emailVerified && (
+                {user && !user?.emailVerified && (
                     <AppAlert type="email" className="mb-10" />
                 )}
                 <div className="grid 2xsm:grid-cols-1 gap-10">

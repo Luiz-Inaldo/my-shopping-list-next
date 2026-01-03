@@ -18,7 +18,7 @@ import { addPurchaseToDb } from '@/services/purchasesListServices';
 import { invalidateAllQueries } from '@/functions/invalidadeQueries';
 import { QUERY_KEYS } from '@/constants/queryKeys';
 import { Timestamp } from 'firebase/firestore';
-import { auth } from '@/lib/firebase';
+import useGeneralUserStore from '@/store/generalUserStore';
 
 const addButtonVariants = {
     initial: {
@@ -36,9 +36,9 @@ const addButtonVariants = {
 const NewListForm = () => {
 
 
-    const user = auth.currentUser;
+    const user = useGeneralUserStore(s => s.userProfile);
     const [isSettingPurchase, setPurchaseTransition] = useTransition();
-    const isLocked = !user?.emailVerified;
+    const isLocked = user && !user?.emailVerified;
 
     const [open, setOpen] = useState(false);
 

@@ -24,7 +24,8 @@ onAuthStateChanged(auth, (user) => {
         const authUserData = auth.currentUser;
         useGeneralUserStore.getState().setUserProfile({
           ...profileData,
-          email: authUserData?.email || ""
+          email: authUserData?.email || "",
+          emailVerified: authUserData?.emailVerified ?? false
         });
       }
     }).catch((error) => {

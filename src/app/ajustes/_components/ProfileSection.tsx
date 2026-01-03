@@ -1,13 +1,13 @@
-import { auth } from "@/lib/firebase";
 import { cn } from "@/lib/utils";
 import { APP_ROUTES } from "@/routes/app-routes";
 import { ChevronRight, Pencil, ShieldCheck } from "lucide-react";
 import Link from "next/link";
+import useGeneralUserStore from "@/store/generalUserStore";
 
 export function ProfileSection() {
-  const user = auth.currentUser;
+  const user = useGeneralUserStore(s => s.userProfile);
   return (
-    <section className={cn(!user?.emailVerified && "cursor-not-allowed pointer-events-none")}>
+    <section className={cn(user && !user?.emailVerified && "cursor-not-allowed pointer-events-none")}>
       <h2 className="text-paragraph text-sm mb-3">Perfil</h2>
       <div className="bg-app-container rounded-lg divide-y divide-border">
         <Link href={APP_ROUTES.private.settings.perfil.name} className="w-full flex items-center justify-between p-4">

@@ -6,22 +6,11 @@ import { PreferencesSection } from "./_components/PreferencesSection";
 import { ProfileCard } from "./_components/ProfileCard";
 import { ProfileSection } from "./_components/ProfileSection";
 import { AppAlert } from "@/components/Alerts";
-import { auth } from "@/lib/firebase";
-import { useEffect } from "react";
-import { sendEmailVerification } from "firebase/auth";
+import useGeneralUserStore from "@/store/generalUserStore";
 
 export default function Settings() {
 
-  const user = auth.currentUser;
-
-  // useEffect(() => {
-  //   async function generateEmail(){
-  //     if (user) {
-  //       await sendEmailVerification(user);
-  //     }
-  //   }
-  //   generateEmail();
-  // }, [])
+  const user = useGeneralUserStore(s => s.userProfile);
 
   return (
     <>
@@ -29,7 +18,7 @@ export default function Settings() {
 
       <main className="px-5 pb-24 pt-6 flex flex-col gap-8">
         <ProfileCard />
-        {!user?.emailVerified && (
+        {user && !user?.emailVerified && (
           <AppAlert type="email" />
         )}
         <ProfileSection />
