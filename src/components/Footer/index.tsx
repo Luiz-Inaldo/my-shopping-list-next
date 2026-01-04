@@ -26,7 +26,7 @@ const Footer = () => {
                 <li>
                     <Link
                         href="#"
-                        className={`grid gap-1 p-2 place-items-center border-b ${pathname === "/" ? "text-default-green dark:text-title border-default-green dark:border-title" : "text-subtitle border-transparent"}`}
+                        className={`grid gap-1 p-2 place-items-center border-b ${pathname === "/" ? "text-app-primary dark:text-title border-app-primary dark:border-title" : "text-subtitle border-transparent"}`}
                         onClick={(e) => {
                             e.preventDefault()
                             handleChangeRoute(APP_ROUTES.private.home.name)
@@ -39,7 +39,7 @@ const Footer = () => {
                 <li>
                     <Link
                         href="#"
-                        className={`grid gap-1 p-2 place-items-center border-b ${pathname === "/historic" ? "text-default-green dark:text-title border-default-green dark:border-title" : "text-subtitle border-transparent"}`}
+                        className={`grid gap-1 p-2 place-items-center border-b ${pathname === "/historic" ? "text-app-primary dark:text-title border-app-primary dark:border-title" : "text-subtitle border-transparent"}`}
                         onClick={(e) => {
                             e.preventDefault()
                             handleChangeRoute(APP_ROUTES.private.historic.name)
@@ -52,7 +52,7 @@ const Footer = () => {
                 <li>
                     <Link
                         href="#"
-                        className={`grid gap-1 p-2 place-items-center border-b ${pathname === "/statistics" ? "text-default-green dark:text-title border-default-green dark:border-title" : "text-subtitle border-transparent"}`}
+                        className={`grid gap-1 p-2 place-items-center border-b ${pathname === "/statistics" ? "text-app-primary dark:text-title border-app-primary dark:border-title" : "text-subtitle border-transparent"}`}
                         onClick={(e) => {
                             e.preventDefault()
                             handleChangeRoute(APP_ROUTES.private.statistics.name)
@@ -66,7 +66,7 @@ const Footer = () => {
                     <Link
                         prefetch
                         href="#"
-                        className={`grid gap-1 p-2 place-items-center border-b ${pathname === "/ajustes" ? "text-default-green dark:text-title border-default-green dark:border-title" : "text-subtitle border-transparent"}`}
+                        className={`grid gap-1 p-2 place-items-center border-b ${pathname === "/ajustes" ? "text-app-primary dark:text-title border-app-primary dark:border-title" : "text-subtitle border-transparent"}`}
                         onClick={(e) => {
                             e.preventDefault()
                             handleChangeRoute(APP_ROUTES.private.settings.name)
@@ -80,7 +80,7 @@ const Footer = () => {
                     <Link
                         prefetch
                         href="#"
-                        className={`grid gap-1 p-2 place-items-center border-b ${pathname === "/menu" ? "text-default-green dark:text-title border-default-green dark:border-title" : "text-subtitle border-transparent"}`}
+                        className={`grid gap-1 p-2 place-items-center border-b ${pathname === "/menu" ? "text-app-primary dark:text-title border-app-primary dark:border-title" : "text-subtitle border-transparent"}`}
                         onClick={(e) => {
                             e.preventDefault()
                             handleChangeRoute(APP_ROUTES.private.menu.name)

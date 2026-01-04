@@ -26,7 +26,7 @@ export function Product({ item, ...props }: { item: IProductProps }) {
             return <Square onClick={() => handleItemCheckbox(item)} size={18} className="text-paragraph" />
         }
 
-        return <Check onClick={() => handleItemCheckbox(item)} size={18} className="text-default-green" />;
+        return <Check onClick={() => handleItemCheckbox(item)} size={18} className="text-app-primary" />;
 
     }
 

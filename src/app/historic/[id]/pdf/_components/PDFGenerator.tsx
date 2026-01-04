@@ -93,14 +93,14 @@ export function HistoricListPDF() {
 
     if (loadingProductsList || !productsList) {
         return <div className="flex flex-col items-center justify-center h-screen gap-4">
-            <Loader2 className="size-16 animate-spin text-default-green" />
+            <Loader2 className="size-16 animate-spin text-app-primary" />
             <p className="text-paragraph font-medium">Gerando PDF...</p>
         </div>
     }
 
     return (
         <div className="flex flex-col gap-4">
-            <div className="flex items-center justify-between text-white p-3 bg-default-green">
+            <div className="flex items-center justify-between text-white p-3 bg-app-primary">
                 <h1>{`${formattedTitle(productsList?.title as string)}.pdf`}</h1>
                 <div className="flex items-center gap-2">
                     <Link href={APP_ROUTES.private.historic.details.name(productsList?.id as string)}>

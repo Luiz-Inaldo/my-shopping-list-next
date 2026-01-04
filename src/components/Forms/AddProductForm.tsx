@@ -207,7 +207,7 @@ export const AddProductForm = () => {
               <span className='text-subtitle text-sm font-semibold mb-1 leading-none'>Já adquirido?</span>
               <input
                 type="checkbox"
-                className="w-4 h-4 accent-default-green bg-app-background border-1 border-paragraph rounded checked:border-transparent"
+                className="w-4 h-4 accent-app-primary bg-app-background border-1 border-paragraph rounded checked:border-transparent"
                 {...register('checked')}
               />
             </label>

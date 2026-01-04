@@ -83,7 +83,7 @@ export function FinancialSummary({ setSavingModalOpen, setIsSaved }: {
                     </div>
                     <div>
                         <p className="text-sm text-subtitle">Valor atual</p>
-                        <p className="text-lg font-semibold text-default-green">{formatCurrency(totalValue || 0)}</p>
+                        <p className="text-lg font-semibold text-app-primary">{formatCurrency(totalValue || 0)}</p>
                     </div>
                     <div>
                         <p className="text-sm text-subtitle">Orçamento</p>

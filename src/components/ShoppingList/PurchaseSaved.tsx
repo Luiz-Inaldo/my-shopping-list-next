@@ -65,7 +65,7 @@ export default function PurchaseSaved() {
             >
                 <Link
                     href="#"
-                    className='w-full bg-default-green rounded-full px-3 py-2 flex gap-2 items-center justify-center cursor-pointer transition-all duration-300 ease-in-out text-snow text-sm uppercase'
+                    className='w-full bg-app-primary rounded-full px-3 py-2 flex gap-2 items-center justify-center cursor-pointer transition-all duration-300 ease-in-out text-snow text-sm uppercase'
                     onClick={(e) => {
                         e.preventDefault()
                         handleChangeRoute(APP_ROUTES.private.historic.name)
@@ -76,7 +76,7 @@ export default function PurchaseSaved() {
                 </Link>
                 <Link
                     href="#"
-                    className="w-full border border-default-green rounded-full px-3 py-2 flex gap-2 items-center justify-center cursor-pointer transition-all duration-300 ease-in-out text-default-green text-sm "
+                    className="w-full border border-app-primary rounded-full px-3 py-2 flex gap-2 items-center justify-center cursor-pointer transition-all duration-300 ease-in-out text-app-primary text-sm "
                     onClick={handleGoToHome}
                 >
                     <House size={16} />

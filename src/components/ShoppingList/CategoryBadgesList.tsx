@@ -32,7 +32,7 @@ export function CategoryBadgesList() {
                         <div
                             onClick={() => handleFilterByCategory(category.name)}
                             key={category.name}
-                            className={`flex items-center gap-3 px-3 py-2 border rounded-lg shadow ${filterValue === category.name ? 'bg-default-green border-green-500 text-snow' : 'border-app-border bg-app-container'}`}
+                            className={`flex items-center gap-3 px-3 py-2 border rounded-lg shadow ${filterValue === category.name ? 'bg-app-primary border-green-500 text-snow' : 'border-app-border bg-app-container'}`}
                         >
                             <span
                                 style={{ backgroundColor: category.backgroundColor }}

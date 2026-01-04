@@ -51,7 +51,7 @@ export function ActivePurchsesList() {
                                 <div className="flex flex-1 flex-col gap-3">
                                     <div className="flex items-center justify-between">
                                         <div className="flex items-center gap-2">
-                                            <span className="size-2 rounded-full bg-default-green" />
+                                            <span className="size-2 rounded-full bg-app-primary" />
                                             <h3 className="text-subtitle font-semibold text-sm">{item.title}</h3>
                                             <p className='text-sm text-paragraph'>({item.purchase_items?.length} {item.purchase_items?.length === 1 ? 'item' : 'itens'})</p>
                                         </div>
@@ -66,7 +66,7 @@ export function ActivePurchsesList() {
                                     <DeletePurchase purchase={item} />
                                     <Link
                                         href={APP_ROUTES.private.shoppingList.name(item.id as string)}
-                                        className="flex items-center justify-center size-8 rounded-full bg-default-green text-snow">
+                                        className="flex items-center justify-center size-8 rounded-full bg-app-primary text-snow">
                                         <ChevronRight size={18} className='mx-auto' />
                                     </Link>
                                 </div>

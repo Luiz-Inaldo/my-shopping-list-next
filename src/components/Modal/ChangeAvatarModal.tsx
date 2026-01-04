@@ -88,7 +88,7 @@ const ChangeAvatarModal = ({ children, currentAvatarUrl, refetch }: {
                                 height={50}
                                 className="rounded-full mx-auto"
                             />
-                            <div className={`${selectedAvatar === url ? 'opacity-100 visible' : 'opacity-0 invisible'} absolute -right-1.5 top-0 flex items-center justify-center size-5 rounded-full border-2 border-snow bg-default-green text-snow`}>
+                            <div className={`${selectedAvatar === url ? 'opacity-100 visible' : 'opacity-0 invisible'} absolute -right-1.5 top-0 flex items-center justify-center size-5 rounded-full border-2 border-snow bg-app-primary text-snow`}>
                                 <Check size={12} />
                             </div>
                         </div>

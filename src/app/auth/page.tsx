@@ -22,7 +22,7 @@ export default function AuthPage() {
             <motion.div
               layoutId="background"
               id="background"
-              className="absolute w-[112px] h-[32px] rounded-full top-0 z-[0] left-0 bg-default-green"
+              className="absolute w-[112px] h-[32px] rounded-full top-0 z-[0] left-0 bg-app-primary"
             />
           ) : null}
         </motion.li>
@@ -38,7 +38,7 @@ export default function AuthPage() {
             <motion.div
               layoutId="background"
               id="background"
-              className="absolute w-[112px] h-[32px] rounded-full top-0 z-[0] right-0 bg-default-green"
+              className="absolute w-[112px] h-[32px] rounded-full top-0 z-[0] right-0 bg-app-primary"
             />
           ) : null}
         </motion.li>
@@ -57,7 +57,7 @@ export default function AuthPage() {
             Já possui uma conta?{" "}
             <span
               onClick={() => setCurrentForm("login")}
-              className="text-default-green cursor-pointer"
+              className="text-app-primary cursor-pointer"
             >
               Faça login
             </span>
