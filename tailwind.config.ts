@@ -74,6 +74,7 @@ const config = {
         "app-background": "var(--app-background)",
         "app-primary": "hsl(var(--app-primary) / <alpha-value>)",
         "app-secondary": "hsl(var(--app-secondary) / <alpha-value>)",
+        "app-selected": "hsl(var(--app-selected) / <alpha-value>)",
         "app-container": "var(--app-container)",
         "app-border": "var(--app-border)",
         "primary-dark": "#212529",

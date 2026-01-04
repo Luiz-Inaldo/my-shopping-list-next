@@ -1,6 +1,6 @@
-"use client"
+'use client';
 import Header from '../Header';
-import { ChevronLeft } from 'lucide-react';
+import { ChartNoAxesColumnIncreasing, ChevronLeft, Plus } from 'lucide-react';
 import { APP_ROUTES } from '@/routes/app-routes';
 import { usePageOverlay } from '@/context/PageOverlayContext';
 import { FinancialSummary } from './FinancialSummary';
@@ -17,16 +17,21 @@ import { ShoppingListSkeleton } from '../Skeletons/ShoppingListSkeleton';
 import useGeneralUserStore from '@/store/generalUserStore';
 import { PurchaseBlocked } from '../Errors/PurchaseBlocked';
 import ErrorFetchData from '../Errors/ErrorFetchData';
+import { Button } from '../ui/button';
 
 export default function ShoppingList() {
-
-  const userId = useGeneralUserStore(store => store.userProfile?.uid)
+  const userId = useGeneralUserStore((store) => store.userProfile?.uid);
 
   const [isSaved, setIsSaved] = useState(false);
   const [savingModalOpen, setSavingModalOpen] = useState(false);
 
   const { theme } = useTheme();
-  const { productsList, loadingProductsList, pendingProductsList, errorFetchingProducts } = useShoplistContext();
+  const {
+    productsList,
+    loadingProductsList,
+    pendingProductsList,
+    errorFetchingProducts,
+  } = useShoplistContext();
 
   const { handleChangeRoute } = usePageOverlay();
 
@@ -47,26 +52,44 @@ export default function ShoppingList() {
   }
 
   return (
-    <div className="relative space-y-0 min-h-screen">
-      <Header>
-        <ChevronLeft size={20} onClick={() => handleChangeRoute(APP_ROUTES.private.home.name)} />
-        <h2 className="font-medium">{productsList?.title}</h2>
+    <div className="relative flex flex-col h-screen">
+      <Header className="justify-between">
+        <div className="flex items-center gap-2">
+          <ChevronLeft
+            size={20}
+            onClick={() => handleChangeRoute(APP_ROUTES.private.home.name)}
+            className="text-subtitle"
+          />
+          <h2 className="font-medium text-subtitle">{productsList?.title}</h2>
+        </div>
+        <div className="flex items-center gap-2">
+          <Button
+            size="sm"
+            variant="ghost"
+            className="h-fit p-1"
+          >
+            <ChartNoAxesColumnIncreasing size={20} />
+          </Button>
+          <AddProductForm />
+        </div>
       </Header>
-      <div className="p-4 w-full flex flex-col gap-5">
-        <FinancialSummary
-          setSavingModalOpen={setSavingModalOpen}
-          setIsSaved={setIsSaved}
-        />
-        <ProductsSearch />
-        <CategoryBadgesList />
-        <ProductsList list={productsList?.purchase_items} />
+      <div className="flex flex-col gap-4 flex-1 overflow-hidden">
+        <div className="p-4 pb-0 flex flex-col gap-4 shrink-0">
+          {/* <FinancialSummary
+            setSavingModalOpen={setSavingModalOpen}
+            setIsSaved={setIsSaved}
+          /> */}
+          <ProductsSearch />
+          <CategoryBadgesList />
+        </div>
+        <div className="flex-1 overflow-y-auto px-4 pb-4">
+          <ProductsList list={productsList?.purchase_items} />
+        </div>
       </div>
-      <AddProductForm />
+
       {savingModalOpen && (
-        <LoadingActionModal
-          text="Finalizando sua compra..."
-        />
+        <LoadingActionModal text="Finalizando sua compra..." />
       )}
     </div>
-  )
+  );
 }
