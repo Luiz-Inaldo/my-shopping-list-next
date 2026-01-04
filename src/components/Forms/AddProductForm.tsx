@@ -11,10 +11,14 @@ import {
 } from "@/components/ui/drawer";
 import { LoaderCircle, Plus } from "lucide-react";
 import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { ShadSelect } from "../Select";
 import { SelectItem } from "../ui/select";
 import { CATEGORIES } from "@/constants/categories";
-import { IFormItem } from "@/types";
+import { addPurchaseProductSchema, AddPurchaseProductInput } from "@/zodSchema/addPurchaseProduct";
+import { ItemCategories } from "@/enums/categories";
+import { UnitTypes } from "@/enums/unitTypes";
+import { IProductProps } from "@/types";
 import { Button } from "../ui/button";
 import { sendToastMessage } from "@/functions/sendToastMessage";
 import { useShoplistContext } from "@/context/ShoplistContext";
@@ -30,16 +34,27 @@ export const AddProductForm = () => {
   const user = useGeneralUserStore(s => s.userProfile);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [isLoading, startAddProductTransition] = useTransition();
-  const isButtonDisabled = user ? user.emailVerified : false;
+  const isButtonDisabled = user ? !user.emailVerified : false;
 
   const { productsList } = useShoplistContext();
+  
   const {
     register,
     control,
     formState: { errors },
     reset,
     handleSubmit
-  } = useForm<IFormItem>();
+  } = useForm<AddPurchaseProductInput>({
+    resolver: zodResolver(addPurchaseProductSchema),
+    defaultValues: {
+      name: "",
+      category: undefined,
+      unit_type: undefined,
+      quantity: "",
+      value: "",
+      checked: false
+    }
+  });
 
   // funções
   function handleOpenDrawer() {
@@ -47,7 +62,7 @@ export const AddProductForm = () => {
     // Garantir que o formulário esteja limpo quando abrir
     reset({
       name: "",
-      category: "",
+      category: undefined,
       unit_type: undefined,
       quantity: "",
       value: "",
@@ -55,31 +70,21 @@ export const AddProductForm = () => {
     });
   }
 
-  function onSubmit(data: IFormItem) {
+  function onSubmit(data: AddPurchaseProductInput) {
     startAddProductTransition(async () => {
-      const item = {
+      // Validar e transformar os dados usando o schema
+      const validatedData = addPurchaseProductSchema.parse(data);
+      
+      // O refine garante que category e unit_type não sejam undefined
+      const item: IProductProps = {
         id: crypto.randomUUID() as string,
-        ...data
+        name: validatedData.name,
+        category: validatedData.category as ItemCategories,
+        unit_type: validatedData.unit_type as UnitTypes,
+        quantity: validatedData.quantity ?? 0,
+        value: validatedData.value ?? 0,
+        checked: validatedData.checked ?? false
       };
-
-      if (!item.value) {
-        item.value = 0;
-      }
-
-      if (typeof item.value === "string") {
-        item.value = Number(String(item.value).replace(",", "."));
-      } else {
-        item.value = Number(item.value);
-      }
-
-      if (!item.quantity) {
-        item.quantity = 0;
-      } else if (typeof item.quantity === "string") {
-        item.quantity = Number(String(item.quantity).replace(",", "."));
-      }
-
-      // console.log(item)
-      // return;
 
       try {
 
@@ -95,7 +100,7 @@ export const AddProductForm = () => {
         // Reset do formulário e fechamento do drawer
         reset({
           name: "",
-          category: "",
+          category: undefined,
           unit_type: undefined,
           quantity: "",
           value: "",
