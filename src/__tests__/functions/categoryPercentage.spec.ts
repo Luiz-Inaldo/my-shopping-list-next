@@ -1,3 +1,4 @@
+import { UnitTypes } from "@/enums/unitTypes";
 import { calculatePercentage } from "@/functions/categoryPercentage";
 import { IProductProps } from "@/types";
 
@@ -7,7 +8,7 @@ const mockProducts: IProductProps[] = [
         name: 'Test',
         category: 'Mercearia',
         checked: true,
-        unit_type: 'und',
+        unit_type: 'und' as UnitTypes,
         quantity: 1,
         value: 1,
     },
@@ -16,7 +17,7 @@ const mockProducts: IProductProps[] = [
         name: 'Test 2',
         category: 'Limpeza',
         checked: true,
-        unit_type: 'und',
+        unit_type: 'und' as UnitTypes,
         quantity: 1,
         value: 1,
     },
@@ -25,7 +26,7 @@ const mockProducts: IProductProps[] = [
         name: 'Test 3',
         category: 'Frios e Laticínios',
         checked: true,
-        unit_type: 'und',
+        unit_type: 'und' as UnitTypes,
         quantity: 1,
         value: 1,
     },

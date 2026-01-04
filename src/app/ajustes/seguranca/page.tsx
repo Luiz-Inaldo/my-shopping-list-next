@@ -8,7 +8,7 @@ import { ChevronLeft, CircleCheck, Eye, EyeOff, LoaderCircle, Lock } from "lucid
 import Link from "next/link";
 import { useState, useTransition } from "react";
 import { useForm } from "react-hook-form";
-import { securitySchema, type SecurityFormData } from "./schema/securitySchema";
+import { securitySchema, type SecurityFormData } from "@/zodSchema/security";
 import { APP_ROUTES } from "@/routes/app-routes";
 import { sendToastMessage } from "@/functions/sendToastMessage";
 import { updateUserPassword } from "@/services/account";

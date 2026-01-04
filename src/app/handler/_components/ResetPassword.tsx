@@ -12,7 +12,7 @@ import { auth } from '@/lib/firebase'
 import { AppLoader } from '@/components/Loader/app-loader'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { securitySchema, SecurityFormData } from '@/app/ajustes/seguranca/schema/securitySchema'
+import { securitySchema, SecurityFormData } from '@/zodSchema/security';
 import {
     Form,
     FormControl,

@@ -1,4 +1,3 @@
-import z from "zod";
-import { createListSchema } from "./zodTypes";
+import { createListSchema, type CreateListInput } from "@/zodSchema/createList";
 
-export type NewListProps = z.infer<typeof createListSchema>;
+export type NewListProps = CreateListInput;

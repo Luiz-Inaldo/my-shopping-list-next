@@ -10,7 +10,7 @@ import { Button } from '../ui/button';
 import { Input } from '../ui/input';
 import { Check, LoaderCircle, Plus } from 'lucide-react';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { createListSchema } from '@/types/zodTypes';
+import { createListSchema } from '@/zodSchema/createList';
 import { sendToastMessage } from '@/functions/sendToastMessage';
 import { motion } from 'motion/react';
 import { IPurchaseProps } from '@/types';

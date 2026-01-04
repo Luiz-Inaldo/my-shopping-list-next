@@ -9,7 +9,7 @@ import { AtSign, ChevronLeft, CircleCheck, LoaderCircle, User } from "lucide-rea
 import Link from "next/link";
 import { useEffect, useState, useTransition } from "react";
 import { useForm } from "react-hook-form";
-import { profileSchema, type ProfileFormData } from "./schema/profileSchema";
+import { profileSchema, type ProfileFormData } from "@/zodSchema/profile";
 import { APP_ROUTES } from "@/routes/app-routes";
 import { updateUserEmail, updateUserName } from "@/services/account";
 import ReauthenticateModal from "@/components/Modal/ReauthenticateModal";

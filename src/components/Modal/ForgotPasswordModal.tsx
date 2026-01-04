@@ -2,7 +2,6 @@
 
 import React, { useState, useEffect, useTransition } from 'react';
 import { useForm } from 'react-hook-form';
-import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import {
     Dialog,
@@ -29,13 +28,7 @@ import { sendToastMessage } from '@/functions/sendToastMessage';
 import { tryCatchRequest } from '@/functions/requests';
 import { sendPasswordResetEmail } from 'firebase/auth';
 import { auth } from '@/lib/firebase';
-
-// Schema for the form
-const formSchema = z.object({
-    email: z.string().email({ message: "Insira um e-mail válido" }),
-});
-
-type FormValues = z.infer<typeof formSchema>;
+import { forgotPasswordSchema, type ForgotPasswordInput } from '@/zodSchema/forgotPassword';
 
 interface ForgotPasswordModalProps {
     trigger: React.ReactNode;
@@ -46,8 +39,8 @@ const ForgotPasswordModal = ({ trigger, email }: ForgotPasswordModalProps) => {
     const [open, setOpen] = useState(false);
     const [isSubmitting, submitTransition] = useTransition();
 
-    const form = useForm<FormValues>({
-        resolver: zodResolver(formSchema),
+    const form = useForm<ForgotPasswordInput>({
+        resolver: zodResolver(forgotPasswordSchema),
         values: {
             email: email || '',
         }

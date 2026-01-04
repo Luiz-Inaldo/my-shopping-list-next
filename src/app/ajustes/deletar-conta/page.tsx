@@ -14,7 +14,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
-import z from "zod";
+import { deleteAccountSchema, type DeleteAccountInput } from "@/zodSchema/deleteAccount";
 import { AnimatePresence, motion } from "motion/react";
 import { LottieAnimation } from "@/components/Lottie/LottieAnimation";
 import successAnimation from "@/animations/success.json";
@@ -31,16 +31,14 @@ export default function DeleteAccountPage() {
   const [deletingStatus, setDeletingStatus] = useState<DeletingStatus>("idle");
   const router = useRouter();
 
-  const form = useForm<{ password: string }>({
-    resolver: zodResolver(z.object({
-      password: z.string().min(1, { message: "Senha é obrigatória" }),
-    })),
+  const form = useForm<DeleteAccountInput>({
+    resolver: zodResolver(deleteAccountSchema),
     defaultValues: {
       password: "",
     },
   });
 
-  async function handleDeleteAccount(formData: { password: string }) {
+  async function handleDeleteAccount(formData: DeleteAccountInput) {
 
     if (!user?.uid) return;
 
