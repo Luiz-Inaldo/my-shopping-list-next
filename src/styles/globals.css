@@ -106,6 +106,23 @@
   }
 }
 
+/* Força modo light na página de autenticação */
+.auth-page-light {
+  --app-background: #efefef;
+  --app-primary: #4caf50;
+  --app-container: white;
+  --app-border: #e8e8e8;
+  --title: #212529;
+  --subtitle: #343a40;
+  --paragraph: #838587;
+  --link: #3fad42;
+  --action: #ff9800;
+  --border: #e8e8e8;
+  --input: 214.3 31.8% 91.4%;
+  --background: 0 0% 100%;
+  --foreground: 222.2 84% 4.9%;
+}
+
 .container {
   position: relative;
   display: flex;
