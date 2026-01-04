@@ -15,17 +15,17 @@ export const MainHeader = () => {
     if (!userProfile) return <MainHeaderSkeleton />
 
     return (
-        <div className="relative z-[1] w-full p-4 flex items-center gap-3">
+        <div className="relative w-full p-4 flex items-center gap-3">
             <UserAvatar
                 width={40}
                 height={40}
                 className='border-2'
             />
             <div className='flex flex-col'>
-                <p className="text-[#d9d9d9] font-medium leading-none">
+                <p className="text-[#eaeaea] font-medium leading-none">
                     Olá {userProfile?.name || 'Usuário sem nome.'}
                 </p>
-                <p className='text-[#909090] text-xs'>Bem-vindo de volta!</p>
+                <p className='text-[#d0d0d0] text-xs'>Bem-vindo de volta!</p>
             </div>
         </div>
     )

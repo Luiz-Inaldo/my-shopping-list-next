@@ -26,9 +26,9 @@ export const DeletePurchase = ({ purchase, trigger }: { purchase: IPurchaseProps
         <Dialog open={open} onOpenChange={setOpen}>
             <DialogTrigger asChild>
                 {trigger || (
-                    <div className="flex items-center justify-center size-8 rounded-full bg-red-500 dark:bg-red-400 cursor-pointer text-snow">
+                    <button className="flex items-center justify-center size-8 rounded-full bg-app-secondary cursor-pointer text-snow">
                         <Trash2 size={16} />
-                    </div>
+                    </button>
                 )}
             </DialogTrigger>
             <DialogContent className="max-w-[400px]" onClick={(e) => e.stopPropagation()}>
