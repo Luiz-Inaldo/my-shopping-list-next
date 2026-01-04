@@ -13,7 +13,7 @@ import React, { useCallback, useEffect, useMemo, useState, useTransition } from 
 import { useForm } from "react-hook-form";
 import { Input } from "../../../components/ui/input";
 import { Button } from "../../../components/ui/button";
-import { registerFormSchema } from "@/types/zodTypes";
+import { registerFormSchema } from "@/zodSchema/registerForm";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { IRegisterUser } from "@/interfaces/user";
 import {

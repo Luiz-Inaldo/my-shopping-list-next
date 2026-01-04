@@ -1,6 +1,7 @@
 import { QueryObserverResult, RefetchOptions } from "@tanstack/react-query";
 import { TUiStates } from "./uiStates";
 import { Timestamp } from "firebase/firestore";
+import { UnitTypes } from "@/enums/unitTypes";
 
 export type ModalStateProps = "OPEN" | "CLOSED";
 export type ModalTypeProps =
@@ -58,7 +59,6 @@ export interface IFormItem extends Omit<IProductProps, "id"> {}
 export interface IEditItemProps
   extends Omit<IProductProps, "category" | "checked"> {}
 
-type TProductsUnitTypes = "und" | "kg" | "lt" | "cx" | "fd" | "pct";
 
 export interface IProductProps {
   id?: string;
@@ -67,7 +67,7 @@ export interface IProductProps {
   quantity: number | string;
   value: number | string;
   checked: boolean;
-  unit_type: TProductsUnitTypes;
+  unit_type: UnitTypes;
 }
 
 export interface IPurchaseProps {
