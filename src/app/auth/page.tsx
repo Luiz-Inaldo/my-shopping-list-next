@@ -8,7 +8,7 @@ export default function AuthPage() {
   const [currentForm, setCurrentForm] = useState<string>("login");
 
   return (
-    <div className="bg-[#e9e9e9] max-w-[430px] h-screen flex flex-col items-center overflow-hidden space-y-5">
+    <div className="auth-page-light bg-[#e9e9e9] max-w-[430px] h-screen flex flex-col items-center overflow-hidden space-y-5">
       <ul className="w-[240px] rounded-full flex items-center justify-between p-2 mt-4 shadow-md bg-white">
         <motion.li
           key="login"
