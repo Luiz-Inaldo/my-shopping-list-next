@@ -43,7 +43,7 @@ const VerifyDevice = ({ children }: { children: React.ReactNode }) => {
     if (isMobile === null) {
         return (
             <div className="w-full min-h-screen-dvh flex flex-col items-center justify-center bg-app-background">
-                <AppLoader size={120} />
+                <AppLoader size={40} />
             </div>
         )
     }
