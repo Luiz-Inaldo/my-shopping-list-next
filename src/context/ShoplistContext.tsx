@@ -125,7 +125,7 @@ export const ShoplistProvider = ({ children }: { children: React.ReactNode }) =>
 
     async function handleCheckItem(item: IProductProps, object?: IEditItemProps) {
 
-        const updatedProducts = productsList?.purchase_items?.map(product => {
+        const updatedProducts = auxData?.purchase_items?.map(product => {
             if (product.id === item.id) {
                 return {
                     ...item,
@@ -149,7 +149,7 @@ export const ShoplistProvider = ({ children }: { children: React.ReactNode }) =>
 
     async function handleDismarkItem(item: IProductProps) { 
 
-        const updatedProducts = productsList?.purchase_items?.map(product => {
+        const updatedProducts = auxData?.purchase_items?.map(product => {
             if (product.id === item.id) {
                 return {
                     ...item,
