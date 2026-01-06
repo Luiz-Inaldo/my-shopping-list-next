@@ -43,7 +43,7 @@ export default function ShoppingList() {
     return <ErrorFetchData />;
   }
 
-  if (!isSaved) {
+  if (isSaved) {
     return <PurchaseSaved />;
   }
 
