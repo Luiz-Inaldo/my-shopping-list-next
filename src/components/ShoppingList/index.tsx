@@ -17,7 +17,6 @@ import { ShoppingListSkeleton } from '../Skeletons/ShoppingListSkeleton';
 import useGeneralUserStore from '@/store/generalUserStore';
 import { PurchaseBlocked } from '../Errors/PurchaseBlocked';
 import ErrorFetchData from '../Errors/ErrorFetchData';
-import { Button } from '../ui/button';
 import { FinancialSummarySheet } from '../Sheet/FinancialSummarySheet';
 
 export default function ShoppingList() {
@@ -44,7 +43,7 @@ export default function ShoppingList() {
     return <ErrorFetchData />;
   }
 
-  if (isSaved) {
+  if (!isSaved) {
     return <PurchaseSaved />;
   }
 
