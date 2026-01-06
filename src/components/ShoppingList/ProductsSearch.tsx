@@ -39,6 +39,8 @@ export function ProductsSearch() {
     debouncedQuery(value);
   }
 
+  if (!auxData?.purchase_items?.length) return null;
+
   return (
     <div className="relative">
       <Search size={16} className='text-paragraph absolute top-3 left-2.5' />

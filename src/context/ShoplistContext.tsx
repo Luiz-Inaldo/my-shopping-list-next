@@ -125,7 +125,7 @@ export const ShoplistProvider = ({ children }: { children: React.ReactNode }) =>
 
     async function handleCheckItem(item: IProductProps, object?: IEditItemProps) {
 
-        const updatedProducts = productsList?.purchase_items?.map(product => {
+        const updatedProducts = auxData?.purchase_items?.map(product => {
             if (product.id === item.id) {
                 return {
                     ...item,
@@ -149,7 +149,7 @@ export const ShoplistProvider = ({ children }: { children: React.ReactNode }) =>
 
     async function handleDismarkItem(item: IProductProps) { 
 
-        const updatedProducts = productsList?.purchase_items?.map(product => {
+        const updatedProducts = auxData?.purchase_items?.map(product => {
             if (product.id === item.id) {
                 return {
                     ...item,
@@ -172,11 +172,14 @@ export const ShoplistProvider = ({ children }: { children: React.ReactNode }) =>
     }
 
     useEffect(() => {
+        if (!listId) return;
         const productsListRef = doc(db, 'purchases', listId);
         const unsubscribe = onSnapshot(productsListRef, (snapshot) => {
-            queryClient.invalidateQueries({
-                queryKey: [QUERY_KEYS.productsList, listId]
-            });
+            if (snapshot.exists() && snapshot.data()?.is_active) {
+                queryClient.invalidateQueries({
+                    queryKey: [QUERY_KEYS.productsList, listId]
+                });
+            }
         });
         return () => unsubscribe();
     }, [listId]);

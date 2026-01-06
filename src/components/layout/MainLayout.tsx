@@ -6,7 +6,7 @@ const LoggedLayout = ({ children }: { children: React.ReactNode }) => {
   const { theme, toggleTheme } = useTheme();
 
   return (
-    <div className="relative bg-app-background">
+    <div className="page-wrapper relative bg-app-background">
       {children}
       <Footer />
     </div>

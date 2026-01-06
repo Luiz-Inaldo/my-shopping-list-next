@@ -26,12 +26,12 @@ export function Product({ item, ...props }: { item: IProductProps }) {
             return <Square onClick={() => handleItemCheckbox(item)} size={18} className="text-paragraph" />
         }
 
-        return <Check onClick={() => handleItemCheckbox(item)} size={18} className="text-default-green" />;
+        return <Check onClick={() => handleItemCheckbox(item)} size={18} className="text-app-primary" />;
 
     }
 
     return (
-        <div {...props} className={`space-y-2 p-3 rounded-lg ${item.checked ? 'bg-[#F2FFF3]' : 'bg-app-container'} shadow text-sm text-paragraph`}>
+        <div {...props} className={`space-y-2 p-3 border rounded-xl ${item.checked ? 'bg-[#EDECF8] border-app-primary/15' : 'bg-app-container'} shadow text-sm text-subtitle`}>
             <div className="flex items-center justify-between">
                 <div className="flex items-center gap-3">
                     {renderCheckbox()}

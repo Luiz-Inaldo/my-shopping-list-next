@@ -119,7 +119,7 @@ export const EditProductForm = ({
           <div className="grid grid-cols-2 gap-2 mt-5">
             <Button
               type="submit"
-              className="col-span-1 w-full rounded-full"
+              className="col-span-1 w-full"
             >
               Finalizar Edição
             </Button>
@@ -127,7 +127,7 @@ export const EditProductForm = ({
               type="button"
               onClick={() => setOpen(false)}
               variant="outline"
-              className="col-span-1 w-full rounded-full"
+              className="col-span-1 w-full"
             >
               Cancelar
             </Button>

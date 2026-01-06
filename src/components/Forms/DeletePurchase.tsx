@@ -26,9 +26,9 @@ export const DeletePurchase = ({ purchase, trigger }: { purchase: IPurchaseProps
         <Dialog open={open} onOpenChange={setOpen}>
             <DialogTrigger asChild>
                 {trigger || (
-                    <div className="flex items-center justify-center size-8 rounded-full bg-red-500 dark:bg-red-400 cursor-pointer text-snow">
+                    <button className="flex items-center justify-center size-8 rounded-full bg-destructive cursor-pointer text-snow">
                         <Trash2 size={16} />
-                    </div>
+                    </button>
                 )}
             </DialogTrigger>
             <DialogContent className="max-w-[400px]" onClick={(e) => e.stopPropagation()}>
@@ -44,15 +44,16 @@ export const DeletePurchase = ({ purchase, trigger }: { purchase: IPurchaseProps
                 <div className='flex gap-2 mt-5'>
                     <Button
                         type='button'
+                        variant="destructive"
                         onClick={() => handleDeletePurchase(purchase.id as string)}
-                        className='col-span-1 w-full rounded-full'>
+                        className='col-span-1 w-full'>
                         Sim
                     </Button>
                     <Button
                         type='button'
                         onClick={() => setOpen(false)}
                         variant="outline"
-                        className='col-span-1 w-full rounded-full'>
+                        className='col-span-1 w-full'>
                         Cancelar
                     </Button>
                 </div>

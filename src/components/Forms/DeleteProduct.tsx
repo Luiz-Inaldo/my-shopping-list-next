@@ -36,8 +36,9 @@ export const DeleteProduct = ({
         <div className="flex gap-2 mt-5">
           <Button
             type="button"
+            variant="destructive"
             onClick={() => saveAndCloseModal()}
-            className="col-span-1 w-full rounded-full"
+            className="col-span-1 w-full"
           >
             Sim
           </Button>
@@ -45,7 +46,7 @@ export const DeleteProduct = ({
             type="button"
             onClick={() => setOpen(false)}
             variant="outline"
-            className="col-span-1 w-full rounded-full"
+            className="col-span-1 w-full"
           >
             Cancelar
           </Button>

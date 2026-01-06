@@ -16,7 +16,7 @@ export function UserAvatar({ width, height, className = '' }: { width: number, h
             }
         }>
             <AvatarImage
-                src={`https://api.dicebear.com/9.x/micah/svg?seed=${userProfile?.email}`}
+                src={`https://api.dicebear.com/9.x/micah/svg?seed=${userProfile?.email}&backgroundColor=c0aede`}
             />
             <AvatarFallback>
                 <Image

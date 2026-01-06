@@ -124,10 +124,10 @@ export const AddProductForm = () => {
           disabled={isButtonDisabled}
           onClick={handleOpenDrawer}
           size="sm"
-          className="fixed rounded-full bottom-5 right-5 h-fit px-4 py-2"
+          variant="ghost"
+          className="h-fit p-1"
         >
-          <Plus size={24} />
-          <p>Adicionar Produto</p>
+          <Plus size={20} className="text-app-primary" />
         </Button>
       </DrawerTrigger>
       <DrawerContent className="bg-app-container rounded-lg">
@@ -207,7 +207,7 @@ export const AddProductForm = () => {
               <span className='text-subtitle text-sm font-semibold mb-1 leading-none'>Já adquirido?</span>
               <input
                 type="checkbox"
-                className="w-4 h-4 accent-default-green bg-app-background border-1 border-paragraph rounded checked:border-transparent"
+                className="w-4 h-4 accent-app-primary bg-app-background border-1 border-paragraph rounded checked:border-transparent"
                 {...register('checked')}
               />
             </label>

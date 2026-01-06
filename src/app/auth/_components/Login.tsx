@@ -156,7 +156,7 @@ export default function LogInForm({
           <ForgotPasswordModal
             email={form.getValues('email')}
             trigger={
-              <Button variant="link" className="p-0 w-fit ml-auto text-default-green">
+              <Button variant="link" className="p-0 w-fit ml-auto text-app-primary">
                 <span>Esqueci minha senha</span>
               </Button>
             }
@@ -179,7 +179,7 @@ export default function LogInForm({
               Não possui uma conta?{" "}
               <span
                 onClick={() => setCurrentForm("register")}
-                className="text-default-green cursor-pointer"
+                className="text-app-primary cursor-pointer"
               >
                 Cadastre-se
               </span>

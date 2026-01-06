@@ -58,7 +58,7 @@ export function PurchaseBlocked() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.5, duration: 0.3 }}
             >
-              <Check size={20} className="text-default-green shrink-0" />
+              <Check size={20} className="text-app-primary shrink-0" />
               <div className="space-y-1">
                 <h3 className="font-medium text-sm">Lista já concluída</h3>
                 <p className='text-paragraph text-sm'>Essa lista já foi finalizada e não está mais acessível.</p>

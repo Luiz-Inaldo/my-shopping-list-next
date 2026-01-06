@@ -12,7 +12,7 @@ export default function StartPage() {
   const { handleChangeRoute } = usePageOverlay();
 
   return (
-    <div className="relative flex flex-col h-dvh w-full bg-white gap-10 p-4 overflow-hidden">
+    <div className="relative flex flex-col h-dvh page-wrapper mx-auto bg-white gap-10 p-4 overflow-hidden">
       <motion.img
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
@@ -25,7 +25,7 @@ export default function StartPage() {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 1 }}
-        className="flex items-center justify-center rounded-full bg-default-green/5 size-[200px] mt-12 mx-auto overflow-hidden"
+        className="flex items-center justify-center rounded-full bg-app-primary/5 size-[200px] mt-12 mx-auto overflow-hidden"
       >
         <motion.div
           initial={{ opacity: 0, x: "-100%" }}
@@ -56,7 +56,7 @@ export default function StartPage() {
       >
         <button
           onClick={() => handleChangeRoute(APP_ROUTES.public.auth.name)}
-          className="w-full h-10 px-3 py-2 flex items-center gap-2 justify-center cursor-pointer font-semibold uppercase text-sm bg-default-green rounded-full text-white"
+          className="w-full h-10 px-3 py-2 flex items-center gap-2 justify-center cursor-pointer font-semibold uppercase text-sm bg-app-primary rounded-full text-white"
         >
           <span>Começe Agora</span>
           <ArrowRightIcon size={18} />

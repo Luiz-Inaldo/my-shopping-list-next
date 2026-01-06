@@ -8,7 +8,7 @@ export default function AuthPage() {
   const [currentForm, setCurrentForm] = useState<string>("login");
 
   return (
-    <div className="auth-page-light bg-[#e9e9e9] max-w-[430px] h-screen flex flex-col items-center overflow-hidden space-y-5">
+    <div className="auth-page-light bg-[#e9e9e9] page-wrapper h-screen flex flex-col items-center overflow-hidden space-y-5">
       <ul className="w-[240px] rounded-full flex items-center justify-between p-2 mt-4 shadow-md bg-white">
         <motion.li
           key="login"
@@ -22,7 +22,7 @@ export default function AuthPage() {
             <motion.div
               layoutId="background"
               id="background"
-              className="absolute w-[112px] h-[32px] rounded-full top-0 z-[0] left-0 bg-default-green"
+              className="absolute w-[112px] h-[32px] rounded-full top-0 z-[0] left-0 bg-app-primary"
             />
           ) : null}
         </motion.li>
@@ -38,7 +38,7 @@ export default function AuthPage() {
             <motion.div
               layoutId="background"
               id="background"
-              className="absolute w-[112px] h-[32px] rounded-full top-0 z-[0] right-0 bg-default-green"
+              className="absolute w-[112px] h-[32px] rounded-full top-0 z-[0] right-0 bg-app-primary"
             />
           ) : null}
         </motion.li>
@@ -57,7 +57,7 @@ export default function AuthPage() {
             Já possui uma conta?{" "}
             <span
               onClick={() => setCurrentForm("login")}
-              className="text-default-green cursor-pointer"
+              className="text-app-primary cursor-pointer"
             >
               Faça login
             </span>

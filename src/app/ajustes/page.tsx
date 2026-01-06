@@ -12,7 +12,7 @@ export default function Settings() {
   const user = useGeneralUserStore(s => s.userProfile);
 
   return (
-    <>
+    <div className="page-wrapper">
       <Header className="text-lg font-medium">Ajustes</Header>
 
       <main className="px-5 pb-24 pt-6 flex flex-col gap-8">
@@ -25,6 +25,6 @@ export default function Settings() {
       </main>
 
       <Footer />
-    </>
+    </div>
   );
 }
