@@ -53,7 +53,8 @@
     --subtitle: #343a40;
     --paragraph: #838587;
     --link: #3fad42;
-    --action: #ff9800;
+    --warning: 36 100% 50%; /* #ff9800 */
+    --success: 143 79% 48%; /* #1FDE67 */
   }
 
   .dark {
@@ -135,6 +136,11 @@
   /* min-height: 100dvh; */
   margin: 0 auto;
   padding: 16px 16px 92px 16px;
+}
+
+.page-wrapper {
+  max-width: 430px;
+  margin: 0 auto;
 }
 
 .scrollbar-hide::-webkit-scrollbar {

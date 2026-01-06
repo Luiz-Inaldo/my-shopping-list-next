@@ -51,7 +51,7 @@ export function CategoryBadgesList() {
               <div
                 onClick={() => handleFilterByCategory(category.name)}
                 key={category.name}
-                className={`flex items-center gap-3 px-3 py-2 border rounded-xl shadow ${filterValue === category.name ? 'bg-app-selected border-app-primary/10' : 'border-app-border bg-app-container'}`}
+                className={`cursor-pointer flex items-center gap-3 px-3 py-2 border rounded-xl shadow ${filterValue === category.name ? 'bg-app-selected border-app-primary/10' : 'border-app-border bg-app-container'}`}
               >
                 <p
                   className={`text-xs whitespace-nowrap ${filterValue === category.name ? 'text-app-primary font-medium' : 'text-subtitle'}`}

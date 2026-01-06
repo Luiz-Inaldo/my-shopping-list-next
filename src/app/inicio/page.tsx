@@ -12,7 +12,7 @@ export default function StartPage() {
   const { handleChangeRoute } = usePageOverlay();
 
   return (
-    <div className="relative flex flex-col h-dvh w-full bg-white gap-10 p-4 overflow-hidden">
+    <div className="relative flex flex-col h-dvh page-wrapper mx-auto bg-white gap-10 p-4 overflow-hidden">
       <motion.img
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}

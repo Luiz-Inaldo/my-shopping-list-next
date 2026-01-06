@@ -79,6 +79,8 @@ const config = {
         "app-border": "var(--app-border)",
         "primary-dark": "#212529",
         "secondary-dark": "#343a40",
+        "warning": "hsl(var(--warning) / <alpha-value>)",
+        "success": "hsl(var(--success) / <alpha-value>)",
         "dark-button-color": "#0466c8",
         "primary-blue": "#A0CFF7",
         "secondary-blue": "#0066CC", 

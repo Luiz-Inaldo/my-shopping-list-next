@@ -127,7 +127,7 @@ export const AddProductForm = () => {
           variant="ghost"
           className="h-fit p-1"
         >
-          <Plus size={20} />
+          <Plus size={20} className="text-app-primary" />
         </Button>
       </DrawerTrigger>
       <DrawerContent className="bg-app-container rounded-lg">

@@ -39,7 +39,7 @@ const Footer = () => {
       style={{
         boxShadow: '0 0 4px rgb(0 0 0 / 0.1)',
       }}
-      className="fixed bottom-0 left-0 z-[3] w-full bg-app-container rounded-tr-2xl rounded-tl-2xl py-2 px-4 flex items-center justify-center"
+      className="fixed bottom-0 z-[3] w-full max-w-[430px] mx-auto bg-app-container rounded-tr-2xl rounded-tl-2xl py-2 px-4 flex items-center justify-center"
     >
       <ul className="w-full gap-2 grid grid-cols-5 justify-center">
         {allowedRoutes.map((route) => (

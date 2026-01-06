@@ -18,6 +18,7 @@ import useGeneralUserStore from '@/store/generalUserStore';
 import { PurchaseBlocked } from '../Errors/PurchaseBlocked';
 import ErrorFetchData from '../Errors/ErrorFetchData';
 import { Button } from '../ui/button';
+import { FinancialSummarySheet } from '../Sheet/FinancialSummarySheet';
 
 export default function ShoppingList() {
   const userId = useGeneralUserStore((store) => store.userProfile?.uid);
@@ -52,33 +53,26 @@ export default function ShoppingList() {
   }
 
   return (
-    <div className="relative flex flex-col h-screen">
+    <div className="page-wrapper relative flex flex-col h-screen">
       <Header className="justify-between">
         <div className="flex items-center gap-2">
           <ChevronLeft
             size={20}
             onClick={() => handleChangeRoute(APP_ROUTES.private.home.name)}
-            className="text-subtitle"
+            className="text-subtitle cursor-pointer"
           />
           <h2 className="font-medium text-subtitle">{productsList?.title}</h2>
         </div>
         <div className="flex items-center gap-2">
-          <Button
-            size="sm"
-            variant="ghost"
-            className="h-fit p-1"
-          >
-            <ChartNoAxesColumnIncreasing size={20} />
-          </Button>
+          <FinancialSummarySheet
+            setSavingModalOpen={setSavingModalOpen}
+            setIsSaved={setIsSaved}
+          />
           <AddProductForm />
         </div>
       </Header>
       <div className="flex flex-col gap-4 flex-1 overflow-hidden">
         <div className="p-4 pb-0 flex flex-col gap-4 shrink-0">
-          {/* <FinancialSummary
-            setSavingModalOpen={setSavingModalOpen}
-            setIsSaved={setIsSaved}
-          /> */}
           <ProductsSearch />
           <CategoryBadgesList />
         </div>
@@ -87,9 +81,9 @@ export default function ShoppingList() {
         </div>
       </div>
 
-      {savingModalOpen && (
+      {/* {savingModalOpen && (
         <LoadingActionModal text="Finalizando sua compra..." />
-      )}
+      )} */}
     </div>
   );
 }
