@@ -59,7 +59,7 @@ export default function ResetPasswordPage() {
         setStatus('success');
 
         timeout = setTimeout(() => {
-            router.push(APP_ROUTES.public.auth.name);
+            router.push(APP_ROUTES.public.login.name);
         }, 2_000);
         return () => clearTimeout(timeout);
     }
