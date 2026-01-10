@@ -6,6 +6,7 @@ import { APP_ROUTES } from "@/routes/app-routes";
 import { ArrowRightIcon } from "lucide-react";
 import { motion } from "framer-motion";
 import { usePageOverlay } from "@/context/PageOverlayContext";
+import { Button } from "@/components/ui/button";
 
 export default function StartPage() {
   
@@ -54,13 +55,13 @@ export default function StartPage() {
         transition={{ duration: 1, delay: 1.8 }}
         className="w-full mt-auto"
       >
-        <button
-          onClick={() => handleChangeRoute(APP_ROUTES.public.auth.name)}
-          className="w-full h-10 px-3 py-2 flex items-center gap-2 justify-center cursor-pointer font-semibold uppercase text-sm bg-app-primary rounded-full text-white"
+        <Button
+          onClick={() => handleChangeRoute(APP_ROUTES.public.login.name)}
+          className="w-full h-14 px-3 py-2 flex items-center gap-2 justify-center cursor-pointer font-semibold uppercase text-sm bg-app-primary text-white"
         >
           <span>Começe Agora</span>
           <ArrowRightIcon size={18} />
-        </button>
+        </Button>
       </motion.div>
     </div>
   );

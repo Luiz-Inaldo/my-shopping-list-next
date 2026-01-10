@@ -112,7 +112,7 @@
 /* Força modo light na página de autenticação */
 .auth-page-light {
   --app-background: #efefef;
-  --app-primary: #4caf50;
+  --app-primary: 245 47% 32%; /* #322B78 */
   --app-container: white;
   --app-border: #e8e8e8;
   --title: #212529;
