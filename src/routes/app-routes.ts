@@ -39,8 +39,14 @@ export const APP_ROUTES = {
         }
     },
     public: {
-        auth :{
-            name: "/auth"
+        login :{
+            name: "/auth/login"
+        },
+        registro: {
+            name: "/auth/registrar"
+        },
+        forgotPassword: {
+            name: "/auth/recuperar-senha"
         },
         inicio: {
             name: "/inicio"

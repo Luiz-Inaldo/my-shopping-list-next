@@ -1,4 +1,5 @@
 import { Metadata } from "next";
+import React, { Suspense } from 'react';
 
 export const metadata: Metadata = {
   title: "EzShop | Autenticação",
@@ -14,5 +15,7 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  return <>{children}</>;
+  return <Suspense fallback={<div />}>
+    {children}
+  </Suspense>;
 }
