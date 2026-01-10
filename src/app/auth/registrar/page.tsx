@@ -1,7 +1,6 @@
 'use client';
 import Link from 'next/link';
 import React, {
-  useCallback,
   useEffect,
   useMemo,
   useState,
@@ -16,7 +15,6 @@ import {
   FormLabel,
   FormMessage,
 } from '@/components/ui/form';
-import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Eye, EyeOff, LoaderCircle, User, Mail, Lock } from 'lucide-react';
 import { registerFormSchema } from '@/zodSchema/registerForm';
@@ -45,7 +43,7 @@ export default function Page() {
     useState<boolean>(false);
   const [isUsernameAvailable, setIsUsernameAvailable] =
     useState<boolean>(false);
-  const searchParams = useSearchParams();
+  const searchParams = new URLSearchParams(window.location.search);
 
   const form = useForm<IRegisterUser>({
     resolver: zodResolver(registerFormSchema),
