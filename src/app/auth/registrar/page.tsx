@@ -43,7 +43,7 @@ export default function Page() {
     useState<boolean>(false);
   const [isUsernameAvailable, setIsUsernameAvailable] =
     useState<boolean>(false);
-  const searchParams = new URLSearchParams(window.location.search);
+  const searchParams = useSearchParams();
 
   const form = useForm<IRegisterUser>({
     resolver: zodResolver(registerFormSchema),
