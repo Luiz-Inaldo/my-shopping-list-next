@@ -1,23 +1,25 @@
-"use client";
-import { Pie, PieChart } from "recharts";
+'use client';
+import { Pie, PieChart } from 'recharts';
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card";
+} from '@/components/ui/card';
 import {
   ChartConfig,
   ChartContainer,
   ChartTooltip,
   ChartTooltipContent,
-} from "@/components/ui/chart";
-import { CATEGORIES } from "@/constants/categories";
-import { useEffect, useState } from "react";
-import { IProductProps } from "@/types";
-import { calculatePercentage } from "@/functions/categoryPercentage";
-import { CategoryDistributionChartSkeleton } from "../../../../components/Skeletons/CategoryDistributionChartSkeleton";
+} from '@/components/ui/chart';
+import { CATEGORIES } from '@/constants/categories';
+import { useEffect, useState } from 'react';
+import { IProductProps } from '@/types';
+import { calculatePercentage } from '@/functions/categoryPercentage';
+import { CategoryDistributionChartSkeleton } from '../../../../components/Skeletons/CategoryDistributionChartSkeleton';
+import { ChevronDown } from 'lucide-react';
+import { cn } from '@/lib/utils';
 
 const chartColors = CATEGORIES.map((category) => {
   return {
@@ -28,44 +30,44 @@ const chartColors = CATEGORIES.map((category) => {
 
 const chartConfig = {
   mercearia: {
-    label: "Mercearia",
-    color: "var(--category-1)",
+    label: 'Mercearia',
+    color: 'var(--category-1)',
   },
   limpeza: {
-    label: "Limpeza",
-    color: "var(--category-2)",
+    label: 'Limpeza',
+    color: 'var(--category-2)',
   },
   frios: {
-    label: "Frios e Laticínios",
-    color: "var(--category-3)",
+    label: 'Frios e Laticínios',
+    color: 'var(--category-3)',
   },
   carnes: {
-    label: "Carnes e Peixes",
-    color: "var(--category-4)",
+    label: 'Carnes e Peixes',
+    color: 'var(--category-4)',
   },
   padaria: {
-    label: "Padaria",
-    color: "var(--category-5)",
+    label: 'Padaria',
+    color: 'var(--category-5)',
   },
   higiene: {
-    label: "Higiene Pessoal",
-    color: "var(--category-6)",
+    label: 'Higiene Pessoal',
+    color: 'var(--category-6)',
   },
   bebidas: {
-    label: "Bebidas",
-    color: "var(--category-7)",
+    label: 'Bebidas',
+    color: 'var(--category-7)',
   },
   congelados: {
-    label: "Congelados",
-    color: "var(--category-8)",
+    label: 'Congelados',
+    color: 'var(--category-8)',
   },
   hortifruti: {
-    label: "Hortifruti",
-    color: "var(--category-9)",
+    label: 'Hortifruti',
+    color: 'var(--category-9)',
   },
   outros: {
-    label: "Outros",
-    color: "var(--category-10)",
+    label: 'Outros',
+    color: 'var(--category-10)',
   },
 } satisfies ChartConfig;
 
@@ -75,15 +77,22 @@ interface CategoryDistributionChartProps {
   loading?: boolean;
 }
 
-export function CategoryDistributionChart({ productsList, title = "Distribuição por Categoria", loading = false }: CategoryDistributionChartProps) {
+export function CategoryDistributionChart({
+  productsList,
+  title = 'Distribuição por Categoria',
+  loading = false,
+}: CategoryDistributionChartProps) {
   const [chartData, setChartData] = useState<any[]>([]);
+  const [chartExpanded, setChartExpanded] = useState<boolean>(true);
 
   useEffect(() => {
     if (productsList && productsList.length > 0) {
       // Gerar dados do gráfico para cada categoria
       const chartData = CATEGORIES.map((category) => {
         // Calcular porcentagem usando a função utilitária
-        const percentage = parseFloat(calculatePercentage(productsList, category.name));
+        const percentage = parseFloat(
+          calculatePercentage(productsList, category.name)
+        );
 
         return {
           category: category.name,
@@ -97,26 +106,44 @@ export function CategoryDistributionChart({ productsList, title = "Distribuiçã
       setChartData([]);
     }
   }, [productsList]);
-
+  
   if (loading) {
     return <CategoryDistributionChartSkeleton />;
   }
 
   return (
-    <Card className="bg-app-container shadow-md border rounded-sm">
+    <Card className="bg-app-container shadow-md border">
       <CardHeader className="p-4">
-        <CardTitle className="text-lg font-semibold text-title">
-          {title}
+        <CardTitle className="text-lg flex items-center justify-between font-semibold text-title">
+          <h2>{title}</h2>
+          <ChevronDown
+            size={14}
+            className={cn(
+              'text-paragraph transition-transform duration-300',
+              !chartExpanded && 'rotate-180'
+            )}
+            onClick={() => setChartExpanded(!chartExpanded)}
+          />
         </CardTitle>
-        <CardDescription className="text-paragraph grid gap-1">
+        <CardDescription className={cn("text-paragraph grid gap-1 transition-opacity duration-200",
+          !chartExpanded && "opacity-0 hidden"
+        )}>
           <p>
             Total de itens: <strong>{productsList.length}</strong>
           </p>
         </CardDescription>
       </CardHeader>
-      <CardContent className="relative p-4">
+      <CardContent
+        className={cn(
+          'relative max-h-[500px] p-4 transition-all duration-300 ease-in-out',
+          !chartExpanded && 'max-h-0 overflow-hidden p-0 opacity-0'
+        )}
+      >
         {chartData.length > 0 ? (
-          <ChartContainer config={chartConfig} className="!aspect-square h-[220px] mx-auto">
+          <ChartContainer
+            config={chartConfig}
+            className="!aspect-square h-[220px] mx-auto"
+          >
             <PieChart>
               <ChartTooltip
                 cursor={false}
@@ -136,14 +163,15 @@ export function CategoryDistributionChart({ productsList, title = "Distribuiçã
                             }}
                           ></div>
                           <span className="text-sm text-paragraph truncate">
-                            {name}: {`${Number(value).toFixed(1).replace(".", ",")}%`}
+                            {name}:{' '}
+                            {`${Number(value).toFixed(1).replace('.', ',')}%`}
                           </span>
                         </div>
                       );
                     }}
                   />
                 }
-                wrapperStyle={{ pointerEvents: "auto" }}
+                wrapperStyle={{ pointerEvents: 'auto' }}
               />
               <Pie
                 data={chartData}

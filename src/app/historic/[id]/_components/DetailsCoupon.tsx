@@ -61,7 +61,7 @@ export function DetailsCoupon() {
         </h2>
 
         {/* Receipt Box */}
-        <div className="bg-app-container rounded-lg shadow-md p-6 mb-6">
+        <div className="bg-app-container rounded-xl shadow-md p-6 mb-6">
           {/* Store Information */}
           <div className="text-center mb-4">
             <h3 className="font-bold text-title text-lg">
