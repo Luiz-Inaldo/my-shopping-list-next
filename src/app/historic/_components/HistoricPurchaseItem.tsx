@@ -20,7 +20,7 @@ export function HistoricPurchaseItem({ purchase }: PurchaseItemProps) {
       <div className="flex items-center gap-3">
         {/* Top Line - Title with Orange Dot */}
         <div className="flex items-center gap-3 mb-2">
-          <div className="w-2.5 h-2.5 bg-action rounded-full flex-shrink-0" />
+          <div className="w-2.5 h-2.5 bg-app-secondary rounded-full flex-shrink-0" />
         </div>
 
         {/* Bottom Line - Amount and Date */}

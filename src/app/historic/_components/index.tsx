@@ -138,16 +138,16 @@ export function HistoricPage() {
     }, [historicData]);
 
     return (
-        <>
-            <Header className="text-lg font-medium">
+        <div className="flex flex-col h-dvh overflow-hidden">
+            <Header className="text-lg font-medium shrink-0">
                 Histórico
             </Header>
-            <div className="w-full px-5 pb-24 pt-6">
-                {user && !user?.emailVerified && (
-                    <AppAlert type="email" className="mb-10" />
-                )}
-                <div className="grid 2xsm:grid-cols-1 gap-10">
-                    <div className="grid grid-cols-2 gap-x-5 gap-y-2">
+            <div className="flex flex-col flex-1 overflow-hidden">
+                <div className="w-full px-5 pt-6 shrink-0">
+                    {user && !user?.emailVerified && (
+                        <AppAlert type="email" className="mb-10" />
+                    )}
+                    <div className="grid grid-cols-2 gap-x-5 gap-y-2 mb-10">
                         <label className="relative flex-1 col-span-1">
                             <span className="text-subtitle font-medium">Mês</span>
                             <Select onValueChange={(value) => handleFilters(value, "month")}>
@@ -182,7 +182,9 @@ export function HistoricPage() {
                             </Select>
                         </label>
                     </div>
+                </div>
 
+                <div className="flex-1 overflow-y-auto px-5 pb-24">
                     <HistoricList
                         isLoading={isLoading}
                         hasError={isError}
@@ -190,9 +192,9 @@ export function HistoricPage() {
                         retryFn={refetch}
                         isFetching={isFetching}
                     />
-
                 </div>
+
             </div>
-        </>
+        </div>
     )
 }
