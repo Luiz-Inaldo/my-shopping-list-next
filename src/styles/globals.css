@@ -3,8 +3,8 @@
 @tailwind utilities;
 
 @font-face {
-  font-family: "Cherry Bomb One";
-  src: url("/fonts/CherryBombOne-Regular.woff2") format("woff2");
+  font-family: 'Cherry Bomb One';
+  src: url('/fonts/CherryBombOne-Regular.woff2') format('woff2');
   font-weight: 400;
   font-style: normal;
   font-display: swap;
@@ -88,7 +88,7 @@
     --category-9: #10b981;
     --category-10: #6b7280;
     --app-background: #1f2123;
-    --app-primary: #8E84FC;
+    --app-primary: #8e84fc;
     --app-container: #353739;
     --title: #dfe1e4;
     --subtitle: #b8bcc0;
@@ -181,31 +181,31 @@
 
 .loader > svg circle {
   fill: none;
- stroke-width: 2.5;
- stroke-dasharray: 1, 200;
- stroke-dashoffset: 0;
- stroke-linecap: round;
- animation: dash4 1.5s ease-in-out infinite;
+  stroke-width: 2.5;
+  stroke-dasharray: 1, 200;
+  stroke-dashoffset: 0;
+  stroke-linecap: round;
+  animation: dash4 1.5s ease-in-out infinite;
 }
 
 @keyframes rotate4 {
   100% {
-   transform: rotate(360deg);
+    transform: rotate(360deg);
   }
- }
- 
- @keyframes dash4 {
+}
+
+@keyframes dash4 {
   0% {
-   stroke-dasharray: 1, 200;
-   stroke-dashoffset: 0;
+    stroke-dasharray: 1, 200;
+    stroke-dashoffset: 0;
   }
- 
+
   50% {
-   stroke-dasharray: 90, 200;
-   stroke-dashoffset: -35px;
+    stroke-dasharray: 90, 200;
+    stroke-dashoffset: -35px;
   }
- 
+
   100% {
-   stroke-dashoffset: -125px;
+    stroke-dashoffset: -125px;
   }
- }
+}
