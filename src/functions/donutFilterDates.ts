@@ -1,4 +1,4 @@
-import { TabType } from "@/app/statistics/Components/StatisticsTabs";
+import { TabType } from "@/app/statistics/_components/StatisticsTabs";
 
 /**
  * Função para obter o início de um range atual, a depender da tab ativa

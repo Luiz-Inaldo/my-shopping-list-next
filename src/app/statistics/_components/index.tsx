@@ -54,6 +54,7 @@ export function Statistics() {
                         {/* Month/Year Filters - Only show for month tab */}
                         {activeTab === "month" && (
                             <MonthYearFilters
+                                // purchasesList={areaChartData}
                                 selectedMonth={selectedMonth}
                                 selectedYear={selectedYear}
                                 onMonthChange={setSelectedMonth}

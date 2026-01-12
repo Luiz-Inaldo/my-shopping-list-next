@@ -14,6 +14,7 @@ import { db } from '@/lib/firebase';
 import { Filters } from '@/types/filters';
 import { usePurchasesQuery } from '@/hooks/queries/purchases';
 import { AppAlert } from '@/components/Alerts';
+import { getYears } from '@/functions/getYears';
 
 export function HistoricPage() {
 
@@ -173,7 +174,7 @@ export function HistoricPage() {
                                 </SelectTrigger>
                                 <SelectContent>
                                     <SelectItem value="todos">Todos os anos</SelectItem>
-                                    {YEARS.map((year) => (
+                                    {getYears(auxData).map((year) => (
                                         <SelectItem key={year} value={String(year)}>
                                             {year}
                                         </SelectItem>

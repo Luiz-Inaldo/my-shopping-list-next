@@ -29,8 +29,8 @@ export function StatisticsTabs({ activeTab, handleTabChange }: StatisticsTabsPro
           <span className={`${activeTab === tab.key ? "!text-subtitle" : "text-paragraph"} relative z-[2] transition-colors delay-100`}>{tab.label}</span>
           {activeTab === tab.key ? (
             <motion.div
-              layoutId="background"
-              id="background"
+              layoutId="tabsBg"
+              id="tabsBg"
               className="absolute inset-0 z-[0] rounded-tl-lg rounded-tr-lg p-2 bg-app-container"
             />
           ) : null}

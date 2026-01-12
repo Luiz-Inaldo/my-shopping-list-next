@@ -1,1 +1,1 @@
-export const YEARS: Array<number> = [2024, 2025]
+export const YEARS: Array<number> = [2024, 2025, 2026]
