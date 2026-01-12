@@ -1,1 +1,1 @@
-export const defaultAvatarImgUrl = `https://api.dicebear.com/9.x/micah/svg?seed=Caleb&backgroundColor=c0aede`
+export const defaultAvatarImgUrl = `https://api.dicebear.com/9.x/thumbs/svg?seed=Caleb&backgroundColor=c0aede`
