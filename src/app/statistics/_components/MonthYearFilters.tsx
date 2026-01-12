@@ -3,6 +3,7 @@
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { MONTHS } from "@/constants/months";
 import { YEARS } from "@/constants/years";
+import { getYears } from "@/functions/getYears";
 import React from "react";
 
 interface MonthYearFiltersProps {
@@ -18,6 +19,7 @@ export function MonthYearFilters({
   onMonthChange, 
   onYearChange 
 }: MonthYearFiltersProps) {
+  //TODO: Necessário colocar função para obter os anos de acordo com a lista de compras
   return (
     <div className="flex gap-3 pt-6 pb-1 px-4">
       <div className="flex-1">

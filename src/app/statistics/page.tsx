@@ -1,6 +1,6 @@
 "use client";
 import LoggedLayout from "@/components/layout/MainLayout";
-import { Statistics } from "./Components";
+import { Statistics } from "./_components";
 
 export default function StatisticsPage() {
 

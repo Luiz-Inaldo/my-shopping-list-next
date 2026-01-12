@@ -100,7 +100,7 @@ export function HistoricListPDF() {
 
     return (
         <div className="flex flex-col gap-4">
-            <div className="flex items-center justify-between text-white p-3 bg-app-primary">
+            <div className="sticky top-0 flex items-center justify-between text-white p-3 bg-app-primary">
                 <h1>{`${formattedTitle(productsList?.title as string)}.pdf`}</h1>
                 <div className="flex items-center gap-2">
                     <Link href={APP_ROUTES.private.historic.details.name(productsList?.id as string)}>
