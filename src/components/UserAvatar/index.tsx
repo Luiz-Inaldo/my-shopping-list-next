@@ -3,6 +3,7 @@ import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar'
 import Image from 'next/image'
 import useGeneralUserStore from '@/store/generalUserStore';
 import { cn } from '@/lib/utils';
+import { defaultAvatarImgUrl } from '@/constants/avatarImgUrl';
 
 export function UserAvatar({ width, height, className = '' }: { width: number, height: number, className?: string }) {
 
@@ -16,7 +17,7 @@ export function UserAvatar({ width, height, className = '' }: { width: number, h
             }
         }>
             <AvatarImage
-                src={`https://api.dicebear.com/9.x/micah/svg?seed=${userProfile?.email}&backgroundColor=c0aede`}
+                src={`https://api.dicebear.com/9.x/micah/svg?seed=${userProfile?.email}&backgroundColor=c0aede` || defaultAvatarImgUrl}
             />
             <AvatarFallback>
                 <Image
