@@ -132,8 +132,8 @@ export function FinancialSummarySheet({
   return (
     <Sheet open={open} onOpenChange={setOpen}>
       <SheetTrigger asChild>
-        <Button size="sm" variant="ghost" className="h-fit p-1">
-          <ChartNoAxesColumnIncreasing size={20} className="text-app-primary" />
+        <Button size="sm" className="h-fit p-1 rounded-lg">
+          <ChartNoAxesColumnIncreasing size={20} />
         </Button>
       </SheetTrigger>
       <SheetContent className="w-11/12 max-h-screen">

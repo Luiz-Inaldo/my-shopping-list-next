@@ -2,6 +2,7 @@ import React, { useMemo } from 'react';
 import { Product } from './Product';
 import Image from 'next/image';
 import { IProductProps } from '@/types';
+import { AddProductForm } from '../Forms/AddProductForm';
 
 export function ProductsList({
   list,
@@ -53,6 +54,7 @@ function EmptyProducsList() {
         <p className="text-paragraph text-center text-xs">
           Ainda não há itens na lista
         </p>
+        <AddProductForm withLabel className="px-3 h-10"/>
       </div>
     </div>
   );
