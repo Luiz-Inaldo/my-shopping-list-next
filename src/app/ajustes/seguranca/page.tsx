@@ -154,7 +154,7 @@ export default function SecurityPage() {
               className="w-full"
             >
               {isUpdatingPassword ? <>
-                <AppLoader size={18} strokeColor="#fff" />
+                <AppLoader size={18} />
                 Salvando...
               </> : <>
                 <Lock size={18} />

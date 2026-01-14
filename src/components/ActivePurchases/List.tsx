@@ -46,7 +46,7 @@ export function ActivePurchsesList() {
                                 initial={{ opacity: 0, y: 20 }}
                                 animate={{ opacity: 1, y: 0 }}
                                 transition={{ duration: 0.2, delay: index * 0.1 }}
-                                className="w-full bg-app-container rounded-lg shadow flex gap-3 items-center p-3"
+                                className="w-full bg-app-container rounded-xl shadow flex gap-3 items-center p-3"
                             >
                                 <div className="flex flex-1 flex-col gap-3">
                                     <div className="flex items-center justify-between">

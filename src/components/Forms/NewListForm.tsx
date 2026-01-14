@@ -19,6 +19,7 @@ import { invalidateAllQueries } from '@/functions/invalidadeQueries';
 import { QUERY_KEYS } from '@/constants/queryKeys';
 import { Timestamp } from 'firebase/firestore';
 import useGeneralUserStore from '@/store/generalUserStore';
+import { AppLoader } from '../Loader/app-loader';
 
 const addButtonVariants = {
     initial: {
@@ -94,7 +95,7 @@ const NewListForm = () => {
                     animate="animate"
                     transition={addButtonVariants.transition}
                 >
-                    <Button disabled={isLocked} size="sm" className='fixed bottom-[80px] right-2.5 py-1.5 h-fit'>
+                    <Button disabled={isLocked} size="sm" className='fixed bottom-[80px] rounded-lg right-2.5 py-1.5 h-fit'>
                         <Plus size={16} />
                         <span>Nova lista</span>
                     </Button>
@@ -109,7 +110,7 @@ const NewListForm = () => {
                 <DialogDescription hidden />
 
                 <Form {...form}>
-                    <form onSubmit={form.handleSubmit(onSubmit)} className='w-full grid place-items-center mt-5 px-3 space-y-5'>
+                    <form onSubmit={form.handleSubmit(onSubmit)} className='w-full grid place-items-center mt-3 px-3 space-y-5'>
 
                         <div
                             className={`flex flex-col gap-3 w-full`}
@@ -133,9 +134,9 @@ const NewListForm = () => {
                                 control={form.control}
                                 name="list_max_value"
                                 render={({ field }) => (
-                                    <FormItem className='space-y-2'>
+                                    <FormItem>
                                         <FormLabel>Valor máximo da lista</FormLabel>
-                                        <FormDescription className='text-paragraph text-xs italic !m-0'>Exemplo: 100 ou 100,00</FormDescription>
+                                        {/* <FormDescription className='text-paragraph text-xs italic !m-0'>Exemplo: 100 ou 100,00</FormDescription> */}
                                         <FormControl>
                                             <Input placeholder="Insira o valor máximo" {...field} />
                                         </FormControl>
@@ -147,18 +148,19 @@ const NewListForm = () => {
 
                         <Button
                             type="submit"
+                            size='lg'
                             className='w-full cursor-pointer shadow-md'
                             disabled={isSettingPurchase}
                         >
                             {isSettingPurchase ? (
                                 <>
-                                    <LoaderCircle className='animate-spin' size={20} />
+                                    <AppLoader size={20} />
                                     <span>Criando lista...</span>
                                 </>
                             ) : (
                                 <>
                                     <Check size={20} />
-                                    <span>Vamos começar</span>
+                                    <span>Criar nova lista</span>
                                 </>
                             )}
                         </Button>
