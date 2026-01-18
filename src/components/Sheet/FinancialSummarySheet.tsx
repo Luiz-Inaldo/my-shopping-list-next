@@ -61,8 +61,13 @@ export function FinancialSummarySheet({
       // de produtos
       document.body.style.overflow = 'hidden';
 
+      const checkedProducts = auxData?.purchase_items?.filter(
+        (item) => item.checked
+      );
+
       const purchase = {
         ...auxData,
+        purchase_items: checkedProducts || [],
         end_date: Timestamp.fromDate(new Date()),
         total_price: totalValue,
       } as IPurchaseProps;
