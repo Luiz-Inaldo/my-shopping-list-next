@@ -1,7 +1,22 @@
 import { DollarSign, Goal, ShoppingCart, TrendingUp } from 'lucide-react';
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from '../ui/carousel';
+import { create } from 'domain';
+import { createQueryOptionsMonthlyStatistics } from '@/hooks/queries/monthlyStatistics';
+import { useQuery } from '@tanstack/react-query';
+import useGeneralUserStore from '@/store/generalUserStore';
 
 export function MonthlyStatistics() {
+
+  const userId = useGeneralUserStore((store) => store.userProfile?.uid);
+
+  const {
+    data: statisticsData,
+    isLoading,
+    isError,
+  } = useQuery(createQueryOptionsMonthlyStatistics(userId))
+
+  console.log('statisticsData', statisticsData);
+
   return (
     <div className="min-h-[100px] justify-center p-4 bg-app-container rounded-lg shadow-sm space-y-3">
       <h3 className="text-subtitle text-sm font-medium">
