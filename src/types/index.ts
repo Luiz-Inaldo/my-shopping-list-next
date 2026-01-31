@@ -54,10 +54,10 @@ export interface IPuchasesContextProps {
   // refetchPurchases: () => void
 }
 
-export interface IFormItem extends Omit<IProductProps, "id"> {}
+export interface IFormItem extends Omit<IProductProps, "id"> { }
 
 export interface IEditItemProps
-  extends Omit<IProductProps, "category" | "checked"> {}
+  extends Omit<IProductProps, "category" | "checked"> { }
 
 
 export interface IProductProps {
@@ -80,6 +80,18 @@ export interface IPurchaseProps {
   purchase_items?: never[] | IProductProps[];
   total_price: number;
   user_id: string | undefined;
+}
+
+export type TMonthlyStatisticsResponse = Array<Exclude<IPurchaseProps, "start_date" | "end_date"> & {
+  start_date: string | null;
+  end_date: string | null;
+}>;
+
+export type TMonthlyStatisticsData = {
+  currentMonthSpending: number;
+  currentMonthListsCount: number;
+  currentMonthItemsCount: number;
+  spendingDifference: number;
 }
 
 export interface ISupabasePurchaseProps {
