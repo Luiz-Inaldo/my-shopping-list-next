@@ -52,6 +52,12 @@ export function FinancialSummarySheet({
     return progress;
   }, [auxData, totalValue]);
 
+  const totalCheckedItems = useMemo(() => {
+    if (!auxData) return 0;
+
+    return auxData.purchase_items?.filter((item) => item.checked).length || 0;
+  }, [auxData]);
+
   async function handleFinalizePurchase() {
     await sleep(0.5);
     setSavingModalOpen(true);
@@ -167,7 +173,7 @@ export function FinancialSummarySheet({
               <div className="flex items-center text-subtitle">
                 <p className="flex-1 text-sm">Itens</p>
                 <p className="shrink-0 text-lg font-semibold">
-                  {auxData?.purchase_items?.length || 0}
+                  {totalCheckedItems}
                 </p>
               </div>
               <div className="flex items-center text-subtitle">
