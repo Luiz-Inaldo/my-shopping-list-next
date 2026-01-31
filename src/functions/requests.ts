@@ -1,14 +1,12 @@
-import { FirebaseError } from "firebase/app";
+import { sleep } from "./sleep";
 
-export async function tryCatchRequest(fn: () => Promise<any>): Promise<[ boolean | null, FirebaseError | null ]> {
+export async function tryCatchRequest(fn: () => Promise<any>): Promise<[boolean | null, boolean | null]> {
 
     try {
+        await sleep(1);
         await fn();
-        return [ true, null ];
-    } catch (error) {
-        if (error instanceof FirebaseError) {
-            return [ null, error ];
-        }
-        return [ null, null ];
+        return [true, null];
+    } catch {
+        return [null, true];
     }
 }
