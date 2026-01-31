@@ -101,7 +101,7 @@ export function MonthlyStatistics() {
     formatMonthlyStatisticsData(monthlyStatisticsResponse);
 
   }, [monthlyStatisticsResponse])
-  console.log(monthlyStatisticsResponse)
+
   useEffect(() => {
     const purchasesRef = collection(db, 'purchases');
     const unsubscribe = onSnapshot(purchasesRef, (snapshot) => {
