@@ -1,5 +1,4 @@
 import { QueryObserverResult, RefetchOptions } from "@tanstack/react-query";
-import { TUiStates } from "./uiStates";
 import { Timestamp } from "firebase/firestore";
 import { UnitTypes } from "@/enums/unitTypes";
 
@@ -82,7 +81,7 @@ export interface IPurchaseProps {
   user_id: string | undefined;
 }
 
-export type TMonthlyStatisticsResponse = Array<Exclude<IPurchaseProps, "start_date" | "end_date"> & {
+export type TMonthlyStatisticsResponse = Array<Omit<IPurchaseProps, "start_date" | "end_date"> & {
   start_date: string | null;
   end_date: string | null;
 }>;
