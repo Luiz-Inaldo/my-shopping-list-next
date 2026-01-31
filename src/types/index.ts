@@ -1,5 +1,4 @@
 import { QueryObserverResult, RefetchOptions } from "@tanstack/react-query";
-import { TUiStates } from "./uiStates";
 import { Timestamp } from "firebase/firestore";
 import { UnitTypes } from "@/enums/unitTypes";
 
