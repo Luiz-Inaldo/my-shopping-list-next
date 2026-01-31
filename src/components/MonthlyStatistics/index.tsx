@@ -14,6 +14,13 @@ import { formatCurrency } from '@/functions/formatCurrency';
 import { db } from '@/lib/firebase';
 import { queryClient } from '@/utils/queryClient';
 import { QUERY_KEYS } from '@/constants/queryKeys';
+import {
+  calculateSpendingDifference,
+  calculateTotalItemsBought,
+  calculateTotalLists,
+  calculateTotalSpending,
+  groupPurchasesByMonth,
+} from '@/functions/monthlyStatistics';
 
 export function MonthlyStatistics() {
 
@@ -41,38 +48,6 @@ export function MonthlyStatistics() {
   ], [month, year]);
 
   const { data: monthlyStatisticsResponse } = useQuery(createMonthlyStatisticsQuery(userId, filters));
-
-  function groupPurchasesByMonth(data: TMonthlyStatisticsResponse) {
-    return data.reduce((acc, purchase) => {
-      if (!purchase.start_date) return acc;
-      const date = new Date(purchase.start_date);
-      const key = `${date.getFullYear()}-${date.getMonth()}`;
-      if (!acc[key]) acc[key] = [];
-      acc[key].push(purchase);
-      return acc;
-    }, {} as Record<string, TMonthlyStatisticsResponse>);
-  }
-
-  function calculateTotalSpending(purchases: TMonthlyStatisticsResponse) {
-    return purchases.reduce((total, purchase) => total + (purchase.total_price || 0), 0);
-  }
-
-  function calculateTotalLists(purchases: TMonthlyStatisticsResponse) {
-    return purchases.length;
-  }
-
-  function calculateTotalItemsBought(purchases: TMonthlyStatisticsResponse) {
-    return purchases.reduce((total, purchase) => {
-      const checkedItems = purchase.purchase_items?.length || 0;
-      return total + checkedItems;
-    }, 0);
-  }
-
-  function calculateSpendingDifference(previousMonthPurchases: TMonthlyStatisticsResponse, currentMonthPurchases: TMonthlyStatisticsResponse) {
-    const previousSpending = calculateTotalSpending(previousMonthPurchases);
-    const currentSpending = calculateTotalSpending(currentMonthPurchases);
-    return previousSpending - currentSpending;
-  }
 
   function formatMonthlyStatisticsData(data: TMonthlyStatisticsResponse) {
     const groupedData = groupPurchasesByMonth(data);

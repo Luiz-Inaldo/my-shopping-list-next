@@ -1,15 +1,4 @@
 import '@testing-library/jest-dom'
-import { server } from '@/__mocks__/server'
-
-// Configuração do MSW (Mock Service Worker)
-// Inicia o servidor antes de todos os testes
-beforeAll(() => server.listen({ onUnhandledRequest: 'warn' }))
-
-// Reseta os handlers após cada teste (para evitar efeitos colaterais)
-afterEach(() => server.resetHandlers())
-
-// Fecha o servidor após todos os testes
-afterAll(() => server.close())
 
 // Mock do Next.js Router
 // Create mock functions once to be reused across all useRouter() calls

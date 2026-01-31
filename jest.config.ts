@@ -28,11 +28,6 @@ const config: Config = {
     '<rootDir>/node_modules/',
     '<rootDir>/.next/',
   ],
-  // Transform ignore patterns for MSW
-  transformIgnorePatterns: [
-    '/node_modules/',
-    '^.+\\.module\\.(css|sass|scss)$',
-  ],
   // Collect coverage from
   collectCoverageFrom: [
     'src/**/*.{js,jsx,ts,tsx}',
