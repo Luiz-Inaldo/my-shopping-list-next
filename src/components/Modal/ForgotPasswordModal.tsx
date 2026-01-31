@@ -112,7 +112,7 @@ const ForgotPasswordModal = ({ trigger, email }: ForgotPasswordModalProps) => {
                                 disabled={isButtonDisabled}
                             >
                                 {isSubmitting ? <>
-                                    <AppLoader size={18} strokeColor="#fff" />
+                                    <AppLoader size={18} />
                                     Enviando email...
                                 </> : <>
                                     <Send size={18} />

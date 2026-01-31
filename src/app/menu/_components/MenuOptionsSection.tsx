@@ -64,7 +64,7 @@ export function MenuOptionsSection() {
         >
           <div className="flex items-center gap-3 text-subtitle">
             {isUnlogging ? (
-              <AppLoader size={18} strokeColor="var(--subtitle)" />
+              <AppLoader size={18} />
             ) : (
               <LogOut size={18} />
             )}

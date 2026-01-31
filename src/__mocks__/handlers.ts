@@ -1,4 +1,4 @@
-import { rest } from 'msw'
+import { http } from 'msw'
 
 // Define os handlers para interceptar requisições durante os testes
 // Adicione aqui os endpoints que deseja mockar

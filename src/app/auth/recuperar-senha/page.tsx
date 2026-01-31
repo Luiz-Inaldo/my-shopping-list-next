@@ -162,7 +162,7 @@ export default function Page() {
                       >
                         {isSubmitting ? (
                           <>
-                            <AppLoader strokeColor="white" size={18} />
+                            <AppLoader size={18} />
                             Enviando...
                           </>
                         ) : (

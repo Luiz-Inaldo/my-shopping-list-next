@@ -389,7 +389,7 @@ export default function Page() {
                       {loading ? (
                         <>
                           <span>Criando conta</span>
-                          <AppLoader size={18} strokeColor="white" />
+                          <AppLoader size={18} />
                         </>
                       ) : (
                         <span>Criar Conta</span>
