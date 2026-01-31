@@ -84,12 +84,12 @@ export function getPreviousRangeStartDate(
   month: number,
   year: number
 ) {
-  let previousMonth = activeTab === "month" ? month - 1 : month;
-  let previousYear = previousMonth < 0 ? year - 1 : year;
+  let previousMonth = activeTab === "month" && month === 0 ? 11 : month - 1;
+  let previousYear = month === 0 ? year - 1 : year;
 
   const today = new Date();
   const dateUTC = new Date(Date.UTC(year, month, today.getDate(), 3, 0, 0, 0));
-  
+
   switch (activeTab) {
     case "day":
       const yesterday = dateUTC.getDate() - 1;
@@ -98,7 +98,7 @@ export function getPreviousRangeStartDate(
         previousYear = previousMonth < 0 ? year - 1 : year;
         return new Date(Date.UTC(previousYear, previousMonth, 0, 3, 0, 0, 0));
       }
-      
+
       return new Date(
         Date.UTC(previousYear, previousMonth, yesterday, 3, 0, 0, 0)
       );
@@ -135,7 +135,7 @@ export function getPreviousRangeEndDate(
   const dateUTC = new Date(
     Date.UTC(year, month, today.getDate(), 23, 59, 59, 999)
   );
-  
+
   switch (activeTab) {
     case "day":
       const yesterday = dateUTC.getDate() - 1;
@@ -228,6 +228,6 @@ function getPreviousWeekEnd(dateUTC: Date, month: number, year: number) {
     }
     numberOfDaysBack -= 1;
   }
-  
+
   return new Date(Date.UTC(year, month, previousWeekEndDate, 23, 59, 59, 999));
 }

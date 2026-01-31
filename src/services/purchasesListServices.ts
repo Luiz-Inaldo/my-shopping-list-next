@@ -14,12 +14,14 @@ import {
 } from "firebase/firestore";
 
 export async function getPurchasesList(userId: string, filters?: Filters[]) {
-  
+
   const whereParams: QueryConstraint[] = [where("user_id", "==", userId)];
 
   filters?.forEach(filter => {
     whereParams.push(where(filter.id, filter.operator, filter.value));
   });
+
+  console.log(whereParams)
 
   const searchParams = query(collection(db, "purchases"), ...whereParams);
 
