@@ -21,8 +21,6 @@ export async function getPurchasesList(userId: string, filters?: Filters[]) {
     whereParams.push(where(filter.id, filter.operator, filter.value));
   });
 
-  console.log(whereParams)
-
   const searchParams = query(collection(db, "purchases"), ...whereParams);
 
   const result = await getDocs(searchParams);

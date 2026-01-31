@@ -88,7 +88,6 @@ export function MonthlyStatistics() {
       spendingDifference: calculateSpendingDifference(previousMonthPurchases, currentMonthPurchases),
     };
 
-    console.log('Formatted Monthly Statistics:', result);
     setMonthlyStatisticsData(result);
   }
 
