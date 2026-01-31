@@ -6,11 +6,14 @@ import { useQuery } from '@tanstack/react-query';
 import useGeneralUserStore from '@/store/generalUserStore';
 import { useEffect, useMemo, useState } from 'react';
 import { Filters } from '@/types/filters';
-import { Timestamp } from 'firebase/firestore';
+import { collection, onSnapshot, Timestamp } from 'firebase/firestore';
 import { getPreviousRangeStartDate } from '@/functions/donutFilterDates';
 import { createMonthlyStatisticsQuery } from '@/hooks/queries/monthly-statistics';
 import { TMonthlyStatisticsData, TMonthlyStatisticsResponse } from '@/types';
 import { formatCurrency } from '@/functions/formatCurrency';
+import { db } from '@/lib/firebase';
+import { queryClient } from '@/utils/queryClient';
+import { QUERY_KEYS } from '@/constants/queryKeys';
 
 export function MonthlyStatistics() {
 
@@ -21,7 +24,7 @@ export function MonthlyStatistics() {
   const currentDate = new Date();
   const month = currentDate.getMonth();
   const year = currentDate.getFullYear();
-  
+
   const filters = useMemo<Filters[]>(() => [
     {
       id: 'end_date',
@@ -33,7 +36,7 @@ export function MonthlyStatistics() {
     {
       id: 'end_date',
       operator: '<=',
-      value: Timestamp.fromDate(new Date(Date.UTC(year, month + 1, 0, 3, 0, 0, 0))),
+      value: Timestamp.fromDate(new Date(Date.UTC(year, month + 1, 0, 23, 59, 59, 999))),
     },
   ], [month, year]);
 
@@ -73,7 +76,7 @@ export function MonthlyStatistics() {
 
   function formatMonthlyStatisticsData(data: TMonthlyStatisticsResponse) {
     const groupedData = groupPurchasesByMonth(data);
-    
+
     const currentMonthKey = `${year}-${month}`;
     const previousDate = getPreviousRangeStartDate('month', month, year);
     const previousMonthKey = `${previousDate.getFullYear()}-${previousDate.getMonth()}`;
@@ -97,7 +100,15 @@ export function MonthlyStatistics() {
 
     formatMonthlyStatisticsData(monthlyStatisticsResponse);
 
-  } ,[monthlyStatisticsResponse])
+  }, [monthlyStatisticsResponse])
+  console.log(monthlyStatisticsResponse)
+  useEffect(() => {
+    const purchasesRef = collection(db, 'purchases');
+    const unsubscribe = onSnapshot(purchasesRef, (snapshot) => {
+      queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.monthlyStatistics, userId, filters] });
+    });
+    return () => unsubscribe();
+  }, [filters, userId]);
 
   return (
     <div className="min-h-[100px] justify-center p-4 bg-app-container rounded-lg shadow-sm space-y-3">
