@@ -14,7 +14,7 @@ import {
 } from "firebase/firestore";
 
 export async function getPurchasesList(userId: string, filters?: Filters[]) {
-  
+
   const whereParams: QueryConstraint[] = [where("user_id", "==", userId)];
 
   filters?.forEach(filter => {
@@ -49,6 +49,7 @@ export async function saveCurrentPurchase(purchase: IPurchaseProps) {
   const docRef = doc(db, "purchases", purchase.id as string);
   await updateDoc(docRef, {
     is_active: false,
+    purchase_items: purchase.purchase_items,
     end_date: purchase.end_date,
     total_price: purchase.total_price
   });
