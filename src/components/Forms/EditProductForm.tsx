@@ -15,7 +15,7 @@ import {
 import { Button } from "../ui/button";
 import { ShadSelect } from "../Select";
 import { SelectItem } from "../ui/select";
-import { UNIT_TYPES } from "@/data/unitTypes";
+import { UNIT_TYPES } from "@/constants/unitTypes";
 
 export const EditProductForm = ({
   item,
@@ -80,7 +80,7 @@ export const EditProductForm = ({
               defaultValue={item?.unit_type}
             >
               {UNIT_TYPES.map(type => (
-                <SelectItem key={type} value={type}>{type}</SelectItem>
+                <SelectItem key={type.value} value={type.value}>{type.label}</SelectItem>
               ))}
             </ShadSelect>
           </label>
