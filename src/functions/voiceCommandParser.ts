@@ -8,7 +8,7 @@ export function parseCommand(input: string) {
     const priceRegex = /(?:r\$|valor|por)\s*(\d+(?:[\.,]\d+)?)|(\d+[\.,]\d+)/i;
     const unitTypeRegex = /\b(unidade|unidades|caixa|caixas|pacote|pacotes|caixote|caixotes|fardo|fardos|quilo|quilos|kilo|kilos|litro|litros|l|und|cx|pct|kg|lt)s?\b/i;
     const qtyRegex = /^(?:adicione\s+)?(\d+|um|uma|dois|duas|três|quatro|cinco|seis|sete|oito|nove|dez)\s*(unidade|unidades|caixa|caixas|pacote|pacotes|caixote|caixotes|fardo|fardos|quilo|quilos|kilo|kilos|litro|litros|und|cx|pct|kg|lt)?/i;
-    const nameRegex = /(?:de\s+)(.*?)(?:\s+por)/i;
+    const nameRegex = /de\s+(.*?)(?=\s+por|$)/i;
 
     // 1. Extrair Preço
     const priceMatch = text.match(priceRegex);
