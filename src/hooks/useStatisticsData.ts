@@ -1,7 +1,6 @@
 "use client";
 
 import { MONTHS } from "@/constants/months";
-import { QUERY_KEYS } from "@/constants/queryKeys";
 import { getLastSixMonthsDate } from "@/functions/charts/areaChartFilterDates";
 import {
   getCurrentRangeEndDate,
@@ -10,13 +9,9 @@ import {
   getPreviousRangeStartDate,
 } from "@/functions/donutFilterDates";
 import { usePurchasesQuery } from "@/hooks/queries/purchases";
-import { getPurchasesList } from "@/services/purchasesListServices";
-import useGeneralUserStore from "@/store/generalUserStore";
-import { IPurchaseProps } from "@/types";
 import { Filters } from "@/types/filters";
-import { useQuery } from "@tanstack/react-query";
 import { Timestamp } from "firebase/firestore";
-import { useCallback, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 
 type TabType = "day" | "week" | "month";
 
@@ -109,7 +104,7 @@ export function useStatisticsData() {
       },
     ];
   }, [selectedMonth, selectedYear]);
-  
+
   // ===============
   // # React Query
   // ===============
@@ -139,7 +134,7 @@ export function useStatisticsData() {
           categoryMap.set(
             category,
             (categoryMap.get(category) || 0) +
-              Number(item.quantity) * Number(item.value)
+            Number(item.quantity) * Number(item.value)
           );
         } else {
           categoryMap.set(category, Number(item.quantity) * Number(item.value));
@@ -153,14 +148,14 @@ export function useStatisticsData() {
       color: categoryColors[category] || "var(--category-10)",
     }));
   }, [donutChartPurchasesList]);
-  
+
   const areaChartData = useMemo<MonthlyData[]>(() => {
     if (!areaChartPurchasesList || areaChartPurchasesList.length === 0) return [];
     const uniqueMonths = getLastSixMonthsDate().range;
 
     return uniqueMonths.map(month => ({
       month: MONTHS[Number(month?.split("-")[1]) - 1],
-      value: areaChartPurchasesList.filter(p => p.end_date?.toDate().toISOString().slice(0,7) === month).reduce((sum, p) => sum + p.total_price, 0)
+      value: areaChartPurchasesList.filter(p => p.end_date?.toDate().toISOString().slice(0, 7) === month).reduce((sum, p) => sum + p.total_price, 0)
     })) as MonthlyData[];
   }, [areaChartPurchasesList]);
 

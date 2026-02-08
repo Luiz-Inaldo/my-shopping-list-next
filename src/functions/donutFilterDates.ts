@@ -84,8 +84,8 @@ export function getPreviousRangeStartDate(
   month: number,
   year: number
 ) {
-  let previousMonth = activeTab === "month" && month === 0 ? 11 : month - 1;
-  let previousYear = month === 0 ? year - 1 : year;
+  let previousMonth = getPreviousMonth(activeTab, month);
+  let previousYear = previousMonth < 0 ? year - 1 : year;
 
   const today = new Date();
   const dateUTC = new Date(Date.UTC(year, month, today.getDate(), 3, 0, 0, 0));
@@ -230,4 +230,12 @@ function getPreviousWeekEnd(dateUTC: Date, month: number, year: number) {
   }
 
   return new Date(Date.UTC(year, month, previousWeekEndDate, 23, 59, 59, 999));
+}
+
+function getPreviousMonth(activeTab: TabType, month: number) {
+  if (activeTab === "month") {
+    return month === 0 ? 11 : month - 1;
+  }
+
+  return month;
 }
