@@ -10,7 +10,7 @@ import useGeneralUserStore from '@/store/generalUserStore';
 export default function Settings() {
 
   const user = useGeneralUserStore(s => s.userProfile);
-
+  console.log(user)
   return (
     <div className="page-wrapper">
       <Header className="text-lg font-medium">Ajustes</Header>

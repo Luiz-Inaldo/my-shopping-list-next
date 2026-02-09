@@ -15,6 +15,7 @@ import { updateUserPassword } from "@/services/account";
 import { tryCatchRequest } from "@/functions/requests";
 import ReauthenticateModal from "@/components/Modal/ReauthenticateModal";
 import { AppLoader } from "@/components/Loader/app-loader";
+import { FirebaseError } from "firebase/app";
 
 export default function SecurityPage() {
   const [showNewPassword, setShowNewPassword] = useState(false);
@@ -34,7 +35,7 @@ export default function SecurityPage() {
 
   function onSubmit(formData: SecurityFormData) {
     updatingPasswordTransition(async () => {
-      const [response, error] = await tryCatchRequest(() =>
+      const [response, error] = await tryCatchRequest<boolean, FirebaseError>(
         updateUserPassword(formData.password ?? "", formData.newPassword)
       );
 

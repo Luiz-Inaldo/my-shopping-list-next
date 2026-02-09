@@ -22,6 +22,7 @@ import { cn } from "@/lib/utils";
 import { deleteUserAccount, reautenticateUser } from "@/services/account";
 import useGeneralUserStore from "@/store/generalUserStore";
 import { LogOut } from "@/functions/logout";
+import { FirebaseError } from "firebase/app";
 
 type DeletingStatus = "idle" | "deleting" | "deleted"
 
@@ -45,8 +46,8 @@ export default function DeleteAccountPage() {
     // =================
     // Primero reautentica o usuário
     // =================
-    
-    const [_, err] = await tryCatchRequest(() => reautenticateUser(formData.password));
+
+    const [_, err] = await tryCatchRequest<boolean, FirebaseError>(reautenticateUser(formData.password));
 
     if (err) {
       console.error(err.code);
@@ -66,22 +67,22 @@ export default function DeleteAccountPage() {
       uid: user?.uid,
       username: user?.name
     }
-    const [response, error] = await tryCatchRequest(() => deleteUserAccount(userObj));
+    const [__, error] = await tryCatchRequest<void, FirebaseError>(deleteUserAccount(userObj));
 
-    if (response) {
-      setDeletingStatus("deleted");
-    
-      setTimeout(() => {
-        LogOut();
-      }, 3000);
-    }
     if (error) {
       sendToastMessage({
         title: error.code || "Erro ao deletar conta",
         type: "error"
       });
       setDeletingStatus("idle");
+      return;
     }
+
+    setDeletingStatus("deleted");
+
+    setTimeout(() => {
+      LogOut();
+    }, 3000);
   }
 
   return (

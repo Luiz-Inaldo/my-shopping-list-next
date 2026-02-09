@@ -29,6 +29,7 @@ import { tryCatchRequest } from '@/functions/requests';
 import { sendPasswordResetEmail } from 'firebase/auth';
 import { auth } from '@/lib/firebase';
 import { forgotPasswordSchema, type ForgotPasswordInput } from '@/zodSchema/forgotPassword';
+import { FirebaseError } from 'firebase/app';
 
 interface ForgotPasswordModalProps {
     trigger: React.ReactNode;
@@ -54,19 +55,17 @@ const ForgotPasswordModal = ({ trigger, email }: ForgotPasswordModalProps) => {
     async function onSubmit() {
         submitTransition(async () => {
 
-            const [response, error] = await tryCatchRequest(() => sendPasswordResetEmail(auth, form.getValues('email')));
-
-            if (response) {
-                sendToastMessage({
-                    title: "Email de recuperação de senha enviado com sucesso",
-                    type: 'success'
-                });
-            }
+            const [_, error] = await tryCatchRequest<void, FirebaseError>(sendPasswordResetEmail(auth, form.getValues('email')));
 
             if (error) {
                 sendToastMessage({
                     title: error.code || "Erro ao enviar email de recuperação de senha",
                     type: 'error'
+                });
+            } else {
+                sendToastMessage({
+                    title: "Email de recuperação de senha enviado com sucesso",
+                    type: 'success'
                 });
             }
 

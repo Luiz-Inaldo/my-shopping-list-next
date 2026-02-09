@@ -26,7 +26,7 @@ export default function VerifyEmailPage() {
     async function onVerifyEmail() {
         let timeout: NodeJS.Timeout;
         setStatus('loading');
-        const [_, error] = await tryCatchRequest(() => applyActionCode(auth, code || ''))
+        const [_, error] = await tryCatchRequest(applyActionCode(auth, code || ''))
         if (error) {
             setStatus('error');
             return;

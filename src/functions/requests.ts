@@ -1,14 +1,12 @@
-import { FirebaseError } from "firebase/app";
-
-export async function tryCatchRequest(fn: () => Promise<any>): Promise<[boolean | null, FirebaseError | null]> {
+export async function tryCatchRequest<R, E>(fn: Promise<R>): Promise<[R | null, E | null]> {
 
     try {
-        await fn();
-        return [true, null];
-    } catch (error) {
-        if (error instanceof FirebaseError) {
-            return [null, error];
+        const result = await fn;
+        if (result === undefined) {
+            return [true as R, null];
         }
-        return [null, null];
+        return [result as R, null];
+    } catch (error) {
+        return [null, error as E];
     }
 }
