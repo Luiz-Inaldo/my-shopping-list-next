@@ -49,7 +49,7 @@ export default function ResetPasswordPage() {
         }
 
         setStatus('loading');
-        const [_, error] = await tryCatchRequest(() => confirmPasswordReset(auth, code, data.newPassword))
+        const [_, error] = await tryCatchRequest(confirmPasswordReset(auth, code, data.newPassword))
 
         if (error) {
             setStatus('error');
@@ -65,7 +65,7 @@ export default function ResetPasswordPage() {
     }
 
     async function validateOobCode() {
-        const [_, error] = await tryCatchRequest(() => verifyPasswordResetCode(auth, code || ''))
+        const [_, error] = await tryCatchRequest(verifyPasswordResetCode(auth, code || ''))
         if (error) {
             setValidOobCode(false);
             return;

@@ -27,7 +27,7 @@ export function ProfileCard() {
 
   async function handleRemoveImage() {
     if (!userProfile?.uid) return;
-    const [_, error] = await tryCatchRequest<void, Error>(() => removeProfileImage(userProfile?.uid))
+    const [_, error] = await tryCatchRequest<void, Error>(removeProfileImage(userProfile?.uid))
     if (error) {
       console.log(error);
       sendToastMessage({

@@ -8,6 +8,7 @@ import { tryCatchRequest } from "@/functions/requests";
 import { sendToastMessage } from "@/functions/sendToastMessage";
 import { useState } from "react";
 import { AppLoader } from "@/components/Loader/app-loader";
+import { FirebaseError } from "firebase/app";
 
 export function MenuOptionsSection() {
   const [isUnlogging, setIsUnlogging] = useState<boolean>(false);
@@ -15,7 +16,7 @@ export function MenuOptionsSection() {
 
   async function handleLogout() {
     setIsUnlogging(true);
-    const [_, err] = await tryCatchRequest(() => logoutFunction());
+    const [_, err] = await tryCatchRequest<void, FirebaseError>(logoutFunction());
     if (err) {
       console.error(err.code);
       sendToastMessage({

@@ -26,6 +26,7 @@ import {
 } from '@/zodSchema/forgotPassword';
 import { AppLoader } from '@/components/Loader/app-loader';
 import { APP_ROUTES } from '@/routes/app-routes';
+import { FirebaseError } from 'firebase/app';
 
 const divVariants = {
   hidden: { opacity: 0, y: 20 },
@@ -62,23 +63,22 @@ export default function Page() {
 
   async function onSubmit(values: ForgotPasswordInput) {
     submitTransition(async () => {
-      const [response, error] = await tryCatchRequest(() =>
+      const [_, error] = await tryCatchRequest<void, FirebaseError>(
         sendPasswordResetEmail(auth, values.email)
       );
-
-      if (response) {
-        sendToastMessage({
-          title: 'Email de recuperação enviado com sucesso',
-          type: 'success',
-        });
-      }
 
       if (error) {
         sendToastMessage({
           title: error.code || 'Erro ao enviar email',
           type: 'error',
         });
+        return;
       }
+
+      sendToastMessage({
+        title: 'Email de recuperação enviado com sucesso',
+        type: 'success',
+      });
     });
   }
 

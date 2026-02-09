@@ -113,7 +113,7 @@ export const ShoplistProvider = ({ children }: { children: React.ReactNode }) =>
 
         const updatedGeneralProducts = auxData?.purchase_items?.filter(product => product.id !== itemID) as IProductProps[];
 
-        const [_, error] = await tryCatchRequest<void, Error>(() => updatePurchase(productsList?.id as string, updatedGeneralProducts));
+        const [_, error] = await tryCatchRequest<void, Error>(updatePurchase(productsList?.id as string, updatedGeneralProducts));
         if (error) {
             console.error(error);
             sendToastMessage({ title: "Houve um erro ao remover o produto.", type: 'error' });

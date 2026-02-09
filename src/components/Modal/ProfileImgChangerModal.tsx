@@ -143,7 +143,7 @@ export default function ProfileImgChangerModal({
     async function handleSave() {
         onUpdate(async () => {
             if (completedCrop && imgRef.current) {
-                const [croppedFile, getCroppedError] = await tryCatchRequest<File, Error>(() => getCroppedFile(imgRef.current!, completedCrop));
+                const [croppedFile, getCroppedError] = await tryCatchRequest<File, Error>(getCroppedFile(imgRef.current!, completedCrop));
                 if (getCroppedError) {
                     console.error('Erro ao processar imagem:', getCroppedError);
                     sendToastMessage({
@@ -161,7 +161,7 @@ export default function ProfileImgChangerModal({
                     return;
                 }
 
-                const [_, updateError] = await tryCatchRequest<void, Error>(() => updateProfileImage(userProfile?.uid as string, croppedFile));
+                const [_, updateError] = await tryCatchRequest<void, Error>(updateProfileImage(userProfile?.uid as string, croppedFile));
                 if (updateError) {
                     console.error('Erro ao atualizar imagem:', updateError);
                     sendToastMessage({
