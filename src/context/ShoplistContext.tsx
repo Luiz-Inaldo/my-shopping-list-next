@@ -12,6 +12,7 @@ import { QUERY_KEYS } from "@/constants/queryKeys";
 import { queryClient } from "@/utils/queryClient";
 import { collection, doc, onSnapshot } from "firebase/firestore";
 import { db } from "@/lib/firebase";
+import { tryCatchRequest } from "@/functions/requests";
 
 const ShoplistContext = createContext<IShoplistContextProps | undefined>(undefined);
 
@@ -58,12 +59,12 @@ export const ShoplistProvider = ({ children }: { children: React.ReactNode }) =>
         // verifica se há filtro ativo antes de popular os dados da lista
         if (filterValue) {
             const filteredList = res?.data?.purchase_items?.
-            filter(product => product.category.toLowerCase().includes(filterValue.toLowerCase()) || product.name.toLowerCase().includes(filterValue.toLowerCase())) ?? [];
+                filter(product => product.category.toLowerCase().includes(filterValue.toLowerCase()) || product.name.toLowerCase().includes(filterValue.toLowerCase())) ?? [];
 
             if (filteredList.length === 0) {
                 setFilterValue(null);
             }
-            
+
             return {
                 ...res?.data!,
                 purchase_items: filteredList.length > 0 ? filteredList : res?.data?.purchase_items
@@ -100,7 +101,7 @@ export const ShoplistProvider = ({ children }: { children: React.ReactNode }) =>
         try {
             await updatePurchase(productsList?.id as string, updatedProducts);
             sendToastMessage({ title: "Produto atualizado com sucesso.", type: 'success' });
-            
+
         } catch (error) {
             console.error(error);
             sendToastMessage({ title: "Houve um erro ao atualizar o produto.", type: 'error' });
@@ -112,15 +113,14 @@ export const ShoplistProvider = ({ children }: { children: React.ReactNode }) =>
 
         const updatedGeneralProducts = auxData?.purchase_items?.filter(product => product.id !== itemID) as IProductProps[];
 
-        try {
-
-            await updatePurchase(productsList?.id as string, updatedGeneralProducts);
-            sendToastMessage({ title: "Produto removido com sucesso.", type: 'success' });
-            
-        } catch (error) {
+        const [_, error] = await tryCatchRequest<void, Error>(() => updatePurchase(productsList?.id as string, updatedGeneralProducts));
+        if (error) {
             console.error(error);
             sendToastMessage({ title: "Houve um erro ao remover o produto.", type: 'error' });
+            return;
         }
+
+        sendToastMessage({ title: "Produto removido com sucesso.", type: 'success' });
     }
 
     async function handleCheckItem(item: IProductProps, object?: IEditItemProps) {
@@ -141,13 +141,13 @@ export const ShoplistProvider = ({ children }: { children: React.ReactNode }) =>
             await updatePurchase(productsList?.id as string, updatedProducts);
 
             sendToastMessage({ title: `${item.name} marcado como adquirido.`, type: 'success' });
-            
+
         } catch (error) {
             sendToastMessage({ title: "Houve um erro ao marcar o item.", type: 'error' });
         }
     }
 
-    async function handleDismarkItem(item: IProductProps) { 
+    async function handleDismarkItem(item: IProductProps) {
 
         const updatedProducts = auxData?.purchase_items?.map(product => {
             if (product.id === item.id) {

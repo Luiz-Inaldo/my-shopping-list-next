@@ -18,6 +18,8 @@ import {
   updatePassword,
   deleteUser,
 } from "firebase/auth";
+import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
+import { storage } from '@/lib/firebase';
 import { FirebaseError } from "firebase/app";
 
 /**
@@ -30,6 +32,37 @@ export async function updateUserName(userId: string, newName: string) {
 
   await updateDoc(userRef, {
     name: newName,
+    updated_at: new Date(),
+  });
+}
+
+/**
+ * Altera a foto de perfil do usuário.
+ * @param {string} userId - O ID do documento (geralmente o uid do Firebase Auth).
+ * @param {File} image - A imagem a ser definida.
+ */
+export async function updateProfileImage(userId: string, image: File) {
+  const userRef = doc(db, "users", userId);
+
+  const storageRef = ref(storage, `profile_images/${userId}/profile_img`);
+  await uploadBytes(storageRef, image);
+  const downloadURL = await getDownloadURL(storageRef);
+
+  await updateDoc(userRef, {
+    profile_img: downloadURL,
+    updated_at: new Date(),
+  });
+}
+
+/**
+ * Remove a foto de perfil do usuário.
+ * @param {string} userId - O ID do usuário.
+ */
+export async function removeProfileImage(userId: string) {
+  const userRef = doc(db, "users", userId);
+
+  await updateDoc(userRef, {
+    profile_img: "",
     updated_at: new Date(),
   });
 }
