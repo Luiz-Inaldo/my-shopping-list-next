@@ -36,9 +36,6 @@ onAuthStateChanged(auth, (user) => {
       if (snapshot.exists()) {
         const profileData = snapshot.data() as TUserProfileProps;
         const authUserData = auth.currentUser;
-        console.log("inserindo dados do usuário ao logar")
-        console.log(authUserData);
-        console.log("========================")
         useGeneralUserStore.getState().setUserProfile({
           ...profileData,
           email: authUserData?.email || "",
