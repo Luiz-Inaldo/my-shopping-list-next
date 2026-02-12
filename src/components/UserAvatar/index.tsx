@@ -11,14 +11,17 @@ import { TUserProfileProps } from '@/types/user';
 export function UserAvatar({ width, height, className = '' }: { width: number, height: number, className?: string }) {
 
     const { userProfile, setUserProfile } = useGeneralUserStore();
-
-    useEffect(() => {
-        if (!userProfile?.uid) return;
-        const unsubscribe = onSnapshot(doc(db, "users", userProfile?.uid as string), (doc) => {
-            setUserProfile(doc.data() as TUserProfileProps);
-        });
-        return () => unsubscribe();
-    }, [userProfile?.uid]);
+    console.log(userProfile)
+    // useEffect(() => {
+    //     if (!userProfile?.uid) return;
+    //     const unsubscribe = onSnapshot(doc(db, "users", userProfile?.uid as string), (doc) => {
+    //         console.log("atualizando dados do usuario via websocket")
+    //         console.log("==============================")
+    //         console.log(doc.data());
+    //         setUserProfile(doc.data() as TUserProfileProps);
+    //     });
+    //     return () => unsubscribe();
+    // }, [userProfile?.uid]);
 
     return (
         <Avatar className={cn('border-app-container', className)} style={

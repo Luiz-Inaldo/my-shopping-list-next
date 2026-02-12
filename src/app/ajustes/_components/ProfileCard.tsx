@@ -16,7 +16,7 @@ const ProfileImgChangerModal = lazy(() => import("@/components/Modal/ProfileImgC
  * integrando o dropdown e o modal para alteração da foto.
  */
 export function ProfileCard() {
-  const { userProfile } = useGeneralUserStore();
+  const { userProfile, removeProfileImageFromStoredUser } = useGeneralUserStore();
   const [img, setImg] = useState<File | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
@@ -36,6 +36,7 @@ export function ProfileCard() {
       })
       return;
     };
+    removeProfileImageFromStoredUser();
     sendToastMessage({
       type: 'success',
       title: 'Imagem removida',

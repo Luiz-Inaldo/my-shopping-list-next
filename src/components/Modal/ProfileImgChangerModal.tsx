@@ -72,7 +72,7 @@ export default function ProfileImgChangerModal({
     onRemovePhoto,
 }: ProfileImgChangerModalProps) {
 
-    const { userProfile } = useGeneralUserStore();
+    const { userProfile, addProfileImageToStoredUser } = useGeneralUserStore();
 
     const [imgSrc, setImgSrc] = useState('');
     const [isLoading, onUpdate] = useTransition();
@@ -161,7 +161,7 @@ export default function ProfileImgChangerModal({
                     return;
                 }
 
-                const [_, updateError] = await tryCatchRequest<void, Error>(updateProfileImage(userProfile?.uid as string, croppedFile));
+                const [downloadURL, updateError] = await tryCatchRequest<string, Error>(updateProfileImage(userProfile?.uid as string, croppedFile));
                 if (updateError) {
                     console.error('Erro ao atualizar imagem:', updateError);
                     sendToastMessage({
@@ -170,6 +170,9 @@ export default function ProfileImgChangerModal({
                     })
                     return;
                 }
+
+                if (downloadURL) addProfileImageToStoredUser(downloadURL);
+
                 sendToastMessage({
                     type: 'success',
                     title: 'Imagem atualizada com sucesso',

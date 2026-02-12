@@ -8,5 +8,4 @@ import { redirect } from "next/navigation";
 export async function LogOut() {
     await signOut(auth);
     (await cookies()).delete('authToken');
-    redirect(APP_ROUTES.public.inicio.name);
 }

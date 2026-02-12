@@ -5,9 +5,23 @@ import { onAuthStateChanged } from "firebase/auth";
 import { doc, getDoc } from "firebase/firestore";
 import { create } from "zustand";
 
-const useGeneralUserStore = create<TUserStoreProps>((set) => ({
+const useGeneralUserStore = create<TUserStoreProps>((set, get) => ({
   userProfile: null,
   setUserProfile: (userProfile: TUserProfileProps) => set({ userProfile }),
+
+  // profile image
+  removeProfileImageFromStoredUser: () => set({
+    userProfile: {
+      ...get().userProfile,
+      profile_img: ""
+    } as TUserProfileProps
+  }),
+  addProfileImageToStoredUser: (profile_img: string) => set({
+    userProfile: {
+      ...get().userProfile,
+      profile_img
+    } as TUserProfileProps
+  }),
 
   // reset profile
   resetProfile: () => set({ userProfile: null }),
@@ -22,6 +36,9 @@ onAuthStateChanged(auth, (user) => {
       if (snapshot.exists()) {
         const profileData = snapshot.data() as TUserProfileProps;
         const authUserData = auth.currentUser;
+        console.log("inserindo dados do usuário ao logar")
+        console.log(authUserData);
+        console.log("========================")
         useGeneralUserStore.getState().setUserProfile({
           ...profileData,
           email: authUserData?.email || "",

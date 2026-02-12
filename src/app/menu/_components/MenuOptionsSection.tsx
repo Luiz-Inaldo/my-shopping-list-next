@@ -9,10 +9,12 @@ import { sendToastMessage } from "@/functions/sendToastMessage";
 import { useState } from "react";
 import { AppLoader } from "@/components/Loader/app-loader";
 import { FirebaseError } from "firebase/app";
+import { useRouter } from "next/navigation";
 
 export function MenuOptionsSection() {
   const [isUnlogging, setIsUnlogging] = useState<boolean>(false);
   const resetProfile = useGeneralUserStore((store) => store.resetProfile);
+  const router = useRouter();
 
   async function handleLogout() {
     setIsUnlogging(true);
@@ -33,6 +35,7 @@ export function MenuOptionsSection() {
     });
     setIsUnlogging(false);
     resetProfile();
+    router.push(APP_ROUTES.public.inicio.name);
   }
 
   return (

@@ -52,6 +52,7 @@ export async function updateProfileImage(userId: string, image: File) {
     profile_img: downloadURL,
     updated_at: new Date(),
   });
+  return downloadURL;
 }
 
 /**
