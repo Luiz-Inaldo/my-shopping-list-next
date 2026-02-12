@@ -28,7 +28,7 @@ export function calculateTotalSpending(purchases: TMonthlyStatisticsResponse) {
  * Retorna o total de listas.
  */
 export function calculateTotalLists(purchases: TMonthlyStatisticsResponse) {
-    return purchases.length;
+    return purchases.length || 0;
 }
 
 /**

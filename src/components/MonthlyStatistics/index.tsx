@@ -115,7 +115,7 @@ export function MonthlyStatistics() {
                 <ShoppingCart size={14} />
                 <span className="text-xs font-medium">Listas Finalizadas</span>
               </div>
-              <p className="font-semibold text-sky-800 dark:text-sky-600">{monthlyStatisticsData?.currentMonthListsCount}</p>
+              <p className="font-semibold text-sky-800 dark:text-sky-600">{monthlyStatisticsData?.currentMonthListsCount || 0}</p>
             </div>
           </CarouselItem>
           <CarouselItem className="basis-1/2">
@@ -125,7 +125,7 @@ export function MonthlyStatistics() {
                 <span className="text-xs font-medium">Itens Adquiridos</span>
               </div>
               <p className="font-semibold text-purple-800 dark:text-purple-600">
-                {monthlyStatisticsData?.currentMonthItemsCount}
+                {monthlyStatisticsData?.currentMonthItemsCount || 0}
               </p>
             </div>
           </CarouselItem>
