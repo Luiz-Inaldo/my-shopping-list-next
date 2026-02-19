@@ -1,16 +1,15 @@
 "use client";
-import React from "react";
 import Lottie from "lottie-react";
 import shoppingCartWomanAnimation from "@/animations/shopping-cart-woman.json";
 import { APP_ROUTES } from "@/routes/app-routes";
 import { ArrowRightIcon } from "lucide-react";
 import { motion } from "framer-motion";
-import { usePageOverlay } from "@/context/PageOverlayContext";
+import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 
 export default function StartPage() {
-  
-  const { handleChangeRoute } = usePageOverlay();
+
+  const router = useRouter();
 
   return (
     <div className="relative flex flex-col h-dvh page-wrapper mx-auto bg-white gap-10 p-4 overflow-hidden">
@@ -56,7 +55,7 @@ export default function StartPage() {
         className="w-full mt-auto"
       >
         <Button
-          onClick={() => handleChangeRoute(APP_ROUTES.public.login.name)}
+          onClick={() => router.push(APP_ROUTES.public.login.name)}
           className="w-full h-14 px-3 py-2 flex items-center gap-2 justify-center cursor-pointer font-semibold uppercase text-sm bg-app-primary text-white"
         >
           <span>Começe Agora</span>

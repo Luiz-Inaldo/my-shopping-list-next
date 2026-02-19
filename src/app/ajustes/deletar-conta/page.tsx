@@ -21,8 +21,10 @@ import successAnimation from "@/animations/success.json";
 import { cn } from "@/lib/utils";
 import { deleteUserAccount, reautenticateUser } from "@/services/account";
 import useGeneralUserStore from "@/store/generalUserStore";
-import { LogOut } from "@/functions/logout";
+import { deleteAuthToken } from "@/functions/logout";
 import { FirebaseError } from "firebase/app";
+import { auth } from "@/lib/firebase";
+import { signOut } from "firebase/auth";
 
 type DeletingStatus = "idle" | "deleting" | "deleted"
 
@@ -80,8 +82,9 @@ export default function DeleteAccountPage() {
 
     setDeletingStatus("deleted");
 
-    setTimeout(() => {
-      LogOut();
+    setTimeout(async () => {
+      await signOut(auth);
+      await deleteAuthToken();
     }, 3000);
   }
 

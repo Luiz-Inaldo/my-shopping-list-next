@@ -2,7 +2,7 @@
 import Header from '../Header';
 import { ChartNoAxesColumnIncreasing, ChevronLeft, Plus } from 'lucide-react';
 import { APP_ROUTES } from '@/routes/app-routes';
-import { usePageOverlay } from '@/context/PageOverlayContext';
+import { useRouter } from 'next/navigation';
 import { FinancialSummary } from './FinancialSummary';
 import { ProductsSearch } from './ProductsSearch';
 import { CategoryBadgesList } from './CategoryBadgesList';
@@ -33,7 +33,7 @@ export default function ShoppingList() {
     errorFetchingProducts,
   } = useShoplistContext();
 
-  const { handleChangeRoute } = usePageOverlay();
+  const router = useRouter();
 
   if (loadingProductsList || pendingProductsList) {
     return <ShoppingListSkeleton />;
@@ -57,7 +57,7 @@ export default function ShoppingList() {
         <div className="flex items-center gap-2">
           <ChevronLeft
             size={20}
-            onClick={() => handleChangeRoute(APP_ROUTES.private.home.name)}
+            onClick={() => router.push(APP_ROUTES.private.home.name)}
             className="text-subtitle cursor-pointer"
           />
           <h2 className="font-medium text-subtitle">{productsList?.title}</h2>

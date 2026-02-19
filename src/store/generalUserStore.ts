@@ -28,9 +28,8 @@ const useGeneralUserStore = create<TUserStoreProps>((set, get) => ({
 }));
 
 onAuthStateChanged(auth, (user) => {
-  const hasUserProfile = useGeneralUserStore.getState().userProfile;
-
-  if (user && !hasUserProfile) {
+  if (user) {
+    console.log("usuário logando:", user.uid);
     const userRef = doc(db, "users", user.uid);
     getDoc(userRef).then((snapshot) => {
       if (snapshot.exists()) {
@@ -43,8 +42,11 @@ onAuthStateChanged(auth, (user) => {
         });
       }
     }).catch((error) => {
-      console.error(error);
+      console.error("Erro ao buscar perfil:", error);
     });
+  } else {
+    console.log("usuário deslogando");
+    useGeneralUserStore.getState().resetProfile();
   }
 });
 

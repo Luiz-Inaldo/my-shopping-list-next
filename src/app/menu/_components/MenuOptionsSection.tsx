@@ -3,13 +3,15 @@ import { APP_ROUTES } from "@/routes/app-routes";
 import { ChevronRight, Info, LogOut, Trash2 } from "lucide-react";
 import Link from "next/link";
 import useGeneralUserStore from "@/store/generalUserStore";
-import { LogOut as logoutFunction } from "@/functions/logout";
+import { deleteAuthToken } from "@/functions/logout";
 import { tryCatchRequest } from "@/functions/requests";
 import { sendToastMessage } from "@/functions/sendToastMessage";
 import { useState } from "react";
 import { AppLoader } from "@/components/Loader/app-loader";
 import { FirebaseError } from "firebase/app";
 import { useRouter } from "next/navigation";
+import { auth } from "@/lib/firebase";
+import { signOut } from "firebase/auth";
 
 export function MenuOptionsSection() {
   const [isUnlogging, setIsUnlogging] = useState<boolean>(false);
@@ -18,7 +20,9 @@ export function MenuOptionsSection() {
 
   async function handleLogout() {
     setIsUnlogging(true);
-    const [_, err] = await tryCatchRequest<void, FirebaseError>(logoutFunction());
+
+    const [_, err] = await tryCatchRequest<void, FirebaseError>(signOut(auth));
+
     if (err) {
       console.error(err.code);
       sendToastMessage({
@@ -28,6 +32,8 @@ export function MenuOptionsSection() {
       setIsUnlogging(false);
       return;
     }
+
+    await deleteAuthToken()
 
     sendToastMessage({
       title: "Logout realizado com sucesso!",

@@ -1,4 +1,5 @@
 'use client';
+import { AppLoader } from '@/components/Loader/app-loader';
 import { Button } from '@/components/ui/button';
 import {
   Form,
@@ -8,7 +9,8 @@ import {
   FormMessage,
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
-import { usePageOverlay } from '@/context/PageOverlayContext';
+import { useCustomToast } from '@/context/CustomToastContext';
+import { tryCatchRequest } from '@/functions/requests';
 import { sendToastMessage } from '@/functions/sendToastMessage';
 import { ILoginUser } from '@/interfaces/user';
 import { auth } from '@/lib/firebase';
@@ -20,9 +22,8 @@ import { signInWithEmailAndPassword } from 'firebase/auth';
 import { Eye, Lock, User, EyeOff } from 'lucide-react';
 import { AnimatePresence, motion } from 'motion/react';
 import Image from 'next/image';
-import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { useState, useTransition } from 'react';
+import { useEffect, useState, useTransition } from 'react';
 import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
 
@@ -46,7 +47,7 @@ export default function Page() {
   const [loading, loadingTransition] = useTransition();
   const router = useRouter();
 
-  const { handleChangeRoute } = usePageOverlay();
+  const { customToast } = useCustomToast();
 
   const form = useForm<ILoginUser>({
     resolver: zodResolver(loginFormSchema),
@@ -71,10 +72,11 @@ export default function Page() {
   }
 
   async function onSubmit(userCredentials: ILoginUser) {
+    customToast.loading('Validando suas credenciais...');
     loadingTransition(async () => {
       const { email, password } = userCredentials;
 
-      try {
+      const [_, error] = await tryCatchRequest<void, FirebaseError>(async () => {
         const firebaseLoginResponse = await signInWithEmailAndPassword(
           auth,
           email,
@@ -84,50 +86,35 @@ export default function Page() {
         const token = await firebaseLoginResponse.user.getIdToken();
 
         //TODO: adicionar tratamento de encode com JWT
-        const response = await fetch('/api/auth/token', {
+        await fetch('/api/auth/token', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ token }),
         });
+      })
 
-        if (!response.ok) {
-          sendToastMessage({
-            title: 'Erro ao fazer login. Tente novamente.',
-            type: 'error',
-          });
-          return;
-        }
+      if (error) {
+        console.error(error.code);
+        switch (error.code) {
+          case 'auth/invalid-credential':
+            customToast.error('Credenciais incorretas. Tente novamente.');
+            break;
 
-        sendToastMessage({
-          title: 'Login realizado com sucesso.',
-          type: 'success',
-        });
-        setTimeout(() => {
-          toast.dismiss();
-          handleChangeRoute(APP_ROUTES.private.home.name);
-        }, 2000);
-      } catch (error) {
-        if (error instanceof FirebaseError) {
-          console.error(error.code);
-          switch (error.code) {
-            case 'auth/invalid-credential':
-              sendToastMessage({
-                title: 'Credenciais incorretas. Tente novamente.',
-                type: 'error',
-              });
-              break;
-
-            default:
-              sendToastMessage({
-                title: 'Erro ao fazer login. Tente novamente.',
-                type: 'error',
-              });
-              break;
-          }
+          default:
+            customToast.error('Erro ao fazer login. Tente novamente.');
+            break;
         }
       }
+
+      customToast.success('Login realizado com sucesso.', { autohide: 1500 });
+      setTimeout(() => {
+        toast.dismiss();
+        router.push(APP_ROUTES.private.home.name);
+      }, 2000);
+
     });
   }
+
   return (
     <main className="bg-app-container page-wrapper auth-page-light flex items-center justify-center">
       <AnimatePresence mode="wait">
@@ -261,7 +248,7 @@ export default function Page() {
                         disabled={loading}
                         className="w-full font-semibold h-14 py-3 text-white text-base mt-2"
                       >
-                        Entrar
+                        {loading ? <AppLoader size={16} /> : 'Entrar'}
                       </Button>
                     </motion.div>
                   </div>
