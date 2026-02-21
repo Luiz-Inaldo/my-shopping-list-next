@@ -1,6 +1,5 @@
 'use client';
 import { useShoplistContext } from '@/context/ShoplistContext';
-import { usePageOverlay } from '@/context/PageOverlayContext';
 import { APP_ROUTES } from '@/routes/app-routes';
 import Header from '../../../../components/Header';
 import { ChevronLeft, FileDown } from 'lucide-react';

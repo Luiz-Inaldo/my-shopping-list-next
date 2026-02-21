@@ -1,7 +1,7 @@
-export async function tryCatchRequest<R, E>(fn: Promise<R>): Promise<[R | null, E | null]> {
+export async function tryCatchRequest<R, E>(fn: Promise<R> | (() => Promise<R>)): Promise<[R | null, E | null]> {
 
     try {
-        const result = await fn;
+        const result = typeof fn === 'function' ? await fn() : await fn;
         if (result === undefined) {
             return [true as R, null];
         }
