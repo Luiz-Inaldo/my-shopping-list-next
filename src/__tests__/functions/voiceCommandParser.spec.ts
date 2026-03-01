@@ -3,7 +3,7 @@ import { ItemCategories } from "@/enums/categories";
 
 describe("voiceCommandParser", () => {
     it("should parse a complete command with units, name and price", () => {
-        const input = "Adicione 2 pacotes de arroz por 15.50";
+        const input = "2 pacotes de arroz por 15.50";
         const result = parseCommand(input);
 
         expect(result).toEqual({
@@ -17,7 +17,7 @@ describe("voiceCommandParser", () => {
     });
 
     it("should parse a command with number in words", () => {
-        const input = "Adicione duas caixas de leite por 5,90";
+        const input = "duas caixas de leite por 5,90";
         const result = parseCommand(input);
 
         expect(result).toEqual({
@@ -31,13 +31,12 @@ describe("voiceCommandParser", () => {
     });
 
     it("should parse a command using 'r$' and comma in price", () => {
-        const input = "Adicione 1 quilo de carne por R$ 35,00";
-        // Note: the regex for name might include 'carne' if it doesn't match 'por' or end of string properly.
-        // Let's see how the current implementation handles it.
+        const input = "1 quilo de paleta c/ osso por R$ 35,00";
+
         const result = parseCommand(input);
 
         expect(result).toEqual({
-            name: "carne",
+            name: "paleta c/ osso",
             quantity: 1,
             unit_type: "kg",
             category: ItemCategories.CARNES_E_PEIXES,
@@ -47,7 +46,7 @@ describe("voiceCommandParser", () => {
     });
 
     it("should parse a command without price", () => {
-        const input = "Adicione 2 unidades de bananas";
+        const input = "2 unidades de bananas";
         const result = parseCommand(input);
 
         expect(result).toEqual({
@@ -61,14 +60,14 @@ describe("voiceCommandParser", () => {
     });
 
     it("should use 'Outros' category for unknown items", () => {
-        const input = "Adicione 1 unidade de item-inexistente por 10";
+        const input = "1 unidade de item-inexistente por 10";
         const result = parseCommand(input);
 
         expect(result.category).toBe("Outros");
     });
 
     it("should handle abbreviated units", () => {
-        const input = "Adicione 2 lt de suco por 5";
+        const input = "2 lt de suco por 5";
         const result = parseCommand(input);
 
         expect(result.unit_type).toBe("lt");

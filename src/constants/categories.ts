@@ -88,4 +88,5 @@ export const PRODUCT_CATEGORIES_MAP = {
     "tortinha": ItemCategories.PADARIA,
     "torta": ItemCategories.PADARIA,
     "bolo": ItemCategories.PADARIA,
+    "paleta": ItemCategories.CARNES_E_PEIXES,
 }

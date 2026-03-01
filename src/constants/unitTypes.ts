@@ -1,12 +1,13 @@
 import { UnitTypes } from "@/enums/unitTypes";
 
 export const UNIT_MAP = {
-    unidade: 'und', und: 'und', un: 'und',
-    caixa: 'cx', cx: 'cx',
-    pacote: 'pct', pct: 'pct',
-    litro: 'lt', lt: 'lt', l: 'lt',
-    grama: 'g', g: 'g',
-    quilo: 'kg', kg: 'kg'
+    unidade: 'und', unidades: 'und', und: 'und', un: 'und',
+    caixa: 'cx', caixas: 'cx', cx: 'cx',
+    pacote: 'pct', pacotes: 'pct', pct: 'pct',
+    litro: 'lt', litros: 'lt', lt: 'lt', l: 'lt',
+    grama: 'g', gramas: 'g', g: 'g',
+    quilo: 'kg', quilos: 'kg', kg: 'kg',
+    fardo: 'fd', fardos: 'fd', fd: 'fd'
 };
 
 export const UNIT_TYPES = [
