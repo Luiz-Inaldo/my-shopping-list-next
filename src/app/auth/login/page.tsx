@@ -116,7 +116,7 @@ export default function Page() {
   }
 
   return (
-    <main className="bg-app-container page-wrapper auth-page-light flex items-center justify-center">
+    <main className="bg-white min-h-screen auth-page-light flex items-center justify-center p-4">
       <AnimatePresence mode="wait">
         {isPageVisible && (
           <motion.div
@@ -125,134 +125,134 @@ export default function Page() {
             initial={false}
             animate="visible"
             exit="exit"
-            className="w-full p-6"
+            className="w-full p-5"
           >
             <motion.div
               custom={0}
               variants={divVariants}
               initial="hidden"
               animate="visible"
-              className="flex flex-col items-center gap-4 mt-8"
+              className="flex flex-col items-center gap-6 mb-8"
             >
               <Image
                 src="/images/login.svg"
                 alt="Login illustration"
                 width={220}
                 height={160}
+                priority
               />
               <h1
-                className="text-3xl font-semibold"
+                className="text-3xl text-center font-bold"
                 style={{ color: 'var(--title)' }}
               >
-                Login
+                Bem-vindo de volta!
               </h1>
               <p
-                className="text-sm text-center max-w-[320px]"
+                className="text-sm px-4 text-center"
                 style={{ color: 'var(--paragraph)' }}
               >
-                Insira um e-mail e senha válidos para acessar sua conta.
+                Acesse sua conta para organizar suas compras com um toque de mágica.
               </p>
             </motion.div>
-            <Form {...form}>
-              <form className="mt-6" onSubmit={form.handleSubmit(onSubmit)}>
-                <div className="mt-6 bg-transparent rounded-xl p-0">
-                  <div className="space-y-3">
-                    <FormField
-                      control={form.control}
-                      name="email"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormControl>
-                            <motion.div
-                              variants={divVariants}
-                              custom={0.1}
-                              initial="hidden"
-                              animate="visible"
-                              className="flex items-center gap-3 border border-app-border rounded-lg px-3 py-3"
-                            >
-                              <User className="text-paragraph" />
-                              <input
-                                aria-label="E-mail"
-                                placeholder="E-mail"
-                                className="w-full bg-transparent outline-none placeholder:opacity-60 text-subtitle"
-                                type="email"
-                                {...field}
-                              />
-                            </motion.div>
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
 
-                    <FormField
-                      control={form.control}
-                      name="password"
-                      render={({ field }) => (
-                        <FormItem className="relative">
-                          <FormControl>
+            <Form {...form}>
+              <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+                <div className="space-y-4">
+                  <FormField
+                    control={form.control}
+                    name="email"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormControl>
+                          <motion.div
+                            variants={divVariants}
+                            custom={0.1}
+                            initial="hidden"
+                            animate="visible"
+                            className="flex items-center gap-3 bg-[#f8f9fa] shadow-[inset_2px_2px_4px_rgba(0,0,0,0.06)] rounded-2xl px-4 py-4"
+                          >
+                            <User className="text-paragraph w-5 h-5" />
+                            <input
+                              aria-label="E-mail"
+                              placeholder="E-mail"
+                              className="w-full bg-transparent outline-none placeholder:text-paragraph/50 text-title font-medium"
+                              type="email"
+                              {...field}
+                            />
+                          </motion.div>
+                        </FormControl>
+                        <FormMessage className="text-xs ml-2" />
+                      </FormItem>
+                    )}
+                  />
+
+                  <FormField
+                    control={form.control}
+                    name="password"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormControl>
+                          <div className="space-y-2">
                             <motion.div
                               variants={divVariants}
                               custom={0.3}
                               initial="hidden"
                               animate="visible"
-                              className="flex items-center gap-3 border rounded-lg px-3 py-3 relative border-border"
+                              className="flex items-center gap-3 bg-[#f8f9fa] shadow-[inset_2px_2px_4px_rgba(0,0,0,0.06)] rounded-2xl px-4 py-4"
                             >
-                              <Lock size={18} className="text-paragraph" />
+                              <Lock className="text-paragraph w-5 h-5" />
                               <input
                                 type={isPasswordVisible ? 'text' : 'password'}
                                 placeholder="Senha"
-                                className="w-full bg-transparent outline-none placeholder:opacity-60 text-subtitle"
+                                className="w-full bg-transparent outline-none placeholder:text-paragraph/50 text-title font-medium"
                                 {...field}
                               />
                               <button
                                 type="button"
                                 onClick={() => setIsPasswordVisible((v) => !v)}
-                                className="text-paragraph"
+                                className="text-paragraph transition-colors hover:text-title"
                               >
                                 {isPasswordVisible ? (
-                                  <EyeOff
-                                    size={16}
-                                    className="text-paragraph"
-                                  />
+                                  <EyeOff size={20} />
                                 ) : (
-                                  <Eye size={16} className="text-paragraph" />
+                                  <Eye size={20} />
                                 )}
                               </button>
                             </motion.div>
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
 
-                    <motion.p
-                      variants={divVariants}
-                      custom={0.4}
-                      initial="hidden"
-                      animate="visible"
-                      className="text-right text-sm text-app-primary"
-                      onClick={handleGotoForgotPassword}
-                    >
-                      Esqueci a senha
-                    </motion.p>
-
-                    <motion.div
-                      variants={divVariants}
-                      custom={0.5}
-                      initial="hidden"
-                      animate="visible"
-                    >
-                      <Button
-                        type="submit"
-                        disabled={loading}
-                        className="w-full font-semibold h-14 py-3 text-white text-base mt-2"
-                      >
-                        {loading ? <AppLoader size={16} /> : 'Entrar'}
-                      </Button>
-                    </motion.div>
-                  </div>
+                            <motion.p
+                              variants={divVariants}
+                              custom={0.4}
+                              initial="hidden"
+                              animate="visible"
+                              className="text-right text-xs font-semibold cursor-pointer transition-opacity hover:opacity-80"
+                              style={{ color: 'hsl(var(--app-secondary))' }}
+                              onClick={handleGotoForgotPassword}
+                            >
+                              esqueceu sua senha?
+                            </motion.p>
+                          </div>
+                        </FormControl>
+                        <FormMessage className="text-xs ml-2" />
+                      </FormItem>
+                    )}
+                  />
                 </div>
+
+                <motion.div
+                  variants={divVariants}
+                  custom={0.5}
+                  initial="hidden"
+                  animate="visible"
+                >
+                  <Button
+                    type="submit"
+                    disabled={loading}
+                    className="w-full font-bold h-14 rounded-2xl bg-[hsl(var(--app-primary))] text-white shadow-[6px_6px_12px_rgba(0,0,0,0.2),inset_4px_4px_6px_rgba(255,255,255,0.25),inset_-4px_-4px_6px_rgba(0,0,0,0.3)] hover:opacity-90 active:scale-[0.98] transition-all"
+                  >
+                    {loading ? <AppLoader size={16} /> : 'Entrar'}
+                  </Button>
+                </motion.div>
               </form>
             </Form>
 
@@ -300,7 +300,8 @@ export default function Page() {
               Ainda não tem uma conta?{' '}
               <span
                 onClick={handleGotoRegister}
-                className="text-app-primary hover:underline"
+                className="font-bold cursor-pointer transition-colors hover:opacity-80"
+                style={{ color: 'hsl(var(--app-secondary))' }}
               >
                 Cadastre-se
               </span>

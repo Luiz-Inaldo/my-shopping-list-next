@@ -83,7 +83,7 @@ export default function Page() {
   }
 
   return (
-    <main className="page-wrapper auth-page-light bg-app-container">
+    <main className="min-h-screen auth-page-light flex items-center justify-center p-4 bg-white">
       <AnimatePresence mode="wait">
         {isPageVisible && (
           <motion.div
@@ -92,87 +92,88 @@ export default function Page() {
             initial={false}
             animate="visible"
             exit="exit"
-            className="w-full min-h-screen p-6 flex flex-col justify-between"
+            className="w-full max-w-[400px] p-6 sm:p-10"
           >
-            <div>
-              <motion.div
-                custom={0}
-                variants={divVariants}
-                initial="hidden"
-                animate="visible"
-                className="flex flex-col items-center gap-4 mt-8"
-              >
-                <Image
-                  src="/images/forgot-password.svg"
-                  alt="Forgot Password illustration"
-                  width={220}
-                  height={220}
-                />
-                <h1 className="text-2xl font-semibold text-[color:var(--title)]">
-                  Esqueceu a Senha
+            <motion.div
+              custom={0}
+              variants={divVariants}
+              initial="hidden"
+              animate="visible"
+              className="flex flex-col items-center gap-6 mb-8"
+            >
+              <Image
+                src="/images/forgot-password.svg"
+                alt="Forgot Password illustration"
+                width={220}
+                height={220}
+                priority
+              />
+              <div className="text-center space-y-2">
+                <h1 className="text-3xl font-bold text-title">
+                  Esqueceu a Senha?
                 </h1>
-                <p className="text-sm text-center max-w-[340px] text-[color:var(--paragraph)]">
-                  Não se preocupe, acontece. Por favor insira o endereço de e-mail associado à
-                  sua conta.
+                <p className="text-sm px-4 text-paragraph">
+                  Não se preocupe, acontece. Insira o e-mail associado à sua conta e enviaremos um link de recuperação.
                 </p>
-              </motion.div>
-
-              <div className="mt-6">
-                <Form {...form}>
-                  <form
-                    onSubmit={form.handleSubmit(onSubmit)}
-                    className="space-y-3"
-                  >
-                    <FormField
-                      control={form.control}
-                      name="email"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormControl>
-                            <motion.div
-                              variants={divVariants}
-                              custom={0.1}
-                              initial="hidden"
-                              animate="visible"
-                              className="flex items-center gap-3 border rounded-lg px-3 py-3 border-app-border"
-                            >
-                              <Mail size={18} className="text-paragraph" />
-                              <input
-                                placeholder="Endereço de email"
-                                className="w-full bg-transparent outline-none placeholder:opacity-60 text-subtitle"
-                                {...field}
-                              />
-                            </motion.div>
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-
-                    <motion.div
-                      variants={divVariants}
-                      custom={0.2}
-                      initial="hidden"
-                      animate="visible"
-                    >
-                      <Button
-                        type="submit"
-                        disabled={isSubmitting}
-                        className="w-full py-3 h-14 font-semibold text-base text-white !mt-6"
-                      >
-                        {isSubmitting ? (
-                          <>
-                            <AppLoader size={18} />
-                            Enviando...
-                          </>
-                        ) : (
-                          'Recuperar Senha'
-                        )}
-                      </Button>
-                    </motion.div>
-                  </form>
-                </Form>
               </div>
+            </motion.div>
+
+            <div className="mt-6">
+              <Form {...form}>
+                <form
+                  onSubmit={form.handleSubmit(onSubmit)}
+                  className="space-y-4"
+                >
+                  <FormField
+                    control={form.control}
+                    name="email"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormControl>
+                          <motion.div
+                            variants={divVariants}
+                            custom={0.1}
+                            initial="hidden"
+                            animate="visible"
+                            className="flex items-center gap-3 bg-[#f8f9fa] shadow-[inset_2px_2px_4px_rgba(0,0,0,0.06)] rounded-2xl px-4 py-4"
+                          >
+                            <Mail className="text-paragraph w-5 h-5" />
+                            <input
+                              placeholder="Endereço de e-mail"
+                              className="w-full bg-transparent outline-none placeholder:text-paragraph/50 text-title font-medium"
+                              {...field}
+                            />
+                          </motion.div>
+                        </FormControl>
+                        <FormMessage className="text-xs ml-2" />
+                      </FormItem>
+                    )}
+                  />
+
+                  <motion.div
+                    variants={divVariants}
+                    custom={0.2}
+                    initial="hidden"
+                    animate="visible"
+                    className="pt-2"
+                  >
+                    <Button
+                      type="submit"
+                      disabled={isSubmitting}
+                      className="w-full font-bold h-14 rounded-2xl bg-[hsl(var(--app-primary))] text-white shadow-[6px_6px_12px_rgba(0,0,0,0.2),inset_4px_4px_6px_rgba(255,255,255,0.25),inset_-4px_-4px_6px_rgba(0,0,0,0.3)] hover:opacity-90 active:scale-[0.98] transition-all flex items-center justify-center gap-2"
+                    >
+                      {isSubmitting ? (
+                        <>
+                          <AppLoader size={16} />
+                          <span className="text-sm">Enviando...</span>
+                        </>
+                      ) : (
+                        <span className="text-base">Recuperar Senha</span>
+                      )}
+                    </Button>
+                  </motion.div>
+                </form>
+              </Form>
             </div>
 
             <motion.p
@@ -180,12 +181,13 @@ export default function Page() {
               custom={0.3}
               initial="hidden"
               animate="visible"
-              className="text-center text-sm mt-6 text-[color:var(--paragraph)]"
+              className="text-center text-sm mt-8 text-paragraph font-medium"
             >
               Lembrou da senha?{' '}
               <span
                 onClick={handleChangePage}
-                className="text-app-primary cursor-pointer hover:underline"
+                className="font-bold cursor-pointer transition-colors hover:opacity-80"
+                style={{ color: 'hsl(var(--app-secondary))' }}
               >
                 Entrar
               </span>

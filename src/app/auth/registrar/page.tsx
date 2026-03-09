@@ -177,41 +177,44 @@ export default function Page() {
   }, [username, usernamesList, verifyUsernameAvailability]);
 
   return (
-    <main className="page-wrapper auth-page-light flex items-center justify-center bg-app-container">
+    <main className="min-h-screen auth-page-light flex items-center justify-center p-4 bg-white">
       <AnimatePresence mode="wait">
         {isPageVisible && (
           <motion.div
-            key="login"
+            key="register"
             variants={pageVariants}
             initial={false}
             animate="visible"
             exit="exit"
-            className="w-full p-6 h-screen"
+            className="w-full max-w-[400px] p-6 sm:p-10"
           >
             <motion.div
               custom={0}
               variants={divVariants}
               initial="hidden"
               animate="visible"
-              className="flex flex-col items-center gap-4 mt-8"
+              className="flex flex-col items-center gap-6 mb-8"
             >
               <Image
                 src="/images/signup.svg"
                 alt="Sign up illustration"
                 width={220}
                 height={160}
+                priority
               />
-              <h1 className="text-2xl font-semibold text-title">Registre-se</h1>
-              <p className="text-sm text-center max-w-[340px] text-paragraph">
-                Preencha o formulário para continuar
-              </p>
+              <div className="text-center space-y-2">
+                <h1 className="text-3xl font-bold text-title">Registre-se</h1>
+                <p className="text-sm px-4 text-paragraph">
+                  Preencha o formulário para continuar e organizar suas compras.
+                </p>
+              </div>
             </motion.div>
 
             <div className="mt-6">
               <Form {...form}>
                 <form
                   onSubmit={form.handleSubmit(onSubmit)}
-                  className="space-y-3"
+                  className="space-y-4"
                 >
                   <FormField
                     control={form.control}
@@ -224,32 +227,32 @@ export default function Page() {
                             custom={0.1}
                             initial="hidden"
                             animate="visible"
-                            className="flex items-center gap-3 rounded-lg px-3 py-3 border border-app-border"
+                            className="flex items-center gap-3 bg-[#f8f9fa] shadow-[inset_2px_2px_4px_rgba(0,0,0,0.06)] rounded-2xl px-4 py-4"
                           >
-                            <User size={18} className="text-paragraph" />
+                            <User className="text-paragraph w-5 h-5" />
                             <input
                               minLength={4}
                               maxLength={20}
                               placeholder="Nome de usuário"
-                              className="w-full bg-transparent outline-none placeholder:opacity-60 text-title"
+                              className="w-full bg-transparent outline-none placeholder:text-paragraph/50 text-title font-medium"
                               {...field}
                             />
                           </motion.div>
                         </FormControl>
-                        <FormMessage />
                         {field.value && (
-                          <>
+                          <div className="absolute -top-1 right-2">
                             {isUsernameAvailable ? (
-                              <span className="absolute top-2.5 right-2 text-xs text-app-primary">
-                                Nome de usuário disponível
+                              <span className="text-[10px] sm:text-xs font-semibold" style={{ color: 'hsl(var(--app-primary))' }}>
+                                Disponível
                               </span>
                             ) : (
-                              <span className="absolute top-2.5 right-2 text-xs text-destructive">
-                                Nome de usuário já utilizado
+                              <span className="text-[10px] sm:text-xs font-semibold text-destructive">
+                                Indisponível
                               </span>
                             )}
-                          </>
+                          </div>
                         )}
+                        <FormMessage className="text-xs ml-2" />
                       </FormItem>
                     )}
                   />
@@ -265,17 +268,17 @@ export default function Page() {
                             custom={0.2}
                             initial="hidden"
                             animate="visible"
-                            className="flex items-center gap-3 border rounded-lg px-3 py-3 border-border"
+                            className="flex items-center gap-3 bg-[#f8f9fa] shadow-[inset_2px_2px_4px_rgba(0,0,0,0.06)] rounded-2xl px-4 py-4"
                           >
-                            <Mail size={18} className="text-paragraph" />
+                            <Mail className="text-paragraph w-5 h-5" />
                             <input
                               placeholder="E-mail"
-                              className="w-full bg-transparent outline-none placeholder:opacity-60 text-subtitle"
+                              className="w-full bg-transparent outline-none placeholder:text-paragraph/50 text-title font-medium"
                               {...field}
                             />
                           </motion.div>
                         </FormControl>
-                        <FormMessage />
+                        <FormMessage className="text-xs ml-2" />
                       </FormItem>
                     )}
                   />
@@ -284,36 +287,36 @@ export default function Page() {
                     control={form.control}
                     name="password"
                     render={({ field }) => (
-                      <FormItem className="relative">
+                      <FormItem>
                         <FormControl>
                           <motion.div
                             variants={divVariants}
                             custom={0.3}
                             initial="hidden"
                             animate="visible"
-                            className="flex items-center gap-3 border rounded-lg px-3 py-3 relative border-border"
+                            className="flex items-center gap-3 bg-[#f8f9fa] shadow-[inset_2px_2px_4px_rgba(0,0,0,0.06)] rounded-2xl px-4 py-4"
                           >
-                            <Lock size={18} className="text-paragraph" />
+                            <Lock className="text-paragraph w-5 h-5" />
                             <input
                               type={isPasswordVisible ? 'text' : 'password'}
                               placeholder="Senha"
-                              className="w-full bg-transparent outline-none placeholder:opacity-60 text-subtitle"
+                              className="w-full bg-transparent outline-none placeholder:text-paragraph/50 text-title font-medium"
                               {...field}
                             />
                             <button
                               type="button"
                               onClick={() => setIsPasswordVisible((v) => !v)}
-                              className="text-paragraph"
+                              className="text-paragraph transition-colors hover:text-title"
                             >
                               {isPasswordVisible ? (
-                                <EyeOff size={16} className="text-paragraph" />
+                                <EyeOff size={20} />
                               ) : (
-                                <Eye size={16} className="text-paragraph" />
+                                <Eye size={20} />
                               )}
                             </button>
                           </motion.div>
                         </FormControl>
-                        <FormMessage />
+                        <FormMessage className="text-xs ml-2" />
                       </FormItem>
                     )}
                   />
@@ -322,20 +325,20 @@ export default function Page() {
                     control={form.control}
                     name="confirm_password"
                     render={({ field }) => (
-                      <FormItem className="relative">
+                      <FormItem>
                         <FormControl>
                           <motion.div
                             variants={divVariants}
                             custom={0.4}
                             initial="hidden"
                             animate="visible"
-                            className="flex items-center gap-3 border rounded-lg px-3 py-3 relative border-border"
+                            className="flex items-center gap-3 bg-[#f8f9fa] shadow-[inset_2px_2px_4px_rgba(0,0,0,0.06)] rounded-2xl px-4 py-4"
                           >
-                            <Lock size={18} className="text-paragraph" />
+                            <Lock className="text-paragraph w-5 h-5" />
                             <input
                               type={isConfirmPasswordVisible ? 'text' : 'password'}
                               placeholder="Confirme a senha"
-                              className="w-full bg-transparent outline-none placeholder:opacity-60 text-subtitle"
+                              className="w-full bg-transparent outline-none placeholder:text-paragraph/50 text-title font-medium"
                               {...field}
                             />
                             <button
@@ -343,56 +346,40 @@ export default function Page() {
                               onClick={() =>
                                 setIsConfirmPasswordVisible((v) => !v)
                               }
-                              className="text-paragraph"
+                              className="text-paragraph transition-colors hover:text-title"
                             >
                               {isConfirmPasswordVisible ? (
-                                <EyeOff size={16} className="text-paragraph" />
+                                <EyeOff size={20} />
                               ) : (
-                                <Eye size={16} className="text-paragraph" />
+                                <Eye size={20} />
                               )}
                             </button>
                           </motion.div>
                         </FormControl>
-                        <FormMessage />
+                        <FormMessage className="text-xs ml-2" />
                       </FormItem>
                     )}
                   />
-
-                  {/* <p className="text-xs text-center text-[color:var(--paragraph)]">
-                By signing up, you are agree to our{' '}
-                <Link
-                  href="#"
-                  className="text-app-primary text-[hsl(var(--app-primary))]"
-                >
-                  Terms & Conditions
-                </Link>{' '}
-                and{' '}
-                <Link
-                  href="#"
-                  className="text-app-primary text-[hsl(var(--app-primary))]"
-                >
-                  Privacy Policy
-                </Link>
-              </p> */}
 
                   <motion.div
                     variants={divVariants}
                     custom={0.5}
                     initial="hidden"
                     animate="visible"
+                    className="pt-2"
                   >
                     <Button
                       disabled={(username && !isUsernameAvailable) || loading}
                       type="submit"
-                      className="w-full font-semibold mt-5 h-14 py-3 text-white text-base"
+                      className="w-full font-bold h-14 rounded-2xl bg-[hsl(var(--app-primary))] text-white shadow-[6px_6px_12px_rgba(0,0,0,0.2),inset_4px_4px_6px_rgba(255,255,255,0.25),inset_-4px_-4px_6px_rgba(0,0,0,0.3)] hover:opacity-90 active:scale-[0.98] transition-all flex items-center justify-center gap-2"
                     >
                       {loading ? (
                         <>
-                          <span>Criando conta</span>
-                          <AppLoader size={18} />
+                          <span className="text-sm">Criando conta</span>
+                          <AppLoader size={16} />
                         </>
                       ) : (
-                        <span>Criar Conta</span>
+                        <span className="text-base">Criar Conta</span>
                       )}
                     </Button>
                   </motion.div>
@@ -405,12 +392,13 @@ export default function Page() {
               custom={0.6}
               initial="hidden"
               animate="visible"
-              className="text-center text-sm mt-6 text-[color:var(--paragraph)]"
+              className="text-center text-sm mt-8 text-paragraph font-medium"
             >
               Já tem uma conta?{' '}
               <span
                 onClick={handleChangePage}
-                className="text-app-primary cursor-pointer hover:underline"
+                className="font-bold cursor-pointer transition-colors hover:opacity-80"
+                style={{ color: 'hsl(var(--app-secondary))' }}
               >
                 Entrar
               </span>
