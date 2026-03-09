@@ -1,5 +1,5 @@
 'use client'
-import { Inter, Itim, Quicksand } from "next/font/google";
+import { Inter, Plus_Jakarta_Sans } from "next/font/google";
 import "../styles/globals.css";
 import { Toaster } from "@/components/ui/sonner";
 import useCheckRoute from "@/hooks/useCheckRoute";
@@ -10,7 +10,7 @@ import { queryClient } from "@/utils/queryClient";
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
 import { CustomToastProvider } from "@/context/CustomToastContext";
 
-const inter = Inter({ weight: ['300', '400', '500', '700'], subsets: ["latin"] });
+const plusJakartaSans = Plus_Jakarta_Sans({ weight: ['300', '400', '500', '700'], subsets: ["latin"] });
 
 export default function RootLayout({
   children,
@@ -23,7 +23,7 @@ export default function RootLayout({
 
   return (
     <html lang="pt-br">
-      <body className={inter.className}>
+      <body className={plusJakartaSans.className}>
         <QueryClientProvider client={queryClient}>
           <CustomToastProvider>
             <div className="relative">
