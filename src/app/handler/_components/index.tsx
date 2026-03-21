@@ -24,7 +24,14 @@ export default function VerifierPage() {
     };
 
     return (
-        <div className="w-full min-h-screen-dvh flex flex-col items-center bg-app-background p-2 pt-6">
+        <div
+            className="auth-page-light flex min-h-screen w-full flex-col items-center p-4"
+            style={{
+                backgroundImage: "url('/images/food_background.svg')",
+                backgroundSize: 'cover',
+                backgroundPosition: 'center',
+            }}
+        >
             {renderContent(mode)}
         </div>
     )

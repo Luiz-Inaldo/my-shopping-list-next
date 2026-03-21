@@ -2,10 +2,8 @@
 
 import { APP_ROUTES } from '@/routes/app-routes'
 import { Button } from '@/components/ui/button'
-import { House, MailCheckIcon } from 'lucide-react'
+import { AlertCircle, Check, MailCheckIcon } from 'lucide-react'
 import { motion } from 'motion/react'
-import Image from 'next/image'
-import Link from 'next/link'
 import { useRouter, useSearchParams } from 'next/navigation'
 import React, { useState } from 'react'
 import { tryCatchRequest } from '@/functions/requests'
@@ -38,22 +36,22 @@ export default function VerifyEmailPage() {
         return () => clearTimeout(timeout);
     }
 
+    const containerClass = "rounded-sketch-card border-2 border-sketch-border bg-sketch-white p-6 shadow-sketch flex items-center gap-4 w-full max-w-[400px]"
+
     const renderContent = (mode: string | null, componentStatus: ComponentStatus) => {
         const isEmailVerification = mode === 'verifyEmail';
-        const containerClass = "relative overflow-hidden bg-app-container p-6 rounded-xl shadow-lg flex items-center gap-4 w-full max-w-sm mx-4"
 
         switch (componentStatus) {
             case 'idle':
                 return (
-                    <div className="bg-app-container p-6 rounded-xl shadow-lg flex flex-col w-full max-w-sm mx-4">
-                        <h1 className="text-title text-left text-xl font-bold">
+                    <div className="rounded-sketch-card border-2 border-sketch-border bg-sketch-white p-6 shadow-sketch flex flex-col w-full max-w-[400px]">
+                        <h1 className="font-sketchHeading text-title text-left text-xl font-bold">
                             {isEmailVerification ? "Confirmação" : "Alteração"} de e-mail
                         </h1>
-                        <p className="text-paragraph text-sm">Clique no botão abaixo para {isEmailVerification ? "validar" : "alterar"} seu e-mail.</p>
-                        <div className="w-full mt-10">
-                            <Button
-                                className="w-full bg-app-primary hover:bg-app-primary/90 text-snow rounded-full" onClick={onVerifyEmail}>
-                                <MailCheckIcon className="w-4 h-4" />
+                        <p className="font-sketch text-paragraph text-sm">Clique no botão abaixo para {isEmailVerification ? "validar" : "alterar"} seu e-mail.</p>
+                        <div className="mt-10 w-full">
+                            <Button className="h-14 w-full" onClick={onVerifyEmail}>
+                                <MailCheckIcon className="size-4" strokeWidth={2.5} />
                                 Validar e-mail
                             </Button>
                         </div>
@@ -63,7 +61,7 @@ export default function VerifyEmailPage() {
                 return (
                     <div className={containerClass}>
                         <AppLoader />
-                        <span className="text-subtitle font-medium text-lg">{isEmailVerification ? "Validando e-mail..." : "Alterando e-mail..."}</span>
+                        <span className="font-sketch text-subtitle font-medium text-lg">{isEmailVerification ? "Validando e-mail..." : "Alterando e-mail..."}</span>
                     </div>
                 );
             case 'success':
@@ -73,21 +71,16 @@ export default function VerifyEmailPage() {
                             initial={{ scale: 0.5, opacity: 0 }}
                             animate={{ scale: 1, opacity: 1 }}
                             transition={{ duration: 0.5, type: 'spring' }}
-                            className="shrink-0"
+                            className="flex size-10 shrink-0 items-center justify-center rounded-full bg-sketch-success/20"
                         >
-                            <Image
-                                src="/images/big-check.svg"
-                                alt="Sucesso"
-                                width={40}
-                                height={40}
-                            />
+                            <Check size={24} strokeWidth={2.5} className="text-sketch-success" />
                         </motion.div>
                         <div className="flex flex-col">
                             <motion.h1
                                 initial={{ y: 20, opacity: 0 }}
                                 animate={{ y: 0, opacity: 1 }}
                                 transition={{ duration: 0.5 }}
-                                className="text-subtitle font-semibold text-lg"
+                                className="font-sketch text-subtitle font-semibold text-lg"
                             >
                                 {isEmailVerification ? "E-mail verificado!" : "E-mail alterado!"}
                             </motion.h1>
@@ -95,10 +88,9 @@ export default function VerifyEmailPage() {
                                 initial={{ y: 20, opacity: 0 }}
                                 animate={{ y: 0, opacity: 1 }}
                                 transition={{ duration: 0.5, delay: 0.2 }}
+                                className="font-sketch text-paragraph text-sm"
                             >
-                                <p className="text-paragraph text-sm">
-                                    Você será redirecionado para a página de login em alguns segundos.
-                                </p>
+                                Você será redirecionado para a página de login em alguns segundos.
                             </motion.p>
                         </div>
                     </div>
@@ -110,19 +102,14 @@ export default function VerifyEmailPage() {
                             initial={{ opacity: 0, scale: 0.5 }}
                             animate={{ opacity: 1, scale: 1 }}
                             transition={{ duration: 0.3, type: 'spring', stiffness: 300 }}
-                            className="shrink-0"
+                            className="flex size-10 shrink-0 items-center justify-center rounded-full bg-sketch-danger-lt"
                         >
-                            <Image
-                                src="/images/error.svg"
-                                alt="Erro"
-                                width={40}
-                                height={40}
-                            />
+                            <AlertCircle size={24} strokeWidth={2.5} className="text-sketch-danger" />
                         </motion.div>
 
                         <div className="flex flex-col">
                             <motion.h2
-                                className="text-subtitle font-semibold text-lg"
+                                className="font-sketch text-subtitle font-semibold text-lg"
                                 initial={{ opacity: 0 }}
                                 animate={{ opacity: 1 }}
                                 transition={{ delay: 0.2, duration: 0.3 }}
@@ -134,10 +121,9 @@ export default function VerifyEmailPage() {
                                 initial={{ opacity: 0, y: 10 }}
                                 animate={{ opacity: 1, y: 0 }}
                                 transition={{ delay: 0.4, duration: 0.3 }}
+                                className="font-sketch text-paragraph text-sm"
                             >
-                                <p className="text-paragraph text-sm">
-                                    O link de {isEmailVerification ? "verificação" : "alteração"} pode ser inválido ou ter expirado.
-                                </p>
+                                O link de {isEmailVerification ? "verificação" : "alteração"} pode ser inválido ou ter expirado.
                             </motion.p>
                         </div>
                     </div>

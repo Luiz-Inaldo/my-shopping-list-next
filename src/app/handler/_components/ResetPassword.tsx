@@ -2,8 +2,6 @@
 
 import { APP_ROUTES } from '@/routes/app-routes'
 import { Button } from '@/components/ui/button'
-import Image from 'next/image'
-import Link from 'next/link'
 import { useRouter, useSearchParams } from 'next/navigation'
 import React, { useEffect, useState } from 'react'
 import { tryCatchRequest } from '@/functions/requests'
@@ -18,10 +16,9 @@ import {
     FormControl,
     FormField,
     FormItem,
-    FormLabel,
     FormMessage,
 } from '@/components/ui/form'
-import { Input } from '@/components/ui/input'
+import { AlertCircle, Check, Lock } from 'lucide-react'
 import { ComponentStatus } from '.'
 
 export default function ResetPasswordPage() {
@@ -77,14 +74,14 @@ export default function ResetPasswordPage() {
         validateOobCode();
     }, [code]);
 
-    const renderContent = (componentStatus: ComponentStatus) => {
-        const containerClass = "relative overflow-hidden bg-app-container p-6 rounded-xl shadow-lg flex items-center gap-4 w-full max-w-sm mx-4"
+    const containerClass = "rounded-sketch-card border-2 border-sketch-border bg-sketch-white p-6 shadow-sketch flex items-center gap-4 w-full max-w-[400px]"
 
+    const renderContent = (componentStatus: ComponentStatus) => {
         switch (componentStatus) {
             case 'idle':
                 return (
-                    <div className="bg-app-container p-6 rounded-xl shadow-lg flex flex-col w-full max-w-sm mx-4">
-                        <h1 className="text-title text-left text-xl font-bold mb-4">
+                    <div className="rounded-sketch-card border-2 border-sketch-border bg-sketch-white p-6 shadow-sketch flex flex-col w-full max-w-[400px]">
+                        <h1 className="font-sketchHeading text-title text-left text-xl font-bold mb-4">
                             Alterar senha
                         </h1>
                         <Form {...form}>
@@ -94,9 +91,16 @@ export default function ResetPasswordPage() {
                                     name="newPassword"
                                     render={({ field }) => (
                                         <FormItem>
-                                            <FormLabel>Nova senha</FormLabel>
                                             <FormControl>
-                                                <Input type="password" placeholder="******" {...field} />
+                                                <div className="flex items-center gap-3 rounded-sketch-notif border-2 border-sketch-border bg-sketch-white px-3 py-3 shadow-sketch-sm">
+                                                    <Lock size={18} strokeWidth={2.5} className="text-sketch-fg" />
+                                                    <input
+                                                        type="password"
+                                                        placeholder="Nova senha"
+                                                        className="font-sketch w-full bg-transparent outline-none placeholder:text-paragraph/60 text-subtitle"
+                                                        {...field}
+                                                    />
+                                                </div>
                                             </FormControl>
                                             <FormMessage />
                                         </FormItem>
@@ -107,18 +111,22 @@ export default function ResetPasswordPage() {
                                     name="confirmPassword"
                                     render={({ field }) => (
                                         <FormItem>
-                                            <FormLabel>Confirmar senha</FormLabel>
                                             <FormControl>
-                                                <Input type="password" placeholder="******" {...field} />
+                                                <div className="flex items-center gap-3 rounded-sketch-notif border-2 border-sketch-border bg-sketch-white px-3 py-3 shadow-sketch-sm">
+                                                    <Lock size={18} strokeWidth={2.5} className="text-sketch-fg" />
+                                                    <input
+                                                        type="password"
+                                                        placeholder="Confirmar senha"
+                                                        className="font-sketch w-full bg-transparent outline-none placeholder:text-paragraph/60 text-subtitle"
+                                                        {...field}
+                                                    />
+                                                </div>
                                             </FormControl>
                                             <FormMessage />
                                         </FormItem>
                                     )}
                                 />
-                                <Button
-                                    type="submit"
-                                    className="w-full bg-app-primary hover:bg-app-primary/90 text-snow rounded-full mt-4"
-                                >
+                                <Button type="submit" className="mt-4 h-14 w-full">
                                     Alterar senha
                                 </Button>
                             </form>
@@ -129,23 +137,20 @@ export default function ResetPasswordPage() {
                 return (
                     <div className={containerClass}>
                         <AppLoader />
-                        <span className="text-subtitle font-medium text-lg">Alterando senha...</span>
+                        <span className="font-sketch text-subtitle font-medium text-lg">Alterando senha...</span>
                     </div>
                 );
             case 'success':
                 return (
                     <div className={containerClass}>
-                        <Image
-                            src="/images/big-check.svg"
-                            alt="Sucesso"
-                            width={40}
-                            height={40}
-                        />
+                        <div className="flex size-10 shrink-0 items-center justify-center rounded-full bg-sketch-success/20">
+                            <Check size={24} strokeWidth={2.5} className="text-sketch-success" />
+                        </div>
                         <div className="flex flex-col">
-                            <h1 className="text-subtitle font-semibold text-lg">
+                            <h1 className="font-sketch text-subtitle font-semibold text-lg">
                                 Senha alterada!
                             </h1>
-                            <p className="text-paragraph text-sm">
+                            <p className="font-sketch text-paragraph text-sm">
                                 Sua senha foi alterada com sucesso. Você já pode acessar a plataforma.
                             </p>
                         </div>
@@ -154,17 +159,14 @@ export default function ResetPasswordPage() {
             case 'error':
                 return (
                     <div className={containerClass}>
-                        <Image
-                            src="/images/error.svg"
-                            alt="Erro"
-                            width={40}
-                            height={40}
-                        />
+                        <div className="flex size-10 shrink-0 items-center justify-center rounded-full bg-sketch-danger-lt">
+                            <AlertCircle size={24} strokeWidth={2.5} className="text-sketch-danger" />
+                        </div>
                         <div className="flex flex-col">
-                            <h2 className="text-subtitle font-semibold text-lg">
+                            <h2 className="font-sketch text-subtitle font-semibold text-lg">
                                 Algo deu errado
                             </h2>
-                            <p className="text-paragraph text-sm">
+                            <p className="font-sketch text-paragraph text-sm">
                                 O link de alteração de senha pode ser inválido ou ter expirado.
                             </p>
                         </div>
@@ -174,23 +176,20 @@ export default function ResetPasswordPage() {
     };
 
     return (
-        <div className="w-full min-h-screen-dvh flex flex-col items-center justify-center bg-app-background">
+        <div className="flex w-full flex-col items-center justify-center">
             {validOobCode === null && (
                 <AppLoader size={80} />
             )}
             {validOobCode === false && (
-                <div className="bg-app-container p-6 rounded-xl shadow-lg flex w-full max-w-sm mx-4 gap-4">
-                    <Image
-                        src="/images/error.svg"
-                        alt="Erro"
-                        width={40}
-                        height={40}
-                    />
+                <div className="rounded-sketch-card border-2 border-sketch-border bg-sketch-white p-6 shadow-sketch flex w-full max-w-[400px] gap-4">
+                    <div className="flex size-10 shrink-0 items-center justify-center rounded-full bg-sketch-danger-lt">
+                        <AlertCircle size={24} strokeWidth={2.5} className="text-sketch-danger" />
+                    </div>
                     <div className="flex flex-col">
-                        <h2 className="text-subtitle font-semibold text-lg">
+                        <h2 className="font-sketch text-subtitle font-semibold text-lg">
                             Algo deu errado
                         </h2>
-                        <p className="text-paragraph text-sm">
+                        <p className="font-sketch text-paragraph text-sm">
                             O link de alteração de senha pode ser inválido ou ter expirado.
                         </p>
                     </div>

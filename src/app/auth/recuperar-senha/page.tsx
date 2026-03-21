@@ -1,11 +1,9 @@
 'use client';
-import Image from 'next/image';
-import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useState, useTransition } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Mail, LoaderCircle } from 'lucide-react';
+import { Mail } from 'lucide-react';
 import { AnimatePresence, motion } from 'motion/react';
 
 import { Button } from '@/components/ui/button';
@@ -83,7 +81,14 @@ export default function Page() {
   }
 
   return (
-    <main className="page-wrapper auth-page-light bg-app-container">
+    <main
+      className="auth-page-light flex min-h-screen items-center justify-center p-4"
+      style={{
+        backgroundImage: "url('/images/food_background.svg')",
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+      }}
+    >
       <AnimatePresence mode="wait">
         {isPageVisible && (
           <motion.div
@@ -92,26 +97,20 @@ export default function Page() {
             initial={false}
             animate="visible"
             exit="exit"
-            className="w-full min-h-screen p-6 flex flex-col justify-between"
+            className="w-full max-w-[400px]"
           >
-            <div>
+            <div className="rounded-sketch-card border-2 border-sketch-border bg-sketch-white p-6 shadow-sketch">
               <motion.div
                 custom={0}
                 variants={divVariants}
                 initial="hidden"
                 animate="visible"
-                className="flex flex-col items-center gap-4 mt-8"
+                className="flex flex-col items-center gap-4"
               >
-                <Image
-                  src="/images/forgot-password.svg"
-                  alt="Forgot Password illustration"
-                  width={220}
-                  height={220}
-                />
-                <h1 className="text-2xl font-semibold text-[color:var(--title)]">
+                <h1 className="font-sketchHeading text-2xl font-semibold text-title">
                   Esqueceu a Senha
                 </h1>
-                <p className="text-sm text-center max-w-[340px] text-[color:var(--paragraph)]">
+                <p className="font-sketch text-center text-sm text-paragraph max-w-[340px]">
                   Não se preocupe, acontece. Por favor insira o endereço de e-mail associado à
                   sua conta.
                 </p>
@@ -134,12 +133,12 @@ export default function Page() {
                               custom={0.1}
                               initial="hidden"
                               animate="visible"
-                              className="flex items-center gap-3 border rounded-lg px-3 py-3 border-app-border"
+                              className="flex items-center gap-3 rounded-sketch-notif border-2 border-sketch-border bg-sketch-white px-3 py-3 shadow-sketch-sm"
                             >
-                              <Mail size={18} className="text-paragraph" />
+                              <Mail size={18} strokeWidth={2.5} className="text-sketch-fg" />
                               <input
                                 placeholder="Endereço de email"
-                                className="w-full bg-transparent outline-none placeholder:opacity-60 text-subtitle"
+                                className="font-sketch w-full bg-transparent outline-none placeholder:text-paragraph/60 text-subtitle"
                                 {...field}
                               />
                             </motion.div>
@@ -158,7 +157,7 @@ export default function Page() {
                       <Button
                         type="submit"
                         disabled={isSubmitting}
-                        className="w-full py-3 h-14 font-semibold text-base text-white !mt-6"
+                        className="!mt-6 h-14 w-full py-3 text-base"
                       >
                         {isSubmitting ? (
                           <>
@@ -173,23 +172,23 @@ export default function Page() {
                   </form>
                 </Form>
               </div>
-            </div>
 
-            <motion.p
-              variants={divVariants}
-              custom={0.3}
-              initial="hidden"
-              animate="visible"
-              className="text-center text-sm mt-6 text-[color:var(--paragraph)]"
-            >
-              Lembrou da senha?{' '}
-              <span
-                onClick={handleChangePage}
-                className="text-app-primary cursor-pointer hover:underline"
+              <motion.p
+                variants={divVariants}
+                custom={0.3}
+                initial="hidden"
+                animate="visible"
+                className="mt-6 text-center font-sketch text-sm text-paragraph"
               >
-                Entrar
-              </span>
-            </motion.p>
+                Lembrou da senha?{' '}
+                <span
+                  onClick={handleChangePage}
+                  className="cursor-pointer text-sketch-accent hover:underline"
+                >
+                  Entrar
+                </span>
+              </motion.p>
+            </div>
           </motion.div>
         )}
       </AnimatePresence>
