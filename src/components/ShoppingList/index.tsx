@@ -18,6 +18,7 @@ import useGeneralUserStore from '@/store/generalUserStore';
 import { PurchaseBlocked } from '../Errors/PurchaseBlocked';
 import ErrorFetchData from '../Errors/ErrorFetchData';
 import { FinancialSummarySheet } from '../Sheet/FinancialSummarySheet';
+import { sendToastMessage } from '@/functions/sendToastMessage';
 
 export default function ShoppingList() {
   const userId = useGeneralUserStore((store) => store.userProfile?.uid);

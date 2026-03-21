@@ -32,6 +32,14 @@ export const EditProductForm = ({
     handleSubmit,
   } = useForm<PurchaseProductInput>({
     resolver: zodResolver(PurchaseProductSchema),
+    defaultValues: {
+      category: item?.category,
+      unit_type: item?.unit_type,
+      name: item?.name,
+      value: item?.value,
+      quantity: item?.quantity,
+      checked: item?.checked,
+    }
   });
 
   const { handleUpdateItem } = useShoplistContext();
@@ -66,7 +74,6 @@ export const EditProductForm = ({
             <Controller
               control={control}
               name="name"
-              defaultValue={item?.name}
               render={({ field }) => (
                 <Input
                   type="text"
@@ -82,7 +89,6 @@ export const EditProductForm = ({
               control={control}
               label='Selecione o tipo de unidade'
               name="unit_type"
-              defaultValue={item?.unit_type}
             >
               {UNIT_TYPES.map(type => (
                 <SelectItem key={type.value} value={type.value}>{type.label}</SelectItem>
@@ -95,7 +101,6 @@ export const EditProductForm = ({
               <Controller
                 control={control}
                 name="value"
-                defaultValue={String(item?.value).replace(".", ",") || "0"}
                 render={({ field }) => (
                   <Input
                     type="text"
@@ -109,7 +114,6 @@ export const EditProductForm = ({
               <Controller
                 control={control}
                 name="quantity"
-                defaultValue={item?.quantity}
                 render={({ field }) => (
                   <Input
                     type="number"
