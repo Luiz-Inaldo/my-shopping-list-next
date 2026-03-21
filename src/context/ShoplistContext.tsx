@@ -13,6 +13,7 @@ import { queryClient } from "@/utils/queryClient";
 import { collection, doc, onSnapshot } from "firebase/firestore";
 import { db } from "@/lib/firebase";
 import { tryCatchRequest } from "@/functions/requests";
+import { PurchaseProductInput } from "@/zodSchema/addPurchaseProduct";
 
 const ShoplistContext = createContext<IShoplistContextProps | undefined>(undefined);
 
@@ -86,7 +87,7 @@ export const ShoplistProvider = ({ children }: { children: React.ReactNode }) =>
 
     }
 
-    async function handleUpdateItem(object: IEditItemProps, itemID: string) {
+    async function handleUpdateItem(object: PurchaseProductInput, itemID: string) {
 
         const updatedProducts = auxData?.purchase_items?.map(product => {
             if (product.id === itemID) {
@@ -123,8 +124,7 @@ export const ShoplistProvider = ({ children }: { children: React.ReactNode }) =>
         sendToastMessage({ title: "Produto removido com sucesso.", type: 'success' });
     }
 
-    async function handleCheckItem(item: IProductProps, object?: IEditItemProps) {
-
+    async function handleCheckItem(item: IProductProps, object?: { value: number }) {
         const updatedProducts = auxData?.purchase_items?.map(product => {
             if (product.id === item.id) {
                 return {

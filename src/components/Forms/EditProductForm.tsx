@@ -16,6 +16,9 @@ import { Button } from "../ui/button";
 import { ShadSelect } from "../Select";
 import { SelectItem } from "../ui/select";
 import { UNIT_TYPES } from "@/constants/unitTypes";
+import { Input } from "../ui/input";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { PurchaseProductInput, PurchaseProductSchema } from "@/zodSchema/addPurchaseProduct";
 
 export const EditProductForm = ({
   item,
@@ -27,12 +30,14 @@ export const EditProductForm = ({
   const {
     control,
     handleSubmit,
-  } = useForm<IEditItemProps>();
+  } = useForm<PurchaseProductInput>({
+    resolver: zodResolver(PurchaseProductSchema),
+  });
 
   const { handleUpdateItem } = useShoplistContext();
   const [open, setOpen] = useState(false);
 
-  async function onSubmit(data: IEditItemProps) {
+  async function onSubmit(data: PurchaseProductInput) {
     if (!item || !item.id) return;
     data.value = Number(String(data.value).replace(",", "."));
     await handleUpdateItem(data, item.id);
@@ -63,10 +68,10 @@ export const EditProductForm = ({
               name="name"
               defaultValue={item?.name}
               render={({ field }) => (
-                <input
+                <Input
                   type="text"
                   {...field}
-                  className="w-full text-subtitle bg-app-background text-sm rounded-full border px-3 py-2 h-8 text-ellipsis overflow-hidden whitespace-nowrap"
+                  
                 />
               )}
             />
@@ -92,10 +97,9 @@ export const EditProductForm = ({
                 name="value"
                 defaultValue={String(item?.value).replace(".", ",") || "0"}
                 render={({ field }) => (
-                  <input
+                  <Input
                     type="text"
                     {...field}
-                    className="w-full text-subtitle bg-app-background text-sm rounded-full border px-3 py-2 h-8"
                   />
                 )}
               />
@@ -107,10 +111,9 @@ export const EditProductForm = ({
                 name="quantity"
                 defaultValue={item?.quantity}
                 render={({ field }) => (
-                  <input
+                  <Input
                     type="number"
                     {...field}
-                    className="w-full text-subtitle bg-app-background text-sm rounded-full border px-3 py-2 h-8"
                   />
                 )}
               />

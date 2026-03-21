@@ -43,13 +43,17 @@ export function ProductsSearch() {
 
   return (
     <div className="relative">
-      <Search size={16} className='text-paragraph absolute top-3 left-2.5' />
+      <Search
+        size={16}
+        strokeWidth={2.5}
+        className="text-sketch-fg absolute left-3 top-1/2 -translate-y-1/2 opacity-60"
+      />
       <Input
         type="text"
         placeholder="Buscar por produto..."
         onChange={handleFilter}
-        className="pl-8 rounded-lg bg-app-container h-10 w-full placeholder:text-paragraph placeholder:text-sm text-paragraph text-sm focus-visible:ring-0 focus-visible:ring-offset-0 shadow border-app-border"
+        className="h-10 w-full border-2 border-sketch-border bg-sketch-white pl-9 font-sketch text-sm text-title shadow-sketch-sm placeholder:text-title/40 focus-visible:ring-2 focus-visible:ring-sketch-accent/25 focus-visible:ring-offset-0 rounded-sketch-notif"
       />
     </div>
-  )
+  );
 }

@@ -23,10 +23,12 @@ export function ProductsList({
   if (!list || totalListItems === 0) return <EmptyProducsList />;
 
   return (
-    <div className="space-y-5">
+    <div className="space-y-4">
       <div className="flex items-center justify-between">
-        <h3 className="text-subtitle text-sm font-medium">Produtos</h3>
-        <p className="text-paragraph text-xs">
+        <h3 className="font-sketchHeading text-base font-bold text-title">
+          Produtos
+        </h3>
+        <p className="font-sketch text-[13px] text-paragraph">
           {totalCheckedItems}/{totalListItems} itens marcados
         </p>
       </div>
@@ -42,19 +44,19 @@ export function ProductsList({
 
 function EmptyProducsList() {
   return (
-    <div className="flex-1 flex flex-col justify-center gap-2 h-full">
-      <div className="space-y-5 mx-auto">
+    <div className="flex h-full flex-1 flex-col justify-center gap-4">
+      <div className="mx-auto flex flex-col items-center gap-4">
         <Image
           src="/images/fruits.svg"
           alt="imagem das frutas"
           width={64}
           height={64}
-          className="opacity-50 mx-auto"
+          className="mx-auto opacity-50"
         />
-        <p className="text-paragraph text-center text-xs">
+        <p className="font-sketch text-center text-[13px] text-paragraph">
           Ainda não há itens na lista
         </p>
-        <AddProductForm withLabel className="px-3 h-10"/>
+        <AddProductForm withLabel className="h-10 px-4" />
       </div>
     </div>
   );

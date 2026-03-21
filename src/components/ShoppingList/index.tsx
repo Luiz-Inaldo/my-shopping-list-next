@@ -52,15 +52,18 @@ export default function ShoppingList() {
   }
 
   return (
-    <div className="page-wrapper relative flex flex-col h-screen">
-      <Header className="justify-between">
+    <div className="sketch-shell page-wrapper relative flex h-screen-dvh flex-col overflow-hidden">
+      <Header className="shrink-0 justify-between">
         <div className="flex items-center gap-2">
           <ChevronLeft
             size={20}
+            strokeWidth={2.5}
             onClick={() => router.push(APP_ROUTES.private.home.name)}
-            className="text-subtitle cursor-pointer"
+            className="text-sketch-fg cursor-pointer transition-transform duration-100 hover:-rotate-6 active:scale-95"
           />
-          <h2 className="font-medium text-subtitle">{productsList?.title}</h2>
+          <h2 className="font-sketchHeading text-lg font-bold text-title">
+            {productsList?.title}
+          </h2>
         </div>
         <div className="flex items-center gap-2">
           <FinancialSummarySheet
@@ -70,19 +73,15 @@ export default function ShoppingList() {
           <AddProductForm />
         </div>
       </Header>
-      <div className="flex flex-col gap-4 flex-1 overflow-hidden">
-        <div className="p-4 pb-0 flex flex-col gap-4 shrink-0">
+      <div className="flex min-h-0 flex-1 flex-col gap-4 overflow-hidden pt-4 px-4">
+        <div className="flex shrink-0 flex-col gap-4 pb-2">
           <ProductsSearch />
           <CategoryBadgesList />
         </div>
-        <div className="flex-1 overflow-y-auto px-4 pb-4">
+        <div className="min-h-0 flex-1 overflow-y-auto scrollbar-hide pb-4">
           <ProductsList list={productsList?.purchase_items} />
         </div>
       </div>
-
-      {/* {savingModalOpen && (
-        <LoadingActionModal text="Finalizando sua compra..." />
-      )} */}
     </div>
   );
 }

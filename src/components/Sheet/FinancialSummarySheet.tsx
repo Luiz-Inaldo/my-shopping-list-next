@@ -143,15 +143,15 @@ export function FinancialSummarySheet({
   return (
     <Sheet open={open} onOpenChange={setOpen}>
       <SheetTrigger asChild>
-        <Button size="sm" className="h-fit p-1 rounded-lg">
-          <ChartNoAxesColumnIncreasing size={20} />
+        <Button size="sm" className="h-fit rounded-sketch-btn p-1">
+          <ChartNoAxesColumnIncreasing size={20} strokeWidth={2.5} />
         </Button>
       </SheetTrigger>
-      <SheetContent className="w-11/12 max-h-screen">
+      <SheetContent className="w-11/12 max-h-screen border-l-2 border-sketch-border bg-sketch-white font-sketch shadow-sketch-lg">
         <SheetHeader>
-          <SheetTitle className="flex items-center gap-3">
-            <TrendingUp size={20} className="text-app-primary/60" />
-            <span className="text-subtitle">Resumo financeiro</span>
+          <SheetTitle className="flex items-center gap-3 font-sketchHeading text-title">
+            <TrendingUp size={20} strokeWidth={2.5} className="text-sketch-accent" />
+            <span>Resumo financeiro</span>
           </SheetTitle>
         </SheetHeader>
         <div
@@ -169,22 +169,22 @@ export function FinancialSummarySheet({
               />
             </div>
 
-            <div className="grid gap-1 items-center">
-              <div className="flex items-center text-subtitle">
+            <div className="grid items-center gap-1">
+              <div className="flex items-center text-title">
                 <p className="flex-1 text-sm">Itens</p>
-                <p className="shrink-0 text-lg font-semibold">
+                <p className="shrink-0 text-lg font-bold text-title">
                   {totalCheckedItems}
                 </p>
               </div>
-              <div className="flex items-center text-subtitle">
-                <p className="flex-1 text-sm text-subtitle">Valor atual</p>
-                <p className="shrink-0 text-lg font-semibold">
+              <div className="flex items-center text-title">
+                <p className="flex-1 text-sm text-paragraph">Valor atual</p>
+                <p className="shrink-0 text-lg font-bold text-sketch-accent">
                   {formatCurrency(totalValue || 0)}
                 </p>
               </div>
-              <div className="flex items-center text-subtitle">
-                <p className="flex-1 text-sm text-subtitle">Orçamento</p>
-                <p className="shrink-0 text-lg font-semibold">
+              <div className="flex items-center text-title">
+                <p className="flex-1 text-sm text-paragraph">Orçamento</p>
+                <p className="shrink-0 text-lg font-bold text-action">
                   {formatCurrency(auxData?.max_value || 0)}
                 </p>
               </div>

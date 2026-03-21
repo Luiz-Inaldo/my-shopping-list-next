@@ -9,7 +9,6 @@ import { APP_ROUTES } from '@/routes/app-routes';
 import Link from 'next/link';
 import { Eye, Loader } from 'lucide-react';
 import ErrorFetchData from '../Errors/ErrorFetchData';
-import { SKETCH_RADIUS } from '@/lib/sketch-styles';
 import { cn } from '@/lib/utils';
 import { Pin } from '../Pin';
 
@@ -43,10 +42,9 @@ export function ActivePurchsesList() {
       <div className="relative flex items-start justify-between gap-2">
         <span
           className={cn(
-            'mb-1 inline-flex items-center gap-1.5 border-2 border-sketch-border bg-sketch-yellow px-3 py-1 pl-2 font-sketch text-[13px] text-title shadow-sketch-2',
+            'mb-1 inline-flex items-center gap-1.5 rounded-sketch-section-label border-2 border-sketch-border bg-sketch-yellow px-3 py-1 pl-2 font-sketch text-[13px] text-title shadow-sketch-2',
             '-rotate-1',
           )}
-          style={{ borderRadius: SKETCH_RADIUS.sectionLabel }}
         >
           Listas ativas ({activeCount})
         </span>
@@ -82,8 +80,7 @@ export function ActivePurchsesList() {
                 animate={{ opacity: 1, y: 0, rotate: restRotate }}
                 whileHover={{ rotate: 0, skewX: 0, y: -2 }}
                 transition={{ duration: 0.2, delay: index * 0.08 }}
-                className="relative z-0 w-full border-2 border-sketch-border bg-sketch-white p-4 shadow-sketch hover:z-[1] hover:shadow-sketch-lg"
-                style={{ borderRadius: SKETCH_RADIUS.card }}
+                className="relative z-0 w-full rounded-sketch-card border-2 border-sketch-border bg-sketch-white p-4 shadow-sketch hover:z-[1] hover:shadow-sketch-lg"
               >
                 <div
                   className="pointer-events-none absolute -top-2.5 left-1/2 h-[18px] w-14 -translate-x-1/2 -rotate-2 border-x border-[rgba(108,71,201,0.2)] bg-[rgba(200,195,230,0.55)]"
@@ -122,18 +119,14 @@ export function ActivePurchsesList() {
                     <span>{pct}%</span>
                   </div>
                   <div
-                    className="relative h-2.5 w-full overflow-hidden border-2 border-sketch-border bg-sketch-muted"
-                    style={{ borderRadius: SKETCH_RADIUS.progress }}
+                    className="relative h-2.5 w-full overflow-hidden rounded-sketch-progress border-2 border-sketch-border bg-sketch-muted"
                   >
                     <div
                       className={cn(
-                        'h-full transition-[width] duration-300',
+                        'h-full rounded-sketch-progress transition-[width] duration-300',
                         isFull ? 'bg-sketch-success' : 'bg-sketch-accent',
                       )}
-                      style={{
-                        width: `${pct}%`,
-                        borderRadius: SKETCH_RADIUS.progress,
-                      }}
+                      style={{ width: `${pct}%` }}
                     />
                   </div>
                 </div>
@@ -141,10 +134,9 @@ export function ActivePurchsesList() {
                 <div className="flex items-center gap-2.5">
                   <Link
                     href={APP_ROUTES.private.shoppingList.name(item.id as string)}
-                    className={cn("flex h-12 min-h-12 flex-1 items-center justify-center gap-2 border-2 border-sketch-border bg-sketch-accent font-sketch text-[15px] text-white shadow-sketch-sm transition-[transform,box-shadow,background-color] duration-100 hover:translate-x-0.5 hover:translate-y-0.5 hover:bg-sketch-accent-dk hover:shadow-sketch-2 active:translate-x-1 active:translate-y-1 active:shadow-none",
-                      pct === 100 ? 'bg-sketch-success' : 'bg-sketch-accent',
+                    className={cn("flex h-12 min-h-12 flex-1 items-center justify-center gap-2 rounded-sketch-btn border-2 border-sketch-border bg-sketch-accent font-sketch text-[15px] text-white shadow-sketch-sm transition-[transform,box-shadow,background-color] duration-100 hover:translate-x-0.5 hover:translate-y-0.5 hover:bg-sketch-accent-dk hover:shadow-sketch-2 active:translate-x-1 active:translate-y-1 active:shadow-none",
+                      pct === 100 ? 'bg-sketch-success hover:bg-sketch-success-dk' : 'bg-sketch-accent',
                     )}
-                    style={{ borderRadius: SKETCH_RADIUS.btn }}
                   >
                     <Eye size={16} strokeWidth={2.5} />
                     Ver lista

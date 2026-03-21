@@ -60,7 +60,7 @@ export const DeletePurchase = ({
           </DialogDescription>
         </DialogHeader>
         <DialogDescription hidden />
-        <div className="mt-5 flex gap-2">
+        <div className="mt-10 flex gap-2">
           <Button
             type="button"
             variant="destructive"

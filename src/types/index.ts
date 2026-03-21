@@ -1,6 +1,7 @@
 import { QueryObserverResult, RefetchOptions } from "@tanstack/react-query";
 import { Timestamp } from "firebase/firestore";
 import { UnitTypes } from "@/enums/unitTypes";
+import { PurchaseProductInput } from "@/zodSchema/addPurchaseProduct";
 
 export type ModalStateProps = "OPEN" | "CLOSED";
 export type ModalTypeProps =
@@ -28,11 +29,11 @@ export interface IShoplistContextProps {
   errorFetchingProducts: unknown;
 
   refetchProductsList: (options?: RefetchOptions | undefined) => Promise<QueryObserverResult<IPurchaseProps | undefined, Error>>;
-  handleUpdateItem: (object: IEditItemProps, itemID: string) => Promise<void>;
+  handleUpdateItem: (object: PurchaseProductInput, itemID: string) => Promise<void>;
   handleDeleteItem: (itemID: string) => Promise<void>;
   handleCheckItem: (
     item: IProductProps,
-    object?: IEditItemProps
+    object?: { value: number }
   ) => Promise<void>;
   handleDismarkItem: (item: IProductProps) => Promise<void>;
 }

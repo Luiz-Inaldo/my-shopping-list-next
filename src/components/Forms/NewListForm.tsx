@@ -33,7 +33,6 @@ import { QUERY_KEYS } from '@/constants/queryKeys';
 import { Timestamp } from 'firebase/firestore';
 import useGeneralUserStore from '@/store/generalUserStore';
 import { AppLoader } from '../Loader/app-loader';
-import { SKETCH_RADIUS } from '@/lib/sketch-styles';
 import { Button } from '../ui/button';
 
 const addButtonVariants = {
@@ -100,14 +99,13 @@ const NewListForm = () => {
           initial="initial"
           animate="animate"
           transition={addButtonVariants.transition}
-          className="fixed bottom-[80px] right-2.5 z-[5] flex h-12 min-h-12 items-center gap-2 border-2 border-sketch-border bg-sketch-yellow px-7 font-sketch text-lg font-bold text-title shadow-sketch transition-[transform,box-shadow] duration-100 hover:-rotate-1 hover:translate-x-0.5 hover:translate-y-0.5 hover:shadow-sketch-2 active:translate-x-1 active:translate-y-1 active:shadow-none disabled:pointer-events-none disabled:opacity-50"
-          style={{ borderRadius: SKETCH_RADIUS.wobbly }}
+          className="fixed bottom-[80px] right-2.5 z-[5] flex h-12 min-h-12 items-center gap-2 rounded-sketch-wobbly border-2 border-sketch-border bg-sketch-yellow px-7 font-sketch text-lg font-bold text-title shadow-sketch transition-[transform,box-shadow] duration-100 hover:-rotate-1 hover:translate-x-0.5 hover:translate-y-0.5 hover:shadow-sketch-2 active:translate-x-1 active:translate-y-1 active:shadow-none disabled:pointer-events-none disabled:opacity-50"
         >
           <Plus size={18} strokeWidth={2.5} />
           <span>Nova lista</span>
         </motion.button>
       </DialogTrigger>
-      <DialogContent onClick={(e) => e.stopPropagation()}>
+      <DialogContent className="p-0" onClick={(e) => e.stopPropagation()}>
         <DialogHeader className="space-y-2 px-6 pb-2 pt-8 text-center sm:text-center">
           <DialogTitle className="font-sketchHeading text-xl font-bold leading-tight text-title">
             Criar nova lista
@@ -132,7 +130,6 @@ const NewListForm = () => {
                     <FormControl>
                       <Input
                         placeholder="Insira o nome"
-                        style={{ borderRadius: SKETCH_RADIUS.notif }}
                         {...field}
                       />
                     </FormControl>
@@ -152,7 +149,6 @@ const NewListForm = () => {
                     <FormControl>
                       <Input
                         placeholder="Insira o valor máximo"
-                        style={{ borderRadius: SKETCH_RADIUS.notif }}
                         {...field}
                       />
                     </FormControl>
@@ -168,7 +164,6 @@ const NewListForm = () => {
               size="lg"
               disabled={isSettingPurchase}
               className="w-full text-lg"
-              style={{ borderRadius: SKETCH_RADIUS.btn }}
             >
               {isSettingPurchase ? (
                 <>

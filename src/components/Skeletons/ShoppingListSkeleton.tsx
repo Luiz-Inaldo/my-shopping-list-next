@@ -1,53 +1,39 @@
-import React from 'react'
-import { Skeleton } from '../ui/skeleton'
+import React from 'react';
+import { Skeleton } from '../ui/skeleton';
 
 export function ShoppingListSkeleton() {
-    return (
-        <div className="relative space-y-0 min-h-screen">
-            <div className="flex items-center gap-4 p-4">
-                <Skeleton className="w-6 h-6 rounded-lg" />
-                <Skeleton className="w-32 h-6 rounded-lg" />
-            </div>
-            <div className="p-4 w-full flex flex-col gap-5">
-                <div className="bg-app-container rounded-lg p-3 space-y-4 shadow">
-                    <div className="flex items-center gap-3">
-                        <Skeleton className="w-6 h-6 rounded-lg" />
-                        <Skeleton className="w-32 h-6 rounded-lg" />
-                    </div>
-                    <div className="flex items-center py-3 gap-8">
-                        <div className="relative flex items-center justify-center ml-4 w-36 h-36">
-                            <Skeleton className="w-32 h-32 rounded-full" />
-                            <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-24 h-24 bg-app-container rounded-full" />
-                        </div>
-                        <div className="shrink-0 flex-1 grid gap-1 items-center">
-                            <Skeleton className="w-28 h-6 rounded-lg" />
-                            <Skeleton className="w-40 h-6 rounded-lg" />
-                            <Skeleton className="w-40 h-6 rounded-lg" />
-                        </div>
-                    </div>
-                </div>
-                <Skeleton className="w-full h-10 rounded-lg" />
-                <div className="grid grid-cols-3 place-items-center gap-3 pb-2">
-                    <Skeleton className="w-28 h-10 rounded-lg" />
-                    <Skeleton className="w-28 h-10 rounded-lg" />
-                    <Skeleton className="w-28 h-10 rounded-lg" />
-                </div>
-                {Array.from({ length: 3 }).map((_, index) => (
-                    <div
-                        key={`skeleton-${index}`}
-                        className="flex items-center justify-between p-4 bg-white rounded-lg"
-                    >
-                        <div className="flex items-center gap-3">
-                            <Skeleton className="h-5 w-5 rounded-full" />
-                            <div className="space-y-2">
-                                <Skeleton className="h-4 w-40" />
-                                <Skeleton className="h-3 w-12" />
-                            </div>
-                        </div>
-                        <Skeleton className="h-5 w-16" />
-                    </div>
-                ))}
-            </div>
+  return (
+    <div className="sketch-shell relative flex min-h-screen-dvh flex-col gap-4 px-4">
+      <div className="flex items-center gap-4 border-b-2 border-dashed border-sketch-muted bg-sketch-bg px-4 py-4">
+        <Skeleton className="h-6 w-6 rounded-sketch-notif" />
+        <Skeleton className="h-6 w-32 rounded-sketch-notif" />
+      </div>
+      <div className="flex flex-col gap-4 pb-4">
+        <Skeleton className="h-10 w-full rounded-sketch-notif" />
+        <div className="flex gap-2 overflow-hidden pb-1">
+          <Skeleton className="h-10 w-24 shrink-0 rounded-sketch-notif" />
+          <Skeleton className="h-10 w-28 shrink-0 rounded-sketch-notif" />
+          <Skeleton className="h-10 w-20 shrink-0 rounded-sketch-notif" />
         </div>
-    )
+        <div className="space-y-2">
+          <div className="flex items-center justify-between">
+            <Skeleton className="h-4 w-20 rounded-sketch-section-label" />
+            <Skeleton className="h-3 w-24 rounded-sketch-section-label" />
+          </div>
+          {Array.from({ length: 4 }).map((_, index) => (
+            <div
+              key={`skeleton-${index}`}
+              className="flex items-center justify-between gap-3 rounded-sketch-card border-2 border-sketch-border bg-sketch-white p-3 shadow-sketch-sm"
+            >
+              <div className="flex items-center gap-3">
+                <Skeleton className="size-5 shrink-0 rounded-sketch-section-label" />
+                <Skeleton className="h-4 w-36" />
+              </div>
+              <Skeleton className="h-4 w-14" />
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
 }

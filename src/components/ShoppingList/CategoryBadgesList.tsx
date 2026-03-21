@@ -4,7 +4,7 @@ import { useShoplistContext } from '@/context/ShoplistContext';
 import { cn } from '@/lib/utils';
 import { IPurchaseProps } from '@/types';
 import { useQueryClient } from '@tanstack/react-query';
-import { AnimatePresence, motion } from 'framer-motion';
+import { AnimatePresence, motion } from 'motion/react';
 import { Filter } from 'lucide-react';
 
 export function CategoryBadgesList() {
@@ -51,23 +51,24 @@ export function CategoryBadgesList() {
               <div
                 onClick={() => handleFilterByCategory(category.name)}
                 key={category.name}
-                className={`cursor-pointer flex items-center gap-3 px-3 py-2 border rounded-xl shadow ${filterValue === category.name ? 'bg-app-selected border-app-primary/10' : 'border-app-border bg-app-container'}`}
+                className={cn(
+                  'flex cursor-pointer items-center gap-2.5 border-2 px-3 py-2 font-sketch text-[13px] shadow-sketch-sm transition-[transform,box-shadow] duration-100 active:translate-x-0.5 active:translate-y-0.5 active:shadow-none rounded-sketch-notif',
+                  filterValue === category.name
+                    ? 'border-sketch-accent bg-sketch-accent-lt text-sketch-accent-dk shadow-sketch-nav'
+                    : 'border-sketch-border bg-sketch-white text-title shadow-sketch-sm hover:-rotate-1'
+                )}
               >
-                <p
-                  className={`text-xs whitespace-nowrap ${filterValue === category.name ? 'text-app-primary font-medium' : 'text-subtitle'}`}
-                >
-                  {category.name}
-                </p>
-                <div
+                <p className="whitespace-nowrap font-bold">{category.name}</p>
+                <span
                   className={cn(
-                    'size-6 p-2 flex items-center justify-center rounded-full text-snow',
+                    'flex size-6 shrink-0 items-center justify-center rounded-sketch-section-label border-2 border-sketch-border font-sketch text-[11px] font-bold',
                     filterValue === category.name
-                      ? 'bg-snow text-app-primary'
-                      : 'bg-app-primary text-snow'
+                      ? 'bg-sketch-accent text-sketch-white'
+                      : 'bg-sketch-muted text-sketch-fg'
                   )}
                 >
-                  <p className="text-xs">{totalItemsOnCurrentCategory}</p>
-                </div>
+                  {totalItemsOnCurrentCategory}
+                </span>
               </div>
             );
           })}
@@ -76,18 +77,19 @@ export function CategoryBadgesList() {
       <AnimatePresence>
         {filterValue && (
           <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
+            initial={{ opacity: 0, y: -4 }}
+            animate={{ opacity: 1, y: 0 }}
             exit={{ y: -10, opacity: 0, transition: { duration: 0.2 } }}
-            className="flex items-center justify-between py-2 px-3 border border-app-secondary/70 bg-app-secondary/20 rounded-xl"
+            className="flex items-center justify-between gap-2 border-2 border-sketch-success/50 bg-sketch-success/15 px-3 py-2 rounded-sketch-notif"
           >
-            <div className="flex items-center gap-2 text-cyan-950">
-              <Filter size={14} />
-              <p className="text-sm">Filtro ativo</p>
+            <div className="flex items-center gap-2 font-sketch text-sketch-success-dk">
+              <Filter size={14} strokeWidth={2.5} />
+              <p className="text-[13px] font-bold">Filtro ativo</p>
             </div>
             <button
+              type="button"
               onClick={handleRemoveFilter}
-              className="text-subtitle bg-snow py-1.5 px-3 rounded-lg text-xs"
+              className="rounded-sketch-btn border-2 border-sketch-border bg-sketch-white px-3 py-1.5 font-sketch text-xs font-bold text-title shadow-sketch-sm transition-[transform,box-shadow] duration-100 active:translate-x-0.5 active:translate-y-0.5 active:shadow-none"
             >
               Limpar filtro
             </button>

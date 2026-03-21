@@ -15,7 +15,7 @@ const valueStringSchema = z.union([
   z.number()
 ]).optional();
 
-export const addPurchaseProductSchema = z.object({
+export const PurchaseProductSchema = z.object({
   name: z.string({ message: "Campo obrigatório" }).min(1, { message: "Campo obrigatório" }),
   category: z.enum(CATEGORIES.map(category => category.name) as [string, ...string[]], {
     required_error: "Campo obrigatório"
@@ -34,5 +34,5 @@ export const addPurchaseProductSchema = z.object({
   path: ["unit_type"]
 });
 
-export type AddPurchaseProductInput = z.input<typeof addPurchaseProductSchema>;
-export type AddPurchaseProductType = z.infer<typeof addPurchaseProductSchema>;
+export type PurchaseProductInput = z.input<typeof PurchaseProductSchema>;
+export type PurchaseProductType = z.infer<typeof PurchaseProductSchema>;

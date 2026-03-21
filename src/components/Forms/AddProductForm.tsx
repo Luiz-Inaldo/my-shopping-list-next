@@ -16,8 +16,8 @@ import { ShadSelect } from '../Select';
 import { SelectItem } from '../ui/select';
 import { CATEGORIES } from '@/constants/categories';
 import {
-  addPurchaseProductSchema,
-  AddPurchaseProductInput,
+  PurchaseProductSchema,
+  PurchaseProductInput,
 } from '@/zodSchema/addPurchaseProduct';
 import { ItemCategories } from '@/enums/categories';
 import { UnitTypes } from '@/enums/unitTypes';
@@ -39,13 +39,19 @@ import { AppLoader } from '../Loader/app-loader';
 
 type TFormMode = 'default' | 'voice';
 
-export const AddProductForm = ({ withLabel, className }: { withLabel?: boolean; className?: string }) => {
+export const AddProductForm = ({
+  withLabel,
+  className,
+}: {
+  withLabel?: boolean;
+  className?: string;
+}) => {
   const user = useGeneralUserStore((s) => s.userProfile);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [formMode, setFormMode] = useState<TFormMode>('default');
   const [speechResults, setSpeechResults] = useState<Record<string, any>>({
     output: '',
-    result: {} as AddPurchaseProductInput
+    result: {} as PurchaseProductInput,
   });
   const [isLoading, startAddProductTransition] = useTransition();
   const isButtonDisabled = user ? !user.emailVerified : false;
@@ -53,12 +59,12 @@ export const AddProductForm = ({ withLabel, className }: { withLabel?: boolean; 
   const { productsList } = useShoplistContext();
 
   const { isListening, startListening, stopListening } = useSpeech((text) => {
-    console.log(text)
-    const parsed = parseCommand(text)
-    console.log(parsed)
+    console.log(text);
+    const parsed = parseCommand(text);
+    console.log(parsed);
     setSpeechResults({
       output: text,
-      result: parsed
+      result: parsed,
     });
     reset({
       name: parsed.name,
@@ -67,7 +73,7 @@ export const AddProductForm = ({ withLabel, className }: { withLabel?: boolean; 
       quantity: parsed.quantity,
       value: parsed.value,
       checked: parsed.checked,
-    })
+    });
   });
 
   const {
@@ -76,8 +82,8 @@ export const AddProductForm = ({ withLabel, className }: { withLabel?: boolean; 
     formState: { errors },
     reset,
     handleSubmit,
-  } = useForm<AddPurchaseProductInput>({
-    resolver: zodResolver(addPurchaseProductSchema),
+  } = useForm<PurchaseProductInput>({
+    resolver: zodResolver(PurchaseProductSchema),
     defaultValues: {
       name: '',
       category: undefined,
@@ -105,8 +111,8 @@ export const AddProductForm = ({ withLabel, className }: { withLabel?: boolean; 
   function resetSpeechResults() {
     setSpeechResults({
       output: '',
-      result: {} as AddPurchaseProductInput
-    })
+      result: {} as PurchaseProductInput,
+    });
   }
 
   function resetFormValues() {
@@ -118,13 +124,13 @@ export const AddProductForm = ({ withLabel, className }: { withLabel?: boolean; 
       value: '',
       checked: false,
     });
-    resetSpeechResults()
+    resetSpeechResults();
   }
 
-  function onSubmit(data: AddPurchaseProductInput) {
+  function onSubmit(data: PurchaseProductInput) {
     startAddProductTransition(async () => {
       // Validar e transformar os dados usando o schema
-      const validatedData = addPurchaseProductSchema.parse(data);
+      const validatedData = PurchaseProductSchema.parse(data);
 
       // O refine garante que category e unit_type não sejam undefined
       const item: IProductProps = {
@@ -169,44 +175,55 @@ export const AddProductForm = ({ withLabel, className }: { withLabel?: boolean; 
           disabled={isButtonDisabled}
           onClick={handleOpenDrawer}
           size="sm"
-          className={cn("h-fit p-1 gap-2 rounded-lg", className)}
+          className={cn('h-fit gap-2 rounded-sketch-btn p-1', className)}
         >
           <Plus size={20} />
           {withLabel && 'Adicionar Produto'}
         </Button>
       </DrawerTrigger>
-      <DrawerContent className="bg-app-container rounded-lg">
+      <DrawerContent className="rounded-sketch-card border-2 border-sketch-border border-t-2 bg-sketch-white shadow-sketch">
         <form onSubmit={handleSubmit(onSubmit)} className="relative">
           <DrawerHeader>
-            <DrawerTitle>Adicionar novo produto</DrawerTitle>
-            <DrawerDescription>Preencha o formulário abaixo</DrawerDescription>
+            <DrawerTitle className="font-sketchHeading text-title">
+              Adicionar novo produto
+            </DrawerTitle>
+            <DrawerDescription className="font-sketch text-paragraph">
+              Preencha o formulário abaixo
+            </DrawerDescription>
           </DrawerHeader>
           <Button
-            variant="ghost"
+            variant="outline"
             size="icon"
             type="button"
-            onClick={() => setFormMode(formMode === 'default' ? 'voice' : 'default')}
+            onClick={() =>
+              setFormMode(formMode === 'default' ? 'voice' : 'default')
+            }
             className="absolute top-2 right-2 hover:bg-transparent"
           >
             {formMode === 'default' ? <Mic /> : <Form />}
           </Button>
-          <div className={cn("flex w-[200%] h-full   transition-all duration-300",
-            formMode === 'default' ? 'translate-x-0' : '-translate-x-1/2'
-          )}>
+          <div
+            className={cn(
+              'flex w-[200%] h-full   transition-all duration-300',
+              formMode === 'default' ? 'translate-x-0' : '-translate-x-1/2'
+            )}
+          >
             <div className="w-1/2">
               <div className="flex flex-col gap-5 p-5">
                 <label htmlFor="name" className="relative flex flex-col">
-                  <span className="text-subtitle text-sm font-semibold mb-1 leading-none">
+                  <span className="mb-1 font-sketch text-sm font-bold leading-none text-title">
                     Nome do produto:
                   </span>
                   <input
                     type="text"
                     placeholder="Digite o nome do produto"
-                    className="w-full flex h-8 rounded-full border text-subtitle border-gray-300 bg-app-background px-3 py-2 text-sm"
+                    className="h-10 w-full rounded-sketch-notif border-2 border-sketch-border bg-sketch-white px-3 py-2 font-sketch text-sm text-title placeholder:text-title/40"
                     {...register('name', { required: true })}
                   />
                   {errors.name && (
-                    <span className="text-xs text-red-500">Campo obrigatório</span>
+                    <span className="font-sketch text-xs text-sketch-danger">
+                      Campo obrigatório
+                    </span>
                   )}
                 </label>
 
@@ -214,7 +231,7 @@ export const AddProductForm = ({ withLabel, className }: { withLabel?: boolean; 
                   htmlFor="category"
                   className="relative flex flex-col col-span-1"
                 >
-                  <span className="text-subtitle text-sm font-semibold mb-1 leading-none">
+                  <span className="mb-1 font-sketch text-sm font-bold leading-none text-title">
                     Categoria:
                   </span>
                   <ShadSelect
@@ -229,7 +246,9 @@ export const AddProductForm = ({ withLabel, className }: { withLabel?: boolean; 
                     ))}
                   </ShadSelect>
                   {errors.category && (
-                    <span className="text-xs text-red-500">Campo obrigatório</span>
+                    <span className="font-sketch text-xs text-sketch-danger">
+                      Campo obrigatório
+                    </span>
                   )}
                 </label>
 
@@ -237,7 +256,7 @@ export const AddProductForm = ({ withLabel, className }: { withLabel?: boolean; 
                   htmlFor="unit_type"
                   className="relative flex flex-col col-span-1"
                 >
-                  <span className="text-subtitle text-sm font-semibold mb-1 leading-none">
+                  <span className="mb-1 font-sketch text-sm font-bold leading-none text-title">
                     Tipo de unidade:
                   </span>
                   <ShadSelect
@@ -245,14 +264,18 @@ export const AddProductForm = ({ withLabel, className }: { withLabel?: boolean; 
                     label="Selecione o tipo de unidade"
                     name="unit_type"
                   >
-                    {UNIT_TYPES.map((type: { label: string; value: string }) => (
-                      <SelectItem key={type.value} value={type.value}>
-                        {type.label}
-                      </SelectItem>
-                    ))}
+                    {UNIT_TYPES.map(
+                      (type: { label: string; value: string }) => (
+                        <SelectItem key={type.value} value={type.value}>
+                          {type.label}
+                        </SelectItem>
+                      )
+                    )}
                   </ShadSelect>
                   {errors.unit_type && (
-                    <span className="text-xs text-red-500">Campo obrigatório</span>
+                    <span className="font-sketch text-xs text-sketch-danger">
+                      Campo obrigatório
+                    </span>
                   )}
                 </label>
 
@@ -261,30 +284,30 @@ export const AddProductForm = ({ withLabel, className }: { withLabel?: boolean; 
                     htmlFor="quantity"
                     className="relative flex flex-col col-span-1"
                   >
-                    <span className="text-subtitle text-sm font-semibold mb-1 leading-none">
+                    <span className="mb-1 font-sketch text-sm font-bold leading-none text-title">
                       Quantidade:
                     </span>
                     <input
                       type="text"
                       placeholder="0"
-                      className="w-full flex h-8 rounded-full border text-subtitle border-gray-300 bg-app-background px-3 py-2 text-sm"
+                      className="h-10 w-full rounded-sketch-notif border-2 border-sketch-border bg-sketch-white px-3 py-2 font-sketch text-sm text-title placeholder:text-title/40"
                       {...register('quantity')}
                     />
                     {errors.quantity && (
-                      <span className="text-xs text-red-500">
+                      <span className="font-sketch text-xs text-sketch-danger">
                         Campo obrigatório
                       </span>
                     )}
                   </label>
 
                   <label htmlFor="value" className="relative flex flex-col">
-                    <span className="text-subtitle text-sm font-semibold mb-1 leading-none">
+                    <span className="mb-1 font-sketch text-sm font-bold leading-none text-title">
                       Valor:
                     </span>
                     <input
                       type="text"
                       placeholder="0,00"
-                      className="w-full flex h-8 rounded-full border text-subtitle border-gray-300 bg-app-background px-3 py-2 text-sm"
+                      className="h-10 w-full rounded-sketch-notif border-2 border-sketch-border bg-sketch-white px-3 py-2 font-sketch text-sm text-title placeholder:text-title/40"
                       {...register('value')}
                     />
                   </label>
@@ -294,18 +317,18 @@ export const AddProductForm = ({ withLabel, className }: { withLabel?: boolean; 
                   htmlFor="checked"
                   className="relative flex items-center gap-5"
                 >
-                  <span className="text-subtitle text-sm font-semibold mb-1 leading-none">
+                  <span className="mb-1 font-sketch text-sm font-bold leading-none text-title">
                     Já adquirido?
                   </span>
                   <input
                     type="checkbox"
-                    className="w-4 h-4 accent-app-primary bg-app-background border-1 border-paragraph rounded checked:border-transparent"
+                    className="size-4 rounded-sm border-2 border-sketch-border bg-sketch-white accent-sketch-accent"
                     {...register('checked')}
                   />
                 </label>
               </div>
               <DrawerFooter>
-                <Button type="submit">
+                <Button type="submit" disabled={isLoading}>
                   {isLoading ? (
                     <>
                       <LoaderCircle className="animate-spin" size={16} />
@@ -329,21 +352,30 @@ export const AddProductForm = ({ withLabel, className }: { withLabel?: boolean; 
                     className="relative w-full my-auto"
                   >
                     <div
-                      onClick={
-                        isListening ? stopListening : startListening
-                      }
-                      className="relative mx-auto flex items-center justify-center bg-app-container rounded-full size-16 border border-border">
+                      onClick={isListening ? stopListening : startListening}
+                      className="relative mx-auto flex size-16 items-center justify-center rounded-sketch-wobbly border-2 border-sketch-border bg-sketch-white shadow-sketch-sm"
+                    >
                       {isListening && (
                         <div className="absolute animate-ping size-[70%] rounded-full -z-[1] bg-destructive opacity-75" />
                       )}
-                      <Mic size={48} className={cn("text-subtitle", isListening && "text-destructive")} />
+                      <Mic
+                        size={48}
+                        strokeWidth={2.5}
+                        className={cn(
+                          'text-sketch-fg',
+                          isListening && 'text-sketch-danger'
+                        )}
+                      />
                     </div>
-                    <p className="text-subtitle text-center mt-5">{
-                      isListening ? 'Escutando... Toque para finalizar' : 'Toque para falar'
-                    }</p>
+                    <p className="mt-5 text-center font-sketch text-title">
+                      {isListening
+                        ? 'Escutando... Toque para finalizar'
+                        : 'Toque para falar'}
+                    </p>
                     <p
-                      className={cn("text-paragraph max-w-xs mx-auto italic text-center text-sm mt-10 transition-opacity duration-200",
-                        isListening && "opacity-0"
+                      className={cn(
+                        'mx-auto mt-10 max-w-xs text-center font-sketch text-sm text-paragraph transition-opacity duration-200',
+                        isListening && 'opacity-0'
                       )}
                     >
                       Exemplo de comando: "Duas unidades de leite por 2,50"
@@ -359,30 +391,50 @@ export const AddProductForm = ({ withLabel, className }: { withLabel?: boolean; 
                     className="w-full mt-1 p-4 flex flex-col justify-between h-full"
                   >
                     <div className="space-y-10">
-                      <h2 className="text-base text-center font-semibold p-2.5 rounded-lg bg-app-primary/10">
+                      <h2 className="rounded-sketch-notif bg-sketch-accent-lt p-2.5 text-center font-sketch text-base font-bold text-sketch-accent-dk">
                         "{speechResults?.output}"
                       </h2>
                       <div className="space-y-2 text-sm">
-                        <p className="text-base text-subtitle font-medium">Revise o item para adicionar:</p>
+                        <p className="font-sketch text-base font-bold text-title">
+                          Revise o item para adicionar:
+                        </p>
                         <div className="flex justify-between">
-                          <p className="text-paragraph">Nome:</p>
-                          <p className="text-subtitle font-medium">{speechResults?.result?.name}</p>
+                          <p className="font-sketch text-paragraph">Nome:</p>
+                          <p className="font-sketch font-bold text-title">
+                            {speechResults?.result?.name}
+                          </p>
                         </div>
                         <div className="flex justify-between">
-                          <p className="text-paragraph">Quantidade:</p>
-                          <p className="text-subtitle font-medium">{speechResults?.result?.quantity}</p>
+                          <p className="font-sketch text-paragraph">
+                            Quantidade:
+                          </p>
+                          <p className="font-sketch font-bold text-title">
+                            {speechResults?.result?.quantity}
+                          </p>
                         </div>
                         <div className="flex justify-between">
-                          <p className="text-paragraph">Tipo de unidade:</p>
-                          <p className="text-subtitle font-medium">{speechResults?.result?.unit_type}</p>
+                          <p className="font-sketch text-paragraph">
+                            Tipo de unidade:
+                          </p>
+                          <p className="font-sketch font-bold text-title">
+                            {speechResults?.result?.unit_type}
+                          </p>
                         </div>
                         <div className="flex justify-between">
-                          <p className="text-paragraph">Categoria:</p>
-                          <p className="text-subtitle font-medium">{speechResults?.result?.category}</p>
+                          <p className="font-sketch text-paragraph">
+                            Categoria:
+                          </p>
+                          <p className="font-sketch font-bold text-title">
+                            {speechResults?.result?.category}
+                          </p>
                         </div>
                         <div className="flex justify-between">
-                          <p className="text-paragraph">Valor:</p>
-                          <p className="text-subtitle font-medium">{formatCurrency(Number(speechResults?.result?.value) || 0)}</p>
+                          <p className="font-sketch text-paragraph">Valor:</p>
+                          <p className="font-sketch font-bold text-title">
+                            {formatCurrency(
+                              Number(speechResults?.result?.value) || 0
+                            )}
+                          </p>
                         </div>
                       </div>
                     </div>
@@ -390,14 +442,11 @@ export const AddProductForm = ({ withLabel, className }: { withLabel?: boolean; 
                       <Button
                         type="button"
                         onClick={resetFormValues}
-                        variant="ghost"
+                        variant="outline"
                       >
                         Cancelar
                       </Button>
-                      <Button
-                        disabled={isLoading}
-                        type="submit"
-                      >
+                      <Button disabled={isLoading} type="submit">
                         {isLoading ? <AppLoader size={16} /> : 'Adicionar'}
                       </Button>
                     </div>

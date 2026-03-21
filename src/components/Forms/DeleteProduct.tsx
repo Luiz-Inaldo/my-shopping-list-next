@@ -33,7 +33,7 @@ export const DeleteProduct = ({
           </DialogTitle>
         </DialogHeader>
         <DialogDescription hidden />
-        <div className="flex gap-2 mt-5">
+        <div className="flex gap-2 mt-10">
           <Button
             type="button"
             variant="destructive"

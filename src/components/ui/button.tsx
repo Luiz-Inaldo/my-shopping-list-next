@@ -3,12 +3,9 @@ import { Slot } from '@radix-ui/react-slot';
 import { cva, type VariantProps } from 'class-variance-authority';
 
 import { cn } from '@/lib/utils';
-import { SKETCH_RADIUS } from '@/lib/sketch-styles';
-
-
 
 export const sketchButtonBaseClassName = cn(
-  'inline-flex items-center justify-center gap-2 shadow-sketch-sm whitespace-nowrap border-2 border-sketch-border font-sketch',
+  'inline-flex items-center justify-center gap-2 rounded-sketch-btn shadow-sketch-sm whitespace-nowrap border-2 border-sketch-border font-sketch',
   'transition-[transform,box-shadow,background-color] duration-100',
   'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/25 focus-visible:ring-offset-0',
   'disabled:pointer-events-none disabled:opacity-50',
@@ -59,7 +56,6 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
     return (
       <Comp
         className={cn(buttonVariants({ variant, size }), className)}
-        style={{ borderRadius: SKETCH_RADIUS.btn }}
         ref={ref}
         {...props}
       />

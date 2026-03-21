@@ -1,5 +1,4 @@
 import { Skeleton } from '../ui/skeleton';
-import { SKETCH_RADIUS } from '@/lib/sketch-styles';
 
 export function HomePagePurchaseSkeleton() {
   return (
@@ -7,9 +6,8 @@ export function HomePagePurchaseSkeleton() {
       {Array.from({ length: 4 }).map((_, index) => (
         <div
           key={`list-${index}`}
-          className="w-full border-2 border-sketch-border bg-sketch-white p-4 shadow-sketch"
+          className="w-full rounded-sketch-card border-2 border-sketch-border bg-sketch-white p-4 shadow-sketch"
           style={{
-            borderRadius: SKETCH_RADIUS.card,
             transform: index % 2 === 0 ? 'skewX(-1.25deg)' : 'skewX(1.25deg)',
           }}
         >

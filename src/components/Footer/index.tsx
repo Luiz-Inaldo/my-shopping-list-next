@@ -3,8 +3,6 @@ import { ChartSpline, Cog, FileText, House, Menu } from 'lucide-react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { cn } from '@/lib/utils';
-import { SKETCH_RADIUS } from '@/lib/sketch-styles';
-
 const allowedRoutes = [
   { path: '/', icon: House, label: 'Início' },
   { path: '/historic', icon: FileText, label: 'Histórico' },
@@ -18,8 +16,7 @@ const Footer = () => {
 
   return (
     <footer
-      className="fixed bottom-0 z-[3] mx-auto flex h-[72px] w-full max-w-[430px] items-center justify-center border-t-2 border-sketch-border bg-sketch-white px-2 py-2"
-      style={{ borderRadius: SKETCH_RADIUS.footerTop }}
+      className="fixed bottom-0 z-[3] mx-auto flex h-[72px] w-full max-w-[430px] items-center justify-center rounded-sketch-footer-top border-t-2 border-sketch-border bg-sketch-white px-2 py-2"
     >
       <ul className="grid w-full grid-cols-5 justify-center gap-1">
         {allowedRoutes.map((route) => {
@@ -30,14 +27,11 @@ const Footer = () => {
                 prefetch
                 href={route.path}
                 className={cn(
-                  'relative z-[1] grid min-w-[64px] place-items-center gap-0.5 p-2 transition-transform duration-100 hover:-rotate-1 active:scale-95',
+                  'relative z-[1] grid min-w-[64px] place-items-center gap-0.5 rounded-sketch-nav-item p-2 transition-transform duration-100 hover:-rotate-1 active:scale-95',
                   active
                     ? 'border-2 border-sketch-accent bg-sketch-accent-lt text-sketch-accent-dk shadow-sketch-nav'
                     : 'border-2 border-transparent text-title',
                 )}
-                style={{
-                  borderRadius: '14px 6px 12px 6px / 6px 14px 6px 12px',
-                }}
               >
                 <route.icon
                   size={22}
