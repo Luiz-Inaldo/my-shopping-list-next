@@ -2,65 +2,62 @@
 import { ChartSpline, Cog, FileText, House, Menu } from 'lucide-react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { motion } from 'framer-motion';
+import { cn } from '@/lib/utils';
+import { SKETCH_RADIUS } from '@/lib/sketch-styles';
 
 const allowedRoutes = [
-  {
-    path: '/',
-    icon: House,
-    label: 'Início',
-  },
-  {
-    path: '/historic',
-    icon: FileText,
-    label: 'Histórico',
-  },
-  {
-    path: '/statistics',
-    icon: ChartSpline,
-    label: 'Gráficos',
-  },
-  {
-    path: '/ajustes',
-    icon: Cog,
-    label: 'Ajustes',
-  },
-  {
-    path: '/menu',
-    icon: Menu,
-    label: 'Mais',
-  },
+  { path: '/', icon: House, label: 'Início' },
+  { path: '/historic', icon: FileText, label: 'Histórico' },
+  { path: '/statistics', icon: ChartSpline, label: 'Gráficos' },
+  { path: '/ajustes', icon: Cog, label: 'Ajustes' },
+  { path: '/menu', icon: Menu, label: 'Mais' },
 ];
 
 const Footer = () => {
   const pathname = usePathname();
+
   return (
     <footer
-      style={{
-        boxShadow: '0 0 4px rgb(0 0 0 / 0.1)',
-      }}
-      className="fixed bottom-0 z-[3] w-full max-w-[430px] mx-auto bg-app-container rounded-tr-2xl rounded-tl-2xl py-2 px-4 flex items-center justify-center"
+      className="fixed bottom-0 z-[3] mx-auto flex h-[72px] w-full max-w-[430px] items-center justify-center border-t-2 border-sketch-border bg-sketch-white px-2 py-2"
+      style={{ borderRadius: SKETCH_RADIUS.footerTop }}
     >
-      <ul className="w-full gap-2 grid grid-cols-5 justify-center">
-        {allowedRoutes.map((route) => (
-          <motion.li key={route.path} initial={false} className="relative">
-            <Link
-              prefetch
-              href={route.path}
-              className={`grid p-2 gap-1 place-items-center relative z-[1] ${pathname === route.path ? 'text-snow' : 'text-subtitle'}`}
-            >
-              <route.icon size={16} />
-              <span className="text-xs">{route.label}</span>
-            </Link>
-            {pathname === route.path ? (
-              <motion.div
-                layoutId="background"
-                id="background"
-                className="absolute inset-0 z-[0] rounded-lg p-2 bg-app-primary"
-              />
-            ) : null}
-          </motion.li>
-        ))}
+      <ul className="grid w-full grid-cols-5 justify-center gap-1">
+        {allowedRoutes.map((route) => {
+          const active = pathname === route.path;
+          return (
+            <li key={route.path} className="relative flex justify-center">
+              <Link
+                prefetch
+                href={route.path}
+                className={cn(
+                  'relative z-[1] grid min-w-[64px] place-items-center gap-0.5 p-2 transition-transform duration-100 hover:-rotate-1 active:scale-95',
+                  active
+                    ? 'border-2 border-sketch-accent bg-sketch-accent-lt text-sketch-accent-dk shadow-sketch-nav'
+                    : 'border-2 border-transparent text-title',
+                )}
+                style={{
+                  borderRadius: '14px 6px 12px 6px / 6px 14px 6px 12px',
+                }}
+              >
+                <route.icon
+                  size={22}
+                  strokeWidth={2.5}
+                  className={cn(
+                    active ? 'text-sketch-accent-dk' : 'text-sketch-fg',
+                  )}
+                />
+                <span
+                  className={cn(
+                    'font-sketch text-[11px] leading-none',
+                    active ? 'font-bold text-sketch-accent-dk' : 'text-title opacity-60',
+                  )}
+                >
+                  {route.label}
+                </span>
+              </Link>
+            </li>
+          );
+        })}
       </ul>
     </footer>
   );

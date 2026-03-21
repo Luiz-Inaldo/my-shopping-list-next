@@ -1,32 +1,58 @@
-import React from 'react'
-import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar'
-import Image from 'next/image'
 import useGeneralUserStore from '@/store/generalUserStore';
 import { MainHeaderSkeleton } from '../Skeletons/MainHeaderSkeleton';
 import { UserAvatar } from '../UserAvatar';
+import { Bell } from 'lucide-react';
 
 export const MainHeader = () => {
+  const userProfile = useGeneralUserStore((store) => store.userProfile);
 
-    // =============
-    // # STORE
-    // =============
-    const userProfile = useGeneralUserStore(store => store.userProfile);
+  if (!userProfile) return <MainHeaderSkeleton />;
 
-    if (!userProfile) return <MainHeaderSkeleton />
+  const displayName = userProfile?.name || 'Usuário';
 
-    return (
-        <div className="relative w-full p-4 flex items-center gap-3">
-            <UserAvatar
-                width={40}
-                height={40}
-                className='border-2'
-            />
-            <div className='flex flex-col'>
-                <p className="text-[#eaeaea] font-medium leading-none">
-                    Olá {userProfile?.name || 'Usuário sem nome.'}
-                </p>
-                <p className='text-[#d0d0d0] text-xs'>Bem-vindo de volta!</p>
-            </div>
+  return (
+    <header className="sticky top-0 z-10 flex w-full items-center justify-between border-b-2 border-dashed border-sketch-muted bg-sketch-bg px-5 pb-4 pt-5">
+      <div className="flex items-center gap-3">
+        <div
+          className="relative h-[52px] w-[52px] shrink-0 overflow-hidden border-[3px] border-sketch-border bg-sketch-accent-lt shadow-sketch-sm"
+          style={{
+            borderRadius: '50% 40% 50% 40% / 40% 50% 40% 50%',
+          }}
+        >
+          <UserAvatar
+            width={52}
+            height={52}
+            className="size-full border-0 !rounded-none"
+          />
         </div>
-    )
-}
+        <div className="flex flex-col gap-0.5">
+          <p className="font-sketch text-[13px] leading-none text-title opacity-60">
+            Bem-vindo de volta,
+          </p>
+          <p className="font-sketchHeading text-xl font-bold leading-tight text-title">
+            {displayName}
+          </p>
+        </div>
+      </div>
+      <button
+        type="button"
+        aria-label="Notificações"
+        className="relative flex h-11 w-11 shrink-0 items-center justify-center border-2 border-sketch-border bg-sketch-white shadow-sketch-sm transition-[transform,box-shadow] duration-100 active:translate-x-[3px] active:translate-y-[3px] active:shadow-sketch-1"
+        style={{
+          borderRadius: '14px 6px 12px 8px / 6px 14px 8px 12px',
+        }}
+      >
+        <Bell
+          size={22}
+          strokeWidth={2.5}
+          className="text-sketch-fg"
+          aria-hidden
+        />
+        <span
+          className="absolute right-[7px] top-1.5 size-[9px] rounded-full border-2 border-sketch-bg bg-sketch-danger"
+          aria-hidden
+        />
+      </button>
+    </header>
+  );
+};

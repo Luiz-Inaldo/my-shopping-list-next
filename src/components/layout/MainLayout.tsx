@@ -1,12 +1,9 @@
 "use client";
 import Footer from "../Footer";
-import { useTheme } from "@/hooks/useTheme";
 
 const LoggedLayout = ({ children }: { children: React.ReactNode }) => {
-  const { theme, toggleTheme } = useTheme();
-
   return (
-    <div className="page-wrapper relative bg-app-background">
+    <div className="page-wrapper sketch-shell relative isolate min-h-screen-dvh font-sketch">
       {children}
       <Footer />
     </div>

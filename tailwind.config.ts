@@ -18,6 +18,8 @@ const config = {
       fontFamily: {
         quicksand: ["Quicksand", "sans-serif"],
         cherryBomb: ['"Cherry Bomb One"', "cursive"],
+        sketch: ["var(--font-sketch-body)", "cursive"],
+        sketchHeading: ["var(--font-sketch-heading)", "cursive"],
       },
       screens: {
         "2xsm": "375px",
@@ -89,11 +91,35 @@ const config = {
         paragraph: "var(--paragraph)",
         link: "var(--link)",
         action: "var(--action)",
+        sketch: {
+          bg: "hsl(var(--sketch-bg) / <alpha-value>)",
+          fg: "hsl(var(--sketch-fg) / <alpha-value>)",
+          muted: "hsl(var(--sketch-muted) / <alpha-value>)",
+          accent: "hsl(var(--sketch-accent) / <alpha-value>)",
+          "accent-lt": "hsl(var(--sketch-accent-lt) / <alpha-value>)",
+          "accent-dk": "hsl(var(--sketch-accent-dk) / <alpha-value>)",
+          danger: "hsl(var(--sketch-danger) / <alpha-value>)",
+          "danger-lt": "hsl(var(--sketch-danger-lt) / <alpha-value>)",
+          border: "hsl(var(--sketch-border) / <alpha-value>)",
+          white: "hsl(var(--sketch-white) / <alpha-value>)",
+          yellow: "hsl(var(--sketch-yellow) / <alpha-value>)",
+          success: "hsl(var(--sketch-success) / <alpha-value>)",
+        },
       },
       borderRadius: {
         lg: "var(--radius)",
         md: "calc(var(--radius) - 2px)",
         sm: "calc(var(--radius) - 4px)",
+      },
+      boxShadow: {
+        sketch: "var(--sketch-shadow)",
+        "sketch-sm": "var(--sketch-shadow-sm)",
+        "sketch-lg": "var(--sketch-shadow-lg)",
+        "sketch-1": "1px 1px 0px 0px hsl(var(--sketch-border) / 1)",
+        "sketch-2": "2px 2px 0px 0px hsl(var(--sketch-border) / 1)",
+        "sketch-nav": "2px 2px 0px 0px hsl(var(--sketch-accent-dk) / 1)",
+        "sketch-delete": "3px 3px 0px 0px hsl(var(--sketch-danger) / 0.35)",
+        "sketch-danger-hover": "2px 2px 0px 0px hsl(var(--sketch-danger) / 0.5)",
       },
       keyframes: {
         "progress-bar": {
