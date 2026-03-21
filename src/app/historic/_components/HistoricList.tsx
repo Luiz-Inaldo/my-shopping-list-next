@@ -1,6 +1,5 @@
 import { IPurchaseProps } from '@/types';
 import { HistoricPurchaseItemSkeleton } from './HistoricPurchaseItemSkeleton';
-import Image from 'next/image';
 import React, { useMemo } from 'react';
 import { HistoricPurchaseItem } from './HistoricPurchaseItem';
 import ErrorFetchData from '@/components/Errors/ErrorFetchData';
@@ -44,16 +43,10 @@ export function HistoricList({
   if (sortedList.length === 0) {
     return (
       <div className="flex flex-col items-center gap-5 mt-10">
-        {/* <Image
-                    src={"/images/feeling_blue.svg"}
-                    alt="rostinho triste com mulher ao lado"
-                    width={200}
-                    height={150}
-                /> */}
-        <h2 className="text-4xl font-bold text-app-primary">;D</h2>
+        <h2 className="text-4xl font-bold font-sketchHeading text-sketch-accent">;D</h2>
         <div className="space-y-1 text-center">
-          <h3 className="text-lg font-medium">Nada aqui ainda!</h3>
-          <p className="text-center text-paragraph text-sm">
+          <h3 className="text-lg font-medium font-sketch text-title">Nada aqui ainda!</h3>
+          <p className="text-center font-sketch text-paragraph text-sm">
             você não possui compras registradas
           </p>
         </div>
@@ -63,7 +56,7 @@ export function HistoricList({
 
   return (
     <div className="space-y-5">
-      <p className="text-paragraph text-sm">
+      <p className="font-sketch text-paragraph text-sm">
         Exibindo {sortedList.length}{' '}
         {sortedList.length === 1 ? 'resultado' : 'resultados'}
       </p>
