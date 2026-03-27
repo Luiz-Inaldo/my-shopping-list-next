@@ -8,7 +8,6 @@ import VerifyDevice from "@/components/VerifyDevice";
 import { QueryClientProvider } from '@tanstack/react-query'
 import { queryClient } from "@/utils/queryClient";
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
-import { CustomToastProvider } from "@/context/CustomToastContext";
 
 const inter = Inter({ weight: ['300', '400', '500', '700'], subsets: ["latin"] });
 
@@ -41,20 +40,18 @@ export default function RootLayout({
         className={`${inter.className} ${kalam.variable} ${patrickHand.variable}`}
       >
         <QueryClientProvider client={queryClient}>
-          <CustomToastProvider>
-            <div className="relative">
-              {isPrivateRoute ? (
-                <VerifyDevice>
-                  {children}
-                </VerifyDevice>
-              ) : (
-                <>
-                  {children}
-                </>
-              )}
+          <div className="relative">
+            {isPrivateRoute ? (
+              <VerifyDevice>
+                {children}
+              </VerifyDevice>
+            ) : (
+              <>
+                {children}
+              </>
+            )}
 
-            </div>
-          </CustomToastProvider>
+          </div>
           <Toaster />
           <ReactQueryDevtools initialIsOpen={false} buttonPosition="bottom-right" />
         </QueryClientProvider>
