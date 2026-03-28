@@ -13,13 +13,8 @@ export const APP_ROUTES = {
             },
             seguranca: {
                 name: "/ajustes/seguranca"
-            },
-            sobre: {
-                name: "/menu/sobre"
-            },
-            deletarConta: {
-                name: "/ajustes/deletar-conta"
             }
+
         },
         historic: {
             name: "/historic",
@@ -32,7 +27,13 @@ export const APP_ROUTES = {
 
         },
         menu: {
-            name: "/menu"
+            name: "/menu",
+            deletarConta: {
+                name: "/menu/deletar-conta"
+            },
+            sobre: {
+                name: "/menu/sobre"
+            },
         },
         statistics: {
             name: "/statistics"

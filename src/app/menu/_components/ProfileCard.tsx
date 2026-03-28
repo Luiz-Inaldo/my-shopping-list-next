@@ -6,17 +6,16 @@ export function ProfileCard() {
   const { userProfile } = useGeneralUserStore();
 
   return (
-    <section className="flex gap-2">
+    <section className="flex items-center gap-4 px-2">
       <UserAvatar
-        width={60}
-        height={60}
-        className="border-4 border-app-container"
+        width={72}
+        height={72}
       />
       <div className="flex flex-col justify-center">
-        <h2 className="text-subtitle font-semibold text-lg">
+        <h2 className="text-sketch-fg font-sketchHeading text-2xl leading-tight">
           {userProfile?.name}
         </h2>
-        <p className="text-sm text-paragraph">{userProfile?.email || "—"}</p>
+        <p className="text-lg text-sketch-fg/60 font-sketch">{userProfile?.email || "—"}</p>
       </div>
     </section>
   );

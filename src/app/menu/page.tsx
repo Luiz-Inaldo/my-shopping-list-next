@@ -6,10 +6,10 @@ import { ProfileCard } from './_components/ProfileCard';
 
 export default function Menu() {
   return (
-    <div className="page-wrapper">
-      <Header className="text-lg font-medium">Geral</Header>
+    <div className="sketch-shell min-h-screen flex flex-col">
+      <Header className="text-2xl font-sketchHeading">Geral</Header>
 
-      <main className="px-5 pb-24 pt-6 flex flex-col gap-8">
+      <main className="flex-1 px-5 pb-24 pt-8 flex flex-col gap-10 max-w-2xl mx-auto w-full">
         <ProfileCard />
         <MenuOptionsSection />
       </main>

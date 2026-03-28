@@ -45,42 +45,44 @@ export function MenuOptionsSection() {
   }
 
   return (
-    <section>
-      <div className="bg-app-container rounded-lg divide-y divide-border">
+    <section className="font-sketch">
+      <div className="bg-sketch-white border-[3px] border-sketch-border rounded-sketch-card shadow-sketch rotate-1 divide-y divide-dashed divide-sketch-fg/10 overflow-hidden">
         <Link
-          href={APP_ROUTES.private.settings.sobre.name}
-          className="w-full flex items-center justify-between p-4"
+          href={APP_ROUTES.private.menu.sobre.name}
+          className="w-full flex items-center justify-between p-5 hover:bg-sketch-accent-lt transition-colors"
         >
-          <div className="flex items-center gap-3 text-subtitle">
-            <Info size={18} />
-            <span className="text-sm">Sobre o aplicativo</span>
+          <div className="flex items-center gap-4 text-sketch-fg">
+            <Info size={22} strokeWidth={2.5} className="text-sketch-accent" />
+            <span className="text-lg">Sobre o aplicativo</span>
           </div>
-          <ChevronRight size={18} className="text-paragraph" />
+          <ChevronRight size={22} strokeWidth={2.5} className="text-sketch-fg/40" />
         </Link>
+
         <Link
           prefetch
-          href={APP_ROUTES.private.settings.deletarConta.name}
-          className="w-full flex items-center justify-between p-4"
+          href={APP_ROUTES.private.menu.deletarConta.name}
+          className="w-full flex items-center justify-between p-5 hover:bg-sketch-danger/10 transition-colors"
         >
-          <div className="flex items-center gap-3 text-red-500">
-            <Trash2 size={18} />
-            <span className="text-sm">Deletar minha conta</span>
+          <div className="flex items-center gap-4 text-sketch-danger">
+            <Trash2 size={22} strokeWidth={2.5} />
+            <span className="text-lg">Deletar minha conta</span>
           </div>
-          <ChevronRight size={18} className="text-red-500" />
+          <ChevronRight size={22} strokeWidth={2.5} className="text-sketch-danger/40" />
         </Link>
+
         <button
           onClick={handleLogout}
-          className="w-full flex items-center justify-between p-4"
+          className="w-full flex items-center justify-between p-5 hover:bg-sketch-accent-lt transition-colors"
         >
-          <div className="flex items-center gap-3 text-subtitle">
+          <div className="flex items-center gap-4 text-sketch-fg text-lg">
             {isUnlogging ? (
-              <AppLoader size={18} />
+              <AppLoader size={22} />
             ) : (
-              <LogOut size={18} />
+              <LogOut size={22} strokeWidth={2.5} className="text-sketch-accent" />
             )}
-            <span className="text-sm">Sair</span>
+            <span>Sair</span>
           </div>
-          <ChevronRight size={18} className="text-paragraph" />
+          <ChevronRight size={22} strokeWidth={2.5} className="text-sketch-fg/40" />
         </button>
       </div>
     </section>

@@ -8,7 +8,7 @@ export function UserAvatar({ width, height, className = '' }: { width: number, h
     const { userProfile } = useGeneralUserStore();
 
     return (
-        <Avatar className={cn('border-app-container', className)} style={
+        <Avatar className={cn('border-4 border-sketch-border shadow-sketch-sm rounded-full', className)} style={
             {
                 width: width,
                 height: height,
