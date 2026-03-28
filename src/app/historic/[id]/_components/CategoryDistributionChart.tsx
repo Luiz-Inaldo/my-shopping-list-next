@@ -1,12 +1,6 @@
 'use client';
 import { Pie, PieChart } from 'recharts';
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from '@/components/ui/card';
+
 import {
   ChartConfig,
   ChartContainer,
@@ -112,31 +106,32 @@ export function CategoryDistributionChart({
   }
 
   return (
-    <Card className="bg-app-container shadow-md border">
-      <CardHeader className="p-4">
-        <CardTitle className="text-lg flex items-center justify-between font-semibold text-title">
-          <h2>{title}</h2>
+    <div className="bg-sketch-white shadow-sketch-sm border-2 border-sketch-fg rounded-sketch-card p-4 overflow-hidden">
+      <div className="flex items-center justify-between mb-2">
+        <h2 className="font-sketchHeading text-2xl font-bold text-sketch-fg">{title}</h2>
+        <button
+          type="button"
+          className="flex items-center justify-center size-9 shrink-0 rounded-sketch-wobbly border-2 border-sketch-fg bg-sketch-white text-sketch-fg shadow-sketch-sm transition-all duration-100 hover:bg-sketch-accent hover:text-white hover:translate-x-px hover:translate-y-px active:shadow-none active:translate-x-[2px] active:translate-y-[2px]"
+          onClick={() => setChartExpanded(!chartExpanded)}
+          aria-label={chartExpanded ? "Recolher gráfico" : "Expandir gráfico"}
+        >
           <ChevronDown
-            size={14}
+            size={20}
+            strokeWidth={2.5}
             className={cn(
-              'text-paragraph transition-transform duration-300',
+              'transition-transform duration-300',
               !chartExpanded && 'rotate-180'
             )}
-            onClick={() => setChartExpanded(!chartExpanded)}
           />
-        </CardTitle>
-        <CardDescription className={cn("text-paragraph grid gap-1 transition-opacity duration-200",
-          !chartExpanded && "opacity-0 hidden"
-        )}>
-          <p>
-            Total de itens: <strong>{productsList.length}</strong>
-          </p>
-        </CardDescription>
-      </CardHeader>
-      <CardContent
+        </button>
+      </div>
+      <div className={cn("text-sketch-fg/70 font-sketch text-sm mb-4 transition-opacity", !chartExpanded && "opacity-0 hidden")}>
+        Total de itens: <strong className="font-bold">{productsList.length}</strong>
+      </div>
+      <div
         className={cn(
-          'relative max-h-[500px] p-4 transition-all duration-300 ease-in-out',
-          !chartExpanded && 'max-h-0 overflow-hidden p-0 opacity-0'
+          'relative p-0 transition-all duration-300 ease-in-out',
+          !chartExpanded && 'max-h-0 overflow-hidden opacity-0'
         )}
       >
         {chartData.length > 0 ? (
@@ -150,6 +145,7 @@ export function CategoryDistributionChart({
                 content={
                   <ChartTooltipContent
                     hideLabel
+                    className="bg-sketch-white border-2 border-sketch-fg shadow-sketch-sm rounded-sketch-card font-sketch"
                     formatter={(value, name) => {
                       return (
                         <div className="flex items-center gap-2">
@@ -162,7 +158,7 @@ export function CategoryDistributionChart({
                               }`,
                             }}
                           ></div>
-                          <span className="text-sm text-paragraph truncate">
+                          <span className="text-sm text-sketch-fg truncate">
                             {name}:{' '}
                             {`${Number(value).toFixed(1).replace('.', ',')}%`}
                           </span>
@@ -183,7 +179,7 @@ export function CategoryDistributionChart({
             </PieChart>
           </ChartContainer>
         ) : (
-          <p className="text-center text-paragraph text-sm">
+          <p className="text-center text-sketch-fg font-sketch text-sm py-8">
             Nenhum produto disponível
           </p>
         )}
@@ -199,13 +195,13 @@ export function CategoryDistributionChart({
                   }`,
                 }}
               ></div>
-              <span className="text-sm text-paragraph truncate">
+              <span className="text-sm text-sketch-fg font-sketch truncate">
                 {entry.category}
               </span>
             </div>
           ))}
         </div>
-      </CardContent>
-    </Card>
+      </div>
+    </div>
   );
 }

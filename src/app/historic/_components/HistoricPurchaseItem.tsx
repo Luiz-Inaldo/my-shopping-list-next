@@ -2,11 +2,11 @@
 import { IPurchaseProps } from "@/types";
 import { formatCurrency } from "@/functions/formatCurrency";
 import { formatDate } from "@/functions/formatDate";
-import { List, Trash2 } from "lucide-react";
+import { List } from "lucide-react";
 import { DeletePurchase } from "@/components/Forms/DeletePurchase";
 import { APP_ROUTES } from "@/routes/app-routes";
 import Link from "next/link";
-import { Button } from "@/components/ui/button";
+
 
 interface PurchaseItemProps {
   purchase: IPurchaseProps;
@@ -47,15 +47,6 @@ export function HistoricPurchaseItem({ purchase }: PurchaseItemProps) {
         </Link>
         <DeletePurchase
           purchase={purchase}
-          trigger={
-            <Button
-              variant="destructive"
-              size="icon"
-              aria-label="Excluir compra"
-            >
-              <Trash2 size={20} strokeWidth={2.5} />
-            </Button>
-          }
         />
       </div>
     </div>
