@@ -25,9 +25,9 @@ const chartConfig = {
 
 export function LastSixMonthsAreaChart({ data }: LastSixMonthsAreaChartProps) {
   return (
-    <Card className="bg-app-container border-none shadow-sm rounded-sm">
+    <Card className="shadow-sketch">
       <CardHeader>
-        <CardTitle className="text-lg text-subtitle font-semibold">
+        <CardTitle className="text-xl font-bold">
           Total de compras (últimos 6 meses)
         </CardTitle>
       </CardHeader>
@@ -56,16 +56,16 @@ export function LastSixMonthsAreaChart({ data }: LastSixMonthsAreaChartProps) {
                 if (!item) return null;
 
                 return (
-                  <div className="p-2 rounded-md bg-app-container border border-border shadow-md">
-                    <div className="flex items-center gap-2">
-                      <div className="w-1 h-7 rounded-full bg-[var(--category-1)]" />
+                  <div className="p-3 rounded-sketch-card bg-sketch-bg border-2 border-sketch-fg shadow-sketch-sm font-sketch">
+                    <div className="flex items-center gap-3">
+                      <div className="w-1.5 h-8 rounded-full bg-[var(--category-1)] shadow-sm" />
                       <div className="flex flex-col">
-                        <span className="text-sm font-semibold text-subtitle">
+                        <span className="text-sm font-bold text-sketch-fg">
                           {label}
                         </span>
-                        <div className="flex items-center gap-10">
-                          <span className="text-paragraph">Total: </span>
-                          <span className="text-xs text-subtitle font-semibold">
+                        <div className="flex items-center gap-8">
+                          <span className="text-sm text-sketch-fg/60">Total: </span>
+                          <span className="text-sm text-sketch-accent font-bold">
                             {formatCurrency(item.value as number)}
                           </span>
                         </div>

@@ -36,7 +36,7 @@ export function Statistics() {
     return (
         <div>
             <Header>
-                <h2 className="text-subtitle font-medium text-lg">Estatísticas</h2>
+                <h2 className="font-sketchHeading text-2xl font-bold">Estatísticas</h2>
             </Header>
             <main className='px-5 pb-24 pt-6 flex flex-col gap-10'>
                 <section>
@@ -45,10 +45,9 @@ export function Statistics() {
                         handleTabChange={handleChangeTab}
                     />
 
-                    <div className={cn("flex flex-col bg-app-container rounded-bl-lg rounded-br-lg",
-                        activeTab === "month" ? "rounded-tl-lg" : "",
-                        activeTab === "day" ? "rounded-tr-lg" : "",
-                        activeTab === "week" ? "rounded-tr-lg rounded-tl-lg" : "",
+                    <div className={cn("flex flex-col bg-sketch-white border-2 border-sketch-fg rounded-sketch-card shadow-sketch-sm mt-[-2px]",
+                        activeTab === "month" ? "rounded-tr-none" : "",
+                        activeTab === "day" ? "rounded-tl-none" : ""
                     )}>
 
                         {/* Month/Year Filters - Only show for month tab */}
