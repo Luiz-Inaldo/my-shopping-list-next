@@ -30,15 +30,15 @@ export function CategoryDonutChart({ data, totalValue }: CategoryDonutChartProps
     value: item.value,
     fill: item.color,
   }));
-  
+
   return (
-    <Card className="bg-app-container border-0 shadow-none">
+    <Card className="!shadow-none !border-none">
       <CardHeader>
-        <CardTitle className="text-lg text-subtitle font-semibold">
+        <CardTitle className="text-xl font-bold">
           Gastos por Categoria
         </CardTitle>
       </CardHeader>
-      <CardContent className="flex gap-2 items-start">
+      <CardContent className="flex gap-2 items-start shadow-none border-none">
         {chartData.length > 0 ? (
           <ChartContainer className="h-[220px] !aspect-square w-full flex-1" config={chartConfig}>
             <PieChart>
@@ -64,21 +64,21 @@ export function CategoryDonutChart({ data, totalValue }: CategoryDonutChartProps
                       ((data.value as number) / totalValue * 100).toFixed(1) : '0';
 
                     return (
-                      <div className="p-3 rounded-md bg-app-container border border-border shadow-md">
+                      <div className="p-3 rounded-sketch-card bg-sketch-bg border-2 border-sketch-fg shadow-sketch-sm font-sketch">
                         <div className="flex items-center gap-2">
                           <div
-                            className="w-3 h-3 rounded-full"
+                            className="w-3 h-3 rounded-full border border-sketch-fg/20"
                             style={{ backgroundColor: data.payload?.fill }}
                           />
                           <div className="flex flex-col">
-                            <span className="text-sm font-semibold text-subtitle">
+                            <span className="text-sm font-bold text-sketch-fg">
                               {data.name}
                             </span>
                             <div className="flex items-center gap-2">
-                              <span className="text-xs text-paragraph">
+                              <span className="text-xs text-sketch-fg/60">
                                 Valor: R$ {(data.value as number)?.toFixed(2)}
                               </span>
-                              <span className="text-xs text-paragraph">
+                              <span className="text-xs text-sketch-fg/60 font-bold">
                                 ({percentage}%)
                               </span>
                             </div>

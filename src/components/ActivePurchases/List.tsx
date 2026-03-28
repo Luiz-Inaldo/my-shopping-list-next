@@ -11,6 +11,7 @@ import { Eye, Loader } from 'lucide-react';
 import ErrorFetchData from '../Errors/ErrorFetchData';
 import { cn } from '@/lib/utils';
 import { Pin } from '../Pin';
+import { SmoothTapeEffect } from '../Effects/SmoothTapeEffect';
 
 function getListProgress(item: IPurchaseProps) {
   const items = item.purchase_items ?? [];
@@ -82,10 +83,7 @@ export function ActivePurchsesList() {
                 transition={{ duration: 0.2, delay: index * 0.08 }}
                 className="relative z-0 w-full rounded-sketch-card border-2 border-sketch-border bg-sketch-white p-4 shadow-sketch hover:z-[1] hover:shadow-sketch-lg"
               >
-                <div
-                  className="pointer-events-none absolute -top-2.5 left-1/2 h-[18px] w-14 -translate-x-1/2 -rotate-2 border-x border-[rgba(108,71,201,0.2)] bg-[rgba(200,195,230,0.55)]"
-                  aria-hidden
-                />
+                <SmoothTapeEffect />
 
                 <div className="mb-2.5 flex items-start justify-between gap-2">
                   <h3 className="font-sketchHeading max-w-[200px] text-xl font-bold leading-tight text-title">
