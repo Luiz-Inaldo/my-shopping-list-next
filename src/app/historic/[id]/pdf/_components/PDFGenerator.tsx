@@ -99,20 +99,22 @@ export function HistoricListPDF() {
     }
 
     return (
-        <div className="flex flex-col gap-4">
-            <div className="sticky top-0 flex items-center justify-between text-white p-3 bg-app-primary">
-                <h1>{`${formattedTitle(productsList?.title as string)}.pdf`}</h1>
-                <div className="flex items-center gap-2">
+        <div className="flex flex-col gap-4 font-sketch">
+            <header className="sticky top-0 left-0 right-0 z-[10] flex items-center justify-between border-b-2 border-dashed border-sketch-muted bg-sketch-bg px-4 py-4 font-sketch text-sketch-fg">
+                <h1 className="font-sketchHeading text-xl font-bold truncate max-w-[200px] md:max-w-md">
+                    {`${formattedTitle(productsList?.title as string)}.pdf`}
+                </h1>
+                <div className="flex items-center gap-3">
                     <Link href={APP_ROUTES.private.historic.details.name(productsList?.id as string)}>
-                        <Button size='icon' className="text-sm bg-transparent hover:bg-transparent">
-                            <ArrowLeft className="size-6" />
+                        <Button variant="outline" size="icon" aria-label="Voltar para detalhes">
+                            <ArrowLeft className="size-6" strokeWidth={2.5} />
                         </Button>
                     </Link>
-                    <Button size='icon' onClick={handlePrintPDF} className="text-sm bg-transparent hover:bg-transparent">
-                        <Save className="size-6" />
+                    <Button onClick={handlePrintPDF} size="icon" aria-label="Imprimir ou Salvar PDF">
+                        <Save className="size-6" strokeWidth={2.5} />
                     </Button>
                 </div>
-            </div>
+            </header>
             <div ref={PDFRef} className="print-container bg-white p-4 mx-4 mb-4">
                 {/* Cabeçalho */}
                 <div className="avoid-break mb-12 border-b-2 border-[#dadada] pb-4">
