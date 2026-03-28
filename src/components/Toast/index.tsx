@@ -27,7 +27,7 @@ function ToastLayout({
   return (
     <div
       className={cn(
-        'flex gap-3 px-4 py-3',
+        'flex gap-3 p-0',
         description ? 'items-start' : 'items-center'
       )}
     >

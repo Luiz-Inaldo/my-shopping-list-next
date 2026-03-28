@@ -51,7 +51,7 @@ export function sendToastMessage(toastOptions: ToastOptions) {
         {
           ...commonOptions,
           classNames: {
-            toast: `${toastBase} !rounded-sketch-card !bg-sketch-success`,
+            toast: `${toastBase} !rounded-sketch-card p-0 !bg-sketch-success`,
           },
         }
       );

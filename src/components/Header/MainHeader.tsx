@@ -2,6 +2,8 @@ import useGeneralUserStore from '@/store/generalUserStore';
 import { MainHeaderSkeleton } from '../Skeletons/MainHeaderSkeleton';
 import { UserAvatar } from '../UserAvatar';
 import { Bell } from 'lucide-react';
+import { Button } from '../ui/button';
+import { APP_ROUTES } from '@/routes/app-routes';
 
 export const MainHeader = () => {
   const userProfile = useGeneralUserStore((store) => store.userProfile);
@@ -12,7 +14,7 @@ export const MainHeader = () => {
 
   return (
     <header className="sticky top-0 z-10 flex w-full items-center justify-between border-b-2 border-dashed border-sketch-muted bg-sketch-bg px-5 pb-4 pt-5">
-      <div className="flex items-center gap-3">
+      <a href={APP_ROUTES.private.settings.name} className="flex items-center gap-3">
         <div
           className="relative h-[52px] w-[52px] shrink-0 overflow-hidden border-[3px] border-sketch-border bg-sketch-accent-lt shadow-sketch-sm"
           style={{
@@ -33,14 +35,13 @@ export const MainHeader = () => {
             {displayName}
           </p>
         </div>
-      </div>
-      <button
+      </a>
+      {/* <Button
         type="button"
         aria-label="Notificações"
-        className="relative flex h-11 w-11 shrink-0 items-center justify-center border-2 border-sketch-border bg-sketch-white shadow-sketch-sm transition-[transform,box-shadow] duration-100 active:translate-x-[3px] active:translate-y-[3px] active:shadow-sketch-1"
-        style={{
-          borderRadius: '14px 6px 12px 8px / 6px 14px 8px 12px',
-        }}
+        variant="outline"
+        size="icon"
+        className="active:translate-x-[3px] active:translate-y-[3px] active:shadow-sketch-1 relative"
       >
         <Bell
           size={22}
@@ -52,7 +53,7 @@ export const MainHeader = () => {
           className="absolute right-[7px] top-1.5 size-[9px] rounded-full border-2 border-sketch-bg bg-sketch-danger"
           aria-hidden
         />
-      </button>
+      </Button> */}
     </header>
   );
 };
