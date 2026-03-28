@@ -8,11 +8,11 @@ import { NextResponse } from "next/server";
 export function applySecurityHeaders(response: NextResponse): NextResponse {
     const cspHeader = `
     default-src 'self';
-    script-src 'self' 'unsafe-inline' 'unsafe-eval' https://*.firebaseapp.com https://*.googleapis.com;
+    script-src 'self' 'unsafe-inline' 'unsafe-eval' https://*.firebaseapp.com https://*.googleapis.com https://apis.google.com;
     style-src 'self' 'unsafe-inline' https://fonts.googleapis.com;
-    img-src 'self' blob: data: https://*.googleusercontent.com;
+    img-src 'self' blob: data: https://*.googleusercontent.com https://firebasestorage.googleapis.com https://api.dicebear.com;
     font-src 'self' https://fonts.gstatic.com;
-    connect-src 'self' https://*.googleapis.com https://*.firebaseio.com wss://*.firebaseio.com ws://localhost:* ws://127.0.0.1:*;
+    connect-src 'self' https://*.googleapis.com https://*.firebaseio.com wss://*.firebaseio.com ws://localhost:* ws://127.0.0.1:* https://apis.google.com;
     frame-src 'self' https://*.firebaseapp.com;
     object-src 'none';
     base-uri 'self';
