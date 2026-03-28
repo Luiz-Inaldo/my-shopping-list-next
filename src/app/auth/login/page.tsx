@@ -134,10 +134,10 @@ function LoginForm() {
               animate="visible"
               className="flex flex-col items-center gap-4"
             >
-              <h1 className="font-sketchHeading text-3xl font-semibold text-title">
+              <h1 className="font-sketchHeading text-3xl font-semibold text-sketch-fg">
                 Login
               </h1>
-              <p className="font-sketch text-center text-sm text-paragraph max-w-[320px]">
+              <p className="font-sketch text-center text-sm text-sketch-fg/60 max-w-[320px]">
                 Insira um e-mail e senha válidos para acessar sua conta.
               </p>
             </motion.div>
@@ -161,7 +161,7 @@ function LoginForm() {
                             <input
                               aria-label="E-mail"
                               placeholder="E-mail"
-                              className="font-sketch w-full bg-transparent outline-none placeholder:text-paragraph/60 text-subtitle"
+                              className="font-sketch w-full bg-transparent outline-none placeholder:text-sketch-fg/40 text-sketch-fg"
                               type="email"
                               {...field}
                             />
@@ -189,7 +189,7 @@ function LoginForm() {
                             <input
                               type={isPasswordVisible ? 'text' : 'password'}
                               placeholder="Senha"
-                              className="font-sketch w-full bg-transparent outline-none placeholder:text-paragraph/60 text-subtitle"
+                              className="font-sketch w-full bg-transparent outline-none placeholder:text-sketch-fg/40 text-sketch-fg"
                               {...field}
                             />
                             <button
@@ -247,7 +247,7 @@ function LoginForm() {
               className="mt-6 flex items-center gap-4"
             >
               <hr className="flex-1 border-t border-sketch-border" />
-              <span className="font-sketch text-sm text-paragraph">Ou entre com</span>
+              <span className="font-sketch text-sm text-sketch-fg/60">Ou entre com</span>
               <hr className="flex-1 border-t border-sketch-border" />
             </motion.div>
 
@@ -269,7 +269,7 @@ function LoginForm() {
                   width={20}
                   height={20}
                 />
-                <span className="font-sketch text-title">Google</span>
+                <span className="font-sketch text-sketch-fg">Google</span>
               </Button>
             </motion.div>
 
@@ -278,7 +278,7 @@ function LoginForm() {
               custom={0.8}
               initial="hidden"
               animate="visible"
-              className="mt-6 text-center font-sketch text-sm text-paragraph"
+              className="mt-6 text-center font-sketch text-sm text-sketch-fg/60"
             >
               Ainda não tem uma conta?{' '}
               <span

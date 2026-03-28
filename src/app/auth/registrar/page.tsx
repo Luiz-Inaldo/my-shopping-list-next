@@ -200,10 +200,10 @@ export default function Page() {
                 animate="visible"
                 className="flex flex-col items-center gap-4"
               >
-                <h1 className="font-sketchHeading text-2xl font-semibold text-title">
+                <h1 className="font-sketchHeading text-2xl font-semibold text-sketch-fg">
                   Registre-se
                 </h1>
-                <p className="font-sketch text-center text-sm text-paragraph max-w-[340px]">
+                <p className="font-sketch text-center text-sm text-sketch-fg/60 max-w-[340px]">
                   Preencha o formulário para continuar
                 </p>
               </motion.div>
@@ -232,7 +232,7 @@ export default function Page() {
                                 minLength={4}
                                 maxLength={20}
                                 placeholder="Nome de usuário"
-                                className="font-sketch w-full bg-transparent outline-none placeholder:text-paragraph/60 text-title"
+                                className="font-sketch w-full bg-transparent outline-none placeholder:text-sketch-fg/40 text-sketch-fg"
                                 {...field}
                               />
                             </motion.div>
@@ -271,7 +271,7 @@ export default function Page() {
                               <Mail size={18} strokeWidth={2.5} className="text-sketch-fg" />
                               <input
                                 placeholder="E-mail"
-                                className="font-sketch w-full bg-transparent outline-none placeholder:text-paragraph/60 text-subtitle"
+                                className="font-sketch w-full bg-transparent outline-none placeholder:text-sketch-fg/40 text-sketch-fg"
                                 {...field}
                               />
                             </motion.div>
@@ -298,7 +298,7 @@ export default function Page() {
                               <input
                                 type={isPasswordVisible ? 'text' : 'password'}
                                 placeholder="Senha"
-                                className="font-sketch w-full bg-transparent outline-none placeholder:text-paragraph/60 text-subtitle"
+                                className="font-sketch w-full bg-transparent outline-none placeholder:text-sketch-fg/40 text-sketch-fg"
                                 {...field}
                               />
                               <button
@@ -336,7 +336,7 @@ export default function Page() {
                               <input
                                 type={isConfirmPasswordVisible ? 'text' : 'password'}
                                 placeholder="Confirme a senha"
-                                className="font-sketch w-full bg-transparent outline-none placeholder:text-paragraph/60 text-subtitle"
+                                className="font-sketch w-full bg-transparent outline-none placeholder:text-sketch-fg/40 text-sketch-fg"
                                 {...field}
                               />
                               <button
@@ -389,7 +389,7 @@ export default function Page() {
                 custom={0.6}
                 initial="hidden"
                 animate="visible"
-                className="mt-6 text-center font-sketch text-sm text-paragraph"
+                className="mt-6 text-center font-sketch text-sm text-sketch-fg/60"
               >
                 Já tem uma conta?{' '}
                 <span

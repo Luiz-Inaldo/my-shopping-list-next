@@ -107,10 +107,10 @@ export default function Page() {
                 animate="visible"
                 className="flex flex-col items-center gap-4"
               >
-                <h1 className="font-sketchHeading text-2xl font-semibold text-title">
+                <h1 className="font-sketchHeading text-2xl font-semibold text-sketch-fg">
                   Esqueceu a Senha
                 </h1>
-                <p className="font-sketch text-center text-sm text-paragraph max-w-[340px]">
+                <p className="font-sketch text-center text-sm text-sketch-fg/60 max-w-[340px]">
                   Não se preocupe, acontece. Por favor insira o endereço de e-mail associado à
                   sua conta.
                 </p>
@@ -138,7 +138,7 @@ export default function Page() {
                               <Mail size={18} strokeWidth={2.5} className="text-sketch-fg" />
                               <input
                                 placeholder="Endereço de email"
-                                className="font-sketch w-full bg-transparent outline-none placeholder:text-paragraph/60 text-subtitle"
+                                className="font-sketch w-full bg-transparent outline-none placeholder:text-sketch-fg/40 text-sketch-fg"
                                 {...field}
                               />
                             </motion.div>
@@ -178,7 +178,7 @@ export default function Page() {
                 custom={0.3}
                 initial="hidden"
                 animate="visible"
-                className="mt-6 text-center font-sketch text-sm text-paragraph"
+                className="mt-6 text-center font-sketch text-sm text-sketch-fg/60"
               >
                 Lembrou da senha?{' '}
                 <span
