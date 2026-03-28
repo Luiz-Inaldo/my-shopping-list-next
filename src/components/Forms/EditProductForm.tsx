@@ -1,8 +1,8 @@
 "use client";
-import { ProductsContext } from "@/context/ProductsContext";
+import { useShoplistContext } from "@/context/ShoplistContext";
 import { IEditItemProps } from "@/types";
 import { IProductProps } from "@/types";
-import React, { useContext, useState } from "react";
+import React, { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import {
   Dialog,
@@ -13,30 +13,50 @@ import {
   DialogTrigger,
 } from "../ui/dialog";
 import { Button } from "../ui/button";
+import { ShadSelect } from "../Select";
+import { SelectItem } from "../ui/select";
+import { UNIT_TYPES } from "@/constants/unitTypes";
+import { Input } from "../ui/input";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { PurchaseProductInput, PurchaseProductSchema } from "@/zodSchema/addPurchaseProduct";
 
 export const EditProductForm = ({
   item,
+  closeDropdown
 }: {
   item: IProductProps | undefined;
+  closeDropdown: () => void;
 }) => {
   const {
     control,
-    formState: { errors },
     handleSubmit,
-  } = useForm<IEditItemProps>();
+  } = useForm<PurchaseProductInput>({
+    resolver: zodResolver(PurchaseProductSchema),
+    defaultValues: {
+      category: item?.category,
+      unit_type: item?.unit_type,
+      name: item?.name,
+      value: item?.value,
+      quantity: item?.quantity,
+      checked: item?.checked,
+    }
+  });
 
-  const { handleUpdateItem } = useContext(ProductsContext);
+  const { handleUpdateItem } = useShoplistContext();
   const [open, setOpen] = useState(false);
 
-  async function onSubmit(data: IEditItemProps) {
-    await handleUpdateItem(data, item!.id);
+  async function onSubmit(data: PurchaseProductInput) {
+    if (!item || !item.id) return;
+    data.value = Number(String(data.value).replace(",", "."));
+    await handleUpdateItem(data, item.id);
     setOpen(false);
+    closeDropdown();
   }
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <span className="px-3 text-sm text-subtitle">Editar</span>
+        <button className="px-3 text-sm text-subtitle">Editar</button>
       </DialogTrigger>
       <DialogContent className="p-5 max-w-[400px]" onClick={(e) => e.stopPropagation()}>
         <DialogHeader>
@@ -54,15 +74,26 @@ export const EditProductForm = ({
             <Controller
               control={control}
               name="name"
-              defaultValue={item?.name}
               render={({ field }) => (
-                <input
+                <Input
                   type="text"
                   {...field}
-                  className="w-full text-paragraph text-sm rounded-full border px-3 py-2 h-8 text-ellipsis overflow-hidden whitespace-nowrap"
+                  
                 />
               )}
             />
+          </label>
+          <label htmlFor="unit_type" className="flex flex-col mt-3">
+            <span className="text-subtitle text-sm font-semibold">Tipo de unidade:</span>
+            <ShadSelect
+              control={control}
+              label='Selecione o tipo de unidade'
+              name="unit_type"
+            >
+              {UNIT_TYPES.map(type => (
+                <SelectItem key={type.value} value={type.value}>{type.label}</SelectItem>
+              ))}
+            </ShadSelect>
           </label>
           <div className="grid grid-cols-2 gap-3">
             <label htmlFor="value" className="flex flex-col col-span-1">
@@ -70,12 +101,10 @@ export const EditProductForm = ({
               <Controller
                 control={control}
                 name="value"
-                defaultValue={item?.value || "0,00"}
                 render={({ field }) => (
-                  <input
+                  <Input
                     type="text"
                     {...field}
-                    className="w-full text-paragraph text-sm rounded-full border px-3 py-2 h-8"
                   />
                 )}
               />
@@ -85,12 +114,10 @@ export const EditProductForm = ({
               <Controller
                 control={control}
                 name="quantity"
-                defaultValue={item?.quantity}
                 render={({ field }) => (
-                  <input
+                  <Input
                     type="number"
                     {...field}
-                    className="w-full text-paragraph text-sm rounded-full border px-3 py-2 h-8"
                   />
                 )}
               />
@@ -99,7 +126,7 @@ export const EditProductForm = ({
           <div className="grid grid-cols-2 gap-2 mt-5">
             <Button
               type="submit"
-              className="col-span-1 w-full rounded-full"
+              className="col-span-1 w-full"
             >
               Finalizar Edição
             </Button>
@@ -107,7 +134,7 @@ export const EditProductForm = ({
               type="button"
               onClick={() => setOpen(false)}
               variant="outline"
-              className="col-span-1 w-full rounded-full"
+              className="col-span-1 w-full"
             >
               Cancelar
             </Button>
@@ -115,12 +142,5 @@ export const EditProductForm = ({
         </form>
       </DialogContent>
     </Dialog>
-    // <React.Fragment>
-    //     {isVisible && (
-    //         <div className={`${isFading ? 'opacity-100 visible' : 'opacity-0 invisible'} w-[350px] rounded bg-app-container border transition-all duration-500`}>
-
-    //         </div>
-    //     )}
-    // </React.Fragment>
   );
 };

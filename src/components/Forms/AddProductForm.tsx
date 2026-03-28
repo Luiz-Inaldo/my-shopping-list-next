@@ -1,5 +1,5 @@
-"use client";
-import React, { useContext } from "react";
+'use client';
+import React, { useContext, useState, useTransition } from 'react';
 import {
   Drawer,
   DrawerContent,
@@ -8,158 +8,453 @@ import {
   DrawerHeader,
   DrawerTitle,
   DrawerTrigger,
-} from "@/components/ui/drawer";
-import { Plus } from "lucide-react";
-import { useForm } from "react-hook-form";
-import { ShadSelect } from "../Select";
-import { SelectItem } from "../ui/select";
-import { CATEGORIES } from "@/constants/categories";
-import { supabase } from "@/lib/api";
-import { ProductsContext } from "@/context/ProductsContext";
-import { IFormItem } from "@/types";
-import useGeneralUserStore from "@/store/generalUserStore";
-import { Button } from "../ui/button";
-import { sendToastMessage } from "@/functions/sendToastMessage";
+} from '@/components/ui/drawer';
+import { Form, FormInput, LoaderCircle, Mic, Plus } from 'lucide-react';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { ShadSelect } from '../Select';
+import { SelectItem } from '../ui/select';
+import { CATEGORIES } from '@/constants/categories';
+import {
+  PurchaseProductSchema,
+  PurchaseProductInput,
+} from '@/zodSchema/addPurchaseProduct';
+import { ItemCategories } from '@/enums/categories';
+import { UnitTypes } from '@/enums/unitTypes';
+import { IProductProps } from '@/types';
+import { Button } from '../ui/button';
+import { sendToastMessage } from '@/functions/sendToastMessage';
+import { useShoplistContext } from '@/context/ShoplistContext';
+import { addPurchaseItem } from '@/services/productsListServices';
+import { queryClient } from '@/utils/queryClient';
+import { QUERY_KEYS } from '@/constants/queryKeys';
+import useGeneralUserStore from '@/store/generalUserStore';
+import { cn } from '@/lib/utils';
+import { useSpeech } from '@/hooks/useSpeech';
+import { parseCommand } from '@/functions/voiceCommandParser';
+import { UNIT_TYPES } from '@/constants/unitTypes';
+import { AnimatePresence, motion } from 'motion/react';
+import { formatCurrency } from '@/functions/formatCurrency';
+import { AppLoader } from '../Loader/app-loader';
 
-export const AddProductForm = () => {
-  const user = useGeneralUserStore((store) => store.user);
+type TFormMode = 'default' | 'voice';
 
-  const { fetchData } = useContext(ProductsContext);
+export const AddProductForm = ({
+  withLabel,
+  className,
+}: {
+  withLabel?: boolean;
+  className?: string;
+}) => {
+  const user = useGeneralUserStore((s) => s.userProfile);
+  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+  const [formMode, setFormMode] = useState<TFormMode>('default');
+  const [speechResults, setSpeechResults] = useState<Record<string, any>>({
+    output: '',
+    result: {} as PurchaseProductInput,
+  });
+  const [isLoading, startAddProductTransition] = useTransition();
+  const isButtonDisabled = user ? !user.emailVerified : false;
+
+  const { productsList } = useShoplistContext();
+
+  const { isListening, startListening, stopListening } = useSpeech((text) => {
+    console.log(text);
+    const parsed = parseCommand(text);
+    console.log(parsed);
+    setSpeechResults({
+      output: text,
+      result: parsed,
+    });
+    reset({
+      name: parsed.name,
+      category: parsed.category,
+      unit_type: parsed.unit_type,
+      quantity: parsed.quantity,
+      value: parsed.value,
+      checked: parsed.checked,
+    });
+  });
+
   const {
     register,
-    watch,
     control,
     formState: { errors },
     reset,
-    handleSubmit
-  } = useForm<IFormItem>();
+    handleSubmit,
+  } = useForm<PurchaseProductInput>({
+    resolver: zodResolver(PurchaseProductSchema),
+    defaultValues: {
+      name: '',
+      category: undefined,
+      unit_type: undefined,
+      quantity: '',
+      value: '',
+      checked: false,
+    },
+  });
 
   // funções
-  async function onSubmit(data: IFormItem) {
-    const item = {
-      ...data,
-      user_id: user?.id,
-    };
+  function handleOpenDrawer() {
+    setIsDrawerOpen(true);
+    // Garantir que o formulário esteja limpo quando abrir
+    reset({
+      name: '',
+      category: undefined,
+      unit_type: undefined,
+      quantity: '',
+      value: '',
+      checked: false,
+    });
+  }
 
-    if (item.value === "") {
-      item.value = "0,00";
-    }
+  function resetSpeechResults() {
+    setSpeechResults({
+      output: '',
+      result: {} as PurchaseProductInput,
+    });
+  }
 
-    if (!item.quantity) {
-      item.quantity = 0;
-    }
+  function resetFormValues() {
+    reset({
+      name: '',
+      category: undefined,
+      unit_type: undefined,
+      quantity: '',
+      value: '',
+      checked: false,
+    });
+    resetSpeechResults();
+  }
 
-    try {
-      const response = await supabase.from("products").insert([item]).select();
+  function onSubmit(data: PurchaseProductInput) {
+    startAddProductTransition(async () => {
+      // Validar e transformar os dados usando o schema
+      const validatedData = PurchaseProductSchema.parse(data);
 
-      if (response.status === 201) {
+      // O refine garante que category e unit_type não sejam undefined
+      const item: IProductProps = {
+        id: crypto.randomUUID() as string,
+        name: validatedData.name,
+        category: validatedData.category as ItemCategories,
+        unit_type: validatedData.unit_type as UnitTypes,
+        quantity: validatedData.quantity ?? 0,
+        value: validatedData.value ?? 0,
+        checked: validatedData.checked ?? false,
+      };
+
+      try {
+        await addPurchaseItem(productsList?.id as string, item);
+
         sendToastMessage({
-          title: "Produto adicionado com sucesso!",
-          type: "success"
+          title: 'Produto adicionado com sucesso!',
+          type: 'success',
         });
 
-        fetchData();
-      }
+        queryClient.invalidateQueries({
+          queryKey: [QUERY_KEYS.productsList, productsList?.id],
+        });
 
-      reset()
-    } catch (error) {
-      sendToastMessage({
-        title: "Erro ao adicionar produto",
-        type: "error"
-      });
-      console.error("Error adding product:", error);
-    }
+        // Reset do formulário e fechamento do drawer
+        resetFormValues();
+        setIsDrawerOpen(false);
+      } catch (error) {
+        sendToastMessage({
+          title: 'Erro ao adicionar produto',
+          type: 'error',
+        });
+        console.error('Error adding product:', error);
+      }
+    });
   }
 
   return (
-    <Drawer>
-      <DrawerTrigger className="relative flex items-center justify-center">
-        {/* <span className='absolute w-8 h-8 top-1.5 animate-ping z-[-1] bg-primary-blue rounded-full'></span> */}
+    <Drawer open={isDrawerOpen} onOpenChange={setIsDrawerOpen}>
+      <DrawerTrigger asChild>
         <Button
-          onClick={() => { }}
-          size="icon"
-          className="rounded-full cursor-pointer shadow-md p-0 text-2xl"
+          disabled={isButtonDisabled}
+          onClick={handleOpenDrawer}
+          size="sm"
+          className={cn('h-fit gap-2 rounded-sketch-btn p-1', className)}
         >
-          <Plus className="svg-shadow" size={24} />
+          <Plus size={20} />
+          {withLabel && 'Adicionar Produto'}
         </Button>
       </DrawerTrigger>
-      <DrawerContent className="bg-app-container rounded-lg">
-        <form
-          onSubmit={handleSubmit(onSubmit)}
-        >
+      <DrawerContent className="rounded-sketch-card border-2 border-sketch-border border-t-2 bg-sketch-white shadow-sketch">
+        <form onSubmit={handleSubmit(onSubmit)} className="relative">
           <DrawerHeader>
-            <DrawerTitle>Adicionar novo produto</DrawerTitle>
-            <DrawerDescription>Preencha o formulário abaixo</DrawerDescription>
+            <DrawerTitle className="font-sketchHeading text-title">
+              Adicionar novo produto
+            </DrawerTitle>
+            <DrawerDescription className="font-sketch text-paragraph">
+              Preencha o formulário abaixo
+            </DrawerDescription>
           </DrawerHeader>
-          <div className='flex flex-col gap-5 p-5'>
+          <Button
+            variant="outline"
+            size="icon"
+            type="button"
+            onClick={() =>
+              setFormMode(formMode === 'default' ? 'voice' : 'default')
+            }
+            className="absolute top-2 right-2 hover:bg-transparent"
+          >
+            {formMode === 'default' ? <Mic /> : <Form />}
+          </Button>
+          <div
+            className={cn(
+              'flex w-[200%] h-full   transition-all duration-300',
+              formMode === 'default' ? 'translate-x-0' : '-translate-x-1/2'
+            )}
+          >
+            <div className="w-1/2">
+              <div className="flex flex-col gap-5 p-5">
+                <label htmlFor="name" className="relative flex flex-col">
+                  <span className="mb-1 font-sketch text-sm font-bold leading-none text-title">
+                    Nome do produto:
+                  </span>
+                  <input
+                    type="text"
+                    placeholder="Digite o nome do produto"
+                    className="h-10 w-full rounded-sketch-notif border-2 border-sketch-border bg-sketch-white px-3 py-2 font-sketch text-sm text-title placeholder:text-title/40"
+                    {...register('name', { required: true })}
+                  />
+                  {errors.name && (
+                    <span className="font-sketch text-xs text-sketch-danger">
+                      Campo obrigatório
+                    </span>
+                  )}
+                </label>
 
-            <label htmlFor="name" className='relative flex flex-col'>
-              <span className='text-subtitle text-sm font-semibold mb-1 leading-none'>Nome do produto:</span>
-              <input
-                type="text"
-                placeholder="Digite o nome do produto"
-                className='w-full flex h-8 rounded-full border text-subtitle border-gray-300 bg-app-background px-3 py-2 text-sm'
-                {...register('name', { required: true })}
-              />
-              {errors.name && <span className='text-xs text-red-500'>
-                Campo obrigatório
-              </span>}
-            </label>
+                <label
+                  htmlFor="category"
+                  className="relative flex flex-col col-span-1"
+                >
+                  <span className="mb-1 font-sketch text-sm font-bold leading-none text-title">
+                    Categoria:
+                  </span>
+                  <ShadSelect
+                    control={control}
+                    label="Escolha a categoria"
+                    name="category"
+                  >
+                    {CATEGORIES.map((category) => (
+                      <SelectItem key={category.name} value={category.name}>
+                        {category.name}
+                      </SelectItem>
+                    ))}
+                  </ShadSelect>
+                  {errors.category && (
+                    <span className="font-sketch text-xs text-sketch-danger">
+                      Campo obrigatório
+                    </span>
+                  )}
+                </label>
 
-            <label htmlFor="category" className='relative flex flex-col col-span-1'>
-              <span className='text-subtitle text-sm font-semibold mb-1 leading-none'>Categoria:</span>
-              <ShadSelect control={control} label='Escolha a categoria' name="category">
-                {CATEGORIES.map(category => (
-                  <SelectItem key={category.name} value={category.name}>{category.name}</SelectItem>
-                ))}
-              </ShadSelect>
-              {errors.category && <span className='text-xs text-red-500'>
-                Campo obrigatório
-              </span>}
-            </label>
+                <label
+                  htmlFor="unit_type"
+                  className="relative flex flex-col col-span-1"
+                >
+                  <span className="mb-1 font-sketch text-sm font-bold leading-none text-title">
+                    Tipo de unidade:
+                  </span>
+                  <ShadSelect
+                    control={control}
+                    label="Selecione o tipo de unidade"
+                    name="unit_type"
+                  >
+                    {UNIT_TYPES.map(
+                      (type: { label: string; value: string }) => (
+                        <SelectItem key={type.value} value={type.value}>
+                          {type.label}
+                        </SelectItem>
+                      )
+                    )}
+                  </ShadSelect>
+                  {errors.unit_type && (
+                    <span className="font-sketch text-xs text-sketch-danger">
+                      Campo obrigatório
+                    </span>
+                  )}
+                </label>
 
-            <div className='grid grid-cols-2 gap-2'>
-              <label htmlFor="quantity" className='relative flex flex-col col-span-1'>
-                <span className='text-subtitle text-sm font-semibold mb-1 leading-none'>Quantidade:</span>
-                <input
-                  type="number"
-                  placeholder="0"
-                  className='w-full flex h-8 rounded-full border text-subtitle border-gray-300 bg-app-background px-3 py-2 text-sm'
-                  {...register('quantity', { required: true })}
-                />
-                {errors.quantity && <span className='text-xs text-red-500'>
-                  Campo obrigatório
-                </span>}
-              </label>
+                <div className="grid grid-cols-2 gap-2">
+                  <label
+                    htmlFor="quantity"
+                    className="relative flex flex-col col-span-1"
+                  >
+                    <span className="mb-1 font-sketch text-sm font-bold leading-none text-title">
+                      Quantidade:
+                    </span>
+                    <input
+                      type="text"
+                      placeholder="0"
+                      className="h-10 w-full rounded-sketch-notif border-2 border-sketch-border bg-sketch-white px-3 py-2 font-sketch text-sm text-title placeholder:text-title/40"
+                      {...register('quantity')}
+                    />
+                    {errors.quantity && (
+                      <span className="font-sketch text-xs text-sketch-danger">
+                        Campo obrigatório
+                      </span>
+                    )}
+                  </label>
 
-              <label htmlFor="value" className='relative flex flex-col'>
-                <span className='text-subtitle text-sm font-semibold mb-1 leading-none'>Valor:</span>
-                <input
-                  type="text"
-                  placeholder="0,00"
-                  className='w-full flex h-8 rounded-full border text-subtitle border-gray-300 bg-app-background px-3 py-2 text-sm'
-                  {...register('value')}
-                />
-              </label>
+                  <label htmlFor="value" className="relative flex flex-col">
+                    <span className="mb-1 font-sketch text-sm font-bold leading-none text-title">
+                      Valor:
+                    </span>
+                    <input
+                      type="text"
+                      placeholder="0,00"
+                      className="h-10 w-full rounded-sketch-notif border-2 border-sketch-border bg-sketch-white px-3 py-2 font-sketch text-sm text-title placeholder:text-title/40"
+                      {...register('value')}
+                    />
+                  </label>
+                </div>
+
+                <label
+                  htmlFor="checked"
+                  className="relative flex items-center gap-5"
+                >
+                  <span className="mb-1 font-sketch text-sm font-bold leading-none text-title">
+                    Já adquirido?
+                  </span>
+                  <input
+                    type="checkbox"
+                    className="size-4 rounded-sm border-2 border-sketch-border bg-sketch-white accent-sketch-accent"
+                    {...register('checked')}
+                  />
+                </label>
+              </div>
+              <DrawerFooter>
+                <Button type="submit" disabled={isLoading}>
+                  {isLoading ? (
+                    <>
+                      <LoaderCircle className="animate-spin" size={16} />
+                      Adicionando produto...
+                    </>
+                  ) : (
+                    'Adicionar produto'
+                  )}
+                </Button>
+              </DrawerFooter>
             </div>
-
-
-            <label htmlFor="checked" className='relative flex items-center gap-5'>
-              <span className='text-subtitle text-sm font-semibold mb-1 leading-none'>Já adquirido?</span>
-              <input
-                type="checkbox"
-                className="w-4 h-4 accent-default-green bg-app-background border-1 border-paragraph rounded checked:border-transparent"
-                {...register('checked')}
-              />
-            </label>
-
-
+            <div className="w-1/2 flex flex-col items-center">
+              <AnimatePresence mode="wait">
+                {!speechResults.output ? (
+                  <motion.div
+                    key="voice-input"
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -10 }}
+                    transition={{ duration: 0.3 }}
+                    className="relative w-full my-auto"
+                  >
+                    <div
+                      onClick={isListening ? stopListening : startListening}
+                      className="relative mx-auto flex size-16 items-center justify-center rounded-sketch-wobbly border-2 border-sketch-border bg-sketch-white shadow-sketch-sm"
+                    >
+                      {isListening && (
+                        <div className="absolute animate-ping size-[70%] rounded-full -z-[1] bg-destructive opacity-75" />
+                      )}
+                      <Mic
+                        size={48}
+                        strokeWidth={2.5}
+                        className={cn(
+                          'text-sketch-fg',
+                          isListening && 'text-sketch-danger'
+                        )}
+                      />
+                    </div>
+                    <p className="mt-5 text-center font-sketch text-title">
+                      {isListening
+                        ? 'Escutando... Toque para finalizar'
+                        : 'Toque para falar'}
+                    </p>
+                    <p
+                      className={cn(
+                        'mx-auto mt-10 max-w-xs text-center font-sketch text-sm text-paragraph transition-opacity duration-200',
+                        isListening && 'opacity-0'
+                      )}
+                    >
+                      Exemplo de comando: "Duas unidades de leite por 2,50"
+                    </p>
+                  </motion.div>
+                ) : (
+                  <motion.div
+                    key="voice-result"
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -10 }}
+                    transition={{ duration: 0.3 }}
+                    className="w-full mt-1 p-4 flex flex-col justify-between h-full"
+                  >
+                    <div className="space-y-10">
+                      <h2 className="rounded-sketch-notif bg-sketch-accent-lt p-2.5 text-center font-sketch text-base font-bold text-sketch-accent-dk">
+                        "{speechResults?.output}"
+                      </h2>
+                      <div className="space-y-2 text-sm">
+                        <p className="font-sketch text-base font-bold text-title">
+                          Revise o item para adicionar:
+                        </p>
+                        <div className="flex justify-between">
+                          <p className="font-sketch text-paragraph">Nome:</p>
+                          <p className="font-sketch font-bold text-title">
+                            {speechResults?.result?.name}
+                          </p>
+                        </div>
+                        <div className="flex justify-between">
+                          <p className="font-sketch text-paragraph">
+                            Quantidade:
+                          </p>
+                          <p className="font-sketch font-bold text-title">
+                            {speechResults?.result?.quantity}
+                          </p>
+                        </div>
+                        <div className="flex justify-between">
+                          <p className="font-sketch text-paragraph">
+                            Tipo de unidade:
+                          </p>
+                          <p className="font-sketch font-bold text-title">
+                            {speechResults?.result?.unit_type}
+                          </p>
+                        </div>
+                        <div className="flex justify-between">
+                          <p className="font-sketch text-paragraph">
+                            Categoria:
+                          </p>
+                          <p className="font-sketch font-bold text-title">
+                            {speechResults?.result?.category}
+                          </p>
+                        </div>
+                        <div className="flex justify-between">
+                          <p className="font-sketch text-paragraph">Valor:</p>
+                          <p className="font-sketch font-bold text-title">
+                            {formatCurrency(
+                              Number(speechResults?.result?.value) || 0
+                            )}
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                    <div className="w-full grid grid-cols-2 gap-2">
+                      <Button
+                        type="button"
+                        onClick={resetFormValues}
+                        variant="outline"
+                      >
+                        Cancelar
+                      </Button>
+                      <Button disabled={isLoading} type="submit">
+                        {isLoading ? <AppLoader size={16} /> : 'Adicionar'}
+                      </Button>
+                    </div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </div>
           </div>
-          <DrawerFooter>
-            <Button type='submit'>
-              Adicionar
-            </Button>
-          </DrawerFooter>
         </form>
       </DrawerContent>
     </Drawer>

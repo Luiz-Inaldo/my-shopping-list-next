@@ -1,34 +1,48 @@
-import { ProductsContext } from "@/context/ProductsContext";
-import { IEditItemProps } from "@/types";
-import { IProductProps } from "@/types";
-import { Dialog } from "@radix-ui/react-dialog";
-import React, { useContext, useEffect, useState } from "react";
-import { Controller, useForm } from "react-hook-form";
+import { IEditItemProps } from '@/types';
+import { IProductProps } from '@/types';
+import { Dialog } from '@radix-ui/react-dialog';
+import React, { useState } from 'react';
+import { Controller, useForm } from 'react-hook-form';
 import {
   DialogContent,
   DialogDescription,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "../ui/dialog";
+} from '../ui/dialog';
+import { Button } from '../ui/button';
+import { Input } from '../ui/input';
+import { useShoplistContext } from '@/context/ShoplistContext';
+import {
+  PurchaseProductInput,
+  PurchaseProductSchema,
+} from '@/zodSchema/addPurchaseProduct';
+import { zodResolver } from '@hookform/resolvers/zod';
 
 export const CheckItemForm = ({
   item,
 }: {
   item: IProductProps | undefined;
 }) => {
-  const {
-    register,
-    control,
-    formState: { errors },
-    handleSubmit,
-  } = useForm<IEditItemProps>();
+  const { control, handleSubmit } = useForm<PurchaseProductInput>({
+    resolver: zodResolver(PurchaseProductSchema),
+    defaultValues: {
+      name: item?.name ?? '',
+      category: item?.category,
+      unit_type: item?.unit_type,
+      quantity: item?.quantity,
+      value: item?.value ?? 0,
+      checked: item?.checked ?? false,
+    },
+  });
 
-  const { handleCheckItem } = useContext(ProductsContext);
+  const { handleCheckItem } = useShoplistContext();
   const [open, setOpen] = useState(false);
 
-  async function onSubmit(data: IEditItemProps) {
-    handleCheckItem(item!, data);
+  async function onSubmit(data: PurchaseProductInput) {
+    data.value = Number(String(data.value).replace(',', '.'));
+    await handleCheckItem(item!, {value: data.value});
+    setOpen(false);
   }
 
   return (
@@ -51,30 +65,41 @@ export const CheckItemForm = ({
           </DialogTitle>
         </DialogHeader>
         <DialogDescription hidden />
-        <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-3 p-5">
+        <form
+          onSubmit={handleSubmit(onSubmit)}
+          className="flex flex-col gap-3 p-5"
+        >
           <label htmlFor="value" className="flex flex-col">
-            <input
+            <span className="text-subtitle text-sm font-semibold">
+              Digite o valor:
+            </span>
+            <Controller
+              control={control}
+              name="value"
+              render={({ field }) => <Input type="text" {...field} />}
+            />
+
+            {/* <input
               defaultValue={item?.value}
               type="text"
               {...register("value", { required: true })}
               placeholder="R$: 0,00"
+              autoFocus={false}
               className="w-full text-subtitle rounded border border-border px-3 py-2 h-8 text-ellipsis overflow-hidden whitespace-nowrap"
-            />
+            /> */}
           </label>
           <div className="grid grid-cols-2 gap-2 mt-5">
-            <button
-              type="submit"
-              className="col-span-1 flex items-center justify-center w-full bg-secondary-blue py-2 px-3 rounded text-snow"
-            >
+            <Button type="submit" className="col-span-1">
               Marcar Produto
-            </button>
-            <button
+            </Button>
+            <Button
               type="button"
               onClick={() => setOpen(false)}
-              className="col-span-1 flex items-center justify-center w-full border border-subtitle py-2 px-3 rounded text-subtitle"
+              variant="outline"
+              className="col-span-1"
             >
               Cancelar
-            </button>
+            </Button>
           </div>
         </form>
       </DialogContent>

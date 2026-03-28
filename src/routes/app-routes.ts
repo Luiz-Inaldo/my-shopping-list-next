@@ -3,33 +3,57 @@ export const APP_ROUTES = {
         home: {
             name: "/"
         },
+        shoppingList: {
+            name: (id: string) => `/list/${id}`
+        },
         settings: {
-            name: "/settings"
+            name: "/ajustes",
+            perfil: {
+                name: "/ajustes/perfil"
+            },
+            seguranca: {
+                name: "/ajustes/seguranca"
+            }
+
         },
         historic: {
             name: "/historic",
             details: {
-                name: (title: string) => `/historic/${title}`,
-                children: (title: string) => `/historic/${title}/details`
+                name: (id: string) => `/historic/${id}`
             },
+            pdf: {
+                name: (id: string) => `/historic/${id}/pdf`
+            }
 
         },
-        purchase_saved: {
-            name: (title: string) => `/purchase-saved/${title}`
-        },
         menu: {
-            name: "/menu"
+            name: "/menu",
+            deletarConta: {
+                name: "/menu/deletar-conta"
+            },
+            sobre: {
+                name: "/menu/sobre"
+            },
         },
         statistics: {
             name: "/statistics"
         }
     },
     public: {
-        auth :{
-            name: "/auth"
+        login: {
+            name: "/auth/login"
+        },
+        registro: {
+            name: "/auth/registrar"
+        },
+        forgotPassword: {
+            name: "/auth/recuperar-senha"
         },
         inicio: {
             name: "/inicio"
+        },
+        handler: {
+            name: "/handler"
         }
     }
 }

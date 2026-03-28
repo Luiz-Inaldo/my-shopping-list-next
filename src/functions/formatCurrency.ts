@@ -1,10 +1,7 @@
-export function formatCurrency(value: string): string {
-
-    let newNumber = value.replace(".", "").replace(",", ".");
-    const parsedNumber = parseFloat(newNumber);
-
+export function formatCurrency(value: number): string {
+    if (typeof value !== 'number') return 'R$ 0,00';
     return new Intl.NumberFormat("pt-BR", {
         style: 'currency',
         currency: 'BRL'
-    }).format(parsedNumber);
+    }).format(value);
 }

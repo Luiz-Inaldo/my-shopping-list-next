@@ -1,17 +1,29 @@
 'use client'
-import { Itim, Quicksand } from "next/font/google";
+import { Inter, Kalam, Patrick_Hand } from "next/font/google";
 import "../styles/globals.css";
-import { ProductsProvider } from "@/context/ProductsContext";
 import { Toaster } from "@/components/ui/sonner";
-import SessionVerifier from "@/components/SessionVerifier";
 import useCheckRoute from "@/hooks/useCheckRoute";
 import { usePathname } from "next/navigation";
-import { PurchasesProvider } from "@/context/PurchasesContext";
 import VerifyDevice from "@/components/VerifyDevice";
-import { PageOverlayProvider } from "@/context/PageOverlayContext";
+import { QueryClientProvider } from '@tanstack/react-query'
+import { queryClient } from "@/utils/queryClient";
+import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
 
+const inter = Inter({ weight: ['300', '400', '500', '700'], subsets: ["latin"] });
 
-const quicksand = Quicksand({ weight: ['300', '400', '500', '700'], subsets: ["latin"] });
+const kalam = Kalam({
+  weight: ["400", "700"],
+  subsets: ["latin"],
+  variable: "--font-sketch-heading",
+  display: "swap",
+});
+
+const patrickHand = Patrick_Hand({
+  weight: "400",
+  subsets: ["latin"],
+  variable: "--font-sketch-body",
+  display: "swap",
+});
 
 export default function RootLayout({
   children,
@@ -24,18 +36,14 @@ export default function RootLayout({
 
   return (
     <html lang="pt-br">
-      <body className={quicksand.className}>
-        <PageOverlayProvider>
+      <body
+        className={`${inter.className} ${kalam.variable} ${patrickHand.variable}`}
+      >
+        <QueryClientProvider client={queryClient}>
           <div className="relative">
             {isPrivateRoute ? (
               <VerifyDevice>
-                <ProductsProvider>
-                  <SessionVerifier>
-                    <PurchasesProvider>
-                      {children}
-                    </PurchasesProvider>
-                  </SessionVerifier>
-                </ProductsProvider>
+                {children}
               </VerifyDevice>
             ) : (
               <>
@@ -44,8 +52,9 @@ export default function RootLayout({
             )}
 
           </div>
-        </PageOverlayProvider>
-        <Toaster />
+          <Toaster />
+          <ReactQueryDevtools initialIsOpen={false} buttonPosition="bottom-right" />
+        </QueryClientProvider>
       </body>
     </html>
   );

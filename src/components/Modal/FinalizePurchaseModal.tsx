@@ -11,16 +11,16 @@ import {
 import { Button } from "../ui/button";
 
 const FinalizePurchaseModal = ({
-  finalizePurchase,
+  onFinalize,
   trigger,
 }: {
-  finalizePurchase: () => void;
+  onFinalize: () => void;
   trigger: React.ReactNode;
 }) => {
   const [open, setOpen] = useState(false);
 
   function handleFinalize() {
-    finalizePurchase();
+    onFinalize();
     setOpen(false);
   }
 
@@ -39,14 +39,14 @@ const FinalizePurchaseModal = ({
         <DialogFooter className="flex !flex-row items-center justify-center gap-3 mt-3">
           <Button
             onClick={handleFinalize}
-            className="w-[140px] rounded-full"
+            className="w-full"
           >
             Finalizar
           </Button>
           <Button
             onClick={() => setOpen(false)}
-            variant="destructive"
-            className="w-[140px] rounded-full"
+            variant="outline"
+            className="w-full"
           >
             Cancelar
           </Button>

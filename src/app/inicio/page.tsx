@@ -1,66 +1,69 @@
 "use client";
-import React from "react";
 import Lottie from "lottie-react";
 import shoppingCartWomanAnimation from "@/animations/shopping-cart-woman.json";
 import { APP_ROUTES } from "@/routes/app-routes";
 import { ArrowRightIcon } from "lucide-react";
 import { motion } from "framer-motion";
-import { usePageOverlay } from "@/context/PageOverlayContext";
+import { useRouter } from "next/navigation";
+import { Button } from "@/components/ui/button";
 
 export default function StartPage() {
-  
-  const { handleChangeRoute } = usePageOverlay();
+  const router = useRouter();
 
   return (
-    <div className="relative flex flex-col h-dvh w-full bg-white gap-10 p-4 overflow-hidden">
+    <div className="relative flex flex-col h-dvh page-wrapper sketch-shell mx-auto bg-sketch-bg gap-10 p-6 overflow-hidden font-sketch">
       <motion.img
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ duration: 1 }}
+        initial={{ opacity: 0, scale: 0.9 }}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={{ duration: 0.5, type: "spring" }}
         src="/images/test-logo-2.svg"
-        className="w-[159px] h-[50px]"
+        className="w-[159px] h-[50px] rotate-[-2deg]"
       />
 
       <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ duration: 1 }}
-        className="flex items-center justify-center rounded-full bg-default-green/5 size-[200px] mt-12 mx-auto overflow-hidden"
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6, type: "spring", stiffness: 100 }}
+        className="flex items-center justify-center rounded-full border-4 border-sketch-fg bg-sketch-white shadow-sketch-lg size-[240px] mt-8 mx-auto overflow-hidden rotate-1"
       >
         <motion.div
-          initial={{ opacity: 0, x: "-100%" }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ duration: 1, type: "spring", stiffness: 100 }}
+          initial={{ opacity: 0, scale: 0.8 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.5, delay: 0.3 }}
         >
           <Lottie
-            className="size-[200px]"
+            className="size-[220px]"
             animationData={shoppingCartWomanAnimation}
           />
         </motion.div>
       </motion.div>
 
-      <motion.p
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ duration: 1, delay: 1.2 }}
-        className="text-center text-[#333] font-semibold text-sm"
+      <motion.div
+        initial={{ opacity: 0, x: -20 }}
+        animate={{ opacity: 1, x: 0 }}
+        transition={{ duration: 0.5, delay: 0.8 }}
+        className="z-10"
       >
-        Faça sua lista e organize suas compras de forma mais eficiente.
-      </motion.p>
+        <p className="text-center text-sketch-fg font-bold text-xl md:text-2xl leading-relaxed">
+          Faça sua lista e organize suas compras de forma mais eficiente.
+        </p>
+      </motion.div>
 
       <motion.div
         initial={{ opacity: 0, y: 40 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 1, delay: 1.8 }}
+        transition={{ duration: 0.6, delay: 1.2, type: "spring" }}
         className="w-full mt-auto"
       >
-        <button
-          onClick={() => handleChangeRoute(APP_ROUTES.public.auth.name)}
-          className="w-full h-10 px-3 py-2 flex items-center gap-2 justify-center cursor-pointer font-semibold uppercase text-sm bg-default-green rounded-full text-white"
+        <Button
+          variant="default"
+          size="lg"
+          onClick={() => router.push(APP_ROUTES.public.login.name)}
+          className="w-full h-12 text-xl uppercase tracking-wider"
         >
-          <span>Começe Agora</span>
-          <ArrowRightIcon size={18} />
-        </button>
+          <span>Começar Agora</span>
+          <ArrowRightIcon size={24} strokeWidth={3} />
+        </Button>
       </motion.div>
     </div>
   );
