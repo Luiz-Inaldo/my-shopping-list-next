@@ -14,12 +14,12 @@ import {
 } from '@/context/LoginPageOverlayContext';
 import { tryCatchRequest } from '@/functions/requests';
 import { ILoginUser } from '@/interfaces/user';
-import { auth, googleProvider } from '@/lib/firebase'; // [MODIFY]
+import { auth, googleProvider } from '@/lib/firebase';
 import { APP_ROUTES } from '@/routes/app-routes';
 import { loginFormSchema } from '@/zodSchema/loginForm';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { FirebaseError } from 'firebase/app';
-import { signInWithEmailAndPassword, signInWithPopup } from 'firebase/auth'; // [MODIFY]
+import { signInWithEmailAndPassword, signInWithPopup } from 'firebase/auth';
 import { Eye, Lock, User, EyeOff } from 'lucide-react';
 import { AnimatePresence, motion } from 'motion/react';
 import Image from 'next/image';
