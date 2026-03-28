@@ -14,12 +14,12 @@ import {
 } from '@/context/LoginPageOverlayContext';
 import { tryCatchRequest } from '@/functions/requests';
 import { ILoginUser } from '@/interfaces/user';
-import { auth } from '@/lib/firebase';
+import { auth, googleProvider } from '@/lib/firebase'; // [MODIFY]
 import { APP_ROUTES } from '@/routes/app-routes';
 import { loginFormSchema } from '@/zodSchema/loginForm';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { FirebaseError } from 'firebase/app';
-import { signInWithEmailAndPassword } from 'firebase/auth';
+import { signInWithEmailAndPassword, signInWithPopup } from 'firebase/auth'; // [MODIFY]
 import { Eye, Lock, User, EyeOff } from 'lucide-react';
 import { AnimatePresence, motion } from 'motion/react';
 import Image from 'next/image';
@@ -69,6 +69,37 @@ function LoginForm() {
     setTimeout(() => {
       router.push(APP_ROUTES.public.forgotPassword.name);
     }, 500);
+  }
+
+  async function handleGoogleLogin() {
+    showLoading('Autenticando com Google...');
+    loadingTransition(async () => {
+      const [response, error] = await tryCatchRequest<any, FirebaseError>(async () => {
+        const firebaseLoginResponse = await signInWithPopup(auth, googleProvider);
+        const token = await firebaseLoginResponse.user.getIdToken();
+
+        await fetch('/api/auth/token', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ token }),
+        });
+      });
+
+      if (error) {
+        console.error(error.code);
+        if (error.code === 'auth/popup-closed-by-user') {
+          showError('Login cancelado. Tente novamente.');
+        } else {
+          showError('Falha ao autenticar com Google.');
+        }
+        return;
+      }
+
+      showSuccess('Login realizado com sucesso!');
+      setTimeout(() => {
+        router.push(APP_ROUTES.private.home.name);
+      }, 2000);
+    });
   }
 
   async function onSubmit(userCredentials: ILoginUser) {
@@ -259,8 +290,10 @@ function LoginForm() {
               className="mt-4 flex gap-3"
             >
               <Button
-                disabled
+                type="button" // [NEW] Adicionado explicitamente como button
                 variant="outline"
+                onClick={handleGoogleLogin} // [NEW] Adicionado handler de click
+                disabled={loading} // [MODIFY] Habilitado, mas desabilitado se estiver carregando
                 className="flex h-14 flex-1 items-center justify-center gap-2 py-2"
               >
                 <Image
