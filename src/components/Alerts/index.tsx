@@ -6,7 +6,7 @@ import { cn } from "@/lib/utils";
 const alerts: Record<string, ReactNode> = {
     email: (
         <StaticAlert
-            icon={<Mail />}
+            icon={<Mail size={20} strokeWidth={2.5} />}
             title="E-mail pendente"
             description="Por favor, verifique seu e-mail para continuar utilizando o aplicativo."
             variant="warning"

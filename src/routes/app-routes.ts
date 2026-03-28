@@ -15,7 +15,7 @@ export const APP_ROUTES = {
                 name: "/ajustes/seguranca"
             },
             sobre: {
-                name: "/ajustes/sobre"
+                name: "/menu/sobre"
             },
             deletarConta: {
                 name: "/ajustes/deletar-conta"
@@ -39,7 +39,7 @@ export const APP_ROUTES = {
         }
     },
     public: {
-        login :{
+        login: {
             name: "/auth/login"
         },
         registro: {

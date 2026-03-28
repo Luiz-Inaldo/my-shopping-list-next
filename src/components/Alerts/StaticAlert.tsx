@@ -13,12 +13,13 @@ export function StaticAlert({
   description,
   icon,
   variant = "default",
-}: StaticAlertProps) {
+  className,
+}: StaticAlertProps & { className?: string }) {
   return (
-    <Alert variant={variant}>
+    <Alert variant={variant} className={className}>
       {icon}
-      <AlertTitle>{title}</AlertTitle>
-      {description && <AlertDescription>{description}</AlertDescription>}
+      <AlertTitle className="font-sketchHeading text-lg">{title}</AlertTitle>
+      {description && <AlertDescription className="font-sketch text-base">{description}</AlertDescription>}
     </Alert>
   );
 }

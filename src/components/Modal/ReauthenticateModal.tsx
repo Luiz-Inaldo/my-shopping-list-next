@@ -52,30 +52,32 @@ const ReauthenticateModal = ({ trigger, confirmButtonFn, form }: ReauthenticateM
             <DialogTrigger asChild>
                 {trigger}
             </DialogTrigger>
-            <DialogContent className='2xsm:max-w-[400px] rounded-md'>
+            <DialogContent className='max-w-[400px]'>
                 <DialogHeader>
-                    <DialogTitle>Confirmação</DialogTitle>
-                    <DialogDescription>
+                    <DialogTitle className="font-sketchHeading text-2xl">Confirmação</DialogTitle>
+                    <DialogDescription className="font-sketch text-base">
                         Insira sua senha atual para completar a ação
                     </DialogDescription>
                 </DialogHeader>
-                <div className="py-4 relative">
+                <div className="py-6 relative">
                     <Input
                         type={isPasswordVisible ? "text" : "password"}
                         placeholder="Senha atual"
                         {...form.register("password")}
-                        className="w-full"
+                        className="w-full h-12 text-lg"
                     />
                     {isPasswordVisible ? (
                         <EyeOff
-                            size={14}
-                            className="absolute right-3 top-[26px] text-gray-400 cursor-pointer"
+                            size={20}
+                            strokeWidth={2.5}
+                            className="absolute right-4 top-[38px] text-sketch-accent cursor-pointer"
                             onClick={() => setIsPasswordVisible(false)}
                         />
                     ) : (
                         <Eye
-                            size={14}
-                            className="absolute right-3 top-[26px] text-gray-400 cursor-pointer"
+                            size={20}
+                            strokeWidth={2.5}
+                            className="absolute right-4 top-[38px] text-sketch-accent cursor-pointer"
                             onClick={() => setIsPasswordVisible(true)}
                         />
                     )}
@@ -83,12 +85,12 @@ const ReauthenticateModal = ({ trigger, confirmButtonFn, form }: ReauthenticateM
                 <DialogFooter>
                     <Button
                         disabled={!form.formState.dirtyFields.password || isLoading}
-                        className="text-snow"
+                        className="w-full h-12 text-lg"
                         onClick={handleConfirm}
                     >
                         {
                             isLoading
-                                ? <LoaderCircle size={16} className='animate-spin' />
+                                ? <LoaderCircle size={22} className='animate-spin' />
                                 : 'Confirmar'
                         }
                     </Button>

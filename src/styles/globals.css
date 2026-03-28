@@ -11,6 +11,7 @@
 }
 
 @layer base {
+
   /* Paleta ListaPé / sketch (shopping-home.html) */
   :root {
     --sketch-bg: 40 33% 98%;
@@ -38,6 +39,7 @@
     --sketch-radius-footer-top: 180px 12px 0 0 / 12px 160px 0 0;
     --sketch-radius-section-label: 6px 14px 8px 12px / 14px 6px 12px 8px;
     --sketch-radius-nav-item: 14px 6px 12px 6px / 6px 14px 6px 12px;
+    --sketch-radius-avatar: 50% 40% 50% 40% / 40% 50% 40% 50%;
 
     --background: 40 33% 98%;
     --foreground: 0 0% 18%;
@@ -152,9 +154,11 @@
   * {
     @apply border-border;
   }
+
   body {
     @apply bg-app-background;
   }
+
   .logo {
     @apply font-cherryBomb;
   }
@@ -232,13 +236,13 @@
   min-height: calc(100dvh - var(--header-height));
 }
 
-.loader > svg {
+.loader>svg {
   transform-origin: center;
   animation: rotate4 2s linear infinite;
   mix-blend-mode: difference;
 }
 
-.loader > svg circle {
+.loader>svg circle {
   fill: none;
   stroke: white;
   stroke-width: 2.5;

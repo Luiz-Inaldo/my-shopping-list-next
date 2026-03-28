@@ -48,7 +48,7 @@ export default function ProfilePage() {
   }
 
   function onSubmit(formData: ProfileFormData) {
-    
+
     editingDataTransition(async () => {
 
       try {
@@ -93,22 +93,22 @@ export default function ProfilePage() {
   }, [userProfile?.uid, setUserProfile]);
 
   return (
-    <>
-      <Header className="text-lg font-medium">
-        <Link href={APP_ROUTES.private.settings.name} className="flex items-center gap-1 text-subtitle">
-          <ChevronLeft size={20} />
+    <div className="sketch-shell min-h-screen flex flex-col">
+      <Header className="text-2xl font-sketchHeading">
+        <Link href={APP_ROUTES.private.settings.name} className="flex items-center gap-1 text-sketch-fg">
+          <ChevronLeft size={24} strokeWidth={2.5} />
         </Link>
         <span>Perfil</span>
       </Header>
 
-      <main className="main-container px-5 pb-6 pt-6 flex flex-col justify-between">
+      <main className="flex-1 px-5 pb-6 pt-6 flex flex-col justify-between max-w-2xl mx-auto w-full">
         <section>
-          <div className="flex items-center justify-between mb-3">
-            <h2 className="text-paragraph text-sm">Informações de Perfil</h2>
+          <div className="flex items-center justify-between mb-4 px-2">
+            <h2 className="text-sketch-fg font-sketchHeading text-xl">Informações de Perfil</h2>
             <button
               type="button"
               onClick={handleToggleEdit}
-              className="text-paragraph text-sm hover:text-subtitle transition-colors"
+              className="text-sketch-accent font-sketch text-lg hover:underline transition-colors"
             >
               {isEditing ? "Cancelar" : "Editar"}
             </button>
@@ -117,28 +117,28 @@ export default function ProfilePage() {
           <form
             id="profile-form"
             onSubmit={form.handleSubmit(onSubmit)}
-            className="bg-app-container rounded-lg divide-y divide-border"
+            className="space-y-5"
           >
             {/* Nome */}
-            <div className="flex items-center gap-3 p-4">
-              <User size={18} className="text-paragraph shrink-0" />
+            <div className="flex items-center gap-3">
+              <User size={22} strokeWidth={2.5} className="text-sketch-accent shrink-0" />
               <div className="flex flex-col gap-1 flex-1">
-                <span className="text-paragraph text-xs">Nome</span>
+                <span className="text-sketch-fg/60 font-sketchHeading">Nome</span>
                 {isEditing ? (
                   <>
                     <Input
                       {...form.register("name")}
-                      className="h-7 text-sm px-2 rounded-md"
+                      className="h-10 text-base"
                       placeholder="Digite seu nome"
                     />
                     {form.formState.errors.name && (
-                      <span className="text-xs text-red-500">
+                      <span className="text-sm text-sketch-danger font-sketch">
                         {form.formState.errors.name.message}
                       </span>
                     )}
                   </>
                 ) : (
-                  <span className="text-subtitle text-sm">
+                  <span className="text-sketch-fg font-sketch text-lg">
                     {userProfile?.name || "—"}
                   </span>
                 )}
@@ -146,26 +146,26 @@ export default function ProfilePage() {
             </div>
 
             {/* E-mail */}
-            <div className="flex items-center gap-3 p-4">
-              <AtSign size={18} className="text-paragraph shrink-0" />
+            <div className="flex items-center gap-3">
+              <AtSign size={22} strokeWidth={2.5} className="text-sketch-accent shrink-0" />
               <div className="flex flex-col gap-1 flex-1">
-                <span className="text-paragraph text-xs">E-mail</span>
+                <span className="text-sketch-fg/60 font-sketchHeading">E-mail</span>
                 {isEditing ? (
                   <>
                     <Input
                       type="email"
                       {...form.register("email")}
-                      className="h-7 text-sm px-2 rounded-md"
+                      className="h-10 text-base"
                       placeholder="Digite seu e-mail"
                     />
                     {form.formState.errors.email && (
-                      <span className="text-xs text-red-500">
+                      <span className="text-sm text-sketch-danger font-sketch">
                         {form.formState.errors.email.message}
                       </span>
                     )}
                   </>
                 ) : (
-                  <span className="text-subtitle text-sm">
+                  <span className="text-sketch-fg font-sketch text-lg">
                     {userProfile?.email || "—"}
                   </span>
                 )}
@@ -176,19 +176,21 @@ export default function ProfilePage() {
 
         <ReauthenticateModal
           trigger={
-            <Button
-              type="button"
-              form="profile-form"
-              disabled={!hasChanges || isEditingData}
-              className="w-full"
-            >
-              {isEditingData ? <LoaderCircle size={18} className='animate-spin' /> : <CircleCheck size={18} />}
-              Salvar alterações
-            </Button>
+            <div className="mt-10">
+              <Button
+                type="button"
+                form="profile-form"
+                disabled={!hasChanges || isEditingData}
+                className="w-full text-lg h-12"
+              >
+                {isEditingData ? <LoaderCircle size={22} className='animate-spin' /> : <CircleCheck size={22} strokeWidth={2.5} />}
+                Salvar alterações
+              </Button>
+            </div>
           } confirmButtonFn={() => form.handleSubmit(onSubmit)()}
           form={form}
         />
       </main>
-    </>
+    </div>
   );
 }

@@ -7,7 +7,7 @@ const config = {
     './components/**/*.{ts,tsx}',
     './app/**/*.{ts,tsx}',
     './src/**/*.{ts,tsx}',
-	],
+  ],
   prefix: "",
   theme: {
     container: {
@@ -27,16 +27,16 @@ const config = {
         "2xl": "1400px",
       },
       height: {
-        "screen-dvh":  "100dvh",
-        "screen-svh":  "100svh",
+        "screen-dvh": "100dvh",
+        "screen-svh": "100svh",
       },
       minHeight: {
-        "screen-dvh":  "100dvh",
-        "screen-svh":  "100svh",
+        "screen-dvh": "100dvh",
+        "screen-svh": "100svh",
       },
       maxHeight: {
-        "screen-dvh":   "100dvh",
-        "screen-svh":   "100svh",
+        "screen-dvh": "100dvh",
+        "screen-svh": "100svh",
       },
       colors: {
         border: "var(--border)",
@@ -85,7 +85,7 @@ const config = {
         "success": "hsl(var(--success) / <alpha-value>)",
         "dark-button-color": "#0466c8",
         "primary-blue": "#A0CFF7",
-        "secondary-blue": "#0066CC", 
+        "secondary-blue": "#0066CC",
         title: "var(--title)",
         subtitle: "var(--subtitle)",
         paragraph: "var(--paragraph)",
@@ -119,6 +119,7 @@ const config = {
         "sketch-footer-top": "var(--sketch-radius-footer-top)",
         "sketch-section-label": "var(--sketch-radius-section-label)",
         "sketch-nav-item": "var(--sketch-radius-nav-item)",
+        "sketch-avatar": "var(--sketch-radius-avatar)",
       },
       boxShadow: {
         sketch: "var(--sketch-shadow)",

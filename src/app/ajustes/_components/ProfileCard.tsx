@@ -45,40 +45,29 @@ export function ProfileCard() {
   }
 
   return (
-    <section className="flex flex-col items-center gap-2">
-      <div className="relative">
+    <section className="flex flex-col items-center gap-4 py-4 font-sketch">
+      <div className="relative rotate-1">
         <UserAvatar
-          width={96}
-          height={96}
-          className='border-4 border-app-container'
+          width={110}
+          height={110}
+          className='border-[3px] border-sketch-fg rounded-sketch-avatar shadow-sketch-sm'
         />
-
-        {/* <label className="absolute bg-app-primary bottom-0 right-0 flex items-center justify-center w-8 h-8 rounded-full p-0 transition-transform active:scale-90">
-          <input
-            type="file"
-            name="profile-img"
-            id="profile-img"
-            accept="image/*"
-            className="sr-only"
-            onChange={(e) => handleOpenModal(e)}
-          />
-          <Pencil size={14} className="text-white" />
-        </label> */}
 
         <ProfileCardDropdown
           onAlterPhoto={(img) => handleOpenModal(img)}
           onRemovePhoto={handleRemoveImage}
         >
           <Button
-            className="absolute bottom-0 right-0 flex items-center justify-center w-8 h-8 rounded-full p-0 shadow-lg border-2 border-app-container transition-transform active:scale-90"
+            className="absolute -bottom-1 -right-1 !rounded-sketch-avatar"
+            size="icon"
           >
-            <EllipsisVertical size={14} className="text-white" />
+            <EllipsisVertical size={18} strokeWidth={2.5} />
           </Button>
         </ProfileCardDropdown>
       </div>
-      <div className="flex flex-col items-center mt-2">
-        <h2 className="text-subtitle font-semibold text-lg">{userProfile?.name}</h2>
-        <p className="text-sm text-paragraph">{userProfile?.email || "—"}</p>
+      <div className="flex flex-col items-center mt-2 -rotate-1">
+        <h2 className="text-sketch-fg font-sketchHeading text-3xl">{userProfile?.name}</h2>
+        <p className="text-lg text-sketch-fg/70 font-sketch underline decoration-sketch-accent/30 underline-offset-4">{userProfile?.email || "—"}</p>
       </div>
 
       <Suspense fallback={null}>

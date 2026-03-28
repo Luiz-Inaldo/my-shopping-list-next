@@ -55,14 +55,14 @@ export function ProfileCardDropdown({
             </DropdownMenuTrigger>
             <DropdownMenuContent
                 align="center"
-                className="w-56 bg-app-container border-none shadow-xl rounded-xl p-2"
+                className="w-fit rotate-1"
             >
                 <DropdownMenuItem
-                    className="flex items-center gap-3 p-3 cursor-pointer text-subtitle font-medium focus:bg-app-primary/10 focus:text-app-primary rounded-lg transition-colors"
+                    className="flex items-center gap-3 p-3 cursor-pointer transition-colors"
                     onSelect={(e) => e.preventDefault()}
                 >
-                    <label htmlFor="profile-img" className="flex items-center gap-3 relative">
-                        <ImagePlus size={18} />
+                    <label htmlFor="profile-img" className="flex text-sm items-center gap-3 w-full cursor-pointer">
+                        <ImagePlus size={20} strokeWidth={2.5} className="text-sketch-accent" />
                         <span>Alterar imagem</span>
                         <input
                             type="file"
@@ -79,10 +79,10 @@ export function ProfileCardDropdown({
                     <DropdownMenuItem
                         onClick={onRemovePhoto}
                         onSelect={(e) => e.preventDefault()}
-                        className="flex items-center gap-3 p-3 cursor-pointer text-destructive dark:text-red-500 font-medium focus:bg-destructive/10 focus:text-destructive rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                        className="flex items-center gap-3 p-3 cursor-pointer text-sketch-danger focus:bg-sketch-danger-lt focus:text-sketch-danger transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                     >
-                        <Trash2 size={18} />
-                        <span>Remover imagem atual</span>
+                        <Trash2 size={20} strokeWidth={2.5} />
+                        <span className="text-sm">Remover imagem atual</span>
                     </DropdownMenuItem>
                 )}
             </DropdownMenuContent>
