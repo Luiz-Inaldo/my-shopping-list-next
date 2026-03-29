@@ -2,7 +2,7 @@ import { auth, db } from "@/lib/firebase";
 import { TUserProfileProps } from "@/types/user";
 import { TUserStoreProps } from "@/types/userStore";
 import { onAuthStateChanged } from "firebase/auth";
-import { doc, getDoc } from "firebase/firestore";
+import { doc, getDoc, onSnapshot } from "firebase/firestore";
 import { create } from "zustand";
 
 const useGeneralUserStore = create<TUserStoreProps>((set, get) => ({
@@ -47,6 +47,19 @@ onAuthStateChanged(auth, (user) => {
   } else {
     console.log("usuário deslogando");
     useGeneralUserStore.getState().resetProfile();
+  }
+});
+
+// snapshot para atualizar o perfil quando houver mudanças
+onSnapshot(doc(db, "users", auth.currentUser?.uid || ""), (snapshot) => {
+  if (snapshot.exists()) {
+    const profileData = snapshot.data() as TUserProfileProps;
+    const authUserData = auth.currentUser;
+    useGeneralUserStore.getState().setUserProfile({
+      ...profileData,
+      email: authUserData?.email || "",
+      emailVerified: authUserData?.emailVerified ?? false
+    });
   }
 });
 

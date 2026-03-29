@@ -35,6 +35,9 @@ export const APP_ROUTES = {
                 name: "/menu/sobre"
             },
         },
+        userInfo: {
+            name: (token: string) => `/auth/login/google/user-info/${token}`
+        },
         statistics: {
             name: "/statistics"
         }
