@@ -27,11 +27,17 @@ const useGeneralUserStore = create<TUserStoreProps>((set, get) => ({
   resetProfile: () => set({ userProfile: null }),
 }));
 
+let unsubscribeSnapshot: (() => void) | null = null;
+
 onAuthStateChanged(auth, (user) => {
   if (user) {
     console.log("usuário logando:", user.uid);
-    const userRef = doc(db, "users", user.uid);
-    getDoc(userRef).then((snapshot) => {
+
+    // Limpa o listener anterior se existir
+    if (unsubscribeSnapshot) unsubscribeSnapshot();
+
+    // Inicia o listener em tempo real para o perfil do usuário
+    unsubscribeSnapshot = onSnapshot(doc(db, "users", user.uid), (snapshot) => {
       if (snapshot.exists()) {
         const profileData = snapshot.data() as TUserProfileProps;
         const authUserData = auth.currentUser;
@@ -41,25 +47,17 @@ onAuthStateChanged(auth, (user) => {
           emailVerified: authUserData?.emailVerified ?? false
         });
       }
-    }).catch((error) => {
-      console.error("Erro ao buscar perfil:", error);
+    }, (error) => {
+      console.error("Erro no listener de perfil:", error);
     });
   } else {
     console.log("usuário deslogando");
+    // Limpa o listener ao deslogar
+    if (unsubscribeSnapshot) {
+      unsubscribeSnapshot();
+      unsubscribeSnapshot = null;
+    }
     useGeneralUserStore.getState().resetProfile();
-  }
-});
-
-// snapshot para atualizar o perfil quando houver mudanças
-onSnapshot(doc(db, "users", auth.currentUser?.uid || ""), (snapshot) => {
-  if (snapshot.exists()) {
-    const profileData = snapshot.data() as TUserProfileProps;
-    const authUserData = auth.currentUser;
-    useGeneralUserStore.getState().setUserProfile({
-      ...profileData,
-      email: authUserData?.email || "",
-      emailVerified: authUserData?.emailVerified ?? false
-    });
   }
 });
 
