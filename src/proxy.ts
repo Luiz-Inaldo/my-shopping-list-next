@@ -9,6 +9,7 @@ import { isTokenValid } from "./middlewares/isTokenValid";
 export async function proxy(req: NextRequest) {
   const token = req.cookies.get("authToken")?.value;
   const url = req.nextUrl.pathname;
+  const isGoogleUrl = url.includes('google');
 
   // Define rotas públicas que não precisam de autenticação
   const publicRoutes = Object.values(APP_ROUTES.public).map(route => route.name);
@@ -17,7 +18,7 @@ export async function proxy(req: NextRequest) {
   // Se for uma rota pública, permite acesso sem verificação de token
   if (isPublicRoute) {
     // Se o usuário já está autenticado e tenta acessar rota pública, redireciona para home
-    if (token && isTokenValid(token)) {
+    if (token && isTokenValid(token) && !isGoogleUrl) {
       return NextResponse.redirect(new URL(APP_ROUTES.private.home.name, req.url));
     }
     return applySecurityHeaders(NextResponse.next());
