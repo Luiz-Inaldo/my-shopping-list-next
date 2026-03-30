@@ -12,14 +12,16 @@ import {
   LoginPageOverlayProvider,
   useLoginPageOverlay,
 } from '@/context/LoginPageOverlayContext';
+import { generateToken } from '@/functions/generateToken';
 import { tryCatchRequest } from '@/functions/requests';
 import { ILoginUser } from '@/interfaces/user';
-import { auth, googleProvider } from '@/lib/firebase';
+import { auth, db, googleProvider } from '@/lib/firebase';
 import { APP_ROUTES } from '@/routes/app-routes';
 import { loginFormSchema } from '@/zodSchema/loginForm';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { FirebaseError } from 'firebase/app';
 import { signInWithEmailAndPassword, signInWithPopup } from 'firebase/auth';
+import { doc, getDoc, setDoc } from 'firebase/firestore';
 import { Eye, Lock, User, EyeOff } from 'lucide-react';
 import { AnimatePresence, motion } from 'motion/react';
 import Image from 'next/image';
@@ -73,33 +75,64 @@ function LoginForm() {
 
   async function handleGoogleLogin() {
     showLoading('Autenticando com Google...');
-    loadingTransition(async () => {
-      const [response, error] = await tryCatchRequest<any, FirebaseError>(async () => {
-        const firebaseLoginResponse = await signInWithPopup(auth, googleProvider);
-        const token = await firebaseLoginResponse.user.getIdToken();
+    const [response, error] = await tryCatchRequest<Record<string, string>, FirebaseError>(async () => {
+      const firebaseLoginResponse = await signInWithPopup(auth, googleProvider);
+      const token = await firebaseLoginResponse.user.getIdToken();
 
-        await fetch('/api/auth/token', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ token }),
-        });
+      return {
+        token,
+        uid: firebaseLoginResponse.user.uid
+      };
+    });
+
+    if (error) {
+      console.error(error.code);
+      if (error.code === 'auth/popup-closed-by-user') {
+        showError('Login cancelado. Tente novamente.');
+      } else {
+        showError('Falha ao autenticar com Google.');
+      }
+      return;
+    }
+
+    showSuccess('Login realizado com sucesso!');
+
+    // redireciona para criação de usuário
+    const userDoc = await getDoc(doc(db, 'users', response?.uid!))
+    if (!userDoc.exists()) {
+
+      // cria um UUID para inserir no documento de tokens
+      const token = generateToken();
+      await setDoc(doc(db, 'profile_temp_tokens', token), {
+        user_id: response?.uid
       });
 
-      if (error) {
-        console.error(error.code);
-        if (error.code === 'auth/popup-closed-by-user') {
-          showError('Login cancelado. Tente novamente.');
-        } else {
-          showError('Falha ao autenticar com Google.');
+      const googleAuthResponse = await fetch('/api/auth/google', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ loginToken: response?.token, userToken: token }),
+      });
+
+      if (googleAuthResponse.ok) {
+        const googleAuthData = await googleAuthResponse.json();
+        if (googleAuthData.success) {
+          router.push(googleAuthData.redirectUrl);
         }
-        return;
       }
 
-      showSuccess('Login realizado com sucesso!');
-      setTimeout(() => {
-        router.push(APP_ROUTES.private.home.name);
-      }, 2000);
+      return;
+    }
+
+    //redireciona usuário caso já tenha um documento user
+    await fetch('/api/auth/token', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ token: response?.token }),
     });
+
+    setTimeout(() => {
+      router.push(APP_ROUTES.private.home.name);
+    }, 2000);
   }
 
   async function onSubmit(userCredentials: ILoginUser) {
