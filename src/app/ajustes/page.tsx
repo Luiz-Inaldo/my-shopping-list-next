@@ -10,7 +10,6 @@ import useGeneralUserStore from '@/store/generalUserStore';
 export default function Settings() {
 
   const user = useGeneralUserStore(s => s.userProfile);
-  console.log("user", user);
   return (
     <div className="page-wrapper sketch-shell">
       <Header className="text-2xl font-sketchHeading">Ajustes</Header>
