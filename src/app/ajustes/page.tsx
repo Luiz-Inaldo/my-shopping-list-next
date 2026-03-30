@@ -10,7 +10,7 @@ import useGeneralUserStore from '@/store/generalUserStore';
 export default function Settings() {
 
   const user = useGeneralUserStore(s => s.userProfile);
-
+  console.log("user", user);
   return (
     <div className="page-wrapper sketch-shell">
       <Header className="text-2xl font-sketchHeading">Ajustes</Header>
@@ -19,8 +19,8 @@ export default function Settings() {
         <ProfileCard />
         {user && !user?.emailVerified && (
           <div className="-rotate-1">
-            <AppAlert 
-              type="email" 
+            <AppAlert
+              type="email"
               className="bg-sketch-yellow border-[3px] border-sketch-fg rounded-sketch-card shadow-sketch-sm"
             />
           </div>

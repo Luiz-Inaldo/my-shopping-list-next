@@ -38,9 +38,10 @@ onAuthStateChanged(auth, (user) => {
 
     // Inicia o listener em tempo real para o perfil do usuário
     unsubscribeSnapshot = onSnapshot(doc(db, "users", user.uid), (snapshot) => {
-      if (snapshot.exists()) {
+      if (snapshot.exists() && !useGeneralUserStore.getState().userProfile) {
         const profileData = snapshot.data() as TUserProfileProps;
         const authUserData = auth.currentUser;
+        console.log("profileData", profileData);
         useGeneralUserStore.getState().setUserProfile({
           ...profileData,
           email: authUserData?.email || "",
