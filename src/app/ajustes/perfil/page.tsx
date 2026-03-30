@@ -15,15 +15,17 @@ import { updateUserEmail, updateUserName } from "@/services/account";
 import ReauthenticateModal from "@/components/Modal/ReauthenticateModal";
 import { sendToastMessage } from "@/functions/sendToastMessage";
 import { doc, onSnapshot } from "firebase/firestore";
-import { db } from "@/lib/firebase";
+import { auth, db } from "@/lib/firebase";
 import { TUserProfileProps } from "@/types/user";
 import { useRouter } from "next/navigation";
 
 export default function ProfilePage() {
   const { userProfile, setUserProfile } = useGeneralUserStore();
   const [isEditing, setIsEditing] = useState(false);
-  const [isEditingData, editingDataTransition] = useTransition();
+   const [isEditingData, editingDataTransition] = useTransition();
   const router = useRouter();
+
+  const isGoogleUser = auth.currentUser?.providerData.some(p => p.providerId === 'google.com');
 
   const form = useForm<ProfileFormData>({
     resolver: zodResolver(profileSchema),
@@ -56,7 +58,7 @@ export default function ProfilePage() {
           await updateUserName(userProfile?.uid || "", formData.name);
         }
 
-        if (formData.email && dirtyFields.email) {
+        if (formData.email && dirtyFields.email && !isGoogleUser) {
           await updateUserEmail(formData.password ?? "", formData.email);
           sendToastMessage({
             title: "Um e-mail de verificação foi enviado para seu novo endereço. Verifique sua caixa de entrada/spam e clique no link para confirmar a mudança.",
@@ -146,31 +148,33 @@ export default function ProfilePage() {
             </div>
 
             {/* E-mail */}
-            <div className="flex items-center gap-3">
-              <AtSign size={22} strokeWidth={2.5} className="text-sketch-accent shrink-0" />
-              <div className="flex flex-col gap-1 flex-1">
-                <span className="text-sketch-fg/60 font-sketchHeading">E-mail</span>
-                {isEditing ? (
-                  <>
-                    <Input
-                      type="email"
-                      {...form.register("email")}
-                      className="h-10 text-base"
-                      placeholder="Digite seu e-mail"
-                    />
-                    {form.formState.errors.email && (
-                      <span className="text-sm text-sketch-danger font-sketch">
-                        {form.formState.errors.email.message}
-                      </span>
-                    )}
-                  </>
-                ) : (
-                  <span className="text-sketch-fg font-sketch text-lg">
-                    {userProfile?.email || "—"}
-                  </span>
-                )}
+            {!isGoogleUser && (
+              <div className="flex items-center gap-3">
+                <AtSign size={22} strokeWidth={2.5} className="text-sketch-accent shrink-0" />
+                <div className="flex flex-col gap-1 flex-1">
+                  <span className="text-sketch-fg/60 font-sketchHeading">E-mail</span>
+                  {isEditing ? (
+                    <>
+                      <Input
+                        type="email"
+                        {...form.register("email")}
+                        className="h-10 text-base"
+                        placeholder="Digite seu e-mail"
+                      />
+                      {form.formState.errors.email && (
+                        <span className="text-sm text-sketch-danger font-sketch">
+                          {form.formState.errors.email.message}
+                        </span>
+                      )}
+                    </>
+                  ) : (
+                    <span className="text-sketch-fg font-sketch text-lg">
+                      {userProfile?.email || "—"}
+                    </span>
+                  )}
+                </div>
               </div>
-            </div>
+            )}
           </form>
         </section>
 

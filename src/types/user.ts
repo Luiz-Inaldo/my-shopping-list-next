@@ -15,7 +15,7 @@ export type TUserProfileProps = {
   email: string;
   name: string;
   role: string;
-  created_at: string;
-  updated_at: string;
+  createdAt: Date;
+  updatedAt: Date;
   profile_img: string;
 };

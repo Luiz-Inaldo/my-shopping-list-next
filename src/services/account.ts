@@ -1,4 +1,4 @@
-import { auth, db } from "@/lib/firebase";
+import { auth, db, googleProvider } from "@/lib/firebase";
 import {
   collection,
   deleteDoc,
@@ -17,6 +17,7 @@ import {
   verifyBeforeUpdateEmail,
   updatePassword,
   deleteUser,
+  reauthenticateWithPopup,
 } from "firebase/auth";
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import { storage } from '@/lib/firebase';
@@ -213,7 +214,7 @@ export async function deleteUserAccount(userObj: {
   await deleteUser(user);
 }
 
-export async function reautenticateUser(currentPassword: string) {
+export async function reautenticateUser(currentPassword?: string) {
   const user = auth.currentUser;
   if (!user) {
     console.error(
@@ -222,13 +223,27 @@ export async function reautenticateUser(currentPassword: string) {
     return false;
   }
 
-  const credential = EmailAuthProvider.credential(
-    user?.email || "",
-    currentPassword
+  // Se houver senha, reautentica com credencial de e-mail
+  if (currentPassword) {
+    const credential = EmailAuthProvider.credential(
+      user?.email || "",
+      currentPassword
+    );
+
+    // reautenticação para comprovar usuário
+    await reauthenticateWithCredential(user, credential);
+    return true;
+  }
+
+  // Caso contrário, tenta reautenticação com Google via popup
+  const isGoogleUser = user.providerData.some(
+    (provider) => provider.providerId === "google.com"
   );
 
-  // reautenticação para comprovar usuário
-  await reauthenticateWithCredential(user, credential);
+  if (isGoogleUser) {
+    await reauthenticateWithPopup(user, googleProvider);
+    return true;
+  }
 
-  return true;
+  throw new Error("Método de reautenticação não suportado.");
 }
