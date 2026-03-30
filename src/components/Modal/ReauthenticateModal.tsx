@@ -78,7 +78,7 @@ const ReauthenticateModal = ({ trigger, confirmButtonFn, form }: ReauthenticateM
                             />
                         </div>
                         <p className="font-sketch text-center text-sketch-fg/60">
-                            Uma janela pop-up será aberta para você fazer login.
+                            Uma janela pop-up será aberta para você confirmar sua identidade.
                         </p>
                     </div>
                 ) : (
@@ -108,7 +108,7 @@ const ReauthenticateModal = ({ trigger, confirmButtonFn, form }: ReauthenticateM
                 )}
                 <DialogFooter>
                     <Button
-                        disabled={( !isGoogleUser && !form.formState.dirtyFields.password) || isLoading}
+                        disabled={(!isGoogleUser && !form.formState.dirtyFields.password) || isLoading}
                         className="w-full h-12 text-lg"
                         onClick={handleConfirm}
                     >

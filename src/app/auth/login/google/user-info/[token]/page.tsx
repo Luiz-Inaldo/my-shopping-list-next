@@ -20,6 +20,7 @@ import { tryCatchRequest } from '@/functions/requests';
 import { APP_ROUTES } from '@/routes/app-routes';
 import { Form, FormControl, FormField, FormItem, FormMessage } from '@/components/ui/form';
 import { Button } from '@/components/ui/button';
+import useGeneralUserStore from '@/store/generalUserStore';
 
 const divVariants = {
     hidden: { opacity: 0, y: 20 },
@@ -127,6 +128,22 @@ export default function UserInfoPage() {
 
             // 3. Deletar token temporário
             await deleteDoc(doc(db, 'profile_temp_tokens', token));
+
+            // 4. Seta informações do usuário na store
+            useGeneralUserStore.getState().setUserProfile({
+                uid,
+                email: email || '',
+                name: data.username,
+                role: 'user',
+                premium: {
+                    status: false,
+                    expires_at: null,
+                },
+                profile_img: '',
+                emailVerified: auth.currentUser?.emailVerified ?? false,
+                createdAt: new Date(),
+                updatedAt: new Date(),
+            });
         });
 
         if (error) {
