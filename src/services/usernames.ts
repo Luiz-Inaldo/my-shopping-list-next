@@ -1,5 +1,6 @@
 import { db } from "@/lib/firebase";
-import { collection, getDocs } from "firebase/firestore";
+import { SelectedShareUser } from "@/types/share";
+import { collection, doc, getDoc, getDocs } from "firebase/firestore";
 
 /**
  * Obtém a lista de usernames disponíveis.
@@ -12,4 +13,17 @@ export async function getUsernamesList(): Promise<{ list: string[] }> {
     return {
         list: usernames
     };
+}
+
+export async function lookupUsername(
+  username: string
+): Promise<SelectedShareUser | null> {
+
+  const snap = await getDoc(doc(db, "usernames", username));
+  if (!snap.exists() || snap.id !== username) return null;
+
+  const data = snap.data();
+  if (!data?.uuid) return null;
+
+  return { id: data.uuid, username: snap.id };
 }

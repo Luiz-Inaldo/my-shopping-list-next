@@ -10,6 +10,7 @@ import {
   doc,
   addDoc,
   updateDoc,
+  arrayUnion,
   QueryConstraint,
 } from "firebase/firestore";
 
@@ -52,5 +53,15 @@ export async function saveCurrentPurchase(purchase: IPurchaseProps) {
     purchase_items: purchase.purchase_items,
     end_date: purchase.end_date,
     total_price: purchase.total_price
+  });
+}
+
+export async function sharePurchaseWithUsers(
+  purchaseId: string,
+  userIds: string[]
+): Promise<void> {
+  const docRef = doc(db, "purchases", purchaseId);
+  await updateDoc(docRef, {
+    shared_with: arrayUnion(...userIds),
   });
 }
