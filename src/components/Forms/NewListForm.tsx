@@ -63,6 +63,7 @@ const NewListForm = () => {
       purchase_items: [],
       max_value: parseFloat(listData.list_max_value.replace(',', '.')),
       user_id: user?.uid,
+      shared_with: [],
     };
 
     setPurchaseTransition(async () => {

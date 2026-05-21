@@ -80,6 +80,7 @@ export interface IPurchaseProps {
   purchase_items?: never[] | IProductProps[];
   total_price: number;
   user_id: string | undefined;
+  shared_with: string[];
 }
 
 export type TMonthlyStatisticsResponse = Array<Omit<IPurchaseProps, "start_date" | "end_date"> & {
