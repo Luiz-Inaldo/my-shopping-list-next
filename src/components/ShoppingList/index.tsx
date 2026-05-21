@@ -1,6 +1,6 @@
 'use client';
 import Header from '../Header';
-import { ChartNoAxesColumnIncreasing, ChevronLeft, Plus } from 'lucide-react';
+import { ChevronLeft, Share2 } from 'lucide-react';
 import { APP_ROUTES } from '@/routes/app-routes';
 import { useRouter } from 'next/navigation';
 import { FinancialSummary } from './FinancialSummary';
@@ -18,7 +18,8 @@ import useGeneralUserStore from '@/store/generalUserStore';
 import { PurchaseBlocked } from '../Errors/PurchaseBlocked';
 import ErrorFetchData from '../Errors/ErrorFetchData';
 import { FinancialSummarySheet } from '../Sheet/FinancialSummarySheet';
-import { sendToastMessage } from '@/functions/sendToastMessage';
+import { Button } from '../ui/button';
+import { ShareListModal } from '../Modal/ShareListModal';
 
 export default function ShoppingList() {
   const userId = useGeneralUserStore((store) => store.userProfile?.uid);
@@ -67,6 +68,19 @@ export default function ShoppingList() {
           </h2>
         </div>
         <div className="flex items-center gap-2">
+          <ShareListModal
+            purchaseId={productsList.id!}
+            trigger={
+              <Button
+                type="button"
+                size="sm"
+                className="h-fit rounded-sketch-btn p-1"
+                aria-label="Compartilhar lista"
+              >
+                <Share2 size={20} strokeWidth={2.5} />
+              </Button>
+            }
+          />
           <FinancialSummarySheet
             setSavingModalOpen={setSavingModalOpen}
             setIsSaved={setIsSaved}
