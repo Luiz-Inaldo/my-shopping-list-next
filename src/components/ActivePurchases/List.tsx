@@ -1,42 +1,66 @@
-import { formatDate } from '@/functions/formatDate';
+'use client';
+
 import { IPurchaseProps } from '@/types';
-import React from 'react';
+import React, { useState } from 'react';
 import { AnimatePresence, motion } from 'motion/react';
 import { usePurchasesContext } from '@/context/PurchasesContext';
 import { HomePagePurchaseSkeleton } from '../Skeletons/PurchaseListSkeletons';
-import { DeletePurchase } from '../Forms/DeletePurchase';
-import { APP_ROUTES } from '@/routes/app-routes';
-import Link from 'next/link';
-import { Eye, Loader } from 'lucide-react';
+import { Loader } from 'lucide-react';
 import ErrorFetchData from '../Errors/ErrorFetchData';
 import { cn } from '@/lib/utils';
 import { Pin } from '../Pin';
-import { SmoothTapeEffect } from '../Effects/SmoothTapeEffect';
-
-function getListProgress(item: IPurchaseProps) {
-  const items = item.purchase_items ?? [];
-  const total = items.length;
-  const checked = items.filter((i) => i.checked).length;
-  const pct = total > 0 ? Math.round((checked / total) * 100) : 0;
-  return { total, checked, pct };
-}
+import {
+  ActivePurchasesTab,
+  ActivePurchasesTabs,
+} from './ActivePurchasesTabs';
+import { PurchaseListCard } from './PurchaseListCard';
 
 export function ActivePurchsesList() {
+  const [activeTab, setActiveTab] = useState<ActivePurchasesTab>('created');
+
   const {
     purchasesList,
     loadingPurchasesList,
     fetchingPurchasesList,
     pendingPurchasesList,
     errorFetchingPurchases,
+    sharedPurchasesList,
+    loadingSharedPurchasesList,
+    fetchingSharedPurchasesList,
+    pendingSharedPurchasesList,
+    errorFetchingSharedPurchases,
   } = usePurchasesContext();
 
-  const activeCount = purchasesList?.length ?? 0;
+  const isCreatedTab = activeTab === 'created';
 
-  if (loadingPurchasesList || pendingPurchasesList) {
+  const currentList = isCreatedTab ? purchasesList : sharedPurchasesList;
+  const isLoading = isCreatedTab
+    ? loadingPurchasesList || pendingPurchasesList
+    : loadingSharedPurchasesList || pendingSharedPurchasesList;
+  const isFetching = isCreatedTab
+    ? fetchingPurchasesList
+    : fetchingSharedPurchasesList;
+  const hasError = isCreatedTab
+    ? errorFetchingPurchases
+    : errorFetchingSharedPurchases;
+
+  const activeCount = currentList?.length ?? 0;
+  const createdCount = purchasesList?.length ?? 0;
+  const sharedCount = sharedPurchasesList?.length ?? 0;
+
+  const initialLoading =
+    (loadingPurchasesList || pendingPurchasesList) &&
+    (loadingSharedPurchasesList || pendingSharedPurchasesList);
+
+  if (initialLoading) {
     return <HomePagePurchaseSkeleton />;
   }
 
-  if (errorFetchingPurchases) return <ErrorFetchData />;
+  if (hasError) return <ErrorFetchData />;
+
+  const emptyMessage = isCreatedTab
+    ? 'Você não possui listas ativas'
+    : 'Nenhuma lista foi compartilhada com você';
 
   return (
     <>
@@ -50,7 +74,7 @@ export function ActivePurchsesList() {
           Listas ativas ({activeCount})
         </span>
         <Pin className="absolute -left-2 -top-4 -rotate-12" />
-        {fetchingPurchasesList && (
+        {isFetching && (
           <AnimatePresence>
             <motion.div
               initial={{ opacity: 0 }}
@@ -66,94 +90,33 @@ export function ActivePurchsesList() {
         )}
       </div>
 
-      <div className="flex flex-col gap-4">
-        {purchasesList && purchasesList.length > 0 ? (
-          purchasesList.map((item: IPurchaseProps, index: number) => {
-            const { total, checked, pct } = getListProgress(item);
-            const isFull = pct === 100 && total > 0;
-            const isEven = index % 2 === 0;
-            const restRotate = isEven ? -0.3 : 0.4;
+      <ActivePurchasesTabs
+        activeTab={activeTab}
+        onTabChange={setActiveTab}
+      />
 
-            return (
-              <motion.div
-                key={`compra-${item?.id ?? item?.title}`}
-                initial={{ opacity: 0, y: 20, rotate: restRotate }}
-                animate={{ opacity: 1, y: 0, rotate: restRotate }}
-                whileHover={{ rotate: 0, skewX: 0, y: -2 }}
-                transition={{ duration: 0.2, delay: index * 0.08 }}
-                className="relative z-0 w-full rounded-sketch-card border-2 border-sketch-border bg-sketch-white p-4 shadow-sketch hover:z-[1] hover:shadow-sketch-lg"
-              >
-                <SmoothTapeEffect />
-
-                <div className="mb-2.5 flex items-start justify-between gap-2">
-                  <h3 className="font-sketchHeading max-w-[200px] text-xl font-bold leading-tight text-title">
-                    {item.title}
-                  </h3>
-                </div>
-
-                <div className="mb-3 flex flex-wrap items-center gap-1.5 font-sketch text-[13px] text-title">
-                  <span>
-                    {total} {total === 1 ? 'item' : 'itens'}
-                  </span>
-                  <span
-                    className="size-1 rounded-full bg-sketch-fg opacity-40"
-                    aria-hidden
-                  />
-                  <span
-                    className={cn(
-                      'font-bold',
-                      isFull ? 'text-sketch-success' : 'text-sketch-accent',
-                    )}
-                  >
-                    {pct}% concluído
-                  </span>
-                </div>
-
-                <div className="mb-3.5">
-                  <div className="mb-1 flex justify-between font-sketch text-xs font-bold text-title opacity-60">
-                    <span>
-                      {checked} de {total} marcados
-                    </span>
-                    <span>{pct}%</span>
-                  </div>
-                  <div
-                    className="relative h-2.5 w-full overflow-hidden rounded-sketch-progress border-2 border-sketch-border bg-sketch-muted"
-                  >
-                    <div
-                      className={cn(
-                        'h-full rounded-sketch-progress transition-[width] duration-300',
-                        isFull ? 'bg-sketch-success' : 'bg-sketch-accent',
-                      )}
-                      style={{ width: `${pct}%` }}
-                    />
-                  </div>
-                </div>
-
-                <div className="flex items-center gap-2.5">
-                  <Link
-                    href={APP_ROUTES.private.shoppingList.name(item.id as string)}
-                    className={cn("flex h-12 min-h-12 flex-1 items-center justify-center gap-2 rounded-sketch-btn border-2 border-sketch-border bg-sketch-accent font-sketch text-[15px] text-white shadow-sketch-sm transition-[transform,box-shadow,background-color] duration-100 hover:translate-x-0.5 hover:translate-y-0.5 hover:bg-sketch-accent-dk hover:shadow-sketch-2 active:translate-x-1 active:translate-y-1 active:shadow-none",
-                      pct === 100 ? 'bg-sketch-success hover:bg-sketch-success-dk' : 'bg-sketch-accent',
-                    )}
-                  >
-                    <Eye size={16} strokeWidth={2.5} />
-                    Ver lista
-                  </Link>
-                  <DeletePurchase purchase={item} />
-                </div>
-
-                <p className="mt-3 font-sketch text-xs text-subtitle">
-                  Iniciada em: {formatDate(item.start_date)}
-                </p>
-              </motion.div>
-            );
-          })
+      <div className="mt-4 flex flex-col gap-4">
+        {isLoading ? (
+          <HomePagePurchaseSkeleton />
+        ) : currentList && currentList.length > 0 ? (
+          currentList.map((item: IPurchaseProps, index: number) => (
+            <PurchaseListCard
+              key={`compra-${item?.id ?? item?.title}`}
+              item={item}
+              index={index}
+              deleteMode={isCreatedTab ? 'delete' : 'unlink'}
+            />
+          ))
         ) : (
           <p className="font-sketch text-center text-sm text-paragraph opacity-80">
-            Você não possui listas ativas
+            {emptyMessage}
           </p>
         )}
       </div>
+
+      <p className="sr-only" aria-live="polite">
+        {createdCount} listas criadas, {sharedCount} compartilhadas
+      </p>
     </>
   );
 }
