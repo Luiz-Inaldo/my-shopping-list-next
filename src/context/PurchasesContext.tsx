@@ -1,8 +1,12 @@
 "use client";
-import { IPuchasesContextProps, IPurchaseProps } from "@/types";
+import { IPuchasesContextProps } from "@/types";
 import React, { createContext, useContext, useEffect, useState } from "react";
 import useGeneralUserStore from "@/store/generalUserStore";
-import { deletePurchaseFromDb, } from "@/services/purchasesListServices";
+import {
+  deletePurchaseFromDb,
+  unlinkUserFromSharedPurchase,
+} from "@/services/purchasesListServices";
+import { tryCatchRequest } from "@/functions/requests";
 import { sendToastMessage } from "@/functions/sendToastMessage";
 import { QUERY_KEYS } from "@/constants/queryKeys";
 import { db } from "@/lib/firebase";
@@ -11,75 +15,122 @@ import { Filters } from "@/types/filters";
 import { queryClient } from "@/utils/queryClient";
 import { usePurchasesQuery } from "@/hooks/queries/purchases";
 
-const PurchasesContext = createContext<IPuchasesContextProps | undefined>(undefined);
+export const PurchasesContext = createContext<IPuchasesContextProps | undefined>(
+  undefined
+);
 
-export const PurchasesProvider = ({ children }: { children: React.ReactNode }) => {
+const ACTIVE_FILTERS: Filters[] = [
+  {
+    id: "is_active",
+    operator: "==",
+    value: true,
+  },
+];
 
-    // ===============
-    // # Store
-    // ===============
-    const userProfile = useGeneralUserStore(store => store.userProfile);
+function invalidatePurchasesQueries(uid: string | undefined) {
+  queryClient.invalidateQueries({
+    queryKey: [QUERY_KEYS.purchases, uid],
+  });
+}
 
-    // ===============
-    // # States
-    // ===============
-    const [filters] = useState<Filters[]>([
-        {
-            id: "is_active",
-            operator: "==",
-            value: true
-        }
-    ]);
+export const PurchasesProvider = ({
+  children,
+}: {
+  children: React.ReactNode;
+}) => {
+  const userProfile = useGeneralUserStore((store) => store.userProfile);
 
-    // ===============
-    // # ReactQuery
-    // ===============
-    const {
-        data: purchasesList,
-        isLoading: loadingPurchasesList,
-        isFetching: fetchingPurchasesList,
-        isPending: pendingPurchasesList,
-        error: errorFetchingPurchases,
-    } = usePurchasesQuery(filters);
+  const {
+    data: purchasesList,
+    isLoading: loadingPurchasesList,
+    isFetching: fetchingPurchasesList,
+    isPending: pendingPurchasesList,
+    error: errorFetchingPurchases,
+  } = usePurchasesQuery(ACTIVE_FILTERS, "owned");
 
-    const deletePurchase = async (purchaseId: string) => {
-        try {
-            await deletePurchaseFromDb(purchaseId);
-            sendToastMessage({ title: "Compra deletada com sucesso!", type: "success" });
-            queryClient.invalidateQueries({
-                queryKey: ['purchases', userProfile?.uid]
-            });
-            // refetchPurchases();
-        } catch (error) {
-            console.error(error);
-            sendToastMessage({ title: "Erro ao deletar compra!", type: "error" });
-        }
+  const {
+    data: sharedPurchasesList,
+    isLoading: loadingSharedPurchasesList,
+    isFetching: fetchingSharedPurchasesList,
+    isPending: pendingSharedPurchasesList,
+    error: errorFetchingSharedPurchases,
+  } = usePurchasesQuery(ACTIVE_FILTERS, "shared");
+
+  const deletePurchase = async (purchaseId: string) => {
+    const [, error] = await tryCatchRequest<void, Error>(() =>
+      deletePurchaseFromDb(purchaseId)
+    );
+
+    if (error) {
+      console.error(error);
+      sendToastMessage({ title: "Erro ao deletar compra!", type: "error" });
+      return;
     }
 
-    // ===============
-    // # Effects
-    // ===============
-    useEffect(() => {
-        const purchasesRef = collection(db, 'purchases');
-        const unsubscribe = onSnapshot(purchasesRef, (snapshot) => {
-            queryClient.invalidateQueries({
-                queryKey: [QUERY_KEYS.purchases, userProfile?.uid, filters]
-            });
-        });
-        return () => unsubscribe();
-    }, [filters, userProfile?.uid]);
+    sendToastMessage({
+      title: "Compra deletada com sucesso!",
+      type: "success",
+    });
+    invalidatePurchasesQueries(userProfile?.uid);
+  };
 
-    return (
-        <PurchasesContext.Provider value={{ purchasesList, loadingPurchasesList, fetchingPurchasesList, pendingPurchasesList, errorFetchingPurchases, deletePurchase }}>
-            {children}
-        </PurchasesContext.Provider>
-    )
+  const unlinkSharedPurchase = async (purchaseId: string) => {
+    if (!userProfile?.uid) return;
+
+    const [, error] = await tryCatchRequest<void, Error>(() =>
+      unlinkUserFromSharedPurchase(purchaseId, userProfile.uid)
+    );
+
+    if (error) {
+      console.error(error);
+      sendToastMessage({
+        title: "Erro ao desvincular lista!",
+        type: "error",
+      });
+      return;
+    }
+
+    sendToastMessage({
+      title: "Lista desvinculada com sucesso!",
+      type: "success",
+    });
+    invalidatePurchasesQueries(userProfile.uid);
+  };
+
+  useEffect(() => {
+    const purchasesRef = collection(db, "purchases");
+    const unsubscribe = onSnapshot(purchasesRef, () => {
+      invalidatePurchasesQueries(userProfile?.uid);
+    });
+    return () => unsubscribe();
+  }, [userProfile?.uid]);
+
+  return (
+    <PurchasesContext.Provider
+      value={{
+        purchasesList,
+        loadingPurchasesList,
+        fetchingPurchasesList,
+        pendingPurchasesList,
+        errorFetchingPurchases,
+        sharedPurchasesList,
+        loadingSharedPurchasesList,
+        fetchingSharedPurchasesList,
+        pendingSharedPurchasesList,
+        errorFetchingSharedPurchases,
+        deletePurchase,
+        unlinkSharedPurchase,
+      }}
+    >
+      {children}
+    </PurchasesContext.Provider>
+  );
 };
 
 export function usePurchasesContext() {
-    const context = useContext(PurchasesContext);
-    if (context === undefined) {
-        throw new Error("usePurchasesContext must be used within a PurchasesProvider");
-    }
-    return context as IPuchasesContextProps;
+  const context = useContext(PurchasesContext);
+  if (context === undefined) {
+    throw new Error("usePurchasesContext must be used within a PurchasesProvider");
+  }
+  return context as IPuchasesContextProps;
 }

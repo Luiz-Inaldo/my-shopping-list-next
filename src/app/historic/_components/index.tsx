@@ -12,7 +12,7 @@ import Header from '../../../components/Header';
 import { collection, onSnapshot } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
 import { Filters } from '@/types/filters';
-import { usePurchasesQuery } from '@/hooks/queries/purchases';
+import { getPurchasesQueryKey, usePurchasesQuery } from '@/hooks/queries/purchases';
 import { AppAlert } from '@/components/Alerts';
 import { getYears } from '@/functions/getYears';
 
@@ -56,7 +56,7 @@ export function HistoricPage() {
 
         // primeiro caso: os dois parâmetros são string
         if (typeof month === "string" && typeof year === "string") {
-            queryClient.setQueryData([QUERY_KEYS.purchases, user?.uid, filters], auxData);
+            queryClient.setQueryData(getPurchasesQueryKey(user?.uid, filters, 'owned'), auxData);
         }
         // segundo caso: ambos parâmetros number
         else if (typeof month === 'number' && typeof year === 'number') {
@@ -66,7 +66,7 @@ export function HistoricPage() {
                 purchase.end_date?.toDate().getMonth() === month
             );
 
-            queryClient.setQueryData([QUERY_KEYS.purchases, user?.uid, filters], filteredData);
+            queryClient.setQueryData(getPurchasesQueryKey(user?.uid, filters, 'owned'), filteredData);
 
         }
         // terceiro caso: mês string e ano number
@@ -76,7 +76,7 @@ export function HistoricPage() {
                 purchase.end_date?.toDate().getFullYear() === year
             );
 
-            queryClient.setQueryData([QUERY_KEYS.purchases, user?.uid, filters], filteredData);
+            queryClient.setQueryData(getPurchasesQueryKey(user?.uid, filters, 'owned'), filteredData);
 
         }
         // quarto caso: mês number e ano string
@@ -86,7 +86,7 @@ export function HistoricPage() {
                 purchase.end_date?.toDate().getMonth() === month
             );
 
-            queryClient.setQueryData([QUERY_KEYS.purchases, user?.uid, filters], filteredData);
+            queryClient.setQueryData(getPurchasesQueryKey(user?.uid, filters, 'owned'), filteredData);
 
         }
     };
@@ -110,7 +110,7 @@ export function HistoricPage() {
         const purchasesRef = collection(db, 'purchases');
         const unsubscribe = onSnapshot(purchasesRef, (snapshot) => {
             queryClient.invalidateQueries({
-                queryKey: [QUERY_KEYS.purchases, user?.uid, filters]
+                queryKey: [QUERY_KEYS.purchases, user?.uid],
             });
             setAuxData(snapshot.docs.map(doc => {
                 return {

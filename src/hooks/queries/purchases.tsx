@@ -1,23 +1,45 @@
 import { QUERY_KEYS } from "@/constants/queryKeys";
-import { getPurchasesList } from "@/services/purchasesListServices";
+import {
+  getPurchasesList,
+  getSharedPurchasesList,
+} from "@/services/purchasesListServices";
 import useGeneralUserStore from "@/store/generalUserStore";
 import { Filters } from "@/types/filters";
 import { useQuery } from "@tanstack/react-query";
 
-/**
- * @description Hook para buscar as compras inativas do usuário
- * @param {Filters[]} filters - Array de filtros
- * @param {boolean} enabledCondition - [Opcional] Condição para habilitar a query
- */
-export function usePurchasesQuery(filters: Filters[], enabledCondition?: boolean) {
-    const userProfile = useGeneralUserStore(store => store.userProfile);
+export type PurchasesQueryScope = "owned" | "shared";
 
-    return useQuery({
-        queryKey: [QUERY_KEYS.purchases, userProfile?.uid, filters],
-        queryFn: async () => {
-            const res = await getPurchasesList(userProfile?.uid as string, filters);
-            return res.data;
-        },
-        enabled: enabledCondition || !!userProfile?.uid,
-    });
+export function getPurchasesQueryKey(
+  uid: string | undefined,
+  filters: Filters[],
+  scope: PurchasesQueryScope = "owned"
+) {
+  return [QUERY_KEYS.purchases, uid, scope, filters] as const;
+}
+
+/**
+ * @description Hook para buscar compras do usuário (criadas ou compartilhadas)
+ * @param filters - Array de filtros Firestore
+ * @param scope - `owned` listas criadas; `shared` listas compartilhadas com o usuário
+ * @param enabledCondition - [Opcional] Condição para habilitar a query
+ */
+export function usePurchasesQuery(
+  filters: Filters[],
+  scope: PurchasesQueryScope = "owned",
+  enabledCondition?: boolean
+) {
+  const userProfile = useGeneralUserStore((store) => store.userProfile);
+
+  return useQuery({
+    queryKey: getPurchasesQueryKey(userProfile?.uid, filters, scope),
+    queryFn: async () => {
+      const uid = userProfile?.uid as string;
+      const res =
+        scope === "shared"
+          ? await getSharedPurchasesList(uid, filters)
+          : await getPurchasesList(uid, filters);
+      return res.data;
+    },
+    enabled: enabledCondition ?? !!userProfile?.uid,
+  });
 }

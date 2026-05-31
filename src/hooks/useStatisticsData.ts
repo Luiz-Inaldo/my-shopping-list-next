@@ -112,6 +112,7 @@ export function useStatisticsData() {
     usePurchasesQuery(currentDataFilters);
   const { data: previousPurchasesData } = usePurchasesQuery(
     previousDataFilters,
+    "owned",
     Boolean(donutChartPurchasesList)
   );
   const { data: areaChartPurchasesList } = usePurchasesQuery(areaChartFilters);

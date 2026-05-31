@@ -11,8 +11,18 @@ import {
   addDoc,
   updateDoc,
   arrayUnion,
+  arrayRemove,
   QueryConstraint,
 } from "firebase/firestore";
+
+function mapPurchaseDocs(
+  result: Awaited<ReturnType<typeof getDocs>>
+): IPurchaseProps[] {
+  return result.docs.map((docSnap) => {
+    const data = docSnap.data() as Omit<IPurchaseProps, "id">;
+    return { id: docSnap.id, ...data };
+  });
+}
 
 export async function getPurchasesList(userId: string, filters?: Filters[]) {
 
@@ -26,17 +36,27 @@ export async function getPurchasesList(userId: string, filters?: Filters[]) {
 
   const result = await getDocs(searchParams);
 
-  const purchaseData: IPurchaseProps[] = result.docs.map((doc) => {
-    return {
-      id: doc.id,
-      ...doc.data(),
-    } as IPurchaseProps;
-  });
-
   return {
-    data: purchaseData,
+    data: mapPurchaseDocs(result),
   };
 };
+
+export async function getSharedPurchasesList(userId: string, filters?: Filters[]) {
+  const whereParams: QueryConstraint[] = [
+    where("shared_with", "array-contains", userId),
+  ];
+
+  filters?.forEach((filter) => {
+    whereParams.push(where(filter.id, filter.operator, filter.value));
+  });
+
+  const searchParams = query(collection(db, "purchases"), ...whereParams);
+  const result = await getDocs(searchParams);
+
+  return {
+    data: mapPurchaseDocs(result),
+  };
+}
 
 export async function addPurchaseToDb(purchase: IPurchaseProps) {
   await addDoc(collection(db, "purchases"), purchase);
@@ -63,5 +83,15 @@ export async function sharePurchaseWithUsers(
   const docRef = doc(db, "purchases", purchaseId);
   await updateDoc(docRef, {
     shared_with: arrayUnion(...userIds),
+  });
+}
+
+export async function unlinkUserFromSharedPurchase(
+  purchaseId: string,
+  userId: string
+): Promise<void> {
+  const docRef = doc(db, "purchases", purchaseId);
+  await updateDoc(docRef, {
+    shared_with: arrayRemove(userId),
   });
 }
