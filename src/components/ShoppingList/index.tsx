@@ -36,6 +36,9 @@ export default function ShoppingList() {
   } = useShoplistContext();
 
   const router = useRouter();
+  const userHaveNoAccessToList = !productsList?.is_active
+    || (userId !== productsList?.user_id
+      && !productsList?.shared_with.includes(userId ?? ''));
 
   if (loadingProductsList || pendingProductsList) {
     return <ShoppingListSkeleton />;
@@ -49,7 +52,7 @@ export default function ShoppingList() {
     return <PurchaseSaved />;
   }
 
-  if (!productsList?.is_active || userId !== productsList?.user_id) {
+  if (userHaveNoAccessToList) {
     return <PurchaseBlocked />;
   }
 
@@ -63,24 +66,26 @@ export default function ShoppingList() {
             onClick={() => router.push(APP_ROUTES.private.home.name)}
             className="text-sketch-fg cursor-pointer transition-transform duration-100 hover:-rotate-6 active:scale-95"
           />
-          <h2 className="font-sketchHeading text-lg font-bold text-title">
+          <h2 className="font-sketchHeading max-w-[200px] truncate text-lg font-bold text-title">
             {productsList?.title}
           </h2>
         </div>
         <div className="flex items-center gap-2">
-          <ShareListModal
-            purchaseId={productsList.id!}
-            trigger={
-              <Button
-                type="button"
-                size="sm"
-                className="h-fit rounded-sketch-btn p-1"
-                aria-label="Compartilhar lista"
-              >
-                <Share2 size={20} strokeWidth={2.5} />
-              </Button>
-            }
-          />
+          {userId === productsList?.user_id && (
+            <ShareListModal
+              purchaseId={productsList.id!}
+              trigger={
+                <Button
+                  type="button"
+                  size="sm"
+                  className="h-fit rounded-sketch-btn p-1"
+                  aria-label="Compartilhar lista"
+                >
+                  <Share2 size={20} strokeWidth={2.5} />
+                </Button>
+              }
+            />
+          )}
           <FinancialSummarySheet
             setSavingModalOpen={setSavingModalOpen}
             setIsSaved={setIsSaved}

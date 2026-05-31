@@ -39,19 +39,20 @@ export interface IShoplistContextProps {
 }
 
 export interface IPuchasesContextProps {
-  // states
   purchasesList: IPurchaseProps[] | undefined;
   loadingPurchasesList?: boolean;
   fetchingPurchasesList?: boolean;
   pendingPurchasesList?: boolean;
   errorFetchingPurchases?: unknown;
-  // uiStates: TUiStates;
 
-  // functions
-  // setPurchasesList: React.Dispatch<React.SetStateAction<IPurchaseProps[]>>;
-  // filterPurchases: (filter: IFilterProps) => void;
+  sharedPurchasesList: IPurchaseProps[] | undefined;
+  loadingSharedPurchasesList?: boolean;
+  fetchingSharedPurchasesList?: boolean;
+  pendingSharedPurchasesList?: boolean;
+  errorFetchingSharedPurchases?: unknown;
+
   deletePurchase: (purchaseId: string) => Promise<void>;
-  // refetchPurchases: () => void
+  unlinkSharedPurchase: (purchaseId: string) => Promise<void>;
 }
 
 export interface IFormItem extends Omit<IProductProps, "id"> { }
