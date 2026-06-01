@@ -2,7 +2,7 @@
 
 import { Bell } from 'lucide-react';
 import { Button } from '../ui/button';
-import { NotificationsProvider, useNotificationsContext } from '@/context/NotificationsContext';
+import { NotificationsProvider, useNotificationsContext } from '@/context/notificationsContext';
 
 function NotificationsButtonContent() {
   const { notifications } = useNotificationsContext();
