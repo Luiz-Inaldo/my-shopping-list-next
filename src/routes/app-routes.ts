@@ -35,6 +35,9 @@ export const APP_ROUTES = {
                 name: "/menu/sobre"
             },
         },
+        notifications: {
+            name: "/notificacoes",
+        },
         userInfo: {
             name: (token: string) => `/auth/login/google/user-info/${token}`
         },
