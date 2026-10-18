@@ -74,6 +74,7 @@ export default function ShoppingList() {
           {userId === productsList?.user_id && (
             <ShareListModal
               purchaseId={productsList.id!}
+              sharedWith={productsList.shared_with ?? []}
               trigger={
                 <Button
                   type="button"

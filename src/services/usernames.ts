@@ -1,6 +1,6 @@
 import { db } from "@/lib/firebase";
 import { SelectedShareUser } from "@/types/share";
-import { collection, doc, getDoc, getDocs } from "firebase/firestore";
+import { collection, getDocs, query, where } from "firebase/firestore";
 
 /**
  * Obtém a lista de usernames disponíveis.
@@ -15,15 +15,24 @@ export async function getUsernamesList(): Promise<{ list: string[] }> {
     };
 }
 
-export async function lookupUsername(
-  username: string
-): Promise<SelectedShareUser | null> {
+export async function searchUsernamesByPrefix(
+  prefix: string
+): Promise<SelectedShareUser[]> {
+  const q = query(
+    collection(db, "users"),
+    where("name", ">=", prefix),
+    where("name", "<", prefix + "")
+  );
 
-  const snap = await getDoc(doc(db, "usernames", username));
-  if (!snap.exists() || snap.id !== username) return null;
+  const snap = await getDocs(q);
+  if (snap.empty) return [];
 
-  const data = snap.data();
-  if (!data?.uuid) return null;
-
-  return { id: data.uuid, username: snap.id };
+  return snap.docs.map((userDoc) => {
+    const data = userDoc.data();
+    return {
+      id: userDoc.id,
+      username: data.name as string,
+      profile_img: (data.profile_img as string) ?? "",
+    };
+  });
 }
