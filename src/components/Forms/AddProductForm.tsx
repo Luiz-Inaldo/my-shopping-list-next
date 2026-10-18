@@ -56,7 +56,7 @@ export const AddProductForm = ({
   const [isLoading, startAddProductTransition] = useTransition();
   const isButtonDisabled = user ? !user.emailVerified : false;
 
-  const { productsList } = useShoplistContext();
+  const { productsList, totalValue } = useShoplistContext();
 
   const { isListening, startListening, stopListening } = useSpeech((text) => {
     console.log(text);
@@ -146,9 +146,14 @@ export const AddProductForm = ({
       try {
         await addPurchaseItem(productsList?.id as string, item);
 
+        const addedContrib = Number(item.value) * Number(item.quantity);
+        const shouldShowTotal = item.checked && addedContrib > 0;
         sendToastMessage({
           title: 'Produto adicionado com sucesso!',
           type: 'success',
+          options: shouldShowTotal
+            ? { changeValueVariant: 'up', currentTotal: totalValue, totalValue: totalValue + addedContrib }
+            : undefined,
         });
 
         queryClient.invalidateQueries({

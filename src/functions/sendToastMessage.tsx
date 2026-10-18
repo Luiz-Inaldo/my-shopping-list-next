@@ -11,6 +11,12 @@ const TOAST_DURATION = 5_000;
 
 export const TOAST_LOADING_ID = 'app-toast-loading';
 
+type ToastValueOptions = {
+  changeValueVariant: 'up' | 'down';
+  currentTotal: number;
+  totalValue: number;
+};
+
 type ToastOptions = {
   title: string;
   description?: string;
@@ -18,6 +24,7 @@ type ToastOptions = {
   actionlabel?: string;
   previousToastId?: string | number;
   clickAction?: ((...args: unknown[]) => unknown) | ((...args: unknown[]) => Promise<unknown>);
+  options?: ToastValueOptions;
 };
 
 const toastBase =
@@ -47,7 +54,7 @@ export function sendToastMessage(toastOptions: ToastOptions) {
   switch (toastType) {
     case 'success':
       return toast(
-        <SuccessToast title={toastOptions.title} description={toastOptions.description} />,
+        <SuccessToast title={toastOptions.title} description={toastOptions.description} options={toastOptions.options} />,
         {
           ...commonOptions,
           classNames: {

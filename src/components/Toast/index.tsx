@@ -1,14 +1,22 @@
 'use client';
 
 import { LottieAnimation } from '@/components/Lottie/LottieAnimation';
-import { LoaderCircle } from 'lucide-react';
-import { useMemo } from 'react';
+import { ArrowDown, ArrowUp, LoaderCircle } from 'lucide-react';
+import { useEffect, useMemo, useState } from 'react';
+import NumberFlow from '@number-flow/react';
 
 import { cn } from '@/lib/utils';
+
+interface ToastValueOptions {
+  changeValueVariant: 'up' | 'down';
+  currentTotal: number;
+  totalValue: number;
+}
 
 interface ToastProps {
   title: string;
   description?: string;
+  options?: ToastValueOptions;
 }
 
 interface ToastLayoutProps extends ToastProps {
@@ -21,14 +29,27 @@ function ToastLayout({
   icon,
   title,
   description,
+  options,
   titleClassName,
   descriptionClassName,
 }: ToastLayoutProps) {
+  const [animatedValue, setAnimatedValue] = useState(options?.currentTotal ?? 0);
+
+  useEffect(() => {
+    if (options) {
+      const timeout = setTimeout(() => {
+        setAnimatedValue(options.totalValue);
+      }, 750);
+      return () => clearTimeout(timeout);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   return (
     <div
       className={cn(
         'flex gap-3 p-0',
-        description ? 'items-start' : 'items-center'
+        description || options ? 'items-start' : 'items-center'
       )}
     >
       <div className="shrink-0">{icon}</div>
@@ -41,12 +62,28 @@ function ToastLayout({
             {description}
           </p>
         )}
+        {options && (
+          <div className="mt-1 flex w-full items-center justify-between">
+            <div className={cn('flex items-center gap-1 font-sketch text-[12px]', descriptionClassName)}>
+              {options.changeValueVariant === 'up'
+                ? <ArrowUp size={12} strokeWidth={2.5} />
+                : <ArrowDown size={12} strokeWidth={2.5} />}
+              <span>Valor total da lista:</span>
+            </div>
+            <span className={cn('font-sketch text-[14px] ml-20 font-bold', descriptionClassName)}>
+              R$<NumberFlow
+                value={animatedValue}
+                format={{ minimumFractionDigits: 2, maximumFractionDigits: 2 }}
+              />
+            </span>
+          </div>
+        )}
       </div>
     </div>
   );
 }
 
-export function LoadingToast({ title, description }: ToastProps) {
+export function LoadingToast({ title, description, options }: ToastProps) {
   return (
     <ToastLayout
       icon={
@@ -57,13 +94,14 @@ export function LoadingToast({ title, description }: ToastProps) {
       }
       title={title}
       description={description}
+      options={options}
       titleClassName="text-sketch-white"
       descriptionClassName="text-sketch-white/80"
     />
   );
 }
 
-export function SuccessToast({ title, description }: ToastProps) {
+export function SuccessToast({ title, description, options }: ToastProps) {
   const checkAnimation = useMemo(
     () => require('@/animations/success.json'),
     []
@@ -81,6 +119,7 @@ export function SuccessToast({ title, description }: ToastProps) {
       }
       title={title}
       description={description}
+      options={options}
       titleClassName="font-normal text-sketch-white"
       descriptionClassName="font-normal text-sketch-white/80"
     />
