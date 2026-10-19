@@ -4,7 +4,7 @@ import { useEffect, useRef } from "react"
 // Adicione a Patrick Hand ao seu layout.tsx ou _document.tsx:
 // <link href="https://fonts.googleapis.com/css2?family=Patrick+Hand&display=swap" rel="stylesheet" />
 
-export function AnimatedLogo({ className = "" }: { className?: string }) {
+export function AnimatedLogo({ className = "", onComplete }: { className?: string; onComplete?: () => void }) {
   const strokeTextRef = useRef<SVGTextElement>(null)
   const fillTextRef = useRef<SVGTextElement>(null)
   const dotRef = useRef<SVGCircleElement>(null)
@@ -99,47 +99,9 @@ export function AnimatedLogo({ className = "" }: { className?: string }) {
         )
       }, 3100)
 
-      // ─── REVERSE ───────────────────────────────────────────
-      const reverseStart = 3100 + 500 + PAUSE
-
       setTimeout(() => {
-        subtitle.animate(
-          [{ opacity: 1 }, { opacity: 0 }],
-          { duration: 400, easing: "ease-in", fill: "forwards" }
-        )
-      }, reverseStart)
-
-      setTimeout(() => {
-        separator.animate(
-          [{ strokeDashoffset: 0 }, { strokeDashoffset: separatorLength }],
-          { duration: 500, easing: "ease-in", fill: "forwards" }
-        )
-      }, reverseStart + 400)
-
-      setTimeout(() => {
-        dot.animate(
-          [
-            { transform: "scale(1)", offset: 0 },
-            { transform: "scale(1.05)", offset: 0.2 },
-            { transform: "scale(0)", offset: 1 },
-          ],
-          { duration: 400, easing: "ease-in", fill: "forwards" }
-        )
-      }, reverseStart + 900)
-
-      setTimeout(() => {
-        fillText.animate(
-          [{ opacity: 1 }, { opacity: 0 }],
-          { duration: 600, easing: "ease-in", fill: "forwards" }
-        )
-      }, reverseStart + 1100)
-
-      setTimeout(() => {
-        strokeText.animate(
-          [{ strokeDashoffset: 0 }, { strokeDashoffset: length }],
-          { duration: 1600, easing: "ease-in", fill: "forwards" }
-        )
-      }, reverseStart + 1300)
+        onComplete?.()
+      }, 3100 + 500 + PAUSE)
     })
   }, [])
 

@@ -40,7 +40,7 @@ export function sendToastMessage(toastOptions: ToastOptions) {
 
   const commonOptions = {
     duration: toastType === 'loading' ? Infinity : TOAST_DURATION,
-    position: 'top-center' as const,
+    position: 'bottom-center' as const,
     ...(toastOptions.actionlabel && {
       action: {
         label: toastOptions.actionlabel,
