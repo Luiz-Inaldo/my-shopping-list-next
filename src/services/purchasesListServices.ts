@@ -1,6 +1,7 @@
 import { db } from "@/lib/firebase";
 import { IPurchaseProps } from "@/types";
 import { Filters } from "@/types/filters";
+import type { TNotification } from "@/types/notifications";
 import {
   collection,
   query,
@@ -12,6 +13,8 @@ import {
   updateDoc,
   arrayUnion,
   arrayRemove,
+  writeBatch,
+  Timestamp,
   QueryConstraint,
 } from "firebase/firestore";
 
@@ -76,14 +79,42 @@ export async function saveCurrentPurchase(purchase: IPurchaseProps) {
   });
 }
 
+async function createShareNotifications(
+  userIds: string[],
+  senderInfo: { id: string; name: string; profile_img: string },
+  listName: string,
+  purchaseId: string
+): Promise<void> {
+  const body = `${senderInfo.name} compartilhou a lista ${listName} com você!`;
+  const batch = writeBatch(db);
+
+  userIds.forEach((userId) => {
+    const notifRef = doc(collection(db, "notifications"));
+    batch.set(notifRef, {
+      body,
+      created_at: Timestamp.now(),
+      is_read: false,
+      metadata: { purchase_id: purchaseId },
+      sender_info: senderInfo,
+      target_id: userId,
+      title: "Uma lista foi compartilhada.",
+    } satisfies Omit<TNotification, "id">);
+  });
+
+  await batch.commit();
+}
+
 export async function sharePurchaseWithUsers(
   purchaseId: string,
-  userIds: string[]
+  userIds: string[],
+  senderInfo: { id: string; name: string; profile_img: string },
+  listName: string
 ): Promise<void> {
   const docRef = doc(db, "purchases", purchaseId);
   await updateDoc(docRef, {
     shared_with: arrayUnion(...userIds),
   });
+  await createShareNotifications(userIds, senderInfo, listName, purchaseId);
 }
 
 export async function unlinkUserFromSharedPurchase(

@@ -32,6 +32,7 @@ import { queryClient } from '@/utils/queryClient';
 interface ShareListModalProps {
   trigger: React.ReactNode;
   purchaseId: string;
+  listName: string;
   sharedWith: string[];
 }
 
@@ -67,8 +68,9 @@ function ShareUserRow({ user, isSelected, isDisabled, onToggle }: ShareUserRowPr
   );
 }
 
-export function ShareListModal({ trigger, purchaseId, sharedWith }: ShareListModalProps) {
-  const loggedInUserId = useGeneralUserStore((s) => s.userProfile?.uid);
+export function ShareListModal({ trigger, purchaseId, listName, sharedWith }: ShareListModalProps) {
+  const loggedInUser = useGeneralUserStore((s) => s.userProfile);
+  const loggedInUserId = loggedInUser?.uid;
 
   const [open, setOpen] = useState(false);
   const [isSharing, startShareTransition] = useTransition();
@@ -157,8 +159,14 @@ export function ShareListModal({ trigger, purchaseId, sharedWith }: ShareListMod
     const userIds = Array.from(selectedUserIds);
 
     startShareTransition(async () => {
+      const senderInfo = {
+        id: loggedInUser?.uid ?? '',
+        name: loggedInUser?.name ?? '',
+        profile_img: loggedInUser?.profile_img ?? '',
+      };
+
       const [, shareError] = await tryCatchRequest<void, Error>(
-        sharePurchaseWithUsers(purchaseId, userIds)
+        sharePurchaseWithUsers(purchaseId, userIds, senderInfo, listName)
       );
 
       if (shareError) {

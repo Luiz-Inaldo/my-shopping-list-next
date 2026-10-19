@@ -42,3 +42,4 @@ jspdf.d.ts
 .cursorrules
 .agents
 package-lock.json
+.claude
