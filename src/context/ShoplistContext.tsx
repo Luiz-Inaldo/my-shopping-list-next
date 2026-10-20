@@ -212,7 +212,7 @@ export const ShoplistProvider = ({ children }: { children: React.ReactNode }) =>
         if (!listId) return;
         const productsListRef = doc(db, 'purchases', listId);
         const unsubscribe = onSnapshot(productsListRef, (snapshot) => {
-            if (snapshot.exists() && snapshot.data()?.is_active) {
+            if (snapshot.exists()) {
                 queryClient.invalidateQueries({
                     queryKey: [QUERY_KEYS.productsList, listId]
                 });

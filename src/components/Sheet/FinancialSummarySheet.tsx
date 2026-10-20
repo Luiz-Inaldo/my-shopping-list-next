@@ -26,6 +26,9 @@ import { IPurchaseProps } from '@/types';
 import { sendToastMessage } from '@/functions/sendToastMessage';
 import { Timestamp } from 'firebase/firestore';
 import { formatCurrency } from '@/functions/formatCurrency';
+import { invalidateAllQueries } from '@/functions/invalidadeQueries';
+import { QUERY_KEYS } from '@/constants/queryKeys';
+import useGeneralUserStore from '@/store/generalUserStore';
 
 interface IFinancialSummarySheetProps {
   setSavingModalOpen: React.Dispatch<React.SetStateAction<boolean>>;
@@ -38,6 +41,7 @@ export function FinancialSummarySheet({
 }: IFinancialSummarySheetProps) {
   const [open, setOpen] = useState<boolean>(false);
   const { auxData, totalValue } = useShoplistContext();
+  const userId = useGeneralUserStore((s) => s.userProfile?.uid);
 
   const totalProgress = useMemo(() => {
     let progress: number;
@@ -79,8 +83,9 @@ export function FinancialSummarySheet({
       } as IPurchaseProps;
 
       await saveCurrentPurchase(purchase);
+      setIsSaved(prev => !prev);
+      invalidateAllQueries([[QUERY_KEYS.purchases, userId]]);
       setOpen(false)
-      setIsSaved(true);
     } catch (error) {
       console.error('Error saving purchase:', error);
       sendToastMessage({
@@ -90,53 +95,6 @@ export function FinancialSummarySheet({
     } finally {
       document.body.style.overflow = 'auto';
       setSavingModalOpen(false);
-    }
-  }
-
-  function renderPurchaseAlert() {
-    if (totalProgress <= 80) {
-      return (
-        <>
-          <div className="mx-auto flex items-center justify-center size-20 bg-success rounded-full">
-            <ThumbsUp size={32} className="text-snow" />
-          </div>
-          <div>
-            <p className="text-xs text-center text-paragraph">Orçamento ok</p>
-          </div>
-        </>
-      );
-    } else if (totalProgress > 80 && totalProgress < 100) {
-      return (
-        <>
-          <div className="mx-auto flex items-center justify-center size-11 bg-warning/80 rounded-full">
-            <CircleAlert size={24} className="text-snow" />
-          </div>
-          <div>
-            <h3 className="text-sm text-center font-medium text-subtitle">
-              Atenção!
-            </h3>
-            <p className="text-xs text-center text-paragraph">
-              Você está próximo de atingir o limite do seu orçamento.
-            </p>
-          </div>
-        </>
-      );
-    } else if (totalProgress >= 100) {
-      return (
-        <>
-          <div className="mx-auto flex items-center justify-center size-11 bg-destructive rounded-full">
-            <CircleX size={24} className="text-snow" />
-          </div>
-          <div>
-            <h3 className="text-sm text-center font-medium text-subtitle">
-              Limite atingido!
-            </h3>
-            <p className="text-xs text-center text-paragraph">
-              Você atingiu o limite do seu orçamento.
-            </p>
-          </div>
-        </>
-      );
     }
   }
 

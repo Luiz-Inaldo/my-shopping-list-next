@@ -19,6 +19,7 @@ import { motion, useAnimationControls } from 'motion/react';
 import { markNotificationAsRead } from '@/services/notificationsServices';
 import { sendToastMessage } from '@/functions/sendToastMessage';
 import { tryCatchRequest } from '@/functions/requests';
+import { useRouter } from 'next/navigation';
 
 function formatNotificationDate(timestamp: Timestamp): string {
   return new Intl.DateTimeFormat('pt-BR', {
@@ -34,6 +35,7 @@ export function NotificationDropdown() {
   const { data: notifications, newNotificationSignal } = useNotificationsQuery();
   const hasNotifications = !!notifications?.length;
   const bellControls = useAnimationControls();
+  const router = useRouter();
 
   useEffect(() => {
     if (newNotificationSignal === 0) return;
@@ -99,7 +101,10 @@ export function NotificationDropdown() {
               <DropdownMenuItem
                 key={notification.id}
                 className="flex items-start gap-3 px-3 py-3 focus:bg-sketch-accent-lt"
-                onSelect={(e) => e.preventDefault()}
+                onSelect={(e) => {
+                  e.preventDefault();
+                  router.push(APP_ROUTES.private.shoppingList.name(notification.metadata.purchase_id as string));
+                }}
               >
                 <Avatar className="h-9 w-9 shrink-0 border-2 border-sketch-border rounded-full">
                   <AvatarImage
