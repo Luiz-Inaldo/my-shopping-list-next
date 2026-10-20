@@ -14,7 +14,11 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { useNotificationsQuery } from '@/hooks/queries/notifications';
 import { APP_ROUTES } from '@/routes/app-routes';
 import { defaultAvatarImgUrl } from '@/constants/avatarImgUrl';
-import { motion } from 'motion/react';
+import { useEffect } from 'react';
+import { motion, useAnimationControls } from 'motion/react';
+import { markNotificationAsRead } from '@/services/notificationsServices';
+import { sendToastMessage } from '@/functions/sendToastMessage';
+import { tryCatchRequest } from '@/functions/requests';
 
 function formatNotificationDate(timestamp: Timestamp): string {
   return new Intl.DateTimeFormat('pt-BR', {
@@ -27,8 +31,35 @@ function formatNotificationDate(timestamp: Timestamp): string {
 }
 
 export function NotificationDropdown() {
-  const { data: notifications } = useNotificationsQuery();
+  const { data: notifications, newNotificationSignal } = useNotificationsQuery();
   const hasNotifications = !!notifications?.length;
+  const bellControls = useAnimationControls();
+
+  useEffect(() => {
+    if (newNotificationSignal === 0) return;
+    bellControls.start({
+      rotate: [0, -18, 16, -12, 8, -4, 0],
+      transition: { duration: 0.7, ease: 'easeInOut' },
+    });
+  }, [newNotificationSignal, bellControls]);
+
+  async function handleMarkAsRead(e: React.MouseEvent, notificationId: string) {
+    e.stopPropagation();
+    const [_, error] = await tryCatchRequest<void, Error>(() => markNotificationAsRead(notificationId));
+    if (error) {
+      console.error(error);
+      sendToastMessage({
+        title: 'Erro ao marcar notificação como lida',
+        type: 'error',
+      });
+      return;
+    }
+
+    sendToastMessage({
+        title: 'Notificação marcada como lida',
+        type: 'success',
+      });
+  }
 
   return (
     <DropdownMenu>
@@ -40,11 +71,16 @@ export function NotificationDropdown() {
           size="icon"
           className="active:translate-x-[3px] active:translate-y-[3px] active:shadow-sketch-1 relative"
         >
-          <Bell size={22} strokeWidth={2.5} className="text-sketch-fg" aria-hidden />
+          <motion.span
+            animate={bellControls}
+            style={{ display: 'inline-flex', transformOrigin: 'top center' }}
+          >
+            <Bell size={22} strokeWidth={2.5} className="text-sketch-fg" aria-hidden />
+          </motion.span>
           {hasNotifications && (
             <motion.span
               initial={{ scale: 0 }}
-              animate={{ scale: 1 }}
+              animate={{ scale: [1,1.8,1] }}
               transition={{ duration: 0.2, stiffness: 100 }}
               className="absolute right-[7px] top-1.5 size-[9px] rounded-full border-2 border-sketch-bg bg-sketch-danger"
               aria-hidden
@@ -55,7 +91,7 @@ export function NotificationDropdown() {
       <DropdownMenuContent align="end" className="w-80 rounded-sketch-notif border-2 border-sketch-border">
         {!hasNotifications ? (
           <div className="px-4 py-6 text-center">
-            <p className="font-sketch text-sm text-sketch-muted">Nenhuma notificação</p>
+            <p className="font-sketch text-sm text-paragraph">Nenhuma notificação</p>
           </div>
         ) : (
           <>
@@ -85,8 +121,8 @@ export function NotificationDropdown() {
                 <button
                   type="button"
                   aria-label="Marcar como lida"
-                  className="mt-0.5 shrink-0 text-sketch-muted transition-colors hover:text-sketch-fg"
-                  onClick={(e) => e.stopPropagation()}
+                  className="mt-0.5 shrink-0 text-success transition-all hover:text-sketch-fg active:scale-50 duration-200"
+                  onClick={(e) => handleMarkAsRead(e, notification.id)}
                 >
                   <CheckCircle2 size={18} strokeWidth={2} aria-hidden />
                 </button>
