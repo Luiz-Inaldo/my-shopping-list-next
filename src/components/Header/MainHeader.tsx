@@ -1,9 +1,8 @@
 import useGeneralUserStore from '@/store/generalUserStore';
 import { MainHeaderSkeleton } from '../Skeletons/MainHeaderSkeleton';
 import { UserAvatar } from '../UserAvatar';
-import { Bell } from 'lucide-react';
-import { Button } from '../ui/button';
 import { APP_ROUTES } from '@/routes/app-routes';
+import { NotificationDropdown } from '../Dropdown/NotificationDropdown';
 
 export const MainHeader = () => {
   const userProfile = useGeneralUserStore((store) => store.userProfile);
@@ -36,24 +35,7 @@ export const MainHeader = () => {
           </p>
         </div>
       </a>
-      {/* <Button
-        type="button"
-        aria-label="Notificações"
-        variant="outline"
-        size="icon"
-        className="active:translate-x-[3px] active:translate-y-[3px] active:shadow-sketch-1 relative"
-      >
-        <Bell
-          size={22}
-          strokeWidth={2.5}
-          className="text-sketch-fg"
-          aria-hidden
-        />
-        <span
-          className="absolute right-[7px] top-1.5 size-[9px] rounded-full border-2 border-sketch-bg bg-sketch-danger"
-          aria-hidden
-        />
-      </Button> */}
+      <NotificationDropdown />
     </header>
   );
 };
