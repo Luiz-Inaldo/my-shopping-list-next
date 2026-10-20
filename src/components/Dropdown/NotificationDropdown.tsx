@@ -78,7 +78,7 @@ export function NotificationDropdown() {
                   <p className="font-sketch text-sm leading-snug text-title line-clamp-2">
                     {notification.body}
                   </p>
-                  <p className="font-sketch text-xs text-sketch-muted">
+                  <p className="font-sketch text-xs text-paragraph">
                     {formatNotificationDate(notification.created_at)}
                   </p>
                 </div>

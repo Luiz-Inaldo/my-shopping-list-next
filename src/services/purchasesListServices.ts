@@ -16,6 +16,7 @@ import {
   writeBatch,
   Timestamp,
   QueryConstraint,
+  onSnapshot,
 } from "firebase/firestore";
 
 function mapPurchaseDocs(
@@ -59,6 +60,32 @@ export async function getSharedPurchasesList(userId: string, filters?: Filters[]
   return {
     data: mapPurchaseDocs(result),
   };
+}
+
+/**
+ * Escuta em tempo real somente as compras do usuário (próprias e compartilhadas
+ * com ele). Compras de outros usuários não disparam `onChange`.
+ * O primeiro snapshot de cada listener (carga inicial) é ignorado.
+ */
+export function subscribeToUserPurchases(userId: string, onChange: () => void) {
+  const purchasesRef = collection(db, "purchases");
+  const queries = [
+    query(purchasesRef, where("user_id", "==", userId)),
+    query(purchasesRef, where("shared_with", "array-contains", userId)),
+  ];
+
+  const unsubscribes = queries.map((q) => {
+    let isInitialSnapshot = true;
+    return onSnapshot(q, () => {
+      if (isInitialSnapshot) {
+        isInitialSnapshot = false;
+        return;
+      }
+      onChange();
+    });
+  });
+
+  return () => unsubscribes.forEach((unsubscribe) => unsubscribe());
 }
 
 export async function addPurchaseToDb(purchase: IPurchaseProps) {

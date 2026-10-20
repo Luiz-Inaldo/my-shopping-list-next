@@ -4,13 +4,12 @@ import React, { createContext, useContext, useEffect, useState } from "react";
 import useGeneralUserStore from "@/store/generalUserStore";
 import {
   deletePurchaseFromDb,
+  subscribeToUserPurchases,
   unlinkUserFromSharedPurchase,
 } from "@/services/purchasesListServices";
 import { tryCatchRequest } from "@/functions/requests";
 import { sendToastMessage } from "@/functions/sendToastMessage";
 import { QUERY_KEYS } from "@/constants/queryKeys";
-import { db } from "@/lib/firebase";
-import { collection, onSnapshot } from "firebase/firestore";
 import { Filters } from "@/types/filters";
 import { queryClient } from "@/utils/queryClient";
 import { usePurchasesQuery } from "@/hooks/queries/purchases";
@@ -98,11 +97,10 @@ export const PurchasesProvider = ({
   };
 
   useEffect(() => {
-    const purchasesRef = collection(db, "purchases");
-    const unsubscribe = onSnapshot(purchasesRef, () => {
-      invalidatePurchasesQueries(userProfile?.uid);
-    });
-    return () => unsubscribe();
+    const uid = userProfile?.uid;
+    if (!uid) return;
+
+    return subscribeToUserPurchases(uid, () => invalidatePurchasesQueries(uid));
   }, [userProfile?.uid]);
 
   return (
