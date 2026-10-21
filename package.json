@@ -65,7 +65,7 @@
     "@testing-library/user-event": "^14.6.1",
     "@types/jest": "^30.0.0",
     "@types/jspdf": "^2.0.0",
-    "@types/node": "^20",
+    "@types/node": "^24",
     "@types/react": "^19.2.8",
     "@types/react-dom": "^19.2.3",
     "eslint": "^9.0.0",
