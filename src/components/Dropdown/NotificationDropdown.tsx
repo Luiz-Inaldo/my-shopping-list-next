@@ -1,7 +1,6 @@
 'use client';
 
-import { Bell, CheckCircle2 } from 'lucide-react';
-import { Timestamp } from 'firebase/firestore';
+import { Bell } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
@@ -10,26 +9,13 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { NotificationItem } from '@/components/Notifications/NotificationItem';
 import { useNotificationsQuery } from '@/hooks/queries/notifications';
 import { APP_ROUTES } from '@/routes/app-routes';
-import { defaultAvatarImgUrl } from '@/constants/avatarImgUrl';
 import { useEffect } from 'react';
 import { motion, useAnimationControls } from 'motion/react';
-import { markNotificationAsRead } from '@/services/notificationsServices';
-import { sendToastMessage } from '@/functions/sendToastMessage';
-import { tryCatchRequest } from '@/functions/requests';
+import { handleMarkNotificationAsRead } from '@/services/notificationsServices';
 import { useRouter } from 'next/navigation';
-
-function formatNotificationDate(timestamp: Timestamp): string {
-  return new Intl.DateTimeFormat('pt-BR', {
-    day: '2-digit',
-    month: '2-digit',
-    year: 'numeric',
-    hour: '2-digit',
-    minute: '2-digit',
-  }).format(timestamp.toDate());
-}
 
 export function NotificationDropdown() {
   const { data: notifications, newNotificationSignal } = useNotificationsQuery();
@@ -45,22 +31,9 @@ export function NotificationDropdown() {
     });
   }, [newNotificationSignal, bellControls]);
 
-  async function handleMarkAsRead(e: React.MouseEvent, notificationId: string) {
+  function handleMarkAsRead(e: React.MouseEvent, notificationId: string) {
     e.stopPropagation();
-    const [_, error] = await tryCatchRequest<void, Error>(() => markNotificationAsRead(notificationId));
-    if (error) {
-      console.error(error);
-      sendToastMessage({
-        title: 'Erro ao marcar notificação como lida',
-        type: 'error',
-      });
-      return;
-    }
-
-    sendToastMessage({
-        title: 'Notificação marcada como lida',
-        type: 'success',
-      });
+    handleMarkNotificationAsRead(notificationId);
   }
 
   return (
@@ -106,31 +79,11 @@ export function NotificationDropdown() {
                   router.push(APP_ROUTES.private.shoppingList.name(notification.metadata.purchase_id as string));
                 }}
               >
-                <Avatar className="h-9 w-9 shrink-0 border-2 border-sketch-border rounded-full">
-                  <AvatarImage
-                    src={notification.sender_info.profile_img}
-                    alt={notification.sender_info.name}
-                  />
-                  <AvatarFallback>
-                    <img src={defaultAvatarImgUrl} alt="avatar" width={36} height={36} />
-                  </AvatarFallback>
-                </Avatar>
-                <div className="flex flex-1 flex-col gap-0.5 overflow-hidden">
-                  <p className="font-sketch text-sm leading-snug text-title line-clamp-2">
-                    {notification.body}
-                  </p>
-                  <p className="font-sketch text-xs text-paragraph">
-                    {formatNotificationDate(notification.created_at)}
-                  </p>
-                </div>
-                <button
-                  type="button"
-                  aria-label="Marcar como lida"
-                  className="mt-0.5 shrink-0 text-success transition-all hover:text-sketch-fg active:scale-50 duration-200"
-                  onClick={(e) => handleMarkAsRead(e, notification.id)}
-                >
-                  <CheckCircle2 size={18} strokeWidth={2} aria-hidden />
-                </button>
+                <NotificationItem
+                  notification={notification}
+                  onMarkAsRead={handleMarkAsRead}
+                  clampBody
+                />
               </DropdownMenuItem>
             ))}
             <DropdownMenuSeparator />

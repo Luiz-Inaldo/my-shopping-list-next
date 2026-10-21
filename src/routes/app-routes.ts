@@ -42,7 +42,7 @@ export const APP_ROUTES = {
             name: "/statistics"
         },
         notifications: {
-            name: "/notificacoes"
+            name: "/notifications"
         }
     },
     public: {

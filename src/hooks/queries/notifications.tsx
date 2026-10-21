@@ -3,7 +3,9 @@ import { useQuery } from '@tanstack/react-query';
 import { QUERY_KEYS } from '@/constants/queryKeys';
 import useGeneralUserStore from '@/store/generalUserStore';
 import {
+  getAllNotifications,
   getUnreadNotifications,
+  subscribeToAllNotifications,
   subscribeToUnreadNotifications,
 } from '@/services/notificationsServices';
 import { queryClient } from '@/utils/queryClient';
@@ -39,4 +41,30 @@ export function useNotificationsQuery() {
   });
 
   return { ...query, newNotificationSignal };
+}
+
+export function useAllNotificationsQuery() {
+  const uid = useGeneralUserStore((store) => store.userProfile?.uid);
+  const queryKey = [QUERY_KEYS.notifications, 'all', uid];
+
+  useEffect(() => {
+    if (!uid) return;
+
+    const unsubscribe = subscribeToAllNotifications(
+      uid,
+      (data) => queryClient.setQueryData(queryKey, data),
+      (error) => console.error(error)
+    );
+    return () => unsubscribe();
+  }, [uid]);
+
+  return useQuery({
+    queryKey,
+    queryFn: async () => {
+      const { data } = await getAllNotifications(uid!);
+      return data;
+    },
+    enabled: !!uid,
+    staleTime: Infinity,
+  });
 }

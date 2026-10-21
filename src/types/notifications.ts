@@ -1,4 +1,5 @@
 import { Timestamp } from "firebase/firestore";
+import { UseQueryResult } from "@tanstack/react-query";
 
 export type TNotification = {
     id: string;
@@ -13,4 +14,9 @@ export type TNotification = {
     };
     target_id: string;
     title: string;
+}
+
+export interface INotificationsContextProps {
+    queryData: UseQueryResult<TNotification[], Error>;
+    markAsRead: (notificationId: string) => Promise<void>;
 }
