@@ -3,7 +3,6 @@ import Header from '../Header';
 import { ChevronLeft, Share2 } from 'lucide-react';
 import { APP_ROUTES } from '@/routes/app-routes';
 import { useRouter } from 'next/navigation';
-import { FinancialSummary } from './FinancialSummary';
 import { ProductsSearch } from './ProductsSearch';
 import { CategoryBadgesList } from './CategoryBadgesList';
 import { ProductsList } from './ProductsList';
@@ -52,8 +51,12 @@ export default function ShoppingList() {
     return <PurchaseSaved />;
   }
 
-  if (userHaveNoAccessToList) {
-    return <PurchaseBlocked />;
+  if (userHaveNoAccessToList && !isSaved) {
+    return <PurchaseBlocked
+      hasListFinished={!productsList?.is_active}
+      userHaveNoAccessToList={userId !== productsList?.user_id
+        && !productsList?.shared_with.includes(userId ?? '')}
+    />;
   }
 
   return (
@@ -73,7 +76,9 @@ export default function ShoppingList() {
         <div className="flex items-center gap-2">
           {userId === productsList?.user_id && (
             <ShareListModal
-              purchaseId={productsList.id!}
+              purchaseId={productsList?.id!}
+              sharedWith={productsList?.shared_with ?? []}
+              listName={productsList?.title ?? ''}
               trigger={
                 <Button
                   type="button"

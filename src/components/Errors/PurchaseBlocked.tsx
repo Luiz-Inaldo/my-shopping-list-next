@@ -7,7 +7,13 @@ import { Button } from '../ui/button';
 import Link from 'next/link';
 import { APP_ROUTES } from '@/routes/app-routes';
 
-export function PurchaseBlocked() {
+export function PurchaseBlocked({
+  hasListFinished = false,
+  userHaveNoAccessToList = false
+}: {
+  hasListFinished?: boolean;
+  userHaveNoAccessToList?: boolean;
+}) {
 
   const { productsList } = useShoplistContext();
   const userProfile = useGeneralUserStore(store => store.userProfile);
@@ -48,7 +54,7 @@ export function PurchaseBlocked() {
             Por que estou vendo isso?
           </motion.p>
 
-          {!productsList?.is_active && productsList?.user_id === userProfile?.uid && (
+          {hasListFinished && (
             <motion.div
               className="flex gap-3 rounded-sketch-card border-2 border-sketch-success bg-sketch-success/10 p-3 shadow-sketch-sm"
               initial={{ opacity: 0, y: 10 }}
@@ -63,7 +69,7 @@ export function PurchaseBlocked() {
             </motion.div>
           )}
 
-          {productsList?.user_id !== userProfile?.uid && (
+          {userHaveNoAccessToList && (
             <motion.div
               className="flex gap-3 rounded-sketch-card border-2 border-sketch-danger bg-sketch-danger-lt p-3 shadow-sketch-sm"
               initial={{ opacity: 0, y: 10 }}

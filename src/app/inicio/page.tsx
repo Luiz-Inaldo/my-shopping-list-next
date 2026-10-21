@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import Lottie from "lottie-react";
 import shoppingCartWomanAnimation from "@/animations/shopping-cart-woman.json";
 import { APP_ROUTES } from "@/routes/app-routes";
@@ -12,35 +12,9 @@ import { AnimatedLogo } from "@/components/AnimatedLogo/AnimatedLogo";
 export default function StartPage() {
   const router = useRouter();
   const [isLottieAnimationLoaded, setIsLottieAnimationLoaded] = useState(false);
-  const [isObservationEnabled, setIsObservationEnabled] = useState(false);
-  const [showMainContent, setShowMainContent] = useState(false);
+  const [isLogoAnimationDone, setIsLogoAnimationDone] = useState(false);
 
-  useEffect(() => {
-    const observationDelay = setTimeout(() => {
-      setIsObservationEnabled(true);
-    }, 6_200);
-
-    return () => {
-      clearTimeout(observationDelay);
-    };
-  }, []);
-
-  useEffect(() => {
-    if (!isObservationEnabled || showMainContent) {
-      return;
-    }
-
-    const lottieLoadCheck = setInterval(() => {
-      if (isLottieAnimationLoaded) {
-        clearInterval(lottieLoadCheck);
-        setShowMainContent(true);
-      }
-    }, 2000);
-
-    return () => {
-      clearInterval(lottieLoadCheck);
-    };
-  }, [isLottieAnimationLoaded, isObservationEnabled, showMainContent]);
+  const showMainContent = isLottieAnimationLoaded && isLogoAnimationDone;
 
   return (
     <div className="relative h-dvh overflow-hidden bg-sketch-bg font-sketch">
@@ -116,7 +90,7 @@ export default function StartPage() {
             transition={{ duration: 0.5, ease: "easeOut" }}
             className="absolute inset-0 flex items-center justify-center bg-sketch-accent px-6"
           >
-            <AnimatedLogo className="w-[280px] max-w-[80vw]" />
+            <AnimatedLogo className="w-[280px] max-w-[80vw]" onComplete={() => setIsLogoAnimationDone(true)} />
           </motion.div>
         )}
       </AnimatePresence>

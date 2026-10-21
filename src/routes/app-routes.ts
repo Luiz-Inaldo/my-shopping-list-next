@@ -40,6 +40,9 @@ export const APP_ROUTES = {
         },
         statistics: {
             name: "/statistics"
+        },
+        notifications: {
+            name: "/notifications"
         }
     },
     public: {

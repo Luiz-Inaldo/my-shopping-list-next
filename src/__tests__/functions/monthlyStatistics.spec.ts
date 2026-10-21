@@ -25,6 +25,7 @@ describe("Monthly Statistics Utility Functions", () => {
                 { id: "i1", name: "Item 1", category: "Cat1", quantity: 1, value: 50, checked: true, unit_type: "UN" as any },
                 { id: "i2", name: "Item 2", category: "Cat1", quantity: 1, value: 30, checked: true, unit_type: "UN" as any },
             ],
+            shared_with: [],
         },
         {
             id: "2",
@@ -38,6 +39,7 @@ describe("Monthly Statistics Utility Functions", () => {
             purchase_items: [
                 { id: "i3", name: "Item 3", category: "Cat2", quantity: 2, value: 75, checked: false, unit_type: "UN" as any },
             ],
+            shared_with: [],
         },
         {
             id: "3",
@@ -49,6 +51,7 @@ describe("Monthly Statistics Utility Functions", () => {
             start_date: "2025-12-15T10:00:00Z",
             end_date: "2025-12-15T11:00:00Z",
             purchase_items: [],
+            shared_with: [],
         },
     ];
 
@@ -62,7 +65,7 @@ describe("Monthly Statistics Utility Functions", () => {
         it("should ignore purchases without a start_date", () => {
             const incompletePurchases: TMonthlyStatisticsResponse = [
                 ...mockPurchases,
-                { id: "4", title: "No Date", is_active: true, max_value: 0, total_price: 0, user_id: "u1", start_date: null, end_date: null }
+                { id: "4", title: "No Date", is_active: true, max_value: 0, total_price: 0, user_id: "u1", start_date: null, end_date: null, shared_with: [] }
             ];
             const result = groupPurchasesByMonth(incompletePurchases);
             expect(Object.keys(result)).toHaveLength(2);
@@ -81,7 +84,7 @@ describe("Monthly Statistics Utility Functions", () => {
 
         it("should handle missing total_price by treating it as 0", () => {
             const purchases: TMonthlyStatisticsResponse = [
-                { id: "1", title: "T1", is_active: true, max_value: 0, total_price: 0, user_id: "u1", start_date: null, end_date: null }
+                { id: "1", title: "T1", is_active: true, max_value: 0, total_price: 0, user_id: "u1", start_date: null, end_date: null, shared_with: [] }
             ];
             // Note: total_price is 0 or missing in this mock
             delete (purchases[0] as any).total_price;

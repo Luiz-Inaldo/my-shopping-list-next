@@ -89,6 +89,12 @@ export const ShoplistProvider = ({ children }: { children: React.ReactNode }) =>
 
     async function handleUpdateItem(object: PurchaseProductInput, itemID: string) {
 
+        const oldItem = auxData?.purchase_items?.find(p => p.id === itemID);
+        const oldContrib = oldItem?.checked ? Number(oldItem.value) * Number(oldItem.quantity) : 0;
+        const newChecked = object.checked ?? oldItem?.checked ?? false;
+        const newContrib = newChecked ? Number(object.value ?? 0) * Number(object.quantity ?? 0) : 0;
+        const newExpectedTotal = totalValue - oldContrib + newContrib;
+
         const updatedProducts = auxData?.purchase_items?.map(product => {
             if (product.id === itemID) {
                 return {
@@ -101,7 +107,11 @@ export const ShoplistProvider = ({ children }: { children: React.ReactNode }) =>
 
         try {
             await updatePurchase(productsList?.id as string, updatedProducts);
-            sendToastMessage({ title: "Produto atualizado com sucesso.", type: 'success' });
+            sendToastMessage({
+                title: "Produto atualizado com sucesso.",
+                type: 'success',
+                options: { changeValueVariant: newExpectedTotal >= totalValue ? 'up' : 'down', currentTotal: totalValue, totalValue: newExpectedTotal }
+            });
 
         } catch (error) {
             console.error(error);
@@ -112,6 +122,10 @@ export const ShoplistProvider = ({ children }: { children: React.ReactNode }) =>
 
     async function handleDeleteItem(itemID: string) {
 
+        const deletedItem = auxData?.purchase_items?.find(p => p.id === itemID);
+        const deletedContrib = deletedItem?.checked ? Number(deletedItem.value) * Number(deletedItem.quantity) : 0;
+        const newExpectedTotal = totalValue - deletedContrib;
+
         const updatedGeneralProducts = auxData?.purchase_items?.filter(product => product.id !== itemID) as IProductProps[];
 
         const [_, error] = await tryCatchRequest<void, Error>(updatePurchase(productsList?.id as string, updatedGeneralProducts));
@@ -121,10 +135,19 @@ export const ShoplistProvider = ({ children }: { children: React.ReactNode }) =>
             return;
         }
 
-        sendToastMessage({ title: "Produto removido com sucesso.", type: 'success' });
+        sendToastMessage({
+            title: "Produto removido com sucesso.",
+            type: 'success',
+            options: { changeValueVariant: 'down', currentTotal: totalValue, totalValue: newExpectedTotal }
+        });
     }
 
     async function handleCheckItem(item: IProductProps, object?: { value: number }) {
+        const itemValue = object?.value ?? Number(item.value);
+        const itemQuantity = Number(item.quantity);
+        const contrib = itemValue > 0 ? itemValue * itemQuantity : 0;
+        const newExpectedTotal = totalValue + contrib;
+
         const updatedProducts = auxData?.purchase_items?.map(product => {
             if (product.id === item.id) {
                 return {
@@ -140,7 +163,13 @@ export const ShoplistProvider = ({ children }: { children: React.ReactNode }) =>
 
             await updatePurchase(productsList?.id as string, updatedProducts);
 
-            sendToastMessage({ title: `${item.name} marcado como adquirido.`, type: 'success' });
+            sendToastMessage({
+                title: `${item.name} marcado como adquirido.`,
+                type: 'success',
+                options: contrib > 0
+                    ? { changeValueVariant: 'up', currentTotal: totalValue, totalValue: newExpectedTotal }
+                    : undefined,
+            });
 
         } catch (error) {
             sendToastMessage({ title: "Houve um erro ao marcar o item.", type: 'error' });
@@ -148,6 +177,8 @@ export const ShoplistProvider = ({ children }: { children: React.ReactNode }) =>
     }
 
     async function handleDismarkItem(item: IProductProps) {
+        const contrib = Number(item.value) * Number(item.quantity);
+        const newExpectedTotal = totalValue - contrib;
 
         const updatedProducts = auxData?.purchase_items?.map(product => {
             if (product.id === item.id) {
@@ -163,7 +194,13 @@ export const ShoplistProvider = ({ children }: { children: React.ReactNode }) =>
 
             await updatePurchase(productsList?.id as string, updatedProducts);
 
-            sendToastMessage({ title: `${item.name} desmarcado.`, type: 'success' });
+            sendToastMessage({
+                title: `${item.name} desmarcado.`,
+                type: 'success',
+                options: contrib > 0
+                    ? { changeValueVariant: 'down', currentTotal: totalValue, totalValue: newExpectedTotal }
+                    : undefined,
+            });
         } catch (error) {
             console.error(error)
             sendToastMessage({ title: "Houve um erro ao desmarcar o item.", type: 'error' });
@@ -175,7 +212,7 @@ export const ShoplistProvider = ({ children }: { children: React.ReactNode }) =>
         if (!listId) return;
         const productsListRef = doc(db, 'purchases', listId);
         const unsubscribe = onSnapshot(productsListRef, (snapshot) => {
-            if (snapshot.exists() && snapshot.data()?.is_active) {
+            if (snapshot.exists()) {
                 queryClient.invalidateQueries({
                     queryKey: [QUERY_KEYS.productsList, listId]
                 });
