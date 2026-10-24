@@ -20,26 +20,26 @@ describe('playSound Utility Function', () => {
     playSpy.mockRestore();
   });
 
-  it('should play the sound file of add_user_new_list', () => {
-    playSound('add_user_new_list');
+  it('should play the sound file of add', () => {
+    playSound('add');
 
     expect(playSpy).toHaveBeenCalledTimes(1);
     expect(playedAudio(0).src).toContain('/sounds/add-success.wav');
   });
 
   it('should play the sound file of remove_user_list', () => {
-    playSound('remove_user_list');
+    playSound('remove');
 
     expect(playSpy).toHaveBeenCalledTimes(1);
     expect(playedAudio(0).src).toContain('/sounds/delete-crumple.wav');
   });
 
   it('should restart the same audio element when played twice in a row', () => {
-    playSound('add_user_new_list');
+    playSound('add');
     const audio = playedAudio(0);
     audio.currentTime = 5;
 
-    playSound('add_user_new_list');
+    playSound('add');
 
     expect(playedAudio(1)).toBe(audio);
     expect(audio.currentTime).toBe(0);
@@ -48,7 +48,7 @@ describe('playSound Utility Function', () => {
   it('should not throw when the browser rejects the playback', async () => {
     playSpy.mockRejectedValue(new Error('NotAllowedError'));
 
-    expect(() => playSound('add_user_new_list')).not.toThrow();
+    expect(() => playSound('add')).not.toThrow();
 
     await Promise.resolve();
   });
