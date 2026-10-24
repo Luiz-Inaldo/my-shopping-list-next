@@ -25,6 +25,7 @@ import { Check, Plus } from 'lucide-react';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { createListSchema } from '@/zodSchema/createList';
 import { sendToastMessage } from '@/functions/sendToastMessage';
+import { playSound } from '@/functions/playSound';
 import { motion } from 'motion/react';
 import { IPurchaseProps } from '@/types';
 import { addPurchaseToDb } from '@/services/purchasesListServices';
@@ -75,6 +76,7 @@ const NewListForm = () => {
           title: 'Lista criada com sucesso!',
           type: 'success',
         });
+        playSound('add');
         if (user) {
           invalidateAllQueries([[QUERY_KEYS.purchases, user?.uid]]);
         }

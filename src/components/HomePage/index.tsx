@@ -1,13 +1,19 @@
 'use client';
+import { useEffect } from 'react';
 import { MainHeader } from '../Header/MainHeader';
 import NewListForm from '../Forms/NewListForm';
 import { ActivePurchsesList } from '../ActivePurchases/List';
 // import { MonthlyStatistics } from '../MonthlyStatistics';
 import { AppAlert } from '../Alerts';
 import useGeneralUserStore from '@/store/generalUserStore';
+import { preloadSounds } from '@/functions/playSound';
 
 export const HomePage = () => {
   const user = useGeneralUserStore((s) => s.userProfile);
+
+  useEffect(() => {
+    preloadSounds();
+  }, []);
 
   return (
     <div className="relative flex min-h-0 w-full flex-1 flex-col font-sketch">

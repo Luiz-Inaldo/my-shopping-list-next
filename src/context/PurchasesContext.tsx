@@ -9,6 +9,7 @@ import {
 } from "@/services/purchasesListServices";
 import { tryCatchRequest } from "@/functions/requests";
 import { sendToastMessage } from "@/functions/sendToastMessage";
+import { playSound } from "@/functions/playSound";
 import { QUERY_KEYS } from "@/constants/queryKeys";
 import { Filters } from "@/types/filters";
 import { queryClient } from "@/utils/queryClient";
@@ -70,6 +71,7 @@ export const PurchasesProvider = ({
       title: "Compra deletada com sucesso!",
       type: "success",
     });
+    playSound("remove", 0.1);
     invalidatePurchasesQueries(userProfile?.uid);
   };
 
@@ -93,6 +95,7 @@ export const PurchasesProvider = ({
       title: "Lista desvinculada com sucesso!",
       type: "success",
     });
+    playSound("remove", 0.1);
     invalidatePurchasesQueries(userProfile.uid);
   };
 
