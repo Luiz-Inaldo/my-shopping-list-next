@@ -7,12 +7,16 @@ import { motion } from 'motion/react';
 import { LottieAnimation } from '../Lottie/LottieAnimation';
 import celebrateAnimation from '@/animations/celebrate.json';
 import { useEffect, useState } from 'react';
+import { playSound } from '@/functions/playSound';
 
 export default function PurchaseSaved() {
   const [isVisible, setIsVisible] = useState(false);
 
   useEffect(() => {
-    setTimeout(() => setIsVisible(true), 1_500);
+    setTimeout(() => {
+      setIsVisible(true);
+      playSound('complete_list', 1);
+    }, 1_500);
   }, []);
 
   return (

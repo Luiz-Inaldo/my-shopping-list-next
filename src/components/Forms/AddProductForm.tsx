@@ -36,6 +36,7 @@ import { UNIT_TYPES } from '@/constants/unitTypes';
 import { AnimatePresence, motion } from 'motion/react';
 import { formatCurrency } from '@/functions/formatCurrency';
 import { AppLoader } from '../Loader/app-loader';
+import { playSound } from '@/functions/playSound';
 
 type TFormMode = 'default' | 'voice';
 
@@ -155,6 +156,7 @@ export const AddProductForm = ({
             ? { changeValueVariant: 'up', currentTotal: totalValue, totalValue: totalValue + addedContrib }
             : undefined,
         });
+        playSound('add');
 
         queryClient.invalidateQueries({
           queryKey: [QUERY_KEYS.productsList, productsList?.id],

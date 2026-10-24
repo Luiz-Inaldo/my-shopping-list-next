@@ -14,6 +14,7 @@ import { collection, doc, onSnapshot } from "firebase/firestore";
 import { db } from "@/lib/firebase";
 import { tryCatchRequest } from "@/functions/requests";
 import { PurchaseProductInput } from "@/zodSchema/addPurchaseProduct";
+import { playSound } from "@/functions/playSound";
 
 const ShoplistContext = createContext<IShoplistContextProps | undefined>(undefined);
 
@@ -140,6 +141,7 @@ export const ShoplistProvider = ({ children }: { children: React.ReactNode }) =>
             type: 'success',
             options: { changeValueVariant: 'down', currentTotal: totalValue, totalValue: newExpectedTotal }
         });
+        playSound('remove', 0.1);
     }
 
     async function handleCheckItem(item: IProductProps, object?: { value: number }) {
@@ -163,6 +165,7 @@ export const ShoplistProvider = ({ children }: { children: React.ReactNode }) =>
 
             await updatePurchase(productsList?.id as string, updatedProducts);
 
+            playSound('mark_item', 1);
             sendToastMessage({
                 title: `${item.name} marcado como adquirido.`,
                 type: 'success',
