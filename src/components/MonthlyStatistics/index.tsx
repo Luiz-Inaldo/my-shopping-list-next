@@ -6,7 +6,7 @@ import { useQuery } from '@tanstack/react-query';
 import useGeneralUserStore from '@/store/generalUserStore';
 import { useEffect, useMemo, useState } from 'react';
 import { Filters } from '@/types/filters';
-import { collection, onSnapshot, Timestamp } from 'firebase/firestore';
+import { collection, onSnapshot, query, Timestamp, where } from 'firebase/firestore';
 import { getPreviousRangeStartDate } from '@/functions/donutFilterDates';
 import { createMonthlyStatisticsQuery } from '@/hooks/queries/monthly-statistics';
 import { TMonthlyStatisticsData, TMonthlyStatisticsResponse } from '@/types';
@@ -78,8 +78,11 @@ export function MonthlyStatistics() {
   }, [monthlyStatisticsResponse])
 
   useEffect(() => {
+    if (!userId) return;
+    
     const purchasesRef = collection(db, 'purchases');
-    const unsubscribe = onSnapshot(purchasesRef, (snapshot) => {
+    const q = query(purchasesRef, where('user_id', '==', userId));
+    const unsubscribe = onSnapshot(q, (snapshot) => {
       queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.monthlyStatistics, userId, filters] });
     });
     return () => unsubscribe();

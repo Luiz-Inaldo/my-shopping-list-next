@@ -1,0 +1,103 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function signedIn() { 
+      return request.auth != null; 
+    }
+    
+    function isSelf(uid) { 
+      return signedIn() && request.auth.uid == uid; 
+    }
+
+    // ---------- users ----------
+    match /users/{userId} {
+      allow read: if isSelf(userId);
+      
+      // criação no registro / google user-info: não deixa o cliente se dar role/premium
+      allow create: if isSelf(userId)
+        && request.resource.data.uid == userId
+        && request.resource.data.role == 'user'
+        && request.resource.data.premium.status == false;
+      
+      // update: perfil sim; uid/role/premium/createdAt só via servidor (Admin SDK)
+      allow update: if isSelf(userId)
+        && !request.resource.data.diff(resource.data).affectedKeys().hasAny(['uid', 'role', 'premium', 'createdAt']);
+      
+      // app só marca active=false, não deleta
+      allow delete: if false;
+    }
+
+    // ---------- purchases ----------
+    match /purchases/{purchaseId} {
+      function isOwner() { 
+        return signedIn() && resource.data.user_id == request.auth.uid; 
+      }
+      
+      function isShared() { 
+        return signedIn() && request.auth.uid in resource.data.get('shared_with', []); 
+      }
+
+      allow read: if isOwner() || isShared();
+      
+      allow create: if signedIn()
+        && request.resource.data.user_id == request.auth.uid
+        && request.resource.data.is_active == true;
+      
+      // ninguém troca o dono; compartilhados não mexem em shared_with
+      allow update: if (isOwner() || isShared())
+        && request.resource.data.user_id == resource.data.user_id
+        && (isOwner() || !request.resource.data.diff(resource.data).affectedKeys().hasAny(['shared_with']));
+      
+      allow delete: if isOwner();
+    }
+
+    // ---------- notifications ----------
+    match /notifications/{notificationId} {
+      allow read, update, delete: if signedIn() && resource.data.target_id == request.auth.uid;
+      // criar só pelo servidor até definir o schema
+      allow create: if false;
+    }
+
+    // ---------- usernames ----------
+    // O app grava o campo `uuid`, não `uid`
+    match /usernames/{username} {
+      allow get: if true;  // checagem de disponibilidade
+      allow list: if true; // TODO: trocar getUsernamesList() por getDoc(username) e mudar p/ false
+      
+      allow create: if signedIn()
+        && !exists(/databases/$(database)/documents/usernames/$(username))
+        && request.resource.data.uuid == request.auth.uid;
+      
+      allow delete: if signedIn() && resource.data.uuid == request.auth.uid;
+    }
+
+    // ---------- profile_temp_tokens (fluxo de 1º login Google) ----------
+    match /profile_temp_tokens/{token} {
+      allow create: if signedIn() && request.resource.data.user_id == request.auth.uid;
+      allow get, delete: if signedIn() && resource.data.user_id == request.auth.uid;
+      allow list, update: if false;
+    }
+
+    // ---------- conector de agentes (fase 2): SÓ servidor (Admin SDK) ----------
+    match /agent_tokens/{id}  { 
+      allow read, write: if false; 
+    }
+    
+    match /oauth_clients/{id} { 
+      allow read, write: if false; 
+    }
+    
+    match /oauth_codes/{id}   { 
+      allow read, write: if false; 
+    }
+    
+    match /oauth_grants/{id}  { 
+      allow read, write: if false; 
+    }
+
+    // Removido: match /{document=**} { allow read, write: if request.auth != null; }
+    // => Tudo que não estiver listado acima fica NEGADO por padrão.
+  }
+}

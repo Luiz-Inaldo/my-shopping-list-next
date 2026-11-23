@@ -9,7 +9,7 @@ import { IFilterProps, IPurchaseProps } from '@/types';
 import { queryClient } from '@/utils/queryClient';
 import { useEffect, useRef, useState } from 'react';
 import Header from '../../../components/Header';
-import { collection, onSnapshot } from 'firebase/firestore';
+import { collection, onSnapshot, query, where } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
 import { Filters } from '@/types/filters';
 import { getPurchasesQueryKey, usePurchasesQuery } from '@/hooks/queries/purchases';
@@ -107,10 +107,13 @@ export function HistoricPage() {
     // # Effects
     // ===============
     useEffect(() => {
+        if (!user?.uid) return;
+        
         const purchasesRef = collection(db, 'purchases');
-        const unsubscribe = onSnapshot(purchasesRef, (snapshot) => {
+        const q = query(purchasesRef, where('user_id', '==', user.uid));
+        const unsubscribe = onSnapshot(q, (snapshot) => {
             queryClient.invalidateQueries({
-                queryKey: [QUERY_KEYS.purchases, user?.uid],
+                queryKey: [QUERY_KEYS.purchases, user.uid],
             });
             setAuxData(snapshot.docs.map(doc => {
                 return {
