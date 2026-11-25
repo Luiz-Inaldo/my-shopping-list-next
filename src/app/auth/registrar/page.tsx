@@ -31,7 +31,6 @@ import { sendToastMessage } from '@/functions/sendToastMessage';
 import { useQuery } from '@tanstack/react-query';
 import { createUsernameQueryOptions } from '@/hooks/queries/usernames';
 import { debounce } from '@/functions/debounce';
-import { useSearchParams } from 'next/navigation';
 import { AppLoader } from '@/components/Loader/app-loader';
 import { APP_ROUTES } from '@/routes/app-routes';
 
@@ -57,7 +56,6 @@ export default function Page() {
   const [isUsernameAvailable, setIsUsernameAvailable] =
     useState<boolean>(false);
   const [isPageVisible, setIsPageVisible] = useState<boolean>(true);
-  const searchParams = useSearchParams();
   const router = useRouter();
 
   const form = useForm<IRegisterUser>({
@@ -116,7 +114,7 @@ export default function Page() {
             uid,
             email,
             name: profileUsername,
-            role: searchParams.get('adminregister') ? 'admin' : 'user',
+            role: 'user',
             premium: {
               status: false,
               expires_at: null,
