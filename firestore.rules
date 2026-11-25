@@ -56,8 +56,12 @@ service cloud.firestore {
     // ---------- notifications ----------
     match /notifications/{notificationId} {
       allow read, update, delete: if signedIn() && resource.data.target_id == request.auth.uid;
-      // criar só pelo servidor até definir o schema
-      allow create: if false;
+      
+      // Cliente pode criar notificações se sender_info.id == request.auth.uid
+      allow create: if signedIn()
+        && request.resource.data.sender_info.id == request.auth.uid
+        && request.resource.data.keys().hasAll(['body', 'created_at', 'is_read', 'metadata', 'sender_info', 'target_id', 'title'])
+        && request.resource.data.sender_info.keys().hasAll(['id', 'name', 'profile_img']);
     }
 
     // ---------- usernames ----------

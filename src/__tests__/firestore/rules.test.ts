@@ -18,6 +18,7 @@ import {
   getDocs,
   setDoc,
   updateDoc,
+  Timestamp,
 } from 'firebase/firestore';
 
 let testEnv: RulesTestEnvironment;
@@ -487,6 +488,156 @@ describe('Firestore Security Rules', () => {
           name: 'My Token',
         })
       );
+    });
+  });
+
+  describe('notifications collection', () => {
+    test('users can create notifications if sender_info.id matches auth.uid', async () => {
+      const aliceDb = testEnv.authenticatedContext(ALICE_UID).firestore();
+      
+      const notification = {
+        body: 'Test notification',
+        created_at: Timestamp.now(),
+        is_read: false,
+        metadata: { purchase_id: 'purchase123' },
+        sender_info: {
+          id: ALICE_UID,
+          name: 'Alice',
+          profile_img: 'https://example.com/alice.jpg',
+        },
+        target_id: BOB_UID,
+        title: 'Test Title',
+      };
+
+      await assertSucceeds(addDoc(collection(aliceDb, 'notifications'), notification));
+    });
+
+    test('users cannot create notifications if sender_info.id does not match auth.uid', async () => {
+      const aliceDb = testEnv.authenticatedContext(ALICE_UID).firestore();
+      
+      const notification = {
+        body: 'Test notification',
+        created_at: Timestamp.now(),
+        is_read: false,
+        metadata: { purchase_id: 'purchase123' },
+        sender_info: {
+          id: BOB_UID, // Different from auth.uid
+          name: 'Bob',
+          profile_img: 'https://example.com/bob.jpg',
+        },
+        target_id: BOB_UID,
+        title: 'Test Title',
+      };
+
+      await assertFails(addDoc(collection(aliceDb, 'notifications'), notification));
+    });
+
+    test('users cannot create notifications if required fields are missing', async () => {
+      const aliceDb = testEnv.authenticatedContext(ALICE_UID).firestore();
+      
+      const notification = {
+        body: 'Test notification',
+        sender_info: {
+          id: ALICE_UID,
+          name: 'Alice',
+          profile_img: 'https://example.com/alice.jpg',
+        },
+        target_id: BOB_UID,
+        // Missing: created_at, is_read, metadata, title
+      };
+
+      await assertFails(addDoc(collection(aliceDb, 'notifications'), notification));
+    });
+
+    test('users cannot create notifications if sender_info is incomplete', async () => {
+      const aliceDb = testEnv.authenticatedContext(ALICE_UID).firestore();
+      
+      const notification = {
+        body: 'Test notification',
+        created_at: Timestamp.now(),
+        is_read: false,
+        metadata: { purchase_id: 'purchase123' },
+        sender_info: {
+          id: ALICE_UID,
+          // Missing: name, profile_img
+        },
+        target_id: BOB_UID,
+        title: 'Test Title',
+      };
+
+      await assertFails(addDoc(collection(aliceDb, 'notifications'), notification));
+    });
+
+    test('users can read their own notifications', async () => {
+      const bobDb = testEnv.authenticatedContext(BOB_UID).firestore();
+      
+      await testEnv.withSecurityRulesDisabled(async (context) => {
+        await setDoc(doc(context.firestore(), 'notifications', 'notif1'), {
+          body: 'Test',
+          created_at: Timestamp.now(),
+          is_read: false,
+          metadata: {},
+          sender_info: { id: ALICE_UID, name: 'Alice', profile_img: '' },
+          target_id: BOB_UID,
+          title: 'Test',
+        });
+      });
+
+      await assertSucceeds(getDoc(doc(bobDb, 'notifications', 'notif1')));
+    });
+
+    test('users cannot read notifications not targeted to them', async () => {
+      const aliceDb = testEnv.authenticatedContext(ALICE_UID).firestore();
+      
+      await testEnv.withSecurityRulesDisabled(async (context) => {
+        await setDoc(doc(context.firestore(), 'notifications', 'notif1'), {
+          body: 'Test',
+          created_at: Timestamp.now(),
+          is_read: false,
+          metadata: {},
+          sender_info: { id: ALICE_UID, name: 'Alice', profile_img: '' },
+          target_id: BOB_UID, // Different user
+          title: 'Test',
+        });
+      });
+
+      await assertFails(getDoc(doc(aliceDb, 'notifications', 'notif1')));
+    });
+
+    test('users can update their own notifications', async () => {
+      const bobDb = testEnv.authenticatedContext(BOB_UID).firestore();
+      
+      await testEnv.withSecurityRulesDisabled(async (context) => {
+        await setDoc(doc(context.firestore(), 'notifications', 'notif1'), {
+          body: 'Test',
+          created_at: Timestamp.now(),
+          is_read: false,
+          metadata: {},
+          sender_info: { id: ALICE_UID, name: 'Alice', profile_img: '' },
+          target_id: BOB_UID,
+          title: 'Test',
+        });
+      });
+
+      await assertSucceeds(updateDoc(doc(bobDb, 'notifications', 'notif1'), { is_read: true }));
+    });
+
+    test('users can delete their own notifications', async () => {
+      const bobDb = testEnv.authenticatedContext(BOB_UID).firestore();
+      
+      await testEnv.withSecurityRulesDisabled(async (context) => {
+        await setDoc(doc(context.firestore(), 'notifications', 'notif1'), {
+          body: 'Test',
+          created_at: Timestamp.now(),
+          is_read: false,
+          metadata: {},
+          sender_info: { id: ALICE_UID, name: 'Alice', profile_img: '' },
+          target_id: BOB_UID,
+          title: 'Test',
+        });
+      });
+
+      await assertSucceeds(deleteDoc(doc(bobDb, 'notifications', 'notif1')));
     });
   });
 });
