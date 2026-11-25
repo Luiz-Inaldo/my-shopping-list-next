@@ -34,6 +34,9 @@ export const APP_ROUTES = {
             sobre: {
                 name: "/menu/sobre"
             },
+            agentTokens: {
+                name: "/menu/agent-tokens"
+            },
         },
         userInfo: {
             name: (token: string) => `/auth/login/google/user-info/${token}`

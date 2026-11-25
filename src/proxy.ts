@@ -18,7 +18,7 @@ export async function proxy(req: NextRequest) {
   // Se for uma rota pública, permite acesso sem verificação de token
   if (isPublicRoute) {
     // Se o usuário já está autenticado e tenta acessar rota pública, redireciona para home
-    if (token && isTokenValid(token) && !isGoogleUrl) {
+    if (token && await isTokenValid(token) && !isGoogleUrl) {
       return NextResponse.redirect(new URL(APP_ROUTES.private.home.name, req.url));
     }
     return applySecurityHeaders(NextResponse.next());
@@ -29,8 +29,8 @@ export async function proxy(req: NextRequest) {
     return NextResponse.redirect(new URL(APP_ROUTES.public.inicio.name, req.url));
   }
 
-  // Verifica se o token é válido e não expirado e se não é uma rota pública
-  if (!isPublicRoute && !isTokenValid(token)) {
+  // Verifica se o token é válido (assinatura + expiração) e se não é uma rota pública
+  if (!isPublicRoute && !(await isTokenValid(token))) {
     // Token inválido ou expirado, remove o cookie e redireciona
     const response = NextResponse.redirect(new URL(APP_ROUTES.public.inicio.name, req.url));
     response.cookies.delete("authToken");
