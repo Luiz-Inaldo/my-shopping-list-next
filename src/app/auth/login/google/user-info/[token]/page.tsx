@@ -126,41 +126,28 @@ export default function UserInfoPage() {
         }
 
         const [_, error] = await tryCatchRequest<void, FirebaseError>(async () => {
-            const userDocRef = doc(db, 'users', uid);
-            const usernameDocRef = doc(db, 'usernames', trimmedUsername);
-            const tokenDocRef = doc(db, 'profile_temp_tokens', token);
-
-            const existingUserDoc = await getDoc(userDocRef);
-
             const batch = writeBatch(db);
 
-            if (existingUserDoc.exists()) {
-                batch.update(userDocRef, {
-                    name: trimmedUsername,
-                    updatedAt: new Date(),
-                });
-            } else {
-                batch.set(userDocRef, {
-                    uid,
-                    email: email || '',
-                    name: trimmedUsername,
-                    role: 'user',
-                    premium: {
-                        status: false,
-                        expires_at: null,
-                    },
-                    profile_img: '',
-                    active: true,
-                    createdAt: new Date(),
-                    updatedAt: new Date(),
-                });
-            }
+            batch.set(doc(db, 'users', uid), {
+                uid,
+                email: email || '',
+                name: trimmedUsername,
+                role: 'user',
+                premium: {
+                    status: false,
+                    expires_at: null,
+                },
+                profile_img: '',
+                active: true,
+                createdAt: new Date(),
+                updatedAt: new Date(),
+            });
 
-            batch.set(usernameDocRef, {
+            batch.set(doc(db, 'usernames', trimmedUsername), {
                 uuid: uid,
             });
 
-            batch.delete(tokenDocRef);
+            batch.delete(doc(db, 'profile_temp_tokens', token));
 
             await batch.commit();
 
@@ -175,9 +162,7 @@ export default function UserInfoPage() {
                 },
                 profile_img: '',
                 emailVerified: auth.currentUser?.emailVerified ?? false,
-                createdAt: existingUserDoc.exists() 
-                    ? (existingUserDoc.data().createdAt?.toDate() || new Date())
-                    : new Date(),
+                createdAt: new Date(),
                 updatedAt: new Date(),
             });
         });
