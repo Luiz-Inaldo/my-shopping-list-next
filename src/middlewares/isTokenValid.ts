@@ -1,11 +1,24 @@
 import { verifyFirebaseToken } from './verifyFirebaseToken';
 
 /**
- * Verifica se o token do Firebase é válido (assinatura + expiração).
- * Esta função verifica a assinatura do token usando as chaves públicas do Google.
+ * Verifica se o token do Firebase é válido para fins de roteamento no Edge Runtime.
  * 
- * @param token - Token do Firebase
- * @returns Promise<boolean> - true se o token é válido, false caso contrário
+ * IMPORTANTE - Modelo de Segurança:
+ * Esta função roda no Edge Runtime (middleware) e NÃO verifica a assinatura criptográfica
+ * do token. Ela apenas valida:
+ * - Formato JWT válido
+ * - Issuer e Audience corretos
+ * - Expiração
+ * 
+ * Este nível de verificação é adequado para decisões de ROTEAMENTO (redirecionar para
+ * login vs. permitir acesso à página), mas NÃO para AUTORIZAÇÃO de dados.
+ * 
+ * A verificação completa com assinatura criptográfica acontece nas API routes usando
+ * firebase-admin: adminAuth.verifyIdToken() - que roda no Node runtime e pode fazer
+ * verificação completa incluindo assinatura via JWKS.
+ * 
+ * @param token - Firebase ID Token (JWT)
+ * @returns Promise<boolean> - true se o token é válido para roteamento, false caso contrário
  */
 export async function isTokenValid(token: string): Promise<boolean> {
     try {

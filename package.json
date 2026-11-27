@@ -36,7 +36,6 @@
     "embla-carousel-react": "^8.6.0",
     "firebase": "^12.1.0",
     "firebase-admin": "^14.5.1",
-    "jose": "^6.2.18",
     "jspdf": "^4.0.0",
     "lottie-react": "^2.4.1",
     "lucide-react": "^0.563.0",
