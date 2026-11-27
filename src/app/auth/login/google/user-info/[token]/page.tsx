@@ -4,15 +4,13 @@ import { useEffect, useMemo, useState, useTransition } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useQuery } from '@tanstack/react-query';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ArrowLeft, User } from 'lucide-react';
-import { doc, getDoc, setDoc, deleteDoc, DocumentSnapshot } from 'firebase/firestore';
+import { doc, getDoc, setDoc, deleteDoc, DocumentSnapshot, writeBatch } from 'firebase/firestore';
 import { FirebaseError } from 'firebase/app';
 
 import { auth, db } from '@/lib/firebase';
 import { userInfoFormSchema, IUserInfoForm } from '@/zodSchema/userInfo';
-import { createUsernameQueryOptions } from '@/hooks/queries/usernames';
 import { debounce } from '@/functions/debounce';
 import { AppLoader } from '@/components/Loader/app-loader';
 import { sendToastMessage } from '@/functions/sendToastMessage';
@@ -39,6 +37,7 @@ export default function UserInfoPage() {
     const [isValidToken, setIsValidToken] = useState<boolean | null>(null);
     const [userIdFromToken, setUserIdFromToken] = useState<string | null>(null);
     const [isUsernameAvailable, setIsUsernameAvailable] = useState<boolean>(false);
+    const [isCheckingUsername, setIsCheckingUsername] = useState<boolean>(false);
 
     const form = useForm<IUserInfoForm>({
         resolver: zodResolver(userInfoFormSchema),
@@ -47,25 +46,38 @@ export default function UserInfoPage() {
         },
     });
 
-    const { data: usernamesList } = useQuery(createUsernameQueryOptions());
     const usernameValue = form.watch('username');
 
-    // Debounce para verificar disponibilidade do username
     const verifyUsernameAvailability = useMemo(
         () =>
-            debounce(() => {
-                if (usernameValue && usernamesList?.list) {
-                    setIsUsernameAvailable(!usernamesList.list.includes(usernameValue.toLowerCase()));
+            debounce(async () => {
+                const trimmedUsername = usernameValue.trim();
+                if (!trimmedUsername || trimmedUsername.length < 4) {
+                    setIsUsernameAvailable(false);
+                    return;
+                }
+
+                setIsCheckingUsername(true);
+                try {
+                    const usernameDoc = await getDoc(doc(db, 'usernames', trimmedUsername));
+                    setIsUsernameAvailable(!usernameDoc.exists());
+                } catch (error) {
+                    console.error('Erro ao verificar disponibilidade:', error);
+                    setIsUsernameAvailable(false);
+                } finally {
+                    setIsCheckingUsername(false);
                 }
             }, 1000),
-        [usernameValue, usernamesList]
+        [usernameValue]
     );
 
     useEffect(() => {
-        if (usernameValue && usernamesList?.list) {
+        if (usernameValue && usernameValue.trim().length >= 4) {
             verifyUsernameAvailability();
+        } else {
+            setIsUsernameAvailable(false);
         }
-    }, [usernameValue, usernamesList, verifyUsernameAvailability]);
+    }, [usernameValue, verifyUsernameAvailability]);
 
     // Validação do token temporário
     useEffect(() => {
@@ -95,6 +107,7 @@ export default function UserInfoPage() {
     async function onSubmit(data: IUserInfoForm) {
         const uid = auth.currentUser?.uid || userIdFromToken;
         const email = auth.currentUser?.email;
+        const trimmedUsername = data.username.trim();
 
         if (!uid) {
             sendToastMessage({
@@ -104,36 +117,57 @@ export default function UserInfoPage() {
             return;
         }
 
-        const [_, error] = await tryCatchRequest<void, FirebaseError>(async () => {
-            // 1. Criar documento do usuário
-            await setDoc(doc(db, 'users', uid), {
-                uid,
-                email: email || '',
-                name: data.username,
-                role: 'user',
-                premium: {
-                    status: false,
-                    expires_at: null,
-                },
-                profile_img: '',
-                active: true,
-                createdAt: new Date(),
-                updatedAt: new Date(),
+        if (!trimmedUsername) {
+            sendToastMessage({
+                title: 'Nome de usuário inválido.',
+                type: 'error',
             });
+            return;
+        }
 
-            // 2. Criar referência de username único
-            await setDoc(doc(db, 'usernames', data.username), {
+        const [_, error] = await tryCatchRequest<void, FirebaseError>(async () => {
+            const userDocRef = doc(db, 'users', uid);
+            const usernameDocRef = doc(db, 'usernames', trimmedUsername);
+            const tokenDocRef = doc(db, 'profile_temp_tokens', token);
+
+            const existingUserDoc = await getDoc(userDocRef);
+
+            const batch = writeBatch(db);
+
+            if (existingUserDoc.exists()) {
+                batch.update(userDocRef, {
+                    name: trimmedUsername,
+                    updatedAt: new Date(),
+                });
+            } else {
+                batch.set(userDocRef, {
+                    uid,
+                    email: email || '',
+                    name: trimmedUsername,
+                    role: 'user',
+                    premium: {
+                        status: false,
+                        expires_at: null,
+                    },
+                    profile_img: '',
+                    active: true,
+                    createdAt: new Date(),
+                    updatedAt: new Date(),
+                });
+            }
+
+            batch.set(usernameDocRef, {
                 uuid: uid,
             });
 
-            // 3. Deletar token temporário
-            await deleteDoc(doc(db, 'profile_temp_tokens', token));
+            batch.delete(tokenDocRef);
 
-            // 4. Seta informações do usuário na store
+            await batch.commit();
+
             useGeneralUserStore.getState().setUserProfile({
                 uid,
                 email: email || '',
-                name: data.username,
+                name: trimmedUsername,
                 role: 'user',
                 premium: {
                     status: false,
@@ -141,17 +175,27 @@ export default function UserInfoPage() {
                 },
                 profile_img: '',
                 emailVerified: auth.currentUser?.emailVerified ?? false,
-                createdAt: new Date(),
+                createdAt: existingUserDoc.exists() 
+                    ? (existingUserDoc.data().createdAt?.toDate() || new Date())
+                    : new Date(),
                 updatedAt: new Date(),
             });
         });
 
         if (error) {
             console.error('Erro na submissão:', error);
-            sendToastMessage({
-                title: 'Erro ao salvar informações. Tente novamente.',
-                type: 'error',
-            });
+            
+            if (error.code === 'permission-denied') {
+                sendToastMessage({
+                    title: 'Nome de usuário já utilizado. Escolha outro.',
+                    type: 'error',
+                });
+            } else {
+                sendToastMessage({
+                    title: 'Erro ao salvar informações. Tente novamente.',
+                    type: 'error',
+                });
+            }
             return;
         }
 
@@ -238,9 +282,13 @@ export default function UserInfoPage() {
                                                 </div>
                                             </FormControl>
                                             <FormMessage />
-                                            {field.value && field.value.length >= 4 && (
+                                            {field.value && field.value.trim().length >= 4 && (
                                                 <div className="absolute top-[-10px] right-0">
-                                                    {isUsernameAvailable ? (
+                                                    {isCheckingUsername ? (
+                                                        <span className="font-sketch text-[10px] text-sketch-fg/60">
+                                                            Verificando...
+                                                        </span>
+                                                    ) : isUsernameAvailable ? (
                                                         <span className="font-sketch text-[10px] text-sketch-success">
                                                             Disponível
                                                         </span>
@@ -257,7 +305,7 @@ export default function UserInfoPage() {
 
                                 <Button
                                     type="submit"
-                                    disabled={form.formState.isSubmitting || (usernameValue.length >= 0 && !isUsernameAvailable)}
+                                    disabled={form.formState.isSubmitting || isCheckingUsername || !isUsernameAvailable || !usernameValue.trim()}
                                     className="h-14 w-full py-3 text-lg"
                                 >
                                     {form.formState.isSubmitting ? (

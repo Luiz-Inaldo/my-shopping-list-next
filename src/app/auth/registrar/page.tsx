@@ -25,11 +25,9 @@ import {
   sendEmailVerification,
 } from 'firebase/auth';
 import { auth, db } from '@/lib/firebase';
-import { doc, setDoc } from 'firebase/firestore';
+import { doc, setDoc, getDoc, writeBatch } from 'firebase/firestore';
 import { FirebaseError } from 'firebase/app';
 import { sendToastMessage } from '@/functions/sendToastMessage';
-import { useQuery } from '@tanstack/react-query';
-import { createUsernameQueryOptions } from '@/hooks/queries/usernames';
 import { debounce } from '@/functions/debounce';
 import { AppLoader } from '@/components/Loader/app-loader';
 import { APP_ROUTES } from '@/routes/app-routes';
@@ -55,6 +53,7 @@ export default function Page() {
     useState<boolean>(false);
   const [isUsernameAvailable, setIsUsernameAvailable] =
     useState<boolean>(false);
+  const [isCheckingUsername, setIsCheckingUsername] = useState<boolean>(false);
   const [isPageVisible, setIsPageVisible] = useState<boolean>(true);
   const router = useRouter();
 
@@ -68,17 +67,28 @@ export default function Page() {
     },
   });
 
-  const { data: usernamesList } = useQuery(createUsernameQueryOptions());
-
   const username = form.watch('username');
   const verifyUsernameAvailability = useMemo(
     () =>
-      debounce(() => {
-        if (username && usernamesList?.list) {
-          setIsUsernameAvailable(!usernamesList.list.includes(username));
+      debounce(async () => {
+        const trimmedUsername = username.trim();
+        if (!trimmedUsername || trimmedUsername.length < 4) {
+          setIsUsernameAvailable(false);
+          return;
+        }
+
+        setIsCheckingUsername(true);
+        try {
+          const usernameDoc = await getDoc(doc(db, 'usernames', trimmedUsername));
+          setIsUsernameAvailable(!usernameDoc.exists());
+        } catch (error) {
+          console.error('Erro ao verificar disponibilidade:', error);
+          setIsUsernameAvailable(false);
+        } finally {
+          setIsCheckingUsername(false);
         }
       }, 1_000),
-    [username, usernamesList]
+    [username]
   );
 
   function handleChangePage() {
@@ -90,6 +100,15 @@ export default function Page() {
 
   async function onSubmit(userCredentials: IRegisterUser) {
     const { email, password, username: profileUsername } = userCredentials;
+    const trimmedUsername = profileUsername.trim();
+
+    if (!trimmedUsername) {
+      sendToastMessage({
+        title: 'Nome de usuário inválido.',
+        type: 'error',
+      });
+      return;
+    }
 
     registerTransition(async () => {
       try {
@@ -110,30 +129,53 @@ export default function Page() {
         });
 
         try {
-          await setDoc(doc(db, 'users', uid), {
-            uid,
-            email,
-            name: profileUsername,
-            role: 'user',
-            premium: {
-              status: false,
-              expires_at: null,
-            },
-            profile_img: '',
-            active: true,
-            createdAt: new Date(),
-            updatedAt: new Date(),
-          });
+          const userDocRef = doc(db, 'users', uid);
+          const usernameDocRef = doc(db, 'usernames', trimmedUsername);
 
-          await setDoc(doc(db, 'usernames', profileUsername), {
+          const existingUserDoc = await getDoc(userDocRef);
+
+          const batch = writeBatch(db);
+
+          if (existingUserDoc.exists()) {
+            batch.update(userDocRef, {
+              name: trimmedUsername,
+              updatedAt: new Date(),
+            });
+          } else {
+            batch.set(userDocRef, {
+              uid,
+              email,
+              name: trimmedUsername,
+              role: 'user',
+              premium: {
+                status: false,
+                expires_at: null,
+              },
+              profile_img: '',
+              active: true,
+              createdAt: new Date(),
+              updatedAt: new Date(),
+            });
+          }
+
+          batch.set(usernameDocRef, {
             uuid: uid,
           });
+
+          await batch.commit();
         } catch (error) {
           if (error instanceof FirebaseError) {
-            sendToastMessage({
-              title: 'Houve um erro ao criar o perfil.',
-              type: 'error',
-            });
+            if (error.code === 'permission-denied') {
+              sendToastMessage({
+                title: 'Nome de usuário já utilizado. Escolha outro.',
+                type: 'error',
+              });
+            } else {
+              sendToastMessage({
+                title: 'Houve um erro ao criar o perfil.',
+                type: 'error',
+              });
+            }
           }
         }
       } catch (error) {
@@ -166,10 +208,12 @@ export default function Page() {
   }
 
   useEffect(() => {
-    if (username && usernamesList?.list) {
+    if (username && username.trim().length >= 4) {
       verifyUsernameAvailability();
+    } else {
+      setIsUsernameAvailable(false);
     }
-  }, [username, usernamesList, verifyUsernameAvailability]);
+  }, [username, verifyUsernameAvailability]);
 
   return (
     <main
@@ -236,9 +280,13 @@ export default function Page() {
                             </motion.div>
                           </FormControl>
                           <FormMessage />
-                          {field.value && (
+                          {field.value && field.value.trim().length >= 4 && (
                             <>
-                              {isUsernameAvailable ? (
+                              {isCheckingUsername ? (
+                                <span className="absolute top-2.5 right-2 font-sketch text-xs text-sketch-fg/60">
+                                  Verificando...
+                                </span>
+                              ) : isUsernameAvailable ? (
                                 <span className="absolute top-2.5 right-2 font-sketch text-xs text-sketch-success">
                                   Nome de usuário disponível
                                 </span>
@@ -364,7 +412,7 @@ export default function Page() {
                       animate="visible"
                     >
                       <Button
-                        disabled={(username && !isUsernameAvailable) || loading}
+                        disabled={isCheckingUsername || (username && !isUsernameAvailable) || loading}
                         type="submit"
                         className="mt-5 h-14 w-full py-3 text-base"
                       >
