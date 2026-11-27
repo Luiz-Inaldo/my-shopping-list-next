@@ -3,5 +3,6 @@ export const QUERY_KEYS = {
     productsList: "products-list",
     usernames: "usernames-list",
     monthlyStatistics: "monthly-statistics",
-    notifications: "notifications"
+    notifications: "notifications",
+    agentTokens: "agent-tokens"
 }

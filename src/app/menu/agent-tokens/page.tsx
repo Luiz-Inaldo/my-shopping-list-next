@@ -4,125 +4,68 @@ import Header from "@/components/Header";
 import { AppLoader } from "@/components/Loader/app-loader";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { tryCatchRequest } from "@/functions/requests";
 import { sendToastMessage } from "@/functions/sendToastMessage";
+import {
+  useAgentTokensQuery,
+  useCreateAgentToken,
+  useRevokeAgentToken,
+} from "@/hooks/queries/agent-tokens";
 import { APP_ROUTES } from "@/routes/app-routes";
 import { ChevronLeft, Copy, Plus, Trash2, AlertCircle, Check } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { auth } from "@/lib/firebase";
-import type { AgentTokenListItem, CreateAgentTokenResponse } from "@/types/agentToken";
+import type { CreateAgentTokenResponse } from "@/types/agentToken";
+
+function formatDate(date: Date | string): string {
+  const d = typeof date === "string" ? new Date(date) : date;
+  return d.toLocaleDateString("pt-BR", { day: "2-digit", month: "2-digit", year: "numeric" });
+}
+
+function isExpired(expiresAt: Date | string): boolean {
+  const d = typeof expiresAt === "string" ? new Date(expiresAt) : expiresAt;
+  return d.getTime() < Date.now();
+}
 
 export default function AgentTokensPage() {
-  const [tokens, setTokens] = useState<AgentTokenListItem[]>([]);
-  const [loading, setLoading] = useState(true);
+  const { data: tokens = [], isLoading: loading, isError } = useAgentTokensQuery();
+  const createMutation = useCreateAgentToken();
+  const revokeMutation = useRevokeAgentToken();
+  const creating = createMutation.isPending;
+
   const [showCreateForm, setShowCreateForm] = useState(false);
   const [newTokenLabel, setNewTokenLabel] = useState("");
-  const [creating, setCreating] = useState(false);
   const [generatedToken, setGeneratedToken] = useState<CreateAgentTokenResponse | null>(null);
   const [copied, setCopied] = useState(false);
 
   useEffect(() => {
-    loadTokens();
-  }, []);
+    if (isError) sendToastMessage({ title: "Erro ao carregar tokens", type: "error" });
+  }, [isError]);
 
-  async function getIdToken(): Promise<string | null> {
-    const currentUser = auth.currentUser;
-    if (!currentUser) return null;
-    return await currentUser.getIdToken();
-  }
-
-  async function loadTokens() {
-    setLoading(true);
-    const idToken = await getIdToken();
-    if (!idToken) {
-      sendToastMessage({ title: "Erro ao obter autenticação", type: "error" });
-      setLoading(false);
-      return;
-    }
-
-    const [data, error] = await tryCatchRequest<{ tokens: AgentTokenListItem[] }, Error>(
-      fetch("/api/agent-tokens", {
-        headers: { Authorization: `Bearer ${idToken}` },
-      }).then((res) => res.json())
-    );
-
-    if (error || !data) {
-      sendToastMessage({ title: "Erro ao carregar tokens", type: "error" });
-    } else {
-      setTokens(data.tokens);
-    }
-    setLoading(false);
-  }
-
-  async function handleCreateToken() {
+  function handleCreateToken() {
     if (!newTokenLabel.trim()) {
       sendToastMessage({ title: "Informe um nome para o token", type: "error" });
       return;
     }
 
-    setCreating(true);
-    const idToken = await getIdToken();
-    if (!idToken) {
-      sendToastMessage({ title: "Erro ao obter autenticação", type: "error" });
-      setCreating(false);
-      return;
-    }
-
-    const [data, error] = await tryCatchRequest<CreateAgentTokenResponse, Error>(
-      fetch("/api/agent-tokens", {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${idToken}`,
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ label: newTokenLabel.trim() }),
-      }).then((res) => {
-        if (!res.ok) throw new Error(res.statusText);
-        return res.json();
-      })
-    );
-
-    if (error || !data) {
-      const errorMessage = error?.message || "Erro ao criar token";
-      sendToastMessage({ title: errorMessage, type: "error" });
-    } else {
-      setGeneratedToken(data);
-      setNewTokenLabel("");
-      setShowCreateForm(false);
-      sendToastMessage({ title: "Token criado com sucesso!", type: "success" });
-      loadTokens();
-    }
-    setCreating(false);
+    createMutation.mutate(newTokenLabel.trim(), {
+      onSuccess: (data) => {
+        setGeneratedToken(data);
+        setNewTokenLabel("");
+        setShowCreateForm(false);
+        sendToastMessage({ title: "Token criado com sucesso!", type: "success" });
+      },
+      onError: (error) => {
+        sendToastMessage({ title: error.message || "Erro ao criar token", type: "error" });
+      },
+    });
   }
 
-  async function handleRevokeToken(tokenHash: string) {
-    const idToken = await getIdToken();
-    if (!idToken) {
-      sendToastMessage({ title: "Erro ao obter autenticação", type: "error" });
-      return;
-    }
-
-    const [, error] = await tryCatchRequest<{ success: boolean }, Error>(
-      fetch("/api/agent-tokens", {
-        method: "DELETE",
-        headers: {
-          Authorization: `Bearer ${idToken}`,
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ token_hash: tokenHash }),
-      }).then((res) => {
-        if (!res.ok) throw new Error(res.statusText);
-        return res.json();
-      })
-    );
-
-    if (error) {
-      sendToastMessage({ title: "Erro ao revogar token", type: "error" });
-    } else {
-      sendToastMessage({ title: "Token revogado com sucesso", type: "success" });
-      loadTokens();
-    }
+  function handleRevokeToken(tokenHash: string) {
+    revokeMutation.mutate(tokenHash, {
+      onSuccess: () =>
+        sendToastMessage({ title: "Token revogado com sucesso", type: "success" }),
+      onError: () => sendToastMessage({ title: "Erro ao revogar token", type: "error" }),
+    });
   }
 
   function handleCopyToken(token: string) {
@@ -132,26 +75,16 @@ export default function AgentTokensPage() {
     setTimeout(() => setCopied(false), 2000);
   }
 
-  function formatDate(date: Date | string): string {
-    const d = typeof date === 'string' ? new Date(date) : date;
-    return d.toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit', year: 'numeric' });
-  }
-
-  function isExpired(expiresAt: Date | string): boolean {
-    const d = typeof expiresAt === 'string' ? new Date(expiresAt) : expiresAt;
-    return d.getTime() < Date.now();
-  }
-
   return (
     <div className="sketch-shell min-h-screen flex flex-col">
       <Header className="text-2xl font-sketchHeading">
-        <Link href={APP_ROUTES.private.menu.name}>
-          <ChevronLeft size={28} strokeWidth={2.5} />
+        <Link href={APP_ROUTES.private.menu.name} className="flex items-center gap-1 text-sketch-fg">
+          <ChevronLeft size={24} strokeWidth={2.5} />
         </Link>
-        Tokens de Agentes
+        <span>Tokens de Agentes</span>
       </Header>
 
-      <main className="flex-1 px-5 pb-24 pt-8 flex flex-col gap-6 max-w-2xl mx-auto w-full">
+      <main className="font-sketch flex-1 px-5 pb-24 pt-8 flex flex-col gap-6 max-w-2xl mx-auto w-full">
         {/* Info Card */}
         <div className="bg-blue-50 border-[3px] border-blue-200 rounded-sketch-card p-4 -rotate-1">
           <div className="flex gap-3">
@@ -166,7 +99,7 @@ export default function AgentTokensPage() {
         {/* Generated Token Display */}
         {generatedToken && (
           <div className="bg-green-50 border-[3px] border-green-300 rounded-sketch-card p-5 rotate-1">
-            <p className="text-green-900 font-semibold mb-2">✅ Token criado com sucesso!</p>
+            <p className="font-sketchHeading text-lg text-green-900 font-semibold mb-2">✅ Token criado com sucesso!</p>
             <p className="text-sm text-green-800 mb-3">
               Copie e guarde este token agora. Ele não será exibido novamente.
             </p>
@@ -229,7 +162,7 @@ export default function AgentTokensPage() {
         )}
 
         {/* Create Button */}
-        {!showCreateForm && tokens.length < 3 && (
+        {!showCreateForm && tokens?.length < 3 && (
           <Button
             onClick={() => setShowCreateForm(true)}
             className="w-full"
@@ -245,14 +178,14 @@ export default function AgentTokensPage() {
           <div className="flex justify-center py-10">
             <AppLoader size={32} />
           </div>
-        ) : tokens.length === 0 ? (
+        ) : tokens?.length === 0 ? (
           <div className="text-center py-10 text-sketch-fg/60">
-            <p className="text-lg">Nenhum token criado ainda</p>
+            <p className="font-sketchHeading text-lg">Nenhum token criado ainda</p>
             <p className="text-sm mt-2">Crie um token para conectar seu agente</p>
           </div>
         ) : (
           <div className="flex flex-col gap-4">
-            {tokens.map((token) => {
+            {tokens?.map((token) => {
               const expired = isExpired(token.expires_at);
               const revoked = token.revoked;
               
@@ -265,7 +198,7 @@ export default function AgentTokensPage() {
                 >
                   <div className="flex justify-between items-start mb-3">
                     <div>
-                      <h4 className="font-semibold text-lg">{token.label}</h4>
+                      <h4 className="font-sketchHeading font-semibold text-lg">{token.label}</h4>
                       {revoked && (
                         <span className="text-xs text-red-600 font-semibold">REVOGADO</span>
                       )}
