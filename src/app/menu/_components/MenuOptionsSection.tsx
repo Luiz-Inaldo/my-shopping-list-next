@@ -1,6 +1,6 @@
 "use client";
 import { APP_ROUTES } from "@/routes/app-routes";
-import { ChevronRight, Info, LogOut, Trash2 } from "lucide-react";
+import { ChevronRight, Info, LogOut, Trash2, Bot } from "lucide-react";
 import Link from "next/link";
 import useGeneralUserStore from "@/store/generalUserStore";
 import { deleteAuthToken } from "@/functions/logout";
@@ -54,6 +54,17 @@ export function MenuOptionsSection() {
           <div className="flex items-center gap-4 text-sketch-fg">
             <Info size={22} strokeWidth={2.5} className="text-sketch-accent" />
             <span className="text-lg">Sobre o aplicativo</span>
+          </div>
+          <ChevronRight size={22} strokeWidth={2.5} className="text-sketch-fg/40" />
+        </Link>
+
+        <Link
+          href={APP_ROUTES.private.menu.agentTokens.name}
+          className="w-full flex items-center justify-between p-5 hover:bg-sketch-accent-lt transition-colors"
+        >
+          <div className="flex items-center gap-4 text-sketch-fg">
+            <Bot size={22} strokeWidth={2.5} className="text-sketch-accent" />
+            <span className="text-lg">Tokens de Agentes</span>
           </div>
           <ChevronRight size={22} strokeWidth={2.5} className="text-sketch-fg/40" />
         </Link>
