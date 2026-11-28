@@ -1,12 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { Server } from '@modelcontextprotocol/sdk/server/index.js';
-import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js';
-import {
-  CallToolRequestSchema,
-  ListToolsRequestSchema,
-  McpError,
-  ErrorCode,
-} from '@modelcontextprotocol/sdk/types.js';
+import { ErrorCode } from '@modelcontextprotocol/sdk/types.js';
 import { validateAgentToken } from '@/lib/agentTokens';
 import {
   listActivePurchases,
@@ -26,6 +19,9 @@ import {
 import { ItemCategories } from '@/enums/categories';
 import { UnitTypes } from '@/enums/unitTypes';
 
+const SERVER_VERSION = '1.0.0';
+const SERVER_NAME = 'EzShopList MCP Server';
+
 /**
  * Extrai e valida o Bearer token do header Authorization
  */
@@ -36,32 +32,83 @@ async function authenticateRequest(request: NextRequest): Promise<string | null>
   }
 
   const token = authHeader.substring(7);
-  return await validateAgentToken(token);
+  
+  try {
+    return await validateAgentToken(token);
+  } catch (error) {
+    // Se falhar validação (ex: Firebase credentials inválidas), retorna null
+    // Isso permite que o endpoint responda 401 ao invés de 500
+    console.error('Token validation error:', error instanceof Error ? error.message : error);
+    return null;
+  }
 }
 
 /**
- * Handler MCP - processa requests JSON-RPC 2.0
+ * Retorna erro de autenticação com WWW-Authenticate header
+ */
+function unauthorized(id: any = null) {
+  return NextResponse.json(
+    {
+      jsonrpc: '2.0',
+      error: {
+        code: ErrorCode.InvalidRequest,
+        message: 'Token inválido ou expirado',
+      },
+      id,
+    },
+    { 
+      status: 401,
+      headers: {
+        'WWW-Authenticate': 'Bearer realm="EzShopList MCP", error="invalid_token"',
+      },
+    }
+  );
+}
+
+/**
+ * Handler MCP - processa requests JSON-RPC 2.0 conforme especificação MCP
  */
 export async function POST(request: NextRequest) {
   try {
-    // Autenticar o usuário pelo token
-    const uid = await authenticateRequest(request);
-    if (!uid) {
-      return NextResponse.json(
-        {
-          jsonrpc: '2.0',
-          error: {
-            code: ErrorCode.InvalidRequest,
-            message: 'Token inválido ou expirado',
-          },
-          id: null,
-        },
-        { status: 401 }
-      );
-    }
-
     const body = await request.json();
     const { method, params, id } = body;
+
+    // Initialize - handshake MCP (não requer autenticação)
+    if (method === 'initialize') {
+      const clientProtocolVersion = params?.protocolVersion || '2024-11-05';
+      
+      // Suporta versões do protocolo MCP
+      const supportedVersions = ['2024-11-05', '2025-03-26', '2025-06-18'];
+      const negotiatedVersion = supportedVersions.includes(clientProtocolVersion)
+        ? clientProtocolVersion
+        : supportedVersions[supportedVersions.length - 1];
+
+      return NextResponse.json({
+        jsonrpc: '2.0',
+        result: {
+          protocolVersion: negotiatedVersion,
+          capabilities: {
+            tools: {},
+          },
+          serverInfo: {
+            name: SERVER_NAME,
+            version: SERVER_VERSION,
+          },
+        },
+        id,
+      });
+    }
+
+    // notifications/initialized - confirma inicialização (retorna 202 sem body)
+    if (method === 'notifications/initialized') {
+      return new NextResponse(null, { status: 202 });
+    }
+
+    // Demais métodos requerem autenticação
+    const uid = await authenticateRequest(request);
+    if (!uid) {
+      return unauthorized(id);
+    }
 
     // ListTools
     if (method === 'tools/list') {
@@ -425,12 +472,35 @@ export async function POST(request: NextRequest) {
 }
 
 /**
- * Endpoint de saúde para verificar se o MCP está funcionando
+ * GET não é suportado - MCP sobre HTTP usa apenas POST para JSON-RPC
+ * (GET seria usado para SSE, mas não implementado aqui)
  */
 export async function GET() {
-  return NextResponse.json({
-    service: 'EzShop MCP Server',
-    version: '1.0.0',
-    status: 'healthy',
+  return NextResponse.json(
+    {
+      error: 'Method Not Allowed',
+      message: 'This MCP endpoint only supports POST requests (JSON-RPC 2.0)',
+    },
+    { 
+      status: 405,
+      headers: {
+        'Allow': 'POST, OPTIONS',
+      },
+    }
+  );
+}
+
+/**
+ * OPTIONS - CORS preflight
+ */
+export async function OPTIONS() {
+  return new NextResponse(null, {
+    status: 204,
+    headers: {
+      'Allow': 'POST, OPTIONS',
+      'Access-Control-Allow-Methods': 'POST, OPTIONS',
+      'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+      'Access-Control-Max-Age': '86400',
+    },
   });
 }
