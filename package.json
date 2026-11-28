@@ -60,7 +60,8 @@
     "react-remove-scroll": {
       "react": "$react",
       "@types/react": "$@types/react"
-    }
+    },
+    "jose": "4.15.9"
   },
   "devDependencies": {
     "@firebase/rules-unit-testing": "^5.0.2",
